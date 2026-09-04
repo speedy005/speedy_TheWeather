@@ -67,7 +67,6 @@ config.plugins.speedy_TheWeather.dateformat = ConfigSelection(
     default="slash", 
     choices=[("slash", _("DD/MM/YYYY")), ("dot", _("DD.MM.YYYY"))]
 )
-
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
     default="7", 
     choices=[
@@ -81,8 +80,6 @@ config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
         ("12", "12"),
     ]
 )
-
-
 
 # add Lululla
 PY3 = False
@@ -124,52 +121,28 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '5.0'
-
-# Übersetzungsdomain – muss zum Namen der .mo-Datei passen
+version = '5.6'
+# WICHTIG: Domain an den Dateinamen 'speedy_TheWeather.mo' anpassen!
 PluginLanguageDomain = "TheWeather"
-
-PluginLanguagePath = os.path.join(
-    resolveFilename(SCOPE_PLUGINS),
-    "Extensions",
-    "speedy_TheWeather",
-    "locale"
-)
-
-OAWeather = resolveFilename(
-    SCOPE_PLUGINS,
-    "Extensions/{}".format('OAWeather')
-)
+PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
+OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
 
 # System-Sprache setzen
 lang = language.getLanguage()
 os.environ["LANGUAGE"] = lang
 
-# Übersetzungsdomain binden
-gettext.bindtextdomain(
-    PluginLanguageDomain,
-    PluginLanguagePath
-)
+# Textdomain mit dem neuen Namen binden
+gettext.bindtextdomain(PluginLanguageDomain, PluginLanguagePath)
 
 icoonpath = "Images"
 SHARED_PACK = "Images"
 backgroundpath = ""
 CFG_DIR = "/etc/enigma2/speedy_TheWeather"
 
-
 def _(txt):
     if not txt:
         return ""
-
-    return gettext.dgettext(
-        PluginLanguageDomain,
-        txt
-    )
-
-def _(txt):
-    if not txt:
-        return ""
-    # Holt den übersetzten Text explizit aus deiner Plugin-Domain
+    # Verwendet jetzt die Domain "speedy_TheWeather"
     t = gettext.dgettext(PluginLanguageDomain, txt)
     if t == txt:
         t = gettext.gettext(txt)
@@ -540,12 +513,34 @@ def kmh_to_beaufort(kmh):
     return 12
 
 
+def getDateFormat():
+    try:
+        if config.plugins.speedy_TheWeather.dateformat.value == "dot":
+            return "Format:%a %d.%m.%y"
+    except Exception:
+        pass
+    return "Format:%a %d/%m/%y"
+
+
+def format_windspeed(kmh):
+    try:
+        value = float(kmh)
+    except (TypeError, ValueError):
+        return "--"
+    try:
+        if config.plugins.speedy_TheWeather.windunit.value == "ms":
+            return "%.1f m/s" % (value / 3.6)
+    except Exception:
+        pass
+    return "%.1f km/h" % value
+
+
 def windspeed_with_beaufort(kmh):
-    
     bft = kmh_to_beaufort(kmh)
+    speed = format_windspeed(kmh)
     if bft is None:
-        return str(kmh) + " km/h"
-    return "%s km/h (Bft %s)" % (kmh, bft)
+        return speed
+    return "%s (Bft %s)" % (speed, bft)
 
 
 def localWeatherAlert(dayData):
@@ -841,6 +836,16 @@ class sevendays(Screen):
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/okbuttonsd.png" position="1021,29" size="36,36" zPosition="3" alphatest="blend"/>
                     </screen>"""
 
+        # Apply the configured date format to both variants used by the skins.
+        # Some screens use dots (DD.MM.YYYY), others slashes (DD/MM/YYYY).
+        try:
+            date_format = getDateFormat()
+            self.skin = self.skin.replace("Format:%a %d/%m/%y", date_format)
+            self.skin = self.skin.replace("Format:%a %d.%m", date_format)
+            self.skin = self.skin.replace("Format:%a %d.%m.%y", date_format)
+        except Exception as e:
+            print("[speedy_TheWeather] date format replacement failed:", e)
+
         self["city1"] = StaticText()
         self["city1"].text = str(citynamedisplay)
         self["bigtemp1"] = StaticText()
@@ -939,8 +944,8 @@ class sevendays(Screen):
                 self["minitemp2" + str(day-1)].text = info2
                 self["weertype2" + str(day-1)].text = icontotext(iconclass)
 
-        self["myActionMap"] = ActionMap(["SetupActions", "MenuActions", "ColorActions"], {"menu": self.KeyMenu, "left": self.left, "right": self.right, "cancel": self.cancel, "red": self.cancel, "ok": self.fourteendays, "green": self.toggleHourStep, "yellow": self.openRadar, "blue": self.openSetup}, -1)
-        self.skin = skin
+        self["myActionMap"] = ActionMap(["SetupActions", "MenuActions", "ColorActions"], {"menu": self.KeyMenu, "left": self.left, "right": self.right, "cancel": self.cancel, "red": self.cancel, "ok": self.fourteendays, "green": self.toggleHourStep, "yellow": self.openRadar, "blue": self.openTwoLocations}, -1)
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self.updateFrameselect()
             
         self.alertFixTimer = eTimer()
@@ -1087,7 +1092,7 @@ class sevendays(Screen):
                     self["dayhour3" + str(perUurUpdate)].setText(str(entry["hour"]) + _("h"))
                     self["daytemp3" + str(perUurUpdate)].setText('{:>4}'.format(str("%.0f" % entry["temperature"]) + "\xb0C"))
                     self["daypercent3" + str(perUurUpdate)].setText(str(entry["precipation"]) + "%")
-                    self["dayspeed3" + str(perUurUpdate)].setText(str(entry["windspeed"]) + _("Km/h"))
+                    self["dayspeed3" + str(perUurUpdate)].setText(format_windspeed(entry.get("windspeed")))
                     self["sunpercent3" + str(perUurUpdate)].setText(str(entry["sunshine"]) + "%")
                     self["hrdayper3" + str(perUurUpdate)].setText(str(entry["humidity"]) + "%")
                 else:
@@ -1104,7 +1109,7 @@ class sevendays(Screen):
                         self["dayhour3" + str(perUurUpdate)].setText(str(entry["hour"]) + _("h"))
                         self["daytemp3" + str(perUurUpdate)].setText('{:>4}'.format(str("%.0f" % entry["temperature"]) + "\xb0C"))
                         self["daypercent3" + str(perUurUpdate)].setText(str(entry["precipitation"]) + "%")
-                        self["dayspeed3" + str(perUurUpdate)].setText(str(entry["windspeed"]) + _("Km/h"))
+                        self["dayspeed3" + str(perUurUpdate)].setText(format_windspeed(entry.get("windspeed")))
                         self["sunpercent3" + str(perUurUpdate)].setText(str(entry["sunshine"]) + "%")
                         self["hrdayper3" + str(perUurUpdate)].setText(str(entry["humidity"]) + "%")
                     else:
@@ -1199,7 +1204,12 @@ class sevendays(Screen):
         self.session.open(twolocations)
 
     def openSetup(self):
-        self.session.open(speedy_TheWeatherSetup)
+        self.session.openWithCallback(self.setupClosed, speedy_TheWeatherSetup)
+    
+    def setupClosed(self, changed=False):
+        if changed:
+            self.close()
+            self.session.open(sevendays)
     
     def backgroundPickerCallback(self, changed=None):
         
@@ -1551,7 +1561,7 @@ class fourteen(Screen):
                 self["datumvandeweek" + str(day)] = StaticText()
                 self["datumvandeweek" + str(day)].text = str(info2)
         self.session = session
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self["myActionMap"] = ActionMap(["SetupActions"], {"ok": self.dayseven, "cancel": self.cancel, "red": self.exit}, -1)
 
     def dayseven(self):
@@ -1723,7 +1733,7 @@ class localcityscreen(Screen):
 
         self.session = session
         Screen.__init__(self, session)
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
 
@@ -1862,8 +1872,8 @@ from Components.Label import Label  # Sicherstellen, dass Label importiert ist
 
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     skin = """
-    <screen name="speedy_TheWeatherSetup" position="center,center" size="700,300" title="speedy_TheWeather Settings">
-        <widget name="config" position="20,20" size="660,200" scrollbarMode="showOnDemand" itemHeight="30" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" />
+    <screen name="speedy_TheWeatherSetup" position="center,center" size="700,340" title="speedy_TheWeather Settings">
+        <widget name="config" position="20,20" size="660,220" scrollbarMode="showOnDemand" itemHeight="30" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" />
         
         <!-- Roter Button -->
         <ePixmap pixmap="skin_default/buttons/red.png" position="20,240" size="140,40" alphatest="on" zPosition="1" />
@@ -1876,6 +1886,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         <!-- Blauer Button -->
         <ePixmap pixmap="skin_default/buttons/blue.png" position="340,240" size="140,40" alphatest="on" zPosition="1" />
         <widget name="key_blue" position="340,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
+        <!-- Gelber Button: appearance -->
+        <ePixmap pixmap="skin_default/buttons/yellow.png" position="500,240" size="140,40" alphatest="on" zPosition="1" />
+        <widget name="key_yellow" position="500,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
     </screen>"""
 
     def __init__(self, session):
@@ -1884,7 +1897,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Save"))
-        self["key_blue"] = Label(_("2 Orte anzeigen"))
+        self["key_blue"] = Label(_("Show 2 locations"))
+        self["key_yellow"] = Label(_("Appearance"))
 
         self.list = []
         self.list.append(
@@ -1916,6 +1930,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "cancel": self.keyCancel,
                 "save": self.save,
                 "blue": self.openTwoLocations,
+                "yellow": self.openAppearance,
             },
             -2
         )
@@ -1923,12 +1938,15 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     def openTwoLocations(self):
         self.session.open(twolocations)
 
+    def openAppearance(self):
+        self.session.open(infoscreen)
+
     def save(self):
         for x in self["config"].list:
             x[1].save()
 
         configfile.save()
-        self.close()
+        self.close(True)
 
     def keyCancel(self):
         for x in self["config"].list:
@@ -1971,7 +1989,7 @@ class CitySuggestListScreen(Screen):
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png" position="145,663" size="26,26" alphatest="blend"/>
                 <widget name="key_red" position="185,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
 
         self["title"] = Label(_("Choose a match:"))
         self["key_red"] = Label(_("Exit"))
@@ -2083,7 +2101,7 @@ class infoscreen(Screen):
 
         self.session = session
         Screen.__init__(self, session)
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self["infos"] = Label(_("Infoscreen"))
         self["key_red"] = Label(_("Exit"))
         self["key_green"] = Label(_("Standard Icons"))
@@ -2227,7 +2245,7 @@ class CityPickerScreen(Screen):
                 <widget name="2elocation" position="630,30" size="620,50" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
 
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self._steden = steden
         self.res = []
 
@@ -2361,7 +2379,7 @@ class twolocations(Screen):
                 <widget name="key_yellow" position="735,663" size="220,32" zPosition="1" font="Regular;24" halign="left"  foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
 
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
 
         for n in ["loc1name","loc1maxtemp","loc1mintemp","loc1weertype","loc1feel","loc1wind","loc1rain","loc1sun","loc1alert",
                   "loc2name","loc2maxtemp","loc2mintemp","loc2weertype","loc2feel","loc2wind","loc2rain","loc2sun","loc2alert",
@@ -2590,7 +2608,7 @@ class BackgroundPickerScreen(Screen):
                 <widget name="backgr" position="57,30" size="723,37" valign="center" halign="left" zPosition="1" font="Regular;24" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
 
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
 
         self._bestanden = []
         if os.path.isdir(self.BG_DIR):
@@ -2874,7 +2892,7 @@ class TempOverlay(Screen):
                 <widget name="overlay_temp" position="0,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" valign="center" halign="center" zPosition="1" font="Regular;36" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
         Screen.__init__(self, session)
-        self.skin = skin
+        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self["overlay_temp"] = Label("")
         self.refreshTimer = eTimer()
         self._refreshTimerConn = safeTimerCallback(self.refreshTimer, self.refresh)
