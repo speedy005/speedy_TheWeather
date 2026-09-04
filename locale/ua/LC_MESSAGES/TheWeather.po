@@ -1,0 +1,365 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hetweer\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-04-07 18:00+0100\n"
+"Last-Translator: gutosie <DED1950>\n"
+"Language-Team: GaduGadu nr.4599553 <http://all-forum.cba.pl >\n"
+"Language: ua\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Mo"
+msgstr "Пн"
+
+msgid "Tu"
+msgstr "Вт"
+
+msgid "We"
+msgstr "Ср"
+
+msgid "Th"
+msgstr "Чт"
+
+msgid "Fr"
+msgstr "Пт"
+
+msgid "Sa"
+msgstr "Сб"
+
+msgid "Su"
+msgstr "Нд"
+
+msgid "Monday"
+msgstr "Понеділок"
+
+msgid "Tuesday"
+msgstr "Вівторок"
+
+msgid "Wednesday"
+msgstr "Середа"
+
+msgid "Thursday"
+msgstr "Четвер"
+
+msgid "Friday"
+msgstr "П'ятниця"
+
+msgid "Saturday"
+msgstr "Субота"
+
+msgid "Sunday"
+msgstr "Неділя"
+
+msgid "Belgium"
+msgstr "Бельгія"
+
+msgid "Changeable and chance of mist"
+msgstr "Мінлива хмарність, можливий туман"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Мінлива хмарність, невеликий снігопад"
+
+msgid "Clear and chance of mist"
+msgstr "Ясно, можливий туман"
+
+msgid "Clear night"
+msgstr "Ясна ніч"
+
+msgid "Clouds radar"
+msgstr "Радар хмарності"
+
+msgid "Cloudy"
+msgstr "Хмарно"
+
+msgid "Cloudy and chance of showers"
+msgstr "Хмарно, можлива злива"
+
+msgid "Download error: Check spelling."
+msgstr "Помилка завантаження: Перевірте правопис."
+
+msgid "Drizzle"
+msgstr "Мряка"
+
+msgid "E"
+msgstr "Сх"
+
+msgid "Europe"
+msgstr "Європа"
+
+msgid "Exit"
+msgstr "Вихід"
+
+msgid "Favorite Locations"
+msgstr "Обрані локації"
+
+msgid "Feels Like: "
+msgstr "Відчувається як: "
+
+msgid "Hail radar"
+msgstr "Радар граду"
+
+msgid "Heavy clouds"
+msgstr "Значна хмарність"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Значна хмарність, сильні зливи"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Значна хмарність, грози"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Значна хмарність та сильний снігопад"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Значна хмарність, невеликий снігопад"
+
+msgid "Heavy clouds showers possible"
+msgstr "Значна хмарність, можливі зливи"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Значна хмарність, зимовий дощ"
+
+msgid "Help"
+msgstr "Допомога"
+
+msgid "Km/h"
+msgstr "км/год"
+
+msgid "Light cloudy"
+msgstr "Невелика хмарність"
+
+msgid "Local Weather"
+msgstr "Місцева погода"
+
+msgid "Location +"
+msgstr "Додати локацію"
+
+msgid "Location -"
+msgstr "Видалити локацію"
+
+msgid "Location:"
+msgstr "Локація:"
+
+msgid "Mist radar"
+msgstr "Radar туману"
+
+msgid "Mostly clear"
+msgstr "Переважно ясно"
+
+msgid "Mostly sunny"
+msgstr "Переважно сонячно"
+
+msgid "N"
+msgstr "Пн"
+
+msgid "NE"
+msgstr "Пн-Сх"
+
+msgid "NW"
+msgstr "Пн-Зχ"
+
+msgid "Rainfall radar"
+msgstr "Радар опадів"
+
+msgid "WeatherInfo"
+msgstr "ІнфоПогода"
+
+msgid "S"
+msgstr "Пд"
+
+msgid "SE"
+msgstr "Пд-Сх"
+
+msgid "SW"
+msgstr "Пд-Зх"
+
+msgid "Satellite"
+msgstr "Супутник"
+
+msgid "Showers and chance of thunder"
+msgstr "Зливи, можлива гроза"
+
+msgid "Snow radar"
+msgstr "Радар снігу"
+
+msgid "Sun radar"
+msgstr "Радар сонця"
+
+msgid "Sunny / Clear"
+msgstr "Сонячно / Ясно"
+
+msgid "Sunny and chance of mist"
+msgstr "Сонячно, можливий туман"
+
+msgid "Sunny and chance of showers"
+msgstr "Сонячно, можлива злива"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Сонячно, можливі грози"
+
+msgid "Sunny few clouds"
+msgstr "Сонячно, малохмарно"
+
+msgid "Sunpower-UV"
+msgstr "УФ-індекс"
+
+msgid "Temperature"
+msgstr "Температура"
+
+msgid "The Netherlands"
+msgstr "Нідерланди"
+
+msgid "TheWeather"
+msgstr "Погода"
+
+msgid "Thunder radar"
+msgstr "Радар гроз"
+
+msgid "W"
+msgstr "Зх"
+
+msgid "Weather forecast-nl"
+msgstr "Прогноз погоди"
+
+msgid "Wind direction: "
+msgstr "Напрямок вітру: "
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "Background"
+msgstr "Фон"
+
+msgid "Background reset to standard."
+msgstr "Фон скинуто на стандартний."
+
+msgid "Choose 2nd location"
+msgstr "Обрати 2-гу локацію"
+
+msgid "Choose 2nd location:"
+msgstr "Обрати 2-гу локацію:"
+
+msgid "Choose background:"
+msgstr "Обрати фон:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "Місто не знайдено. Натисніть ЖОВТУ кнопку для зміни."
+
+msgid "Compare Locations"
+msgstr "Порівняти локації"
+
+msgid "Data error"
+msgstr "Помилка даних"
+
+msgid "Download error: No response try again"
+msgstr "Помилка завантаження: Немає відповіді, спробуйте ще раз"
+
+msgid "Error fetching data."
+msgstr "Помилка отримання даних."
+
+msgid "Error loading"
+msgstr "Помилка завантаження"
+
+msgid "Extra Icons "
+msgstr "Додаткові іконки "
+
+msgid "Extreme cold!"
+msgstr "Екстремальний холод!"
+
+msgid "Extreme heat!"
+msgstr "Екстремальна спека!"
+
+msgid "h"
+msgstr "год"
+
+msgid "Heavy rain!"
+msgstr "Сильний дощ!"
+
+msgid "Heavy storm!"
+msgstr "Сильний шторм!"
+
+msgid "Icon pack changed.\nThe plugin will restart..."
+msgstr "Пакет іконок змінено.\nПлагін буде перезавантажено..."
+
+msgid "Loading background image, please wait..."
+msgstr "Завантаження фонового зображення, будь ласка, зачекайте..."
+
+msgid "Loading..."
+msgstr "Завантаження..."
+
+msgid "No 2nd location"
+msgstr "Немає 2-ї локації"
+
+msgid "No info"
+msgstr "Немає інформації"
+
+msgid "No saved cities found.\nFirst add cities via the location screen."
+msgstr "Не знайдено збережених міст.\nСпочатку додайте міста на екрані локацій."
+
+msgid "Not found"
+msgstr "Не знайдено"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "Натисніть ЖОВТУ кнопку, щоб обрати 2-гу локацію."
+
+msgid "Rain: "
+msgstr "Дощ: "
+
+msgid "Select"
+msgstr "Вибрати"
+
+msgid "Settings"
+msgstr "Налаштування"
+
+msgid "Severe cold!"
+msgstr "Сильний мороз!"
+
+msgid "Standard"
+msgstr "Стандартний"
+
+msgid "Standard (iconpack)"
+msgstr "Стандартний (пакет іконок)"
+
+msgid "Standard Icons"
+msgstr "Стандартні іконки"
+
+msgid "Strong wind!"
+msgstr "Сильний вітер!"
+
+msgid "Sun: "
+msgstr "Сонце: "
+
+msgid "Very heavy rain!"
+msgstr "Дуже сильний дощ!"
+
+msgid "Warm weather!"
+msgstr "Тепла погода!"
+
+msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
+msgstr "Упс!\nПовільне інтернет-з'єднання або його відсутність\nБудь ласка, спробуйте ще раз"
+
+msgid "Wind: "
+msgstr "Вітер: "
+
+msgid "Loading radar..."
+msgstr "Завантаження радару..."
+
+msgid "Please wait..."
+msgstr "Будь ласка, зачекайте..."
+
+msgid "Map zoom: %s"
+msgstr "Масштаб карти: %s"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Порада!\nНатисніть приховану жовту кнопку в головному меню, щоб відкрити радар опадів.\n\nНатисніть приховану зелену кнопку в головному меню, щоб змінити часовий інтервал.\n\nНатисніть приховану синю кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть тут OK, щоб увімкнути/вимкнути накладання температури: %s"
+
+msgid "ON"
+msgstr "УВІМК"
+
+msgid "OFF"
+msgstr "ВИМК"

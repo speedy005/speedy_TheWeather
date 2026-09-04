@@ -1,0 +1,369 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TheWeather\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-02-06 19:38+0200\n"
+"Last-Translator: biko\n"
+"Language-Team: TheWeather\n"
+"Language: ar_EG\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-SourceCharset: iso-8859-5\n"
+
+msgid "Mo"
+msgstr "الإثنين"
+
+msgid "Tu"
+msgstr "الثلاثاء"
+
+msgid "We"
+msgstr "الأربعاء"
+
+msgid "Th"
+msgstr "الخميس"
+
+msgid "Fr"
+msgstr "الجمعة"
+
+msgid "Sa"
+msgstr "السبت"
+
+msgid "Su"
+msgstr "الأحد"
+
+msgid "Monday"
+msgstr "الإثنين"
+
+msgid "Tuesday"
+msgstr "الثلاثاء"
+
+msgid "Wednesday"
+msgstr "الأربعاء"
+
+msgid "Thursday"
+msgstr "الخميس"
+
+msgid "Friday"
+msgstr "الجمعة"
+
+msgid "Saturday"
+msgstr "السبت"
+
+msgid "Sunday"
+msgstr "الأحد"
+
+msgid "Belgium"
+msgstr "بلجيكا"
+
+msgid "Changeable and chance of mist"
+msgstr "متغير وفرصة لوجود ضباب"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "غائم جزئياً مع تساقط خفيف للثلوج"
+
+msgid "Clear and chance of mist"
+msgstr "صافي مع فرصة الضباب"
+
+msgid "Clear night"
+msgstr "ليلة صافية"
+
+msgid "Clouds radar"
+msgstr "تنبؤ بالغيوم"
+
+msgid "Cloudy"
+msgstr "غائم"
+
+msgid "Cloudy and chance of showers"
+msgstr "غائم ممطر"
+
+msgid "Download error: Check spelling."
+msgstr "خطأ في التحميل: تدقيق إملائي."
+
+msgid "Drizzle"
+msgstr "رذاذ"
+
+msgid "E"
+msgstr "الشرق"
+
+msgid "Europe"
+msgstr "أوروبا"
+
+msgid "Exit"
+msgstr "خروج"
+
+msgid "Favorite Locations"
+msgstr "المواقع المفضلة"
+
+msgid "Feels Like: "
+msgstr "أحس كأنني "
+
+msgid "Hail radar"
+msgstr "تنبؤ بالبرد(ثلج صلب)"
+
+msgid "Heavy clouds"
+msgstr "سحب كثيفة"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "سحب كثيفة ممطره"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "سحب رعدية كثيفة"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "سحب كثيفة وتساقط ثلوج كثيفة"
+
+msgid "Heavy clouds light snowfall"
+msgstr "غيوم كثيفة تساقط ثلوج خفيفة"
+
+msgid "Heavy clouds showers possible"
+msgstr "سحب كثيفه مع امكانيه هطول المطر"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "غيوم غزيرة هطول الأمطار في فصل الشتاء"
+
+msgid "Help"
+msgstr "مساعدة"
+
+msgid "Km/h"
+msgstr "كم / ساعة"
+
+msgid "Light cloudy"
+msgstr "غائم خفيف"
+
+msgid "Local Weather"
+msgstr "الطقس المحلي"
+
+msgid "Location +"
+msgstr "الموقع +"
+
+msgid "Location -"
+msgstr "موقع -"
+
+msgid "Location:"
+msgstr "موقع:"
+
+msgid "Mist radar"
+msgstr "تنبؤ  بالضباب"
+
+msgid "Mostly clear"
+msgstr "صافي غالباً"
+
+msgid "Mostly sunny"
+msgstr "مشمس غالباً"
+
+msgid "N"
+msgstr "شمال"
+
+msgid "NE"
+msgstr "شمال شرق"
+
+msgid "NW"
+msgstr "شمال غرب"
+
+msgid "Rainfall radar"
+msgstr "تنبؤ بهطول الأمطار"
+
+msgid "WeatherInfo"
+msgstr "معلومات الطقس"
+
+msgid "S"
+msgstr "جنوب"
+
+msgid "SE"
+msgstr "جنوب شرق"
+
+msgid "SW"
+msgstr "جنوب غرب"
+
+msgid "Satellite"
+msgstr "قمر صناعي"
+
+msgid "Showers and chance of thunder"
+msgstr "أمطار رعديه"
+
+msgid "Snow radar"
+msgstr "تنبؤ بتساقط الثلج"
+
+msgid "Sun radar"
+msgstr "تنبؤ مشمس"
+
+msgid "Sunny / Clear"
+msgstr "مشمس / صافٍ"
+
+msgid "Sunny and chance of mist"
+msgstr "مشمس / صافٍ"
+
+msgid "Sunny and chance of showers"
+msgstr "مشمس مع فرصة سقوط الأمطار"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "مشمس مع فرصة لسقوط الأمطار"
+
+msgid "Sunny few clouds"
+msgstr "مشمس قليل الغيوم"
+
+msgid "Sunpower-UV"
+msgstr "مؤشر الأشعة فوق البنفسجية"
+
+msgid "Temperature"
+msgstr "درجة حرارة"
+
+msgid "The Netherlands"
+msgstr "هولندا"
+
+msgid "TheWeather"
+msgstr "الطقس"
+
+msgid "Thunder radar"
+msgstr "تنبؤ  بالرعد"
+
+msgid "W"
+msgstr "غرب"
+
+msgid "Weather forecast-nl"
+msgstr "توقعات الطقس"
+
+msgid "Wind direction: "
+msgstr "اتجاه الرياح "
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Background"
+msgstr "الخلفية"
+
+msgid "Background reset to standard."
+msgstr "تم إعادة تعيين الخلفية إلى الافتراضية."
+
+msgid "Choose 2nd location"
+msgstr "اختر موقعاً ثانياً"
+
+msgid "Choose 2nd location:"
+msgstr "اختر موقعاً ثانياً:"
+
+msgid "Choose background:"
+msgstr "اختر الخلفية:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "المدينة غير موجودة. اضغط على الزر الأصفر للتغيير."
+
+msgid "Compare Locations"
+msgstr "مقارنة المواقع"
+
+msgid "Data error"
+msgstr "خطأ في البيانات"
+
+msgid "Download error: No response try again"
+msgstr "خطأ في التحميل: لا يوجد استجابة، حاول مرة أخرى"
+
+msgid "Error fetching data."
+msgstr "خطأ في جلب البيانات."
+
+msgid "Error loading"
+msgstr "خطأ في التحميل"
+
+msgid "Extra Icons "
+msgstr "أيقونات إضافية "
+
+msgid "Extreme cold!"
+msgstr "برد شديد جداً!"
+
+msgid "Extreme heat!"
+msgstr "حرارة شديدة جداً!"
+
+msgid "h"
+msgstr "س"
+
+msgid "Heavy rain!"
+msgstr "أمطار غزيرة!"
+
+msgid "Heavy storm!"
+msgstr "عاصفة قوية!"
+
+msgid "Icon pack changed.\nThe plugin will restart..."
+msgstr "تم تغيير حزمة الأيقونات.\nسيتم إعادة تشغيل المكون الإضافي..."
+
+msgid "Loading background image, please wait..."
+msgstr "جاري تحميل صورة الخلفية، يرجى الانتظار..."
+
+msgid "No 2nd location"
+msgstr "لا يوجد موقع ثانٍ"
+
+msgid "No info"
+msgstr "لا توجد معلومات"
+
+msgid "No saved cities found.\nFirst add cities via the location screen."
+msgstr "لم يتم العثور على مدن محفوظة.\nأضف مدناً أولاً عبر شاشة الموقع."
+
+msgid "Not found"
+msgstr "غير موجود"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "اضغط على الزر الأصفر لاختيار موقع ثانٍ."
+
+msgid "Rain: "
+msgstr "المطر: "
+
+msgid "Select"
+msgstr "اختيار"
+
+msgid "Settings"
+msgstr "الإعدادات"
+
+msgid "Severe cold!"
+msgstr "برد قارس!"
+
+msgid "Standard"
+msgstr "افتراضي"
+
+msgid "Standard (iconpack)"
+msgstr "الافتراضي (حزمة الأيقونات)"
+
+msgid "Standard Icons"
+msgstr "الأيقونات الافتراضية"
+
+msgid "Strong wind!"
+msgstr "رياح قوية!"
+
+msgid "Sun: "
+msgstr "الشمس: "
+
+msgid "Very heavy rain!"
+msgstr "أمطار غزيرة جداً!"
+
+msgid "Warm weather!"
+msgstr "طقس دافئ!"
+
+msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
+msgstr "عذراً!\nالاتصال بالإنترنت بطيء أو مقطوع\nيرجى المحاولة مرة أخرى"
+
+msgid "Wind: "
+msgstr "الرياح: "
+
+msgid "Loading radar..."
+msgstr "جارٍ تحميل الرادار..."
+
+msgid "Please wait..."
+msgstr "يرجى الانتظار..."
+
+msgid "Loading..."
+msgstr "جارٍ التحميل..."
+
+msgid "Map zoom: %s"
+msgstr "تكبير الخريطة: %s"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "نصيحة!\nاضغط على الزر الأصفر المخفي في القائمة الرئيسية لفتح رادار الأمطار.\n\nاضغط على الزر الأخضر المخفي في القائمة الرئيسية لتغيير الفاصل الزمني بالساعات.\n\nاضغط على الزر الأزرق المخفي في القائمة الرئيسية لمقارنة مدينتين.\n\nاضغط هنا على \"موافق\" لتبديل تراكب درجة الحرارة: %s"
+
+msgid "ON"
+msgstr "تشغيل"
+
+msgid "OFF"
+msgstr "إيقاف"
+
+
+

@@ -1,0 +1,366 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TheWeather\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2021-11-28 16:41+0200\n"
+"Last-Translator: Caught"
+"Language-Team: TheWeather\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-SourceCharset: iso-8859-5\n"
+"POT-Creation-Date: \n"
+
+msgid "Mo"
+msgstr "Пν"
+
+msgid "Tu"
+msgstr "Вτ"
+
+msgid "We"
+msgstr "Ср"
+
+msgid "Th"
+msgstr "Чт"
+
+msgid "Fr"
+msgstr "Пт"
+
+msgid "Sa"
+msgstr "Сб"
+
+msgid "Su"
+msgstr "Вс"
+
+msgid "Monday"
+msgstr "Понедельник"
+
+msgid "Tuesday"
+msgstr "Вторник"
+
+msgid "Wednesday"
+msgstr "Среда"
+
+msgid "Thursday"
+msgstr "Четверг"
+
+msgid "Friday"
+msgstr "Пятница"
+
+msgid "Saturday"
+msgstr "Суббота"
+
+msgid "Sunday"
+msgstr "Воскресенье"
+
+msgid "Belgium"
+msgstr "Бельгия"
+
+msgid "Changeable and chance of mist"
+msgstr "Переменная облачность, возможен туман"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Переменная облачность, небольшой снегопад"
+
+msgid "Clear and chance of mist"
+msgstr "Ясно, возможен туман"
+
+msgid "Clear night"
+msgstr "Ясная ночь"
+
+msgid "Clouds radar"
+msgstr "Радар облачности"
+
+msgid "Cloudy"
+msgstr "Облачно"
+
+msgid "Cloudy and chance of showers"
+msgstr "Облачно, возможен ливень"
+
+msgid "Download error: Check spelling."
+msgstr "Ошибка загрузки: Проверьте правописание."
+
+msgid "Drizzle"
+msgstr "Морось"
+
+msgid "E"
+msgstr "В"
+
+msgid "Europe"
+msgstr "Европа"
+
+msgid "Exit"
+msgstr "Выход"
+
+msgid "Favorite Locations"
+msgstr "Избранные локации"
+
+msgid "Feels Like: "
+msgstr "Ощущается как: "
+
+msgid "Hail radar"
+msgstr "Радар града"
+
+msgid "Heavy clouds"
+msgstr "Сильная облачность"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Сильная облачность, сильные ливни"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Сильная облачность, грозы"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Сильная облачность и сильный снегопад"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Сильная облачность, небольшой снегопад"
+
+msgid "Heavy clouds showers possible"
+msgstr "Сильная облачность, возможны ливни"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Сильная облачность, зимний дождь"
+
+msgid "Help"
+msgstr "Помощь"
+
+msgid "Km/h"
+msgstr "км/ч"
+
+msgid "Light cloudy"
+msgstr "Небольшая облачность"
+
+msgid "Local Weather"
+msgstr "Местная погода"
+
+msgid "Location +"
+msgstr "Добавить локацию"
+
+msgid "Location -"
+msgstr "Удалить локацию"
+
+msgid "Location:"
+msgstr "Локация:"
+
+msgid "Mist radar"
+msgstr "Радар тумана"
+
+msgid "Mostly clear"
+msgstr "Преимущественно ясно"
+
+msgid "Mostly sunny"
+msgstr "Преимущественно солнечно"
+
+msgid "N"
+msgstr "С"
+
+msgid "NE"
+msgstr "СВ"
+
+msgid "NW"
+msgstr "СЗ"
+
+msgid "Rainfall radar"
+msgstr "Радар осадков"
+
+msgid "WeatherInfo"
+msgstr "ИнфоПогода"
+
+msgid "S"
+msgstr "Ю"
+
+msgid "SE"
+msgstr "ЮВ"
+
+msgid "SW"
+msgstr "ЮЗ"
+
+msgid "Satellite"
+msgstr "Спутник"
+
+msgid "Showers and chance of thunder"
+msgstr "Ливни, возможна гроза"
+
+msgid "Snow radar"
+msgstr "Радар снега"
+
+msgid "Sun radar"
+msgstr "Радар солнца"
+
+msgid "Sunny / Clear"
+msgstr "Солнечно / Ясно"
+
+msgid "Sunny and chance of mist"
+msgstr "Солнечно, возможен туман"
+
+msgid "Sunny and chance of showers"
+msgstr "Солнечно, возможен ливень"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Солнечно, возможны грозы"
+
+msgid "Sunny few clouds"
+msgstr "Солнечно, малооблачно"
+
+msgid "Sunpower-UV"
+msgstr "УФ-индекс"
+
+msgid "Temperature"
+msgstr "Температура"
+
+msgid "The Netherlands"
+msgstr "Нидерланды"
+
+msgid "TheWeather"
+msgstr "Погода"
+
+msgid "Thunder radar"
+msgstr "Радар гроз"
+
+msgid "W"
+msgstr "З"
+
+msgid "Weather forecast-nl"
+msgstr "Прогноз погоды"
+
+msgid "Wind direction: "
+msgstr "Направление ветра: "
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "Background"
+msgstr "Фон"
+
+msgid "Background reset to standard."
+msgstr "Фон сброшен на стандартный."
+
+msgid "Choose 2nd location"
+msgstr "Выбрать 2-ю локацию"
+
+msgid "Choose 2nd location:"
+msgstr "Выбрать 2-ю локацию:"
+
+msgid "Choose background:"
+msgstr "Выбрать фон:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "Город не найден. Нажмите ЖЕЛТУЮ кнопку для изменения."
+
+msgid "Compare Locations"
+msgstr "Сравнить локации"
+
+msgid "Data error"
+msgstr "Ошибка данных"
+
+msgid "Download error: No response try again"
+msgstr "Ошибка загрузки: Нет ответа, попробуйте еще раз"
+
+msgid "Error fetching data."
+msgstr "Ошибка получения данных."
+
+msgid "Error loading"
+msgstr "Ошибка загрузки"
+
+msgid "Extra Icons "
+msgstr "Дополнительные иконки "
+
+msgid "Extreme cold!"
+msgstr "Экстремальный холод!"
+
+msgid "Extreme heat!"
+msgstr "Экстремальная жара!"
+
+msgid "h"
+msgstr "ч"
+
+msgid "Heavy rain!"
+msgstr "Сильный дождь!"
+
+msgid "Heavy storm!"
+msgstr "Сильный шторм!"
+
+msgid "Icon pack changed.\nThe plugin will restart..."
+msgstr "Пакет иконок изменен.\nПлагин будет перезапущен..."
+
+msgid "Loading background image, please wait..."
+msgstr "Загрузка фонового изображения, пожалуйста, подождите..."
+
+msgid "Loading..."
+msgstr "Загрузка..."
+
+msgid "No 2nd location"
+msgstr "Нет 2-й локации"
+
+msgid "No info"
+msgstr "Нет информации"
+
+msgid "No saved cities found.\nFirst add cities via the location screen."
+msgstr "Нет сохраненных городов.\nСначала добавьте города на экране локаций."
+
+msgid "Not found"
+msgstr "Не найдено"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "Нажмите ЖЕЛТУЮ кнопку, чтобы выбрать 2-ю локацию."
+
+msgid "Rain: "
+msgstr "Дождь: "
+
+msgid "Select"
+msgstr "Выбрать"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Severe cold!"
+msgstr "Сильный мороз!"
+
+msgid "Standard"
+msgstr "Стандартный"
+
+msgid "Standard (iconpack)"
+msgstr "Стандартный (пакет иконок)"
+
+msgid "Standard Icons"
+msgstr "Стандартные иконки"
+
+msgid "Strong wind!"
+msgstr "Сильный ветер!"
+
+msgid "Sun: "
+msgstr "Солнце: "
+
+msgid "Very heavy rain!"
+msgstr "Очень сильный дождь!"
+
+msgid "Warm weather!"
+msgstr "Теплая погода!"
+
+msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
+msgstr "Упс!\nМедленное интернет-соединение или его отсутствие\nПожалуйста, попробуйте еще раз"
+
+msgid "Wind: "
+msgstr "Ветер: "
+
+msgid "Loading radar..."
+msgstr "Загрузка радара..."
+
+msgid "Please wait..."
+msgstr "Пожалуйста, подождите..."
+
+msgid "Map zoom: %s"
+msgstr "Масштаб карты: %s"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Совет!\nНажмите скрытую жёлтую кнопку в главном меню, чтобы открыть радар осадков.\n\nНажмите скрытую зелёную кнопку в главном меню, чтобы изменить часовой интервал.\n\nНажмите скрытую синюю кнопку в главном меню, чтобы сравнить два города.\n\nНажмите здесь OK, чтобы включить/выключить наложение температуры: %s"
+
+msgid "ON"
+msgstr "ВКЛ"
+
+msgid "OFF"
+msgstr "ВЫКЛ"

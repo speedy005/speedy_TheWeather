@@ -1,0 +1,414 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hetweer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: ../ me/..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Mo"
+msgstr "Mo"
+
+msgid "Tu"
+msgstr "Di"
+
+msgid "We"
+msgstr "Mi"
+
+msgid "Th"
+msgstr "Do"
+
+msgid "Fr"
+msgstr "Fr"
+
+msgid "Sa"
+msgstr "Sa"
+
+msgid "Su"
+msgstr "So"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
+
+msgid "Belgium"
+msgstr "Belgien"
+
+msgid "Changeable and chance of mist"
+msgstr "Wechselhaft, Nebel möglich"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Wechselnd bewölkt, leichter Schneefall"
+
+msgid "Clear and chance of mist"
+msgstr "Klar, Nebel möglich"
+
+msgid "Clear night"
+msgstr "Klare Nacht"
+
+msgid "Clouds radar"
+msgstr "Wolkenradar"
+
+msgid "Cloudy"
+msgstr "Bewölkt"
+
+msgid "Cloudy and chance of showers"
+msgstr "Bewölkt, Schauer möglich"
+
+msgid "Download error: Check spelling."
+msgstr "Download-Fehler: Schreibweise prüfen."
+
+msgid "Drizzle"
+msgstr "Sprühregen"
+
+msgid "E"
+msgstr "O"
+
+msgid "Europe"
+msgstr "Europa"
+
+msgid "Exit"
+msgstr "Beenden"
+
+msgid "Favorite Locations"
+msgstr "Favoriten"
+
+msgid "Feels Like: "
+msgstr "Gefühlt wie: "
+
+msgid "Feels like: "
+msgstr "Gefühlt wie: "
+
+msgid "Hail radar"
+msgstr "Hagelradar"
+
+msgid "Heavy clouds"
+msgstr "Starke Bewölkung"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Starke Bewölkung, kräftige Schauer"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Starke Bewölkung, Gewitterschauer"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Starke Bewölkung und starker Schneefall"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Starke Bewölkung, leichter Schneefall"
+
+msgid "Heavy clouds showers possible"
+msgstr "Starke Bewölkung, Schauer möglich"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Starke Bewölkung, Schneeregen"
+
+msgid "Help"
+msgstr "Hilfe"
+
+msgid "Km/h"
+msgstr "km/h"
+
+msgid "Light cloudy"
+msgstr "Leicht bewölkt"
+
+msgid "Local Weather"
+msgstr "Wetter vor Ort"
+
+msgid "Location +"
+msgstr "Ort +"
+
+msgid "Location -"
+msgstr "Ort -"
+
+msgid "Location:"
+msgstr "Ort:"
+
+msgid "Mist radar"
+msgstr "Nebelradar"
+
+msgid "Mostly clear"
+msgstr "Überwiegend klar"
+
+msgid "Mostly sunny"
+msgstr "Überwiegend sonnig"
+
+msgid "N"
+msgstr "N"
+
+msgid "NE"
+msgstr "NO"
+
+msgid "NW"
+msgstr "NW"
+
+msgid "Rainfall radar"
+msgstr "Niederschlagsradar"
+
+msgid "WeatherInfo"
+msgstr "WetterInfo"
+
+msgid "S"
+msgstr "S"
+
+msgid "SE"
+msgstr "SO"
+
+msgid "SW"
+msgstr "SW"
+
+msgid "Satellite"
+msgstr "Satellit"
+
+msgid "Showers and chance of thunder"
+msgstr "Schauer, Gewitter möglich"
+
+msgid "Snow radar"
+msgstr "Schneeradar"
+
+msgid "Sun radar"
+msgstr "Sonnenradar"
+
+msgid "Sunny / Clear"
+msgstr "Sonnig / Klar"
+
+msgid "Sunny and chance of mist"
+msgstr "Sonnig, Nebel möglich"
+
+msgid "Sunny and chance of showers"
+msgstr "Sonnig, Schauer möglich"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Sonnig, Gewitterschauer möglich"
+
+msgid "Sunny few clouds"
+msgstr "Sonnig, leicht bewölkt"
+
+msgid "Sunpower-UV"
+msgstr "UV-Index"
+
+msgid "Temperature"
+msgstr "Temperatur"
+
+msgid "The Netherlands"
+msgstr "Niederlande"
+
+msgid "TheWeather"
+msgstr "DasWetter"
+
+msgid "Thunder radar"
+msgstr "Gewitterradar"
+
+msgid "W"
+msgstr "W"
+
+msgid "Weather forecast-nl"
+msgstr "Wettervorhersage-NL"
+
+msgid "Wind direction: "
+msgstr "Windrichtung: "
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Background"
+msgstr "Hintergrund"
+
+msgid "Background reset to standard."
+msgstr "Hintergrund auf Standard zurückgesetzt."
+
+msgid "Choose 2nd location"
+msgstr "2. Ort auswählen"
+
+msgid "Choose 2nd location:"
+msgstr "2. Ort auswählen:"
+
+msgid "Choose background:"
+msgstr "Hintergrund auswählen:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "Stadt nicht gefunden. Drücken Sie GELB zum Ändern."
+
+msgid "Compare Locations"
+msgstr "Orte vergleichen"
+
+msgid "Data error"
+msgstr "Datenfehler"
+
+msgid "Download error: No response try again"
+msgstr "Download-Fehler: Keine Antwort, bitte erneut versuchen"
+
+msgid "Error fetching data."
+msgstr "Fehler beim Abrufen der Daten."
+
+msgid "Error loading"
+msgstr "Fehler beim Laden"
+
+msgid "Extra Icons "
+msgstr "Zusätzliche Icons "
+
+msgid "Extreme cold!"
+msgstr "Extreme Kälte!"
+
+msgid "Extreme heat!"
+msgstr "Extreme Hitze!"
+
+msgid "h"
+msgstr "Std."
+
+msgid "Heavy rain!"
+msgstr "Starkregen!"
+
+msgid "Heavy storm!"
+msgstr "Schwerer Sturm!"
+
+msgid ""
+"Icon pack changed.\n"
+"The plugin will restart..."
+msgstr ""
+"Icon-Paket geändert.\n"
+"Das Plugin wird neu gestartet..."
+
+msgid "Loading background image, please wait..."
+msgstr "Hintergrundbild wird geladen, bitte warten..."
+
+msgid "Loading..."
+msgstr "Wird geladen..."
+
+msgid "No 2nd location"
+msgstr "Kein 2. Ort"
+
+msgid "No info"
+msgstr "Keine Info"
+
+msgid ""
+"No saved cities found.\n"
+"First add cities via the location screen."
+msgstr ""
+"Keine gespeicherten Städte gefunden.\n"
+"Fügen Sie zuerst Städte über die Ortsauswahl hinzu."
+
+msgid "Not found"
+msgstr "Nicht gefunden"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "Drücken Sie GELB, um einen 2. Ort auszuwählen."
+
+msgid "Rain: "
+msgstr "Regen: "
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Severe cold!"
+msgstr "Strenge Kälte!"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Standard (iconpack)"
+msgstr "Standard (Icon-Paket)"
+
+msgid "Standard Icons"
+msgstr "Standard-Icons"
+
+msgid "Strong wind!"
+msgstr "Starker Wind!"
+
+msgid "Sun: "
+msgstr "Sonne: "
+
+msgid "Very heavy rain!"
+msgstr "Extremer Starkregen!"
+
+msgid "Warm weather!"
+msgstr "Warmes Wetter!"
+
+msgid ""
+"Whoops!\n"
+"Slow or no Internet connection\n"
+"Please try again"
+msgstr ""
+"Hoppla!\n"
+"Langsame oder keine Internetverbindung.\n"
+"Bitte versuchen Sie es erneut."
+
+msgid "Wind: "
+msgstr "Wind: "
+
+msgid "ON"
+msgstr "EIN"
+
+msgid "OFF"
+msgstr "AUS"
+
+msgid "Loading radar..."
+msgstr "Radar wird geladen..."
+
+msgid "Please wait..."
+msgstr "Bitte warten..."
+
+msgid "Map zoom: %s"
+msgstr "Kartenzoom: %s"
+
+msgid ""
+"Tip!\n"
+"Press the hidden Yellow button in the main menu to open the RainRadar.\n"
+"\n"
+"Press the hidden Green button in the main menu to change the hour interval.\n"
+"\n"
+"Press the hidden Blue button in the main menu to compare two cities.\n"
+"\n"
+"Press OK here to toggle the temperature overlay: %s"
+msgstr ""
+"Tipp!\n"
+"Drücken Sie die Gelbe Taste im Hauptmenü, um das Regenradar zu öffnen.\n"
+"\n"
+"Drücken Sie die Grüne Taste im Hauptmenü, um das Stundenintervall zu ändern.\n"
+"\n"
+"Drücken Sie die Blaue Taste im Hauptmenü, um zwei Städte zu vergleichen.\n"
+"\n"
+"Drücken Sie hier OK, um die Temperatur-Einblendung umzuschalten: %s"
+
+msgid "Select city and:"
+msgstr "Stadt auswählen und:"
+
+msgid "- Press Ok for Weather info"
+msgstr "- Drücken Sie OK für Wetter-Info"
+
+msgid "- Press Menu for RainRadar"
+msgstr "- Drücken Sie Menü für Regenradar"
+
+msgid "Appearance"
+msgstr "Darstellung"
