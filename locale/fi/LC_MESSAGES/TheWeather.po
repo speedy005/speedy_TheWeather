@@ -1,0 +1,383 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Meteo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_BE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Mo"
+msgstr "Lu"
+
+msgid "Tu"
+msgstr "Ma"
+
+msgid "We"
+msgstr "Me"
+
+msgid "Th"
+msgstr "Je"
+
+msgid "Fr"
+msgstr "Ve"
+
+msgid "Sa"
+msgstr "Sa"
+
+msgid "Su"
+msgstr "Di"
+
+msgid "Monday"
+msgstr "Lundi"
+
+msgid "Tuesday"
+msgstr "Mardi"
+
+msgid "Wednesday"
+msgstr "Mercredi"
+
+msgid "Thursday"
+msgstr "Jeudi"
+
+msgid "Friday"
+msgstr "Vendredi"
+
+msgid "Saturday"
+msgstr "Samedi"
+
+msgid "Sunday"
+msgstr "Dimanche"
+
+msgid "Belgium"
+msgstr "Belgique"
+
+msgid "Changeable and chance of mist"
+msgstr "Variable, risque de brume"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Variable/Nuageux, légères chutes de neige"
+
+msgid "Clear and chance of mist"
+msgstr "Dégagé, risque de brume"
+
+msgid "Clear night"
+msgstr "Nuit claire"
+
+msgid "Clouds radar"
+msgstr "Radar de nuages"
+
+msgid "Cloudy"
+msgstr "Nuageux"
+
+msgid "Cloudy and chance of showers"
+msgstr "Nuageux, risque d'averses"
+
+msgid "Download error: Check spelling."
+msgstr "Erreur de téléchargement : Vérifiez l'orthographe."
+
+msgid "Drizzle"
+msgstr "Bruine"
+
+msgid "E"
+msgstr "E"
+
+msgid "Europe"
+msgstr "Europe"
+
+msgid "Exit"
+msgstr "Quitter"
+
+msgid "Favorite Locations"
+msgstr "Lieux favoris"
+
+msgid "Feels Like: "
+msgstr "Ressenti : "
+
+msgid "Hail radar"
+msgstr "Radar de grêle"
+
+msgid "Heavy clouds"
+msgstr "Fortement nuageux"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Fortement nuageux, fortes averses"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Fortement nuageux, orages"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Fortement nuageux, fortes chutes de neige"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Fortement nuageux, légères chutes de neige"
+
+msgid "Heavy clouds showers possible"
+msgstr "Fortement nuageux, averses possibles"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Fortement nuageux, pluie hivernale"
+
+msgid "Help"
+msgstr "Aide"
+
+msgid "Km/h"
+msgstr "km/h"
+
+msgid "Light cloudy"
+msgstr "Peu nuageux"
+
+msgid "Local Weather"
+msgstr "Météo locale"
+
+msgid "Location +"
+msgstr "Ajouter un lieu"
+
+msgid "Location -"
+msgstr "Supprimer un lieu"
+
+msgid "Location:"
+msgstr "Lieu :"
+
+msgid "Mist radar"
+msgstr "Radar de brume"
+
+msgid "Mostly clear"
+msgstr "Prév. dégagé"
+
+msgid "Mostly sunny"
+msgstr "Prév. ensoleillé"
+
+msgid "N"
+msgstr "N"
+
+msgid "NE"
+msgstr "NE"
+
+msgid "NW"
+msgstr "NO"
+
+msgid "Rainfall radar"
+msgstr "Radar de pluie"
+
+msgid "WeatherInfo"
+msgstr "InfoMétéo"
+
+msgid "S"
+msgstr "S"
+
+msgid "SE"
+msgstr "SE"
+
+msgid "SW"
+msgstr "SO"
+
+msgid "Satellite"
+msgstr "Satellite"
+
+msgid "Showers and chance of thunder"
+msgstr "Averses et risque d'orage"
+
+msgid "Snow radar"
+msgstr "Radar de neige"
+
+msgid "Sun radar"
+msgstr "Radar de soleil"
+
+msgid "Sunny / Clear"
+msgstr "Ensoleillé / Dégagé"
+
+msgid "Sunny and chance of mist"
+msgstr "Ensoleillé, risque de brume"
+
+msgid "Sunny and chance of showers"
+msgstr "Ensoleillé, risque d'averses"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Ensoleillé, risque d'orages"
+
+msgid "Sunny few clouds"
+msgstr "Ensoleillé, quelques nuages"
+
+msgid "Sunpower-UV"
+msgstr "Indice UV"
+
+msgid "Temperature"
+msgstr "Température"
+
+msgid "The Netherlands"
+msgstr "Pays-Bas"
+
+msgid "TheWeather"
+msgstr "LaMétéo"
+
+msgid "Thunder radar"
+msgstr "Radar d'orages"
+
+msgid "W"
+msgstr "O"
+
+msgid "Weather forecast-nl"
+msgstr "Prévisions météo"
+
+msgid "Wind direction: "
+msgstr "Direction du vent : "
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "Background"
+msgstr "Arrière-plan"
+
+msgid "Background reset to standard."
+msgstr "Arrière-plan réinitialisé par défaut."
+
+msgid "Choose 2nd location"
+msgstr "Choisir un 2e lieu"
+
+msgid "Choose 2nd location:"
+msgstr "Choisir un 2e lieu :"
+
+msgid "Choose background:"
+msgstr "Choisir l'arrière-plan :"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "Ville non trouvée. Appuyez sur JAUNE pour modifier."
+
+msgid "Compare Locations"
+msgstr "Comparer les lieux"
+
+msgid "Data error"
+msgstr "Erreur de données"
+
+msgid "Download error: No response try again"
+msgstr "Erreur de téléchargement : Pas de réponse, réessayez"
+
+msgid "Error fetching data."
+msgstr "Erreur lors de la récupération des données."
+
+msgid "Error loading"
+msgstr "Erreur de chargement"
+
+msgid "Extra Icons "
+msgstr "Icônes supplémentaires "
+
+msgid "Extreme cold!"
+msgstr "Froid extrême !"
+
+msgid "Extreme heat!"
+msgstr "Chaleur extrême !"
+
+msgid "h"
+msgstr "h"
+
+msgid "Heavy rain!"
+msgstr "Forte pluie !"
+
+msgid "Heavy storm!"
+msgstr "Forte tempête !"
+
+msgid ""
+"Icon pack changed.\n"
+"The plugin will restart..."
+msgstr ""
+"Pack d'icônes modifié.\n"
+"Le plugin va redémarrer..."
+
+msgid "Loading background image, please wait..."
+msgstr "Chargement de l'image de fond, veuillez patienter..."
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "No 2nd location"
+msgstr "Pas de 2e lieu"
+
+msgid "No info"
+msgstr "Pas d'information"
+
+msgid ""
+"No saved cities found.\n"
+"First add cities via the location screen."
+msgstr ""
+"Aucune ville enregistrée.\n"
+"Ajoutez d'abord des villes via l'écran des lieux."
+
+msgid "Not found"
+msgstr "Non trouvé"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "Appuyez sur JAUNE pour choisir un 2e lieu."
+
+msgid "Rain: "
+msgstr "Pluie : "
+
+msgid "Select"
+msgstr "Sélectionner"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Severe cold!"
+msgstr "Froid intense !"
+
+msgid "Standard"
+msgstr "Par défaut"
+
+msgid "Standard (iconpack)"
+msgstr "Par défaut (pack d'icônes)"
+
+msgid "Standard Icons"
+msgstr "Icônes par défaut"
+
+msgid "Strong wind!"
+msgstr "Vent fort !"
+
+msgid "Sun: "
+msgstr "Soleil : "
+
+msgid "Very heavy rain!"
+msgstr "Très forte pluie !"
+
+msgid "Warm weather!"
+msgstr "Temps chaud !"
+
+msgid ""
+"Whoops!\n"
+"Slow or no Internet connection\n"
+"Please try again"
+msgstr ""
+"Oups !\n"
+"Connexion Internet lente ou inexistante\n"
+"Veuillez réessayer"
+
+msgid "Wind: "
+msgstr "Vent : "
+
+msgid "Loading radar..."
+msgstr "Chargement du radar..."
+
+msgid "Please wait..."
+msgstr "Veuillez patienter..."
+
+msgid "Map zoom: %s"
+msgstr "Zoom de la carte : %s"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Astuce !\nAppuyez sur le bouton jaune caché dans le menu principal pour ouvrir le radar de pluie.\n\nAppuyez sur le bouton vert caché dans le menu principal pour changer l'intervalle horaire.\n\nAppuyez sur le bouton bleu caché dans le menu principal pour comparer deux villes.\n\nAppuyez sur OK ici pour activer/désactiver la superposition de température : %s"
+
+msgid "ON"
+msgstr "ACTIVÉ"
+
+msgid "OFF"
+msgstr "DÉSACTIVÉ"
