@@ -1,4 +1,4 @@
-#v.1.0.0
+#v.4.0
 # -----------------------------------------------------------------------------
 # Centralized all weather-related HTTP requests.
 # Added proper timeouts and response cleanup.
@@ -123,8 +123,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.0'
-
+version = '1.0.0'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
