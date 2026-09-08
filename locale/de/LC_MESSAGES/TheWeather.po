@@ -443,13 +443,11 @@ msgstr "Update gestartet. Enigma2 wird nach der Installation neu gestartet."
 
 msgid "Installer version: %s"
 msgstr "Installer-Version: %s"
-
 msgid "Update information is incomplete."
 msgstr "Update-Informationen sind unvollständig."
 
 msgid "No changes available."
 msgstr "Keine Änderungen verfügbar."
-
 msgid "The update is being installed."
 msgstr "Das Update wird installiert."
 
@@ -482,6 +480,5 @@ msgstr ""
 "%s\n"
 "\n"
 "Möchtest du das Update installieren?"
-
 msgid "Fix Malformed Locale Language. Offer coffee if you like this plugin"
 msgstr "Fehlerhafte Sprachkonfiguration beheben. Wenn dir dieses Plugin gefällt, lade uns doch auf einen Kaffee ein."
