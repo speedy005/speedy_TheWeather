@@ -123,7 +123,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.0.0'
+version = '1.1.1'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -146,9 +146,11 @@ UPDATE_CHECK_DELAY_MS = 8000
 UPDATE_CHECK_TIMEOUT = 15
 UPDATE_INSTALLER_PATH = "/tmp/speedy_TheWeather_update_installer.sh"
 
-_updateTimer = None
+_updateStartTimer = None
+_updatePollTimer = None
 _updateQueue = queue.Queue()
 _updateCheckStarted = False
+_updateWorkerStarted = False
 _updateInstallInProgress = False
 _updateInfo = None
 
@@ -234,7 +236,7 @@ def _update_extract_installer_info(source):
         match = re.search(r"^version=['\"]([^'\"]+)['\"]", source, re.MULTILINE)
         if match:
             result["version"] = match.group(1).strip()
-        match = re.search(r"^changelog=['\"](.*?)['\"]", source, re.MULTILINE)
+        match = re.search(r"^(?:changelog|hangelog)=['\"](.*?)['\"]", source, re.MULTILINE)
         if match:
             result["changelog"] = match.group(1).strip()
     except Exception as e:
@@ -325,7 +327,7 @@ def _update_check_worker():
 
 def _update_poll():
     """Verarbeitet Ergebnisse des Update-Threads im Enigma2-Mainthread."""
-    global _updateTimer, _updateInfo
+    global _updatePollTimer, _updateInfo
     try:
         while True:
             result, payload = _updateQueue.get_nowait()
@@ -344,34 +346,50 @@ def _update_poll():
         pass
     except Exception as e:
         print("[speedy_TheWeather] Update poll failed:", e)
-
     try:
-        if _updateTimer is not None:
-            _updateTimer.start(500, True)
+        if _updatePollTimer is not None:
+            _updatePollTimer.start(500, True)
     except Exception:
         pass
 
 
-def _update_start_check():
-    global _updateTimer, _updateCheckStarted
-    if _updateCheckStarted:
+def _update_begin_worker():
+    """Startet die GitHub-Prüfung nach der Startverzögerung."""
+    global _updatePollTimer, _updateWorkerStarted
+    if _updateWorkerStarted:
         return
-    _updateCheckStarted = True
-
+    _updateWorkerStarted = True
     try:
-        _updateTimer = eTimer()
-        safeTimerCallback(_updateTimer, _update_poll)
-        _updateTimer.start(UPDATE_CHECK_DELAY_MS, True)
+        _updatePollTimer = eTimer()
+        safeTimerCallback(_updatePollTimer, _update_poll)
+        _updatePollTimer.start(500, True)
     except Exception as e:
-        print("[speedy_TheWeather] Could not start update timer:", e)
+        print("[speedy_TheWeather] Could not start update poll timer:", e)
         return
-
     thread = threading.Thread(
         target=_update_check_worker,
         name="speedy_TheWeather_UpdateCheck"
     )
     thread.daemon = True
     thread.start()
+    print("[speedy_TheWeather] GitHub update check started.")
+
+
+def _update_start_check():
+    """Plant den Update-Check nach dem vollständigen GUI-Start ein."""
+    global _updateStartTimer, _updateCheckStarted
+    if _updateCheckStarted:
+        return
+    try:
+        _updateStartTimer = eTimer()
+        safeTimerCallback(_updateStartTimer, _update_begin_worker)
+        _updateStartTimer.start(UPDATE_CHECK_DELAY_MS, True)
+        _updateCheckStarted = True
+        print("[speedy_TheWeather] Update check scheduled in %s ms." % UPDATE_CHECK_DELAY_MS)
+    except Exception as e:
+        _updateStartTimer = None
+        _updateCheckStarted = False
+        print("[speedy_TheWeather] Could not start update timer:", e)
 
 
 def _update_show_message(info):
@@ -3796,19 +3814,44 @@ def autostart(reason, **kwargs):
             print("[speedy_TheWeather] autostart: _overlayScreen aangemaakt: %s" % _overlayScreen)
             _overlayCheckVisibility()
 
-            # Updateprüfung erst nach dem GUI-Start und im Hintergrund.
-            _update_start_check()
         except Exception as e:
             print("[speedy_TheWeather] autostart: fout bij opzetten overlay:", e)
+
+        # Updateprüfung unabhängig vom Overlay starten.
+        # Ein Overlay-Fehler darf den GitHub-Updatecheck nicht verhindern.
+        _update_start_check()
     elif reason == 1:
         print("[speedy_TheWeather] autostart: reason=1, opruimen /tmp/speedy_TheWeather")
         shutil.rmtree("/tmp/speedy_TheWeather", ignore_errors=True)
 
 
+def menu(menuid, **kwargs):
+    if menuid == "mainmenu":
+        return [
+            ("speedy_TheWeather", main, "speedy_TheWeather_mainmenu", 50)
+        ]
+    return []
+    
 def Plugins(path, **kwargs):
     return [
-        PluginDescriptor(name="speedy_TheWeather", description="WeatherInfo",
-                            icon="Images/weerinfo.png",
-                            where=[PluginDescriptor.WHERE_EXTENSIONSMENU, PluginDescriptor.WHERE_PLUGINMENU], fnc=main),
-        PluginDescriptor(where=PluginDescriptor.WHERE_SESSIONSTART, fnc=autostart),
+        PluginDescriptor(
+            name="speedy_TheWeather",
+            description="WeatherInfo",
+            icon="Images/weerinfo.png",
+            where=[
+                PluginDescriptor.WHERE_EXTENSIONSMENU,
+                PluginDescriptor.WHERE_PLUGINMENU
+            ],
+            fnc=main
+        ),
+
+        PluginDescriptor(
+            where=PluginDescriptor.WHERE_MENU,
+            fnc=menu
+        ),
+
+        PluginDescriptor(
+            where=PluginDescriptor.WHERE_SESSIONSTART,
+            fnc=autostart
+        ),
     ]
