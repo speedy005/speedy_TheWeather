@@ -24,7 +24,7 @@ except ImportError:
 # VERSION
 # ============================================================
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 VERSION = __version__
 
 _AUTHOR_ = "by speedy - 2026"
