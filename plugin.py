@@ -544,14 +544,7 @@ SHARED_PACK = "Images"
 backgroundpath = ""
 CFG_DIR = "/etc/enigma2/speedy_TheWeather"
 
-def _(txt):
-    if not txt:
-        return ""
-    # Verwendet jetzt die Domain "speedy_TheWeather"
-    t = gettext.dgettext(PluginLanguageDomain, txt)
-    if t == txt:
-        t = gettext.gettext(txt)
-    return t
+
 
 def _detectCanvasWidth():
     try:
@@ -2078,16 +2071,33 @@ import gettext
 # Name deines Übersetzungsdomains (Ordnername unter locale/)
 PluginLanguageDomain = "TheWeather"
 
+PluginLanguageDomain = "TheWeather"
+
 def localeInit():
-    gettext.bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, "Extensions/speedy_TheWeather/locale"))
+    gettext.bindtextdomain(
+        PluginLanguageDomain,
+        resolveFilename(
+            SCOPE_PLUGINS,
+            "Extensions/speedy_TheWeather/locale"
+        )
+    )
 
 localeInit()
 
 def _(txt):
-    t = gettext.dgettext(PluginLanguageDomain, txt)
-    if t == txt:
-        t = gettext.gettext(txt)
-    return t
+    if not txt:
+        return ""
+
+    try:
+        t = gettext.dgettext(PluginLanguageDomain, txt)
+        if t != txt:
+            return t
+    except Exception as e:
+        print("[speedy_TheWeather] gettext error:", e)
+
+    return txt
+
+
 
 class localcityscreen(Screen):
     def __init__(self, session):
