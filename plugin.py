@@ -3232,6 +3232,10 @@ def safeTimerCallback(timer, func):
 
 
 def main(session, **kwargs):
+    # Updateprüfung erst starten, wenn der Benutzer das Plugin öffnet.
+    # Enigma2-Start/Boot bleibt dadurch vollständig frei vom GitHub-Check.
+    _update_start_check()
+
     try:
         if not os.path.exists(CFG_DIR):
             os.makedirs(CFG_DIR)
@@ -3817,9 +3821,6 @@ def autostart(reason, **kwargs):
         except Exception as e:
             print("[speedy_TheWeather] autostart: fout bij opzetten overlay:", e)
 
-        # Updateprüfung unabhängig vom Overlay starten.
-        # Ein Overlay-Fehler darf den GitHub-Updatecheck nicht verhindern.
-        _update_start_check()
     elif reason == 1:
         print("[speedy_TheWeather] autostart: reason=1, opruimen /tmp/speedy_TheWeather")
         shutil.rmtree("/tmp/speedy_TheWeather", ignore_errors=True)
