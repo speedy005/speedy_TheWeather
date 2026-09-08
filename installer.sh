@@ -1,11 +1,12 @@
+```
 #!/bin/bash
 
 # =========================================================
 # speedy_TheWeather GitHub Installer / Updater
 # =========================================================
 
-version='1.1.0'
-hangelog='Added automatic GitHub update check and installer. Fixed update version detection and plugin installation paths.'
+version='1.1.1'
+changelog='Added automatic GitHub update check and installer. Fixed update version detection and plugin installation paths.'
 
 
 # =========================================================
@@ -1124,3 +1125,5 @@ restart_gui
 
 
 exit 0
+
+```
