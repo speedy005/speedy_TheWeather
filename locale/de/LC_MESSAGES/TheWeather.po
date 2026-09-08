@@ -135,7 +135,7 @@ msgid "Help"
 msgstr "Hilfe"
 
 msgid "Km/h"
-msgstr "Km/St"
+msgstr "Km/h"
 
 msgid "Light cloudy"
 msgstr "Leicht bewölkt"
