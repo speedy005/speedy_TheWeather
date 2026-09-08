@@ -1,4 +1,4 @@
-#v.4.0
+#v.1.0.0
 # -----------------------------------------------------------------------------
 # Centralized all weather-related HTTP requests.
 # Added proper timeouts and response cleanup.
@@ -28,6 +28,8 @@ import gettext
 import datetime
 import threading
 import gc
+import tempfile
+import subprocess
 try:
     import Queue as queue
 except ImportError:
@@ -121,8 +123,387 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '5.6'
+version = '1.1.0'
+
+# ---------------------------------------------------------------------------
+# Plugin-Update
+# ---------------------------------------------------------------------------
+# Updatequelle ist der gleiche GitHub-Installer wie im Repository.
+# Der Installer selbst verwendet den Branch "master" und installiert das
+# komplette Plugin inklusive __init__.py, plugin.py, locale und Images.
+#
+# Beim Start wird zuerst die aktuelle plugin.py vom GitHub-Branch master
+# geladen und nur die Versionsnummer ausgelesen. Ist sie neuer als die lokal
+# installierte Version, erscheint eine MessageBox mit Version und Changelog.
+# Bei "Ja" wird der originale installer.sh heruntergeladen und ausgeführt.
+#
+# Alle festen Texte des Update-Dialogs laufen über _() und sind damit über
+# die vorhandenen .po/.mo-Dateien übersetzbar.
+# ---------------------------------------------------------------------------
+UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
+UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
+UPDATE_INSTALLER_URL = UPDATE_RAW_BASE + "/installer.sh"
+UPDATE_CHECK_DELAY_MS = 8000
+UPDATE_CHECK_TIMEOUT = 15
+UPDATE_INSTALLER_PATH = "/tmp/speedy_TheWeather_update_installer.sh"
+
+_updateTimer = None
+_updateQueue = queue.Queue()
+_updateCheckStarted = False
+_updateInstallInProgress = False
+_updateInfo = None
+
+
+def _version_tuple(value):
+    """Versionsnummer robust vergleichen, z.B. 5.6 < 5.10."""
+    try:
+        parts = safeStr(value).strip().lstrip("v").split(".")
+        result = []
+        for part in parts:
+            number = ""
+            for char in part:
+                if char.isdigit():
+                    number += char
+                else:
+                    break
+            result.append(int(number) if number else 0)
+        return tuple(result) if result else (0,)
+    except Exception:
+        return (0,)
+
+
+def _update_is_newer(remote_version):
+    return _version_tuple(remote_version) > _version_tuple(version)
+
+
+def _update_download(url, destination, timeout=None):
+    """Lädt eine Datei mit HTTP-Timeout und User-Agent herunter."""
+    response = None
+    if timeout is None:
+        timeout = UPDATE_CHECK_TIMEOUT
+    try:
+        request = Request(
+            url,
+            headers={
+                "User-Agent": "speedy_TheWeather-Updater/1.0",
+                "Accept": "text/plain,application/octet-stream,*/*"
+            }
+        )
+        response = urlopen(request, timeout=timeout)
+        with open(destination, "wb") as target:
+            while True:
+                chunk = response.read(64 * 1024)
+                if not chunk:
+                    break
+                target.write(chunk)
+        return os.path.isfile(destination) and os.path.getsize(destination) > 0
+    except Exception as e:
+        print("[speedy_TheWeather] Update download failed:", e)
+        return False
+    finally:
+        if response is not None:
+            try:
+                response.close()
+            except Exception:
+                pass
+
+
+def _update_extract_plugin_version(source):
+    """Liest 'version = ...' aus der entfernten plugin.py ohne sie auszuführen."""
+    try:
+        import ast
+        tree = ast.parse(source, filename="plugin.py")
+        for node in tree.body:
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == "version":
+                        value = node.value
+                        if isinstance(value, ast.Constant):
+                            return safeStr(value.value).strip()
+                        if hasattr(ast, "Str") and isinstance(value, ast.Str):
+                            return safeStr(value.s).strip()
+    except Exception as e:
+        print("[speedy_TheWeather] Could not read GitHub plugin version:", e)
+    return ""
+
+
+def _update_extract_installer_info(source):
+    """Liest version/changelog aus dem vorhandenen installer.sh."""
+    result = {"version": "", "changelog": ""}
+    try:
+        import re
+        match = re.search(r"^version=['\"]([^'\"]+)['\"]", source, re.MULTILINE)
+        if match:
+            result["version"] = match.group(1).strip()
+        match = re.search(r"^changelog=['\"](.*?)['\"]", source, re.MULTILINE)
+        if match:
+            result["changelog"] = match.group(1).strip()
+    except Exception as e:
+        print("[speedy_TheWeather] Could not read installer information:", e)
+    return result
+
+
+def _update_changes_text(changes):
+    if isinstance(changes, (list, tuple)):
+        items = [safeStr(item).strip() for item in changes if safeStr(item).strip()]
+        if items:
+            return "\n".join("- " + _(item) for item in items)
+    if safeStr(changes).strip():
+        return _(safeStr(changes).strip())
+    return _("No changes available.")
+
+
+def _update_check_worker():
+    """Netzwerkprüfung im Hintergrund, damit Enigma2 nicht einfriert."""
+    plugin_path = None
+    installer_path = None
+    try:
+        fd, plugin_path = tempfile.mkstemp(
+            prefix=".speedy_TheWeather_remote_",
+            suffix=".py",
+            dir="/tmp"
+        )
+        os.close(fd)
+
+        if not _update_download(UPDATE_PLUGIN_URL, plugin_path):
+            _updateQueue.put(("error", _("Update check failed.")))
+            return
+
+        with open(plugin_path, "r", encoding="utf-8") as source_file:
+            remote_source = source_file.read()
+
+        # Syntax und Version prüfen, aber den fremden Code niemals ausführen.
+        import ast
+        ast.parse(remote_source, filename="plugin.py")
+        remote_version = _update_extract_plugin_version(remote_source)
+        if not remote_version:
+            _updateQueue.put(("error", _("Update information is incomplete.")))
+            return
+
+        if not _update_is_newer(remote_version):
+            print("[speedy_TheWeather] Plugin is up to date: %s" % version)
+            return
+
+        # Changelog stammt aus demselben installer.sh, den der Nutzer später
+        # mit "Ja" ausführt. Die installer-Version wird nur als Zusatzinfo
+        # verwendet, da die eigentliche Plugin-Version aus plugin.py kommt.
+        fd, installer_path = tempfile.mkstemp(
+            prefix=".speedy_TheWeather_installer_info_",
+            suffix=".sh",
+            dir="/tmp"
+        )
+        os.close(fd)
+
+        installer_info = {"version": "", "changelog": ""}
+        if _update_download(UPDATE_INSTALLER_URL, installer_path):
+            try:
+                with open(installer_path, "r", encoding="utf-8") as installer_file:
+                    installer_source = installer_file.read()
+                installer_info = _update_extract_installer_info(installer_source)
+            except Exception as e:
+                print("[speedy_TheWeather] Could not read installer changelog:", e)
+
+        changes = installer_info.get("changelog", "")
+        if not changes:
+            changes = _("No changes available.")
+
+        _updateQueue.put(("available", {
+            "version": remote_version,
+            "changes": changes,
+            "installer_version": installer_info.get("version", "")
+        }))
+    except Exception as e:
+        print("[speedy_TheWeather] Update check failed:", e)
+        _updateQueue.put(("error", _("Update check failed.")))
+    finally:
+        for path in (plugin_path, installer_path):
+            if path and os.path.exists(path):
+                try:
+                    os.unlink(path)
+                except Exception:
+                    pass
+
+
+def _update_poll():
+    """Verarbeitet Ergebnisse des Update-Threads im Enigma2-Mainthread."""
+    global _updateTimer, _updateInfo
+    try:
+        while True:
+            result, payload = _updateQueue.get_nowait()
+            if result == "available":
+                _updateInfo = payload
+                _update_show_message(payload)
+            elif result == "installing":
+                _update_show_installing()
+            elif result == "installed":
+                _update_install_finished()
+            elif result == "error":
+                print("[speedy_TheWeather] " + safeStr(payload))
+            elif result == "install_error":
+                _update_install_error()
+    except queue.Empty:
+        pass
+    except Exception as e:
+        print("[speedy_TheWeather] Update poll failed:", e)
+
+    try:
+        if _updateTimer is not None:
+            _updateTimer.start(500, True)
+    except Exception:
+        pass
+
+
+def _update_start_check():
+    global _updateTimer, _updateCheckStarted
+    if _updateCheckStarted:
+        return
+    _updateCheckStarted = True
+
+    try:
+        _updateTimer = eTimer()
+        safeTimerCallback(_updateTimer, _update_poll)
+        _updateTimer.start(UPDATE_CHECK_DELAY_MS, True)
+    except Exception as e:
+        print("[speedy_TheWeather] Could not start update timer:", e)
+        return
+
+    thread = threading.Thread(
+        target=_update_check_worker,
+        name="speedy_TheWeather_UpdateCheck"
+    )
+    thread.daemon = True
+    thread.start()
+
+
+def _update_show_message(info):
+    remote_version = safeStr(info.get("version", ""))
+    changes = _update_changes_text(info.get("changes", ""))
+    installer_version = safeStr(info.get("installer_version", ""))
+
+    installer_note = ""
+    if installer_version:
+        installer_note = "\n\n" + _("Installer version: %s") % installer_version
+
+    message = _(
+        "A new version of speedy_TheWeather is available.\n\n"
+        "Installed version: %s\n"
+        "New version: %s%s\n\n"
+        "Changes:\n%s\n\n"
+        "Do you want to install the update?"
+    ) % (version, remote_version, installer_note, changes)
+
+    try:
+        if _overlaySession is not None:
+            _overlaySession.openWithCallback(
+                _update_install_callback,
+                MessageBox,
+                message,
+                MessageBox.TYPE_YESNO,
+                default=True
+            )
+    except Exception as e:
+        print("[speedy_TheWeather] Could not show update dialog:", e)
+
+
+def _update_install_callback(answer):
+    if answer:
+        _update_install()
+
+
+def _update_show_installing():
+    try:
+        if _overlaySession is not None:
+            _overlaySession.open(
+                MessageBox,
+                _(
+                    "The update is being installed.\n\n"
+                    "Please wait. Enigma2 may restart automatically."
+                ),
+                MessageBox.TYPE_INFO,
+                timeout=8
+            )
+    except Exception as e:
+        print("[speedy_TheWeather] Could not show install message:", e)
+
+
+def _update_install():
+    global _updateInstallInProgress
+    if _updateInstallInProgress or not _updateInfo:
+        return
+
+    _updateInstallInProgress = True
+    _updateQueue.put(("installing", None))
+
+    def worker():
+        try:
+            # Genau den Installer aus dem Repository verwenden. Dadurch werden
+            # nicht nur plugin.py, sondern auch __init__.py, locale, Images usw.
+            # korrekt aktualisiert und die vorhandene Konfiguration gesichert.
+            if not _update_download(
+                UPDATE_INSTALLER_URL,
+                UPDATE_INSTALLER_PATH,
+                timeout=30
+            ):
+                raise IOError("installer download failed")
+
+            try:
+                os.chmod(UPDATE_INSTALLER_PATH, 0o755)
+            except Exception:
+                pass
+
+            # Der Installer erwartet root und übernimmt selbst Backup,
+            # Installation, Prüfung und GUI-Neustart.
+            result = os.system(
+                "/bin/sh %s" % UPDATE_INSTALLER_PATH
+            )
+
+            if result != 0:
+                raise RuntimeError("installer returned %s" % result)
+
+            _updateQueue.put(("installed", None))
+        except Exception as e:
+            print("[speedy_TheWeather] Update installation failed:", e)
+            _updateQueue.put(("install_error", None))
+        finally:
+            try:
+                if os.path.exists(UPDATE_INSTALLER_PATH):
+                    os.unlink(UPDATE_INSTALLER_PATH)
+            except Exception:
+                pass
+
+    thread = threading.Thread(
+        target=worker,
+        name="speedy_TheWeather_UpdateInstall"
+    )
+    thread.daemon = True
+    thread.start()
+
+
+def _update_install_finished():
+    global _updateInstallInProgress
+    _updateInstallInProgress = False
+    print("[speedy_TheWeather] Update installer finished successfully.")
+
+
+def _update_install_error():
+    global _updateInstallInProgress
+    _updateInstallInProgress = False
+    try:
+        if _overlaySession is not None:
+            _overlaySession.open(
+                MessageBox,
+                _(
+                    "The update could not be installed.\n\n"
+                    "Please check the Internet connection and try again."
+                ),
+                MessageBox.TYPE_ERROR
+            )
+    except Exception as e:
+        print("[speedy_TheWeather] Could not show update error:", e)
+
 # WICHTIG: Domain an den Dateinamen 'speedy_TheWeather.mo' anpassen!
+# Alle festen Update-Dialogtexte sind mit _() markiert und damit über
+# die vorhandenen .po/.mo-Dateien übersetzbar.
 PluginLanguageDomain = "TheWeather"
 PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
 OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
@@ -3415,6 +3796,9 @@ def autostart(reason, **kwargs):
             _overlayScreen = session.instantiateDialog(TempOverlay)
             print("[speedy_TheWeather] autostart: _overlayScreen aangemaakt: %s" % _overlayScreen)
             _overlayCheckVisibility()
+
+            # Updateprüfung erst nach dem GUI-Start und im Hintergrund.
+            _update_start_check()
         except Exception as e:
             print("[speedy_TheWeather] autostart: fout bij opzetten overlay:", e)
     elif reason == 1:
