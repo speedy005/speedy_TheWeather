@@ -38,7 +38,7 @@ CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
 
 if [ -d "/usr/lib64" ]; then
 
-    PLUGINPATH="/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
+    PLUGINPATH="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
 
 else
 
