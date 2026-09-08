@@ -412,3 +412,35 @@ msgstr "- Drücken Sie Menü für Regenradar"
 
 msgid "Appearance"
 msgstr "Darstellung"
+
+# Update
+
+msgid "TheWeather update"
+msgstr "TheWeather Update"
+
+msgid "A new version is available: %s"
+msgstr "Eine neue Version ist verfügbar: %s"
+
+msgid "Changes:"
+msgstr "Änderungen:"
+
+msgid "Do you want to install the update now?"
+msgstr "Möchtest du das Update jetzt installieren?"
+
+msgid "Update check failed."
+msgstr "Update-Prüfung fehlgeschlagen."
+
+msgid "Update download failed."
+msgstr "Update-Download fehlgeschlagen."
+
+msgid "Update installer download failed."
+msgstr "Download des Update-Installers fehlgeschlagen."
+
+msgid "The update installer could not be started."
+msgstr "Der Update-Installer konnte nicht gestartet werden."
+
+msgid "Update started. Enigma2 will restart after installation."
+msgstr "Update gestartet. Enigma2 wird nach der Installation neu gestartet."
+
+msgid "Fix Malformed Locale Language. Offer coffee if you like this plugin"
+msgstr "Fehlerhafte Sprachdatei behoben. Wenn dir dieses Plugin gefällt, spendiere gerne einen Kaffee."
