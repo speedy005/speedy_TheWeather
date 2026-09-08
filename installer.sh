@@ -5,7 +5,7 @@
 # =========================================================
 
 version='1.1.0'
-changelog='Fix Malformed Locale Language. Offer coffee if you like this plugin'
+hangelog='Added automatic GitHub update check and installer. Fixed update version detection and plugin installation paths.'
 
 
 # =========================================================
@@ -36,14 +36,10 @@ CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
 # DETERMINE PLUGIN PATH
 # =========================================================
 
-if [ -d "/usr/lib64" ]; then
-
-    PLUGINPATH="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
-
+if [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
+    PLUGINPATH="/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
 else
-
     PLUGINPATH="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
-
 fi
 
 
