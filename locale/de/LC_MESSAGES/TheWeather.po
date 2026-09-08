@@ -135,7 +135,7 @@ msgid "Help"
 msgstr "Hilfe"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "Km/St"
 
 msgid "Light cloudy"
 msgstr "Leicht bewölkt"
@@ -361,8 +361,8 @@ msgid ""
 "Please try again"
 msgstr ""
 "Hoppla!\n"
-"Langsame oder keine Internetverbindung.\n"
-"Bitte versuchen Sie es erneut."
+"Langsame oder fehlende Internetverbindung\n"
+"Bitte versuche es erneut"
 
 msgid "Wind: "
 msgstr "Wind: "
@@ -414,7 +414,6 @@ msgid "Appearance"
 msgstr "Darstellung"
 
 # Update
-
 msgid "TheWeather update"
 msgstr "TheWeather Update"
 
@@ -443,4 +442,4 @@ msgid "Update started. Enigma2 will restart after installation."
 msgstr "Update gestartet. Enigma2 wird nach der Installation neu gestartet."
 
 msgid "Fix Malformed Locale Language. Offer coffee if you like this plugin"
-msgstr "Fehlerhafte Sprachdatei behoben. Wenn dir dieses Plugin gefällt, spendiere gerne einen Kaffee."
+msgstr "Fehlerhafte Sprachkonfiguration beheben. Wenn dir dieses Plugin gefällt, lade uns doch auf einen Kaffee ein."
