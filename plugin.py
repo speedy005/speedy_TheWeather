@@ -401,19 +401,17 @@ def _update_show_message(info):
     if installer_version:
         installer_note = "\n\n" + _("Installer version: %s") % installer_version
 
-    message = (
-        _("A new version of speedy_TheWeather is available.")
-        + "\n\n"
-        + _("Installed version: %s") % version
-        + "\n"
-        + _("New version: %s") % remote_version
-        + installer_note
-        + "\n\n"
-        + _("Changes:")
-        + "\n"
-        + changes
-        + "\n\n"
-        + _("Do you want to install the update?")
+    message = _(
+        "A new version of speedy_TheWeather is available.\n\n"
+        "Installed version: %s\n"
+        "New version: %s%s\n\n"
+        "Changes:\n%s\n\n"
+        "Do you want to install the update?"
+    ) % (
+        version,
+        remote_version,
+        installer_note,
+        changes
     )
 
     try:
@@ -2069,8 +2067,6 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 import gettext
 
 # Name deines Übersetzungsdomains (Ordnername unter locale/)
-PluginLanguageDomain = "TheWeather"
-
 PluginLanguageDomain = "TheWeather"
 
 def localeInit():
