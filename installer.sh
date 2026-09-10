@@ -4,7 +4,7 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.1.1'
+version='1.1.2'
 changelog='Fix malformed locale language file. Added an update function. Buy me a coffee if you like this plugin.'
 
 
