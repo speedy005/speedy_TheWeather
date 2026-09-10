@@ -479,7 +479,6 @@ def _update_show_installing():
         print("[speedy_TheWeather] Could not show install message:", e)
 
 
-```python
 def _update_install():
     global _updateInstallInProgress
 
@@ -609,7 +608,7 @@ def _update_install():
 
     thread.daemon = True
     thread.start()
-```
+
 
 
     def worker():
