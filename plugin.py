@@ -129,7 +129,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.2'
+version = '1.1.3'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -488,9 +488,21 @@ def _update_install():
     _updateInstallInProgress = True
     _updateQueue.put(("installing", None))
 
+ 
+def _update_install():
+    global _updateInstallInProgress
+
+    if _updateInstallInProgress or not _updateInfo:
+        return
+
+    _updateInstallInProgress = True
+    _updateQueue.put(("installing", None))
+
     def worker():
         try:
-            print("[speedy_TheWeather] Downloading installer...")
+            print(
+                "[speedy_TheWeather] Downloading installer..."
+            )
 
             if not _update_download(
                 UPDATE_INSTALLER_URL,
@@ -505,18 +517,26 @@ def _update_install():
             )
 
             try:
-                os.chmod(UPDATE_INSTALLER_PATH, 0o755)
+                os.chmod(
+                    UPDATE_INSTALLER_PATH,
+                    0o755
+                )
             except Exception as e:
                 print(
                     "[speedy_TheWeather] chmod failed: %s"
                     % e
                 )
 
-            if not os.path.exists(UPDATE_INSTALLER_PATH):
-                raise IOError("installer file does not exist")
+            if not os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
+                raise IOError(
+                    "installer file does not exist"
+                )
 
             print(
-                "[speedy_TheWeather] Starting installer with /bin/bash..."
+                "[speedy_TheWeather] "
+                "Starting installer with /bin/bash..."
             )
 
             result = os.system(
@@ -525,7 +545,8 @@ def _update_install():
             )
 
             print(
-                "[speedy_TheWeather] Installer exit code: %s"
+                "[speedy_TheWeather] "
+                "Installer exit code: %s"
                 % result
             )
 
@@ -536,10 +557,13 @@ def _update_install():
                 )
 
             print(
-                "[speedy_TheWeather] Installer completed successfully."
+                "[speedy_TheWeather] "
+                "Installer completed successfully."
             )
 
-            _updateQueue.put(("installed", None))
+            _updateQueue.put(
+                ("installed", None)
+            )
 
         except Exception as e:
             print(
@@ -548,15 +572,24 @@ def _update_install():
                 % e
             )
 
-            _updateQueue.put(("install_error", None))
+            _updateQueue.put(
+                ("install_error", None)
+            )
 
         finally:
             try:
-                if os.path.exists(UPDATE_INSTALLER_PATH):
-                    os.unlink(UPDATE_INSTALLER_PATH)
-                    print(
-                        "[speedy_TheWeather] Temporary installer removed."
+                if os.path.exists(
+                    UPDATE_INSTALLER_PATH
+                ):
+                    os.unlink(
+                        UPDATE_INSTALLER_PATH
                     )
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "Temporary installer removed."
+                    )
+
             except Exception as e:
                 print(
                     "[speedy_TheWeather] "
@@ -573,50 +606,6 @@ def _update_install():
     thread.start()
 
 
-
-    def worker():
-        try:
-            # Genau den Installer aus dem Repository verwenden. Dadurch werden
-            # nicht nur plugin.py, sondern auch __init__.py, locale, Images usw.
-            # korrekt aktualisiert und die vorhandene Konfiguration gesichert.
-            if not _update_download(
-                UPDATE_INSTALLER_URL,
-                UPDATE_INSTALLER_PATH,
-                timeout=30
-            ):
-                raise IOError("installer download failed")
-
-            try:
-                os.chmod(UPDATE_INSTALLER_PATH, 0o755)
-            except Exception:
-                pass
-
-            # Der Installer erwartet root und übernimmt selbst Backup,
-            # Installation, Prüfung und GUI-Neustart.
-            result = os.system(
-                "%s" % UPDATE_INSTALLER_PATH
-            )
-
-            if result != 0:
-                raise RuntimeError("installer returned %s" % result)
-
-            _updateQueue.put(("installed", None))
-        except Exception as e:
-            print("[speedy_TheWeather] Update installation failed:", e)
-            _updateQueue.put(("install_error", None))
-        finally:
-            try:
-                if os.path.exists(UPDATE_INSTALLER_PATH):
-                    os.unlink(UPDATE_INSTALLER_PATH)
-            except Exception:
-                pass
-
-    thread = threading.Thread(
-        target=worker,
-        name="speedy_TheWeather_UpdateInstall"
-    )
-    thread.daemon = True
-    thread.start()
 
 
 def _update_install_finished():
