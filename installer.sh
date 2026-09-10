@@ -1,20 +1,15 @@
-
-#!/bin/bash
+#!/bin/sh
 
 # =========================================================
 # speedy_TheWeather GitHub Installer / Updater
+# POSIX /bin/sh compatible
 # =========================================================
 
-version='1.1.1'
-changelog='Added automatic GitHub update check and installer. Fixed update version detection and plugin installation paths.'
+VERSION="1.1.1"
 
-
-# =========================================================
-# GITHUB
-# =========================================================
+CHANGELOG="Added automatic GitHub update check and installer. Fixed update version detection and plugin installation paths."
 
 REPOSITORY="https://github.com/speedy005/speedy_TheWeather.git"
-
 BRANCH="master"
 
 DOWNLOAD_URL="https://github.com/speedy005/speedy_TheWeather/archive/refs/heads/${BRANCH}.tar.gz"
@@ -24,48 +19,38 @@ DOWNLOAD_URL="https://github.com/speedy005/speedy_TheWeather/archive/refs/heads/
 # PATHS
 # =========================================================
 
-TMPPATH="/tmp/speedy_TheWeather-install"
-FILEPATH="/tmp/speedy_TheWeather-${BRANCH}.tar.gz"
+TMP_ROOT="/tmp/speedy_TheWeather-update"
+ARCHIVE="/tmp/speedy_TheWeather-${BRANCH}.tar.gz"
 
-BACKUP_DIR="/tmp/speedy_TheWeather_backup"
-OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather-old-plugin"
+PLUGIN_NAME="speedy_TheWeather"
+
+DEFAULT_PLUGIN_PATH="/usr/lib/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
+LIB64_PLUGIN_PATH="/usr/lib64/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
+
+PLUGIN_PATH=""
+
+PLUGIN_BACKUP="/tmp/speedy_TheWeather-plugin-backup"
+CONFIG_BACKUP="/tmp/speedy_TheWeather-config-backup"
 
 CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
 
 
 # =========================================================
-# DETERMINE PLUGIN PATH
+# GLOBALS
 # =========================================================
 
-if [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
-    PLUGINPATH="/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
-else
-    PLUGINPATH="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
-fi
+PLUGIN_SOURCE=""
 
-
-# =========================================================
-# GLOBAL VARIABLES
-# =========================================================
-
-OSTYPE="Unknown"
-STATUS=""
-
-PYTHON="Unknown"
-PYTHON_CMD=""
-PYTHON_VERSION="Unknown"
-
+OS_TYPE="Unknown"
 DISTRO="Unknown"
 DISTRO_VERSION="Unknown"
 BOX_TYPE="Unknown"
 
-PACKAGESIX=""
-PACKAGEREQUESTS=""
-PACKAGEPILLOW=""
+PYTHON_CMD=""
+PYTHON_VERSION="Unknown"
 
-PLUGIN_SOURCE=""
-
-BACKUP_CREATED=0
+CONFIG_BACKUP_CREATED=0
+PLUGIN_BACKUP_CREATED=0
 
 
 # =========================================================
@@ -96,8 +81,44 @@ cleanup()
 {
     log "Cleaning up temporary files..."
 
-    rm -rf "$TMPPATH"
-    rm -f "$FILEPATH"
+    rm -rf "$TMP_ROOT"
+    rm -f "$ARCHIVE"
+}
+
+
+# =========================================================
+# DETERMINE PLUGIN PATH
+# =========================================================
+
+detect_plugin_path()
+{
+    # -----------------------------------------------------
+    # Prefer the currently installed plugin path.
+    # This prevents an update from accidentally switching
+    # between /usr/lib and /usr/lib64.
+    # -----------------------------------------------------
+
+    if [ -d "$DEFAULT_PLUGIN_PATH" ]; then
+
+        PLUGIN_PATH="$DEFAULT_PLUGIN_PATH"
+
+    elif [ -d "$LIB64_PLUGIN_PATH" ]; then
+
+        PLUGIN_PATH="$LIB64_PLUGIN_PATH"
+
+    elif [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
+
+        PLUGIN_PATH="$LIB64_PLUGIN_PATH"
+
+    else
+
+        PLUGIN_PATH="$DEFAULT_PLUGIN_PATH"
+
+    fi
+
+
+    log "Plugin path:"
+    log "$PLUGIN_PATH"
 }
 
 
@@ -109,29 +130,82 @@ detect_os()
 {
     if [ -f "/usr/lib/enigma.info" ]; then
 
-        OSTYPE="DreamOs"
-        STATUS="/var/lib/dpkg/status"
+        OS_TYPE="DreamOs"
 
     elif [ -f "/etc/debian_version" ] &&
          [ -f "/var/lib/dpkg/status" ]; then
 
-        OSTYPE="Debian"
-        STATUS="/var/lib/dpkg/status"
+        OS_TYPE="Debian"
 
     elif [ -f "/var/lib/opkg/status" ] ||
          [ -f "/etc/opkg/opkg.conf" ]; then
 
-        OSTYPE="OE"
-        STATUS="/var/lib/opkg/status"
+        OS_TYPE="OE"
 
     else
 
-        OSTYPE="Unknown"
-        STATUS=""
+        OS_TYPE="Unknown"
 
     fi
 
-    log "Detected OS type: $OSTYPE"
+
+    log "Detected OS type: $OS_TYPE"
+}
+
+
+# =========================================================
+# IMAGE DETECTION
+# =========================================================
+
+detect_image()
+{
+    if [ -f "/etc/hostname" ]; then
+
+        BOX_TYPE="$(head -n 1 /etc/hostname 2>/dev/null)"
+
+    fi
+
+
+    [ -z "$BOX_TYPE" ] && BOX_TYPE="Unknown"
+
+
+    if [ -f "/usr/lib/enigma.info" ]; then
+
+        DISTRO="$(
+            grep "^distro=" /usr/lib/enigma.info 2>/dev/null |
+            head -n 1 |
+            cut -d "=" -f 2-
+        )"
+
+        DISTRO_VERSION="$(
+            grep "^imageversion=" /usr/lib/enigma.info 2>/dev/null |
+            head -n 1 |
+            cut -d "=" -f 2-
+        )"
+
+    elif [ -f "/etc/image-version" ]; then
+
+        DISTRO="$(
+            grep "^distro=" /etc/image-version 2>/dev/null |
+            head -n 1 |
+            cut -d "=" -f 2-
+        )"
+
+        DISTRO_VERSION="$(
+            grep "^version=" /etc/image-version 2>/dev/null |
+            head -n 1 |
+            cut -d "=" -f 2-
+        )"
+
+    fi
+
+
+    [ -z "$DISTRO" ] && DISTRO="Unknown"
+    [ -z "$DISTRO_VERSION" ] && DISTRO_VERSION="Unknown"
+
+
+    log "Image: $DISTRO $DISTRO_VERSION"
+    log "Box: $BOX_TYPE"
 }
 
 
@@ -142,417 +216,89 @@ detect_os()
 detect_python()
 {
     PYTHON_CMD=""
-    PYTHON="Unknown"
     PYTHON_VERSION="Unknown"
+
 
     if command -v python3 >/dev/null 2>&1; then
 
         PYTHON_CMD="python3"
-        PYTHON="PY3"
 
     elif command -v python >/dev/null 2>&1; then
 
-        if python --version 2>&1 | grep -q "^Python 3\."; then
-
-            PYTHON_CMD="python"
-            PYTHON="PY3"
-
-        else
-
-            PYTHON_CMD="python"
-            PYTHON="PY2"
-
-        fi
+        PYTHON_CMD="python"
 
     else
 
         error "Python was not found."
+
         exit 1
 
     fi
 
-    PYTHON_VERSION=$(
+
+    PYTHON_VERSION="$(
         "$PYTHON_CMD" --version 2>&1
-    )
+    )"
+
 
     log "Python detected: $PYTHON_VERSION"
-
-
-    if [ "$PYTHON" = "PY3" ]; then
-
-        PACKAGESIX="python3-six"
-        PACKAGEREQUESTS="python3-requests"
-        PACKAGEPILLOW="python3-pillow"
-
-    else
-
-        PACKAGESIX="python-six"
-        PACKAGEREQUESTS="python-requests"
-        PACKAGEPILLOW="python-pillow"
-
-    fi
 }
 
 
 # =========================================================
-# IMAGE DETECTION
+# WGET CHECK
 # =========================================================
 
-detect_image()
-{
-    BOX_TYPE=$(
-        head -n 1 /etc/hostname 2>/dev/null
-    )
-
-    if [ -z "$BOX_TYPE" ]; then
-        BOX_TYPE="Unknown"
-    fi
-
-
-    if [ -f "/usr/lib/enigma.info" ]; then
-
-        DISTRO=$(
-            grep "^distro=" /usr/lib/enigma.info 2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-        DISTRO_VERSION=$(
-            grep "^imageversion=" /usr/lib/enigma.info 2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-    elif [ -f "/etc/image-version" ]; then
-
-        DISTRO=$(
-            grep "^distro=" /etc/image-version 2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-        DISTRO_VERSION=$(
-            grep "^version=" /etc/image-version 2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-    else
-
-        DISTRO="Unknown"
-        DISTRO_VERSION="Unknown"
-
-    fi
-
-
-    [ -z "$DISTRO" ] &&
-        DISTRO="Unknown"
-
-    [ -z "$DISTRO_VERSION" ] &&
-        DISTRO_VERSION="Unknown"
-
-
-    log "Image: $DISTRO $DISTRO_VERSION"
-    log "Box: $BOX_TYPE"
-}
-
-
-# =========================================================
-# WGET
-# =========================================================
-
-install_wget()
+check_wget()
 {
     if command -v wget >/dev/null 2>&1; then
 
-        log "wget already installed."
+        log "wget found."
         return 0
 
     fi
 
 
-    log "wget not found. Installing wget..."
+    error "wget was not found."
 
-
-    case "$OSTYPE" in
-
-        DreamOs|Debian)
-
-            apt-get update || {
-                error "apt-get update failed."
-                exit 1
-            }
-
-            apt-get install -y wget || {
-                error "wget installation failed."
-                exit 1
-            }
-
-            ;;
-
-
-        OE)
-
-            opkg update || {
-                error "opkg update failed."
-                exit 1
-            }
-
-            opkg install wget || {
-                error "wget installation failed."
-                exit 1
-            }
-
-            ;;
-
-
-        *)
-
-            error "Cannot install wget on unknown OS."
-            exit 1
-
-            ;;
-
-    esac
-
-
-    if ! command -v wget >/dev/null 2>&1; then
-
-        error "wget installation failed."
-        exit 1
-
-    fi
-
-
-    log "wget installed successfully."
-}
-
-
-# =========================================================
-# PACKAGE CHECK
-# =========================================================
-
-package_installed()
-{
-    local pkg="$1"
-
-    [ -z "$pkg" ] && return 1
-
-
-    case "$OSTYPE" in
+    case "$OS_TYPE" in
 
         DreamOs|Debian)
 
-            if command -v dpkg-query >/dev/null 2>&1; then
-
-                dpkg-query \
-                    -W \
-                    -f='${Status}' \
-                    "$pkg" 2>/dev/null |
-                    grep -q "install ok installed"
-
-                return $?
-
-            fi
-
-            ;;
-
-
-        OE)
-
-            if command -v opkg >/dev/null 2>&1; then
-
-                opkg status "$pkg" 2>/dev/null |
-                    grep -q "^Status:.*ok installed"
-
-                return $?
-
-            fi
-
-            ;;
-
-    esac
-
-
-    return 1
-}
-
-
-# =========================================================
-# PACKAGE INSTALLATION
-# =========================================================
-
-install_pkg()
-{
-    local pkg="$1"
-
-    [ -z "$pkg" ] && return 0
-
-
-    if package_installed "$pkg"; then
-
-        log "$pkg already installed."
-        return 0
-
-    fi
-
-
-    log "Installing package: $pkg"
-
-
-    case "$OSTYPE" in
-
-        DreamOs|Debian)
+            log "Trying to install wget..."
 
             apt-get update >/dev/null 2>&1 || true
-
-            if apt-get install -y "$pkg"; then
-
-                log "$pkg installation finished."
-
-            else
-
-                log "Warning: Could not install $pkg."
-                return 1
-
-            fi
+            apt-get install -y wget >/dev/null 2>&1 || true
 
             ;;
-
 
         OE)
 
+            log "Trying to install wget..."
+
             opkg update >/dev/null 2>&1 || true
-
-            if opkg install "$pkg"; then
-
-                log "$pkg installation finished."
-
-            else
-
-                log "Warning: Could not install $pkg."
-                return 1
-
-            fi
+            opkg install wget >/dev/null 2>&1 || true
 
             ;;
 
-
         *)
-
-            log "Cannot install $pkg on unknown OS."
-            return 1
 
             ;;
 
     esac
 
 
-    if package_installed "$pkg"; then
+    if command -v wget >/dev/null 2>&1; then
 
-        log "$pkg verified successfully."
+        log "wget installed successfully."
         return 0
 
     fi
 
 
-    log "Warning: Could not verify $pkg."
-    return 1
-}
+    error "wget is required but could not be installed."
 
-
-# =========================================================
-# DEPENDENCIES
-# =========================================================
-
-install_dependencies()
-{
-    log "Checking dependencies..."
-
-    [ -n "$PACKAGESIX" ] &&
-        install_pkg "$PACKAGESIX" || true
-
-    [ -n "$PACKAGEREQUESTS" ] &&
-        install_pkg "$PACKAGEREQUESTS" || true
-
-    [ -n "$PACKAGEPILLOW" ] &&
-        install_pkg "$PACKAGEPILLOW" || true
-}
-
-
-# =========================================================
-# CONFIG BACKUP
-# =========================================================
-
-backup_config()
-{
-    BACKUP_CREATED=0
-
-
-    if [ ! -d "$CONFIG_DIR" ]; then
-
-        log "No existing configuration directory found."
-        return 0
-
-    fi
-
-
-    log "Creating configuration backup..."
-
-
-    rm -rf "$BACKUP_DIR"
-
-
-    if cp -a "$CONFIG_DIR" "$BACKUP_DIR"; then
-
-        BACKUP_CREATED=1
-        log "Configuration backup successful."
-
-    else
-
-        error "Configuration backup failed."
-        exit 1
-
-    fi
-}
-
-
-# =========================================================
-# CONFIG RESTORE
-# =========================================================
-
-restore_config()
-{
-    if [ "$BACKUP_CREATED" -ne 1 ]; then
-        return 0
-    fi
-
-
-    if [ ! -d "$BACKUP_DIR" ]; then
-        return 0
-    fi
-
-
-    log "Restoring configuration..."
-
-
-    mkdir -p "$CONFIG_DIR"
-
-
-    if cp -a "$BACKUP_DIR"/. "$CONFIG_DIR"/; then
-
-        log "Configuration restored successfully."
-
-    else
-
-        log "Warning: Configuration restore failed."
-
-    fi
-
-
-    rm -rf "$BACKUP_DIR"
-
-    BACKUP_CREATED=0
+    exit 1
 }
 
 
@@ -562,21 +308,18 @@ restore_config()
 
 download_package()
 {
-    log "Downloading speedy_TheWeather v$version..."
+    log "Downloading speedy_TheWeather v$VERSION..."
     log "Repository: $REPOSITORY"
     log "Branch: $BRANCH"
-    log "URL: $DOWNLOAD_URL"
 
-
-    rm -f "$FILEPATH"
+    rm -f "$ARCHIVE"
 
 
     if ! wget \
-        --no-verbose \
-        --timeout=30 \
-        --tries=3 \
-        "$DOWNLOAD_URL" \
-        -O "$FILEPATH"
+        -T 30 \
+        -t 3 \
+        -O "$ARCHIVE" \
+        "$DOWNLOAD_URL"
     then
 
         error "Failed to download speedy_TheWeather."
@@ -587,7 +330,7 @@ download_package()
     fi
 
 
-    if [ ! -s "$FILEPATH" ]; then
+    if [ ! -s "$ARCHIVE" ]; then
 
         error "Downloaded archive is empty."
 
@@ -597,7 +340,14 @@ download_package()
     fi
 
 
-    if ! gzip -t "$FILEPATH" >/dev/null 2>&1; then
+    log "Download successful."
+
+
+    # -----------------------------------------------------
+    # Validate gzip
+    # -----------------------------------------------------
+
+    if ! gzip -t "$ARCHIVE" >/dev/null 2>&1; then
 
         error "Downloaded file is not a valid gzip archive."
 
@@ -607,7 +357,11 @@ download_package()
     fi
 
 
-    if ! tar -tzf "$FILEPATH" >/dev/null 2>&1; then
+    # -----------------------------------------------------
+    # Validate tar
+    # -----------------------------------------------------
+
+    if ! tar -tzf "$ARCHIVE" >/dev/null 2>&1; then
 
         error "Downloaded file is not a valid tar archive."
 
@@ -630,15 +384,22 @@ extract_package()
     log "Extracting package..."
 
 
-    rm -rf "$TMPPATH"
+    rm -rf "$TMP_ROOT"
 
 
-    mkdir -p "$TMPPATH"
+    if ! mkdir -p "$TMP_ROOT"; then
+
+        error "Could not create temporary directory."
+
+        cleanup
+        exit 1
+
+    fi
 
 
-    if ! tar -xzf "$FILEPATH" -C "$TMPPATH"; then
+    if ! tar -xzf "$ARCHIVE" -C "$TMP_ROOT"; then
 
-        error "Failed to extract package."
+        error "Failed to extract GitHub archive."
 
         cleanup
         exit 1
@@ -660,49 +421,47 @@ find_plugin_source()
 
 
     # -----------------------------------------------------
-    # GitHub archive normally contains:
-    #
-    # speedy_TheWeather-master/
+    # Normal GitHub archive path
     # -----------------------------------------------------
 
-    if [ -d "$TMPPATH/speedy_TheWeather-${BRANCH}" ]; then
+    if [ -d "$TMP_ROOT/speedy_TheWeather-${BRANCH}" ]; then
 
-        PLUGIN_SOURCE="$TMPPATH/speedy_TheWeather-${BRANCH}"
+        PLUGIN_SOURCE="$TMP_ROOT/speedy_TheWeather-${BRANCH}"
 
     fi
 
 
     # -----------------------------------------------------
-    # Search fallback
+    # Fallback: search directory
     # -----------------------------------------------------
 
     if [ -z "$PLUGIN_SOURCE" ]; then
 
-        PLUGIN_SOURCE=$(
-            find "$TMPPATH" \
+        PLUGIN_SOURCE="$(
+            find "$TMP_ROOT" \
                 -type d \
                 -name "speedy_TheWeather-${BRANCH}" \
                 2>/dev/null |
             head -n 1
-        )
+        )"
 
     fi
 
 
     # -----------------------------------------------------
-    # Search for plugin.py fallback
+    # Fallback: find plugin.py
     # -----------------------------------------------------
 
     if [ -z "$PLUGIN_SOURCE" ]; then
 
-        PLUGIN_SOURCE=$(
-            find "$TMPPATH" \
+        PLUGIN_SOURCE="$(
+            find "$TMP_ROOT" \
                 -type f \
                 -name "plugin.py" \
                 2>/dev/null |
             head -n 1 |
             sed 's|/plugin.py$||'
-        )
+        )"
 
     fi
 
@@ -716,7 +475,7 @@ find_plugin_source()
         echo "Archive contents:"
         echo "---------------------------------------------------------"
 
-        tar -tzf "$FILEPATH" 2>/dev/null |
+        tar -tzf "$ARCHIVE" 2>/dev/null |
             head -100
 
         echo
@@ -727,13 +486,17 @@ find_plugin_source()
     fi
 
 
-    # -----------------------------------------------------
-    # Validate plugin
-    # -----------------------------------------------------
+    log "Plugin source found:"
+    log "$PLUGIN_SOURCE"
+
+
+    # =====================================================
+    # VALIDATE REQUIRED FILES
+    # =====================================================
 
     if [ ! -f "$PLUGIN_SOURCE/__init__.py" ]; then
 
-        error "Invalid plugin archive: __init__.py missing."
+        error "__init__.py is missing."
 
         cleanup
         exit 1
@@ -743,7 +506,7 @@ find_plugin_source()
 
     if [ ! -f "$PLUGIN_SOURCE/plugin.py" ]; then
 
-        error "Invalid plugin archive: plugin.py missing."
+        error "plugin.py is missing."
 
         cleanup
         exit 1
@@ -751,23 +514,121 @@ find_plugin_source()
     fi
 
 
-    log "Plugin source found:"
-    log "$PLUGIN_SOURCE"
+    if [ ! -d "$PLUGIN_SOURCE/locale" ]; then
+
+        log "WARNING: locale directory is missing."
+
+    fi
+
+
+    if [ ! -f "$PLUGIN_SOURCE/locale/de/LC_MESSAGES/TheWeather.mo" ]; then
+
+        log "WARNING: German TheWeather.mo is missing."
+
+    fi
+
+
+    log "Plugin archive validation successful."
 }
 
 
 # =========================================================
-# BACKUP EXISTING PLUGIN
+# BACKUP CONFIGURATION
 # =========================================================
 
-backup_existing_plugin()
+backup_config()
 {
-    rm -rf "$OLD_PLUGIN_BACKUP"
+    CONFIG_BACKUP_CREATED=0
 
 
-    if [ ! -d "$PLUGINPATH" ]; then
+    if [ ! -d "$CONFIG_DIR" ]; then
+
+        log "No existing configuration directory found."
+
+        return 0
+
+    fi
+
+
+    log "Backing up configuration..."
+
+
+    rm -rf "$CONFIG_BACKUP"
+
+
+    if ! cp -a "$CONFIG_DIR" "$CONFIG_BACKUP"; then
+
+        error "Could not backup configuration."
+
+        exit 1
+
+    fi
+
+
+    CONFIG_BACKUP_CREATED=1
+
+    log "Configuration backup successful."
+}
+
+
+# =========================================================
+# RESTORE CONFIGURATION
+# =========================================================
+
+restore_config()
+{
+    if [ "$CONFIG_BACKUP_CREATED" -ne 1 ]; then
+
+        return 0
+
+    fi
+
+
+    if [ ! -d "$CONFIG_BACKUP" ]; then
+
+        return 0
+
+    fi
+
+
+    log "Restoring configuration..."
+
+
+    mkdir -p "$CONFIG_DIR"
+
+
+    if cp -a "$CONFIG_BACKUP"/. "$CONFIG_DIR"/; then
+
+        log "Configuration restored successfully."
+
+        rm -rf "$CONFIG_BACKUP"
+
+        CONFIG_BACKUP_CREATED=0
+
+        return 0
+
+    fi
+
+
+    log "WARNING: Configuration restore failed."
+
+    return 1
+}
+
+
+# =========================================================
+# BACKUP CURRENT PLUGIN
+# =========================================================
+
+backup_plugin()
+{
+    PLUGIN_BACKUP_CREATED=0
+
+
+    if [ ! -d "$PLUGIN_PATH" ]; then
 
         log "No existing plugin installation found."
+
         return 0
 
     fi
@@ -776,42 +637,58 @@ backup_existing_plugin()
     log "Backing up current plugin..."
 
 
-    if cp -a "$PLUGINPATH" "$OLD_PLUGIN_BACKUP"; then
+    rm -rf "$PLUGIN_BACKUP"
 
-        log "Plugin backup successful."
 
-    else
+    if ! cp -a "$PLUGIN_PATH" "$PLUGIN_BACKUP"; then
 
-        error "Could not backup existing plugin."
+        error "Could not backup current plugin."
+
         exit 1
 
     fi
+
+
+    PLUGIN_BACKUP_CREATED=1
+
+    log "Plugin backup successful."
 }
 
 
 # =========================================================
-# ROLLBACK
+# ROLLBACK PLUGIN
 # =========================================================
 
 rollback_plugin()
 {
-    if [ ! -d "$OLD_PLUGIN_BACKUP" ]; then
+    if [ "$PLUGIN_BACKUP_CREATED" -ne 1 ]; then
 
         log "No plugin backup available."
+
         return 1
 
     fi
 
 
-    log "Rolling back plugin..."
+    if [ ! -d "$PLUGIN_BACKUP" ]; then
+
+        log "Plugin backup directory does not exist."
+
+        return 1
+
+    fi
 
 
-    rm -rf "$PLUGINPATH"
-
-    mkdir -p "$(dirname "$PLUGINPATH")"
+    log "Rolling back previous plugin installation..."
 
 
-    if cp -a "$OLD_PLUGIN_BACKUP" "$PLUGINPATH"; then
+    rm -rf "$PLUGIN_PATH"
+
+
+    mkdir -p "$(dirname "$PLUGIN_PATH")"
+
+
+    if cp -a "$PLUGIN_BACKUP" "$PLUGIN_PATH"; then
 
         log "Plugin rollback successful."
 
@@ -820,7 +697,7 @@ rollback_plugin()
     fi
 
 
-    log "WARNING: Plugin rollback failed!"
+    log "WARNING: Plugin rollback failed."
 
     return 1
 }
@@ -832,23 +709,27 @@ rollback_plugin()
 
 install_plugin()
 {
-    log "Installing speedy_TheWeather v$version..."
+    log "Installing speedy_TheWeather v$VERSION..."
+    log "Target:"
+    log "$PLUGIN_PATH"
 
 
-    mkdir -p "$(dirname "$PLUGINPATH")"
+    mkdir -p "$(dirname "$PLUGIN_PATH")"
 
 
-    if [ -d "$PLUGINPATH" ]; then
+    # -----------------------------------------------------
+    # Remove old plugin
+    # -----------------------------------------------------
 
-        log "Removing old plugin files..."
+    if [ -d "$PLUGIN_PATH" ]; then
 
-        if ! rm -rf "$PLUGINPATH"; then
+        log "Removing old plugin..."
+
+        if ! rm -rf "$PLUGIN_PATH"; then
 
             error "Could not remove old plugin."
 
             rollback_plugin
-            cleanup
-
             exit 1
 
         fi
@@ -856,16 +737,32 @@ install_plugin()
     fi
 
 
-    mkdir -p "$PLUGINPATH"
+    # -----------------------------------------------------
+    # Create new plugin directory
+    # -----------------------------------------------------
+
+    if ! mkdir -p "$PLUGIN_PATH"; then
+
+        error "Could not create plugin directory."
+
+        rollback_plugin
+        exit 1
+
+    fi
 
 
-    if ! cp -a "$PLUGIN_SOURCE"/. "$PLUGINPATH"/; then
+    # -----------------------------------------------------
+    # Copy new plugin
+    # -----------------------------------------------------
+
+    log "Copying new plugin files..."
+
+
+    if ! cp -a "$PLUGIN_SOURCE"/. "$PLUGIN_PATH"/; then
 
         error "Failed to copy plugin files."
 
         rollback_plugin
-        cleanup
-
         exit 1
 
     fi
@@ -875,20 +772,31 @@ install_plugin()
     # Verify installation
     # -----------------------------------------------------
 
-    if [ ! -f "$PLUGINPATH/__init__.py" ] ||
-       [ ! -f "$PLUGINPATH/plugin.py" ]; then
+    if [ ! -f "$PLUGIN_PATH/__init__.py" ]; then
 
-        error "Plugin installation verification failed."
+        error "Installation verification failed: __init__.py missing."
 
         rollback_plugin
-        cleanup
-
         exit 1
 
     fi
 
 
-    chmod -R 755 "$PLUGINPATH"
+    if [ ! -f "$PLUGIN_PATH/plugin.py" ]; then
+
+        error "Installation verification failed: plugin.py missing."
+
+        rollback_plugin
+        exit 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Permissions
+    # -----------------------------------------------------
+
+    chmod -R 755 "$PLUGIN_PATH" 2>/dev/null || true
 
 
     log "Plugin installation successful."
@@ -896,42 +804,76 @@ install_plugin()
 
 
 # =========================================================
-# REMOVE BACKUP
+# VERIFY INSTALLED VERSION
 # =========================================================
 
-remove_old_plugin_backup()
+verify_installation()
 {
-    if [ -d "$OLD_PLUGIN_BACKUP" ]; then
+    INSTALLED_VERSION=""
 
-        rm -rf "$OLD_PLUGIN_BACKUP"
+
+    if [ -f "$PLUGIN_PATH/__init__.py" ]; then
+
+        INSTALLED_VERSION="$(
+            grep -m 1 "__version__" "$PLUGIN_PATH/__init__.py" 2>/dev/null |
+            sed -n 's/.*__version__[[:space:]]*=[[:space:]]*["'\'']\([^"'\'']*\)["'\''].*/\1/p'
+        )"
+
     fi
+
+
+    if [ -n "$INSTALLED_VERSION" ]; then
+
+        log "Installed plugin version: $INSTALLED_VERSION"
+
+    else
+
+        log "WARNING: Could not determine installed plugin version."
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Required files
+    # -----------------------------------------------------
+
+    if [ ! -f "$PLUGIN_PATH/__init__.py" ] ||
+       [ ! -f "$PLUGIN_PATH/plugin.py" ]; then
+
+        error "Final installation verification failed."
+
+        rollback_plugin
+        exit 1
+
+    fi
+
+
+    log "Final installation verification successful."
 }
 
 
 # =========================================================
-# SHOW INFORMATION
+# REMOVE BACKUPS
 # =========================================================
 
-show_info()
+remove_backups()
 {
-    echo
-    echo "========================================================="
-    echo " speedy_TheWeather v$version"
-    echo " GitHub update successful"
-    echo "========================================================="
-    echo
-    echo "Repository:"
-    echo "$REPOSITORY"
-    echo
-    echo "Branch:"
-    echo "$BRANCH"
-    echo
-    echo "Plugin:"
-    echo "$PLUGINPATH"
-    echo
-    echo "Changelog:"
-    echo "$changelog"
-    echo
+    if [ -d "$PLUGIN_BACKUP" ]; then
+
+        rm -rf "$PLUGIN_BACKUP"
+
+    fi
+
+
+    if [ -d "$CONFIG_BACKUP" ]; then
+
+        rm -rf "$CONFIG_BACKUP"
+
+    fi
+
+
+    PLUGIN_BACKUP_CREATED=0
+    CONFIG_BACKUP_CREATED=0
 }
 
 
@@ -943,7 +885,6 @@ restart_gui()
 {
     log "Restarting Enigma2 GUI..."
 
-
     sync >/dev/null 2>&1 || true
 
     sleep 2
@@ -951,16 +892,22 @@ restart_gui()
 
     if command -v systemctl >/dev/null 2>&1; then
 
-        systemctl restart enigma2
-        return $?
+        if systemctl restart enigma2; then
+
+            return 0
+
+        fi
 
     fi
 
 
     if [ -x "/etc/init.d/enigma2" ]; then
 
-        /etc/init.d/enigma2 restart
-        return $?
+        if /etc/init.d/enigma2 restart; then
+
+            return 0
+
+        fi
 
     fi
 
@@ -992,18 +939,50 @@ restart_gui()
 
 
 # =========================================================
+# SHOW SUCCESS
+# =========================================================
+
+show_success()
+{
+    echo
+    echo "========================================================="
+    echo " speedy_TheWeather update successful"
+    echo "========================================================="
+    echo
+    echo "Version:"
+    echo "$VERSION"
+    echo
+    echo "Plugin:"
+    echo "$PLUGIN_PATH"
+    echo
+    echo "Repository:"
+    echo "$REPOSITORY"
+    echo
+    echo "Branch:"
+    echo "$BRANCH"
+    echo
+    echo "Changelog:"
+    echo "$CHANGELOG"
+    echo
+    echo "========================================================="
+    echo
+}
+
+
+# =========================================================
 # MAIN
 # =========================================================
 
 echo
 echo "========================================================="
-echo "       speedy_TheWeather GitHub Installer v$version"
+echo " speedy_TheWeather GitHub Installer"
+echo " Version $VERSION"
 echo "========================================================="
 echo
 
 
 # =========================================================
-# ROOT
+# ROOT CHECK
 # =========================================================
 
 if [ "$(id -u)" -ne 0 ]; then
@@ -1016,26 +995,20 @@ fi
 
 
 # =========================================================
-# ENVIRONMENT
+# DETECTION
 # =========================================================
 
+detect_plugin_path
 detect_os
-detect_python
 detect_image
+detect_python
 
 
 # =========================================================
 # WGET
 # =========================================================
 
-install_wget
-
-
-# =========================================================
-# DEPENDENCIES
-# =========================================================
-
-install_dependencies
+check_wget
 
 
 # =========================================================
@@ -1044,14 +1017,21 @@ install_dependencies
 
 cleanup
 
-mkdir -p "$TMPPATH"
+mkdir -p "$TMP_ROOT" || {
+
+    error "Could not create temporary directory."
+
+    exit 1
+
+}
 
 
 # =========================================================
-# BACKUP CONFIG
+# BACKUP
 # =========================================================
 
 backup_config
+backup_plugin
 
 
 # =========================================================
@@ -1076,13 +1056,6 @@ find_plugin_source
 
 
 # =========================================================
-# BACKUP PLUGIN
-# =========================================================
-
-backup_existing_plugin
-
-
-# =========================================================
 # INSTALL
 # =========================================================
 
@@ -1097,10 +1070,10 @@ restore_config
 
 
 # =========================================================
-# REMOVE BACKUP
+# VERIFY
 # =========================================================
 
-remove_old_plugin_backup
+verify_installation
 
 
 # =========================================================
@@ -1111,19 +1084,24 @@ cleanup
 
 
 # =========================================================
-# INFORMATION
+# REMOVE BACKUPS
 # =========================================================
 
-show_info
+remove_backups
 
 
 # =========================================================
-# RESTART GUI
+# SUCCESS
+# =========================================================
+
+show_success
+
+
+# =========================================================
+# RESTART
 # =========================================================
 
 restart_gui
 
 
 exit 0
-
-```
