@@ -1,3 +1,4 @@
+```bash
 #!/bin/bash
 
 # =========================================================
@@ -979,6 +980,34 @@ find_plugin_source()
 
 
 # =========================================================
+# REMOVE REPOSITORY-ONLY FILES
+# =========================================================
+
+remove_repository_only_files()
+{
+    log "Removing repository-only files..."
+
+    # -----------------------------------------------------
+    # These files are used only in the GitHub repository.
+    # They must NOT be installed on the Enigma2 box.
+    # -----------------------------------------------------
+
+    find "$PLUGIN_SOURCE" \
+        -type f \
+        \( \
+            -name "README.md" \
+            -o -name "installer.sh" \
+            -o -name "version.txt" \
+            -o -name "*.svg" \
+        \) \
+        -print \
+        -delete
+
+    log "Repository-only files removed."
+}
+
+
+# =========================================================
 # BACKUP EXISTING PLUGIN
 # =========================================================
 
@@ -1071,6 +1100,13 @@ install_plugin()
 
 
     # -----------------------------------------------------
+    # Remove files which belong only to GitHub repository
+    # -----------------------------------------------------
+
+    remove_repository_only_files
+
+
+    # -----------------------------------------------------
     # Copy new plugin
     # -----------------------------------------------------
 
@@ -1109,6 +1145,63 @@ install_plugin()
     if [ ! -f "$PLUGINPATH/plugin.py" ]; then
 
         error "Installation verification failed: plugin.py missing."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Verify repository-only files are NOT installed
+    # -----------------------------------------------------
+
+    if [ -f "$PLUGINPATH/README.md" ]; then
+
+        error "Installation verification failed: README.md was installed."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    if [ -f "$PLUGINPATH/installer.sh" ]; then
+
+        error "Installation verification failed: installer.sh was installed."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    if [ -f "$PLUGINPATH/version.txt" ]; then
+
+        error "Installation verification failed: version.txt was installed."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    if find "$PLUGINPATH" \
+        -type f \
+        -name "*.svg" \
+        -print -quit 2>/dev/null |
+        grep -q .
+    then
+
+        error "Installation verification failed: SVG file was installed."
 
         rollback_plugin
         cleanup
@@ -1494,3 +1587,5 @@ restart_gui
 
 
 exit 0
+```
+
