@@ -5,7 +5,7 @@
 # =========================================================
 
 version='1.1.1'
-changelog='Fix malformed locale language file. Added an update function. Buy me a coffee if you like this plugin.
+changelog='Fix malformed locale language file. Added an update function. Buy me a coffee if you like this plugin.'
 
 
 # =========================================================
@@ -15,7 +15,7 @@ changelog='Fix malformed locale language file. Added an update function. Buy me 
 TMPPATH="/tmp/speedy_TheWeather-install"
 FILEPATH="/tmp/speedy_TheWeather-master.tar.gz"
 
-BACKUP_DIR="/tmp/foreca_backup"
+BACKUP_DIR="/tmp/speedy_TheWeather_backup"
 OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather-old-plugin"
 
 CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
@@ -37,7 +37,17 @@ DOWNLOAD_URL="https://github.com/speedy005/speedy_TheWeather/archive/refs/heads/
 # DETERMINE PLUGIN PATH
 # =========================================================
 
-if [ -d "/usr/lib64" ]; then
+# Prefer an already existing Enigma2 plugin path.
+
+if [ -d "/usr/lib/enigma2/python/Plugins/Extensions" ]; then
+
+    PLUGINPATH="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
+
+elif [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
+
+    PLUGINPATH="/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
+
+elif [ -d "/usr/lib64" ]; then
 
     PLUGINPATH="/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
 
@@ -118,26 +128,30 @@ cleanup()
 detect_os()
 {
     # -----------------------------------------------------
-    # DreamOS / Dreambox
+    # OpenEmbedded / OpenATV / OE
     # -----------------------------------------------------
 
-    if [ -f "/usr/lib/enigma.info" ]; then
+    # IMPORTANT:
+    # OpenATV can also have /usr/lib/enigma.info.
+    # Therefore opkg is checked FIRST.
 
-        OSTYPE="DreamOs"
-        STATUS="/var/lib/dpkg/status"
+    if command -v opkg >/dev/null 2>&1; then
+
+        OSTYPE="OE"
+        STATUS="/var/lib/opkg/status"
 
     # -----------------------------------------------------
-    # Debian
+    # Debian / DreamOS
     # -----------------------------------------------------
 
-    elif [ -f "/etc/debian_version" ] &&
+    elif command -v apt-get >/dev/null 2>&1 &&
          [ -f "/var/lib/dpkg/status" ]; then
 
         OSTYPE="Debian"
         STATUS="/var/lib/dpkg/status"
 
     # -----------------------------------------------------
-    # OpenEmbedded / OE
+    # Fallback OpenEmbedded
     # -----------------------------------------------------
 
     elif [ -f "/var/lib/opkg/status" ] ||
@@ -145,6 +159,16 @@ detect_os()
 
         OSTYPE="OE"
         STATUS="/var/lib/opkg/status"
+
+    # -----------------------------------------------------
+    # Fallback Debian
+    # -----------------------------------------------------
+
+    elif [ -f "/etc/debian_version" ] &&
+         [ -f "/var/lib/dpkg/status" ]; then
+
+        OSTYPE="Debian"
+        STATUS="/var/lib/dpkg/status"
 
     else
 
@@ -328,7 +352,7 @@ install_wget()
 
     case "$OSTYPE" in
 
-        DreamOs|Debian)
+        Debian)
 
             if ! apt-get update; then
 
@@ -406,7 +430,7 @@ package_installed()
 
     case "$OSTYPE" in
 
-        DreamOs|Debian)
+        Debian)
 
             if command -v dpkg-query >/dev/null 2>&1; then
 
@@ -470,7 +494,7 @@ install_pkg()
 
     case "$OSTYPE" in
 
-        DreamOs|Debian)
+        Debian)
 
             if ! apt-get update >/dev/null 2>&1; then
 
@@ -689,6 +713,13 @@ restore_config()
     log "Restoring configuration..."
 
 
+    if [ -d "$CONFIG_DIR" ]; then
+
+        rm -rf "$CONFIG_DIR"
+
+    fi
+
+
     if ! mkdir -p "$CONFIG_DIR"; then
 
         log "Warning: Could not create configuration directory."
@@ -840,39 +871,43 @@ find_plugin_source()
 
 
     # -----------------------------------------------------
-    # Normal /usr/lib
+    # GitHub repository root
     # -----------------------------------------------------
 
-    if [ -d "$TMPPATH/Foreca-master/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather" ]; then
+    if [ -f "$TMPPATH/speedy_TheWeather-master/__init__.py" ] &&
+       [ -f "$TMPPATH/speedy_TheWeather-master/plugin.py" ]; then
 
-        PLUGIN_SOURCE="$TMPPATH/Foreca-master/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather"
+        PLUGIN_SOURCE="$TMPPATH/speedy_TheWeather-master"
 
-        log "Found plugin in /usr/lib."
+        log "Found plugin in repository root."
 
-
-    # -----------------------------------------------------
-    # 64-bit /usr/lib64
-    # -----------------------------------------------------
-
-    elif [ -d "$TMPPATH/Foreca-master/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather" ]; then
-
-        PLUGIN_SOURCE="$TMPPATH/Foreca-master/usr/lib64/enigma2/python/Plugins/Extensions/speedy_TheWeather"
-
-        log "Found plugin in /usr/lib64."
+    fi
 
 
     # -----------------------------------------------------
-    # Fallback
+    # Fallback search
     # -----------------------------------------------------
 
-    else
+    if [ -z "$PLUGIN_SOURCE" ]; then
 
         PLUGIN_SOURCE=$(
             find "$TMPPATH" \
-                -type d \
-                -path "*/Plugins/Extensions/speedy_TheWeather" \
+                -type f \
+                -name "plugin.py" \
                 2>/dev/null |
-            head -n 1
+            while read -r FILE
+            do
+
+                DIR="$(dirname "$FILE")"
+
+                if [ -f "$DIR/__init__.py" ]; then
+
+                    echo "$DIR"
+                    break
+
+                fi
+
+            done
         )
 
 
@@ -1008,6 +1043,7 @@ install_plugin()
 
         log "Removing old plugin files..."
 
+
         if ! rm -rf "$PLUGINPATH"; then
 
             error "Could not remove old plugin installation."
@@ -1126,6 +1162,7 @@ rollback_plugin()
     if ! mkdir -p "$(dirname "$PLUGINPATH")"; then
 
         log "WARNING: Could not create plugin parent directory!"
+
         return 1
 
     fi
@@ -1173,18 +1210,18 @@ show_info()
 {
     echo
     echo "#########################################################"
-    echo "#                                                     #"
-    echo "#              speedy_TheWeather INSTALLED                   #"
-    echo "#                                                     #"
+    echo "#                                                       #"
+    echo "#             speedy_TheWeather INSTALLED              #"
+    echo "#                                                       #"
     echo "#########################################################"
-    echo "#                                                     #"
-    echo "#  Plugin Version: $version                           #"
-    echo "#                                                     #"
-    echo "#  Developed by LULULLA                              #"
-    echo "#  https://corvoboys.org                              #"
-    echo "#                                                     #"
-    echo "#  GUI WILL RESTART AUTOMATICALLY                     #"
-    echo "#                                                     #"
+    echo "#                                                       #"
+    echo "#  Plugin Version: $version"
+    echo "#                                                       #"
+    echo "#  Developed by LULULLA                                #"
+    echo "#  https://corvoboys.org                                #"
+    echo "#                                                       #"
+    echo "#  GUI WILL RESTART AUTOMATICALLY                       #"
+    echo "#                                                       #"
     echo "#########################################################"
     echo
 
@@ -1238,11 +1275,12 @@ restart_gui()
 
     if command -v systemctl >/dev/null 2>&1; then
 
-        log "Restarting Enigma2 GUI using systemctl..."
+        if systemctl restart enigma2 >/dev/null 2>&1; then
 
-        systemctl restart enigma2
+            log "Enigma2 GUI restarted using systemctl."
+            return 0
 
-        return $?
+        fi
 
     fi
 
@@ -1253,11 +1291,12 @@ restart_gui()
 
     if [ -x "/etc/init.d/enigma2" ]; then
 
-        log "Restarting Enigma2 GUI using init.d..."
+        if /etc/init.d/enigma2 restart >/dev/null 2>&1; then
 
-        /etc/init.d/enigma2 restart
+            log "Enigma2 GUI restarted using init.d."
+            return 0
 
-        return $?
+        fi
 
     fi
 
@@ -1269,6 +1308,7 @@ restart_gui()
     if command -v init >/dev/null 2>&1; then
 
         log "Restarting Enigma2 GUI using init..."
+
 
         init 4
 
