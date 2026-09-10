@@ -15,13 +15,17 @@ import urllib.request
 import subprocess
 import os
 
+
+# ============================================================================
+# VERSION / AUTHOR
+# ============================================================================
+
 __version__ = "1.1.1"
 VERSION = __version__
 
 _AUTHOR_ = "by speedy - 2026"
 IDEAS = "@speedy"
 THANKS = "@speedy | @atvcaptain"
-
 
 
 # ============================================================================
@@ -32,8 +36,6 @@ TEMP_DIR = "/tmp/speedy_TheWeather"
 SYSTEM_DIR = "/etc/enigma2/speedy_TheWeather"
 
 PLUGIN_PATH = dirname(__file__)
-
-
 
 
 # ============================================================================
@@ -64,6 +66,7 @@ def update_plugin():
     """
 
     try:
+
         print("=" * 60)
         print("[UPDATE] speedy_TheWeather")
         print("[UPDATE] Repository:", GITHUB_REPOSITORY)
@@ -73,7 +76,7 @@ def update_plugin():
         request = urllib.request.Request(
             UPDATE_INSTALLER_URL,
             headers={
-                "User-Agent": "speedy_TheWeather/1.5.2"
+                "User-Agent": "speedy_TheWeather/1.1.1"
             }
         )
 
@@ -81,30 +84,42 @@ def update_plugin():
             request,
             timeout=30
         ) as response:
+
             installer_data = response.read()
 
         if not installer_data:
+
             print("[UPDATE] ERROR: Empty installer")
+
             return False
+
+        if not exists(TEMP_DIR):
+
+            makedirs(TEMP_DIR)
 
         with open(
             UPDATE_INSTALLER_PATH,
             "wb"
         ) as installer_file:
-            installer_file.write(installer_data)
+
+            installer_file.write(
+                installer_data
+            )
 
         print(
             "[UPDATE] Installer downloaded:",
             UPDATE_INSTALLER_PATH
         )
 
-        # Make installer executable
         try:
+
             os.chmod(
                 UPDATE_INSTALLER_PATH,
                 0o755
             )
+
         except Exception as e:
+
             print(
                 "[UPDATE] chmod failed:",
                 e
@@ -117,15 +132,19 @@ def update_plugin():
         )
 
         if result == 0:
+
             print(
                 "[UPDATE] Update completed successfully"
             )
 
             try:
+
                 remove(
                     UPDATE_INSTALLER_PATH
                 )
+
             except Exception:
+
                 pass
 
             return True
@@ -138,19 +157,24 @@ def update_plugin():
         return False
 
     except Exception as e:
+
         print(
             "[UPDATE] ERROR:",
             e
         )
 
         try:
+
             if exists(
                 UPDATE_INSTALLER_PATH
             ):
+
                 remove(
                     UPDATE_INSTALLER_PATH
                 )
+
         except Exception:
+
             pass
 
         return False
@@ -165,29 +189,21 @@ CACHE_EXPIRE = 3600
 
 
 # ============================================================================
-# CREATE DIRECTORIES
+# CREATE REQUIRED DIRECTORIES
 # ============================================================================
 
 if not exists(SYSTEM_DIR):
-    makedirs(SYSTEM_DIR)
+
+    makedirs(
+        SYSTEM_DIR
+    )
+
 
 if not exists(TEMP_DIR):
-    makedirs(TEMP_DIR)
 
-if not exists(DBG_DIR):
-    makedirs(DBG_DIR)
-
-if not exists(CACHE_BASE):
-    makedirs(CACHE_BASE)
-
-if not exists(WETTERKONTOR_CACHE):
-    makedirs(WETTERKONTOR_CACHE)
-
-if not exists(METEOGRAM_CACHE):
-    makedirs(METEOGRAM_CACHE)
-
-if not exists(WEATHER_DETAIL_CACHE):
-    makedirs(WEATHER_DETAIL_CACHE)
+    makedirs(
+        TEMP_DIR
+    )
 
 
 # ============================================================================
@@ -195,7 +211,60 @@ if not exists(WEATHER_DETAIL_CACHE):
 # ============================================================================
 
 PluginLanguageDomain = "speedy_TheWeather"
-PluginLanguagePath = "Extensions/speedy_TheWeather/locale"
+
+PluginLanguagePath = (
+    "Extensions/speedy_TheWeather/locale"
+)
+
+
+def localeInit():
+
+    lang = language.getLanguage()[:2]
+
+    environ["LANGUAGE"] = lang
+
+    if PluginLanguageDomain and PluginLanguagePath:
+
+        gettext.bindtextdomain(
+            PluginLanguageDomain,
+            resolveFilename(
+                SCOPE_PLUGINS,
+                PluginLanguagePath
+            ),
+        )
+
+
+def _(txt):
+
+    if not txt:
+
+        return ""
+
+    translated = gettext.dgettext(
+        PluginLanguageDomain,
+        txt
+    )
+
+    if translated and translated != txt:
+
+        return translated
+
+    print(
+        "[%s] fallback to default translation for %s"
+        % (
+            PluginLanguageDomain,
+            txt
+        )
+    )
+
+    return gettext.gettext(txt)
+
+
+localeInit()
+
+language.addCallback(
+    localeInit
+)
 
 
 # ============================================================================
@@ -221,7 +290,7 @@ HEADERS = {
 
 OSM_HEADERS = {
     "User-Agent": (
-        "speedy_TheWeather/1.5.2 "
+        "speedy_TheWeather/1.1.1 "
         "(Enigma2; OpenStreetMap; non-commercial; "
         "+https://github.com/speedy005/speedy_TheWeather)"
     ),
@@ -237,57 +306,10 @@ OSM_HEADERS = {
 
 
 # ============================================================================
-# LANGUAGE INITIALIZATION
-# ============================================================================
-
-def localeInit():
-    lang = language.getLanguage()[:2]
-
-    environ["LANGUAGE"] = lang
-
-    if PluginLanguageDomain and PluginLanguagePath:
-        gettext.bindtextdomain(
-            PluginLanguageDomain,
-            resolveFilename(
-                SCOPE_PLUGINS,
-                PluginLanguagePath
-            ),
-        )
-
-
-def _(txt):
-    if not txt:
-        return ""
-
-    translated = gettext.dgettext(
-        PluginLanguageDomain,
-        txt
-    )
-
-    if translated and translated != txt:
-        return translated
-
-    print(
-        "[%s] fallback to default translation for %s"
-        % (
-            PluginLanguageDomain,
-            txt
-        )
-    )
-
-    return gettext.gettext(txt)
-
-
-localeInit()
-language.addCallback(localeInit)
-
-
-# ============================================================================
-# DETECT SCREEN RESOLUTION
+# SCREEN RESOLUTION
 # ============================================================================
 
 def get_screen_resolution():
-    """Get current screen resolution."""
 
     desktop = getDesktop(0)
 
@@ -295,223 +317,20 @@ def get_screen_resolution():
 
 
 def get_resolution_type():
-    """Get resolution type: hd, fhd, wqhd."""
 
     width = get_screen_resolution().width()
 
     if width >= 2560:
+
         return "wqhd"
 
     elif width >= 1920:
+
         return "fhd"
 
     else:
-        # 1280x720 or smaller
+
         return "hd"
-
-
-# ============================================================================
-# SKIN LOADER
-# ============================================================================
-
-def load_skin_by_class(class_name):
-    """
-    Load skin using class name and current resolution.
-
-    First tries custom skins:
-        skins_user/
-
-    Then built-in skins:
-        skins/
-
-    Finally falls back to HD.
-    """
-
-    if DEBUG:
-        print("\n" + "=" * 60)
-        print(
-            "[SKIN DEBUG] Looking for skin: '%s'"
-            % class_name
-        )
-        print(
-            "[SKIN DEBUG] Built-in skins path = %s"
-            % SKINS_PATH
-        )
-        print(
-            "[SKIN DEBUG] Custom skins path = %s"
-            % CUSTOM_SKINS_PATH
-        )
-
-    resolution = get_resolution_type()
-
-    if DEBUG:
-        print(
-            "[SKIN DEBUG] resolution = %s"
-            % resolution
-        )
-
-    # ------------------------------------------------------------------------
-    # Custom skin
-    # ------------------------------------------------------------------------
-
-    custom_skin_file = None
-
-    if exists(CUSTOM_SKINS_PATH):
-
-        custom_skin_file = join(
-            CUSTOM_SKINS_PATH,
-            resolution,
-            "%s.xml" % class_name
-        )
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] Trying custom: %s"
-                % custom_skin_file
-            )
-
-            print(
-                "[SKIN DEBUG] Exists? %s"
-                % exists(custom_skin_file)
-            )
-
-    else:
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] Custom skins directory "
-                "does not exist"
-            )
-
-    # ------------------------------------------------------------------------
-    # Built-in skins
-    # ------------------------------------------------------------------------
-
-    builtin_skin_file = join(
-        SKINS_PATH,
-        resolution,
-        "%s.xml" % class_name
-    )
-
-    fallback_skin_file = join(
-        SKINS_PATH,
-        "hd",
-        "%s.xml" % class_name
-    )
-
-    # ------------------------------------------------------------------------
-    # Determine skin
-    # ------------------------------------------------------------------------
-
-    skin_file = None
-
-    if (
-        custom_skin_file
-        and exists(custom_skin_file)
-    ):
-
-        skin_file = custom_skin_file
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] Using custom skin"
-            )
-
-    elif exists(builtin_skin_file):
-
-        skin_file = builtin_skin_file
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] Using built-in skin "
-                "for current resolution"
-            )
-
-    elif exists(fallback_skin_file):
-
-        skin_file = fallback_skin_file
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] Using HD fallback skin"
-            )
-
-    else:
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] No skin found at all"
-            )
-
-    # ------------------------------------------------------------------------
-    # Read skin
-    # ------------------------------------------------------------------------
-
-    if skin_file and exists(skin_file):
-
-        if DEBUG:
-            print(
-                "[SKIN DEBUG] FOUND! Loading file: %s"
-                % skin_file
-            )
-
-        try:
-
-            with codecs.open(
-                skin_file,
-                "r",
-                "utf-8"
-            ) as f:
-
-                content = f.read()
-
-                if DEBUG:
-
-                    print(
-                        "[SKIN DEBUG] Loaded %s bytes"
-                        % len(content)
-                    )
-
-                    print(
-                        "[SKIN DEBUG] First 100 chars: %s"
-                        % content[:100].replace(
-                            chr(10),
-                            " "
-                        )
-                    )
-
-                    print(
-                        "=" * 60 + "\n"
-                    )
-
-                return content
-
-        except Exception as e:
-
-            print(
-                "[SKIN DEBUG] Error reading file: %s"
-                % e
-            )
-
-    else:
-
-        print(
-            "[SKIN DEBUG] SKIN FILE MISSING: %s"
-            % skin_file
-        )
-
-    if DEBUG:
-        print(
-            "=" * 60 + "\n"
-        )
-
-    return None
-
-
-def load_skin_for_class(cls):
-    return load_skin_by_class(
-        cls.__name__
-    )
 
 
 # ============================================================================
@@ -533,6 +352,7 @@ def apply_global_theme(screen):
         SYSTEM_DIR,
         "set_alpha.conf"
     )
+
 
     # ------------------------------------------------------------------------
     # Background color
@@ -580,6 +400,7 @@ def apply_global_theme(screen):
                 e
             )
 
+
     # ------------------------------------------------------------------------
     # Transparency
     # ------------------------------------------------------------------------
@@ -612,211 +433,175 @@ def apply_global_theme(screen):
 
 
 # ============================================================================
-# ICON PATH
-# ============================================================================
-
-def get_icon_path(
-    icon_name,
-    fallback="na.png"
-):
-    """
-    Returns the full path of an icon from thumb/.
-
-    If the requested icon does not exist,
-    the fallback icon is returned.
-    """
-
-    path = join(
-        THUMB_PATH,
-        icon_name
-    )
-
-    if exists(path):
-        return path
-
-    fallback_path = join(
-        THUMB_PATH,
-        fallback
-    )
-
-    if exists(fallback_path):
-        return fallback_path
-
-    return None
-
-
-# ============================================================================
 # CLEANUP TEMP FILES
 # ============================================================================
 
 def cleanup_temp_files(keep_token=True):
     """
-    Remove temporary folders.
+    Remove temporary files.
 
     If keep_token=True, token.json is preserved.
     """
 
-    dirs_to_clean = [
-        TEMP_DIR,
-        DBG_DIR
-    ]
+    d = TEMP_DIR
 
-    for d in dirs_to_clean:
+    if not exists(d):
 
-        if not exists(d):
-            continue
+        return
 
-        try:
 
-            # ----------------------------------------------------------------
-            # TEMP DIR - KEEP TOKEN
-            # ----------------------------------------------------------------
+    try:
 
-            if (
-                keep_token
-                and d == TEMP_DIR
+        # --------------------------------------------------------------------
+        # Keep token.json
+        # --------------------------------------------------------------------
+
+        if keep_token:
+
+            token_path = join(
+                TEMP_DIR,
+                "weather_map_cache",
+                "token.json"
+            )
+
+            for root, dirs, files in walk(
+                d,
+                topdown=False
             ):
 
-                token_path = join(
-                    TEMP_DIR,
-                    "weather_map_cache",
-                    "token.json"
-                )
+                # ------------------------------------------------------------
+                # Files
+                # ------------------------------------------------------------
 
-                for root, dirs, files in walk(
-                    d,
-                    topdown=False
-                ):
+                for name in files:
 
-                    # --------------------------------------------------------
-                    # Files
-                    # --------------------------------------------------------
+                    file_path = join(
+                        root,
+                        name
+                    )
 
-                    for name in files:
+                    if file_path != token_path:
 
-                        file_path = join(
-                            root,
-                            name
+                        remove(
+                            file_path
                         )
 
-                        if file_path != token_path:
 
-                            remove(
-                                file_path
-                            )
+                # ------------------------------------------------------------
+                # Directories
+                # ------------------------------------------------------------
 
-                    # --------------------------------------------------------
-                    # Directories
-                    # --------------------------------------------------------
+                for name in dirs:
 
-                    for name in dirs:
+                    dir_path = join(
+                        root,
+                        name
+                    )
 
-                        dir_path = join(
-                            root,
-                            name
+                    if (
+                        dir_path
+                        == join(
+                            TEMP_DIR,
+                            "weather_map_cache"
                         )
+                    ):
 
-                        if (
-                            dir_path
-                            == join(
-                                TEMP_DIR,
-                                "weather_map_cache"
-                            )
-                        ):
-                            continue
+                        continue
+
+                    try:
 
                         rmdir(
                             dir_path
                         )
 
-                # ------------------------------------------------------------
-                # Recreate essential directories
-                # ------------------------------------------------------------
+                    except OSError:
 
-                subdirs = [
-                    "meteogram",
-                    "weather_detail",
-                    "weather_map_cache/wetterkontor"
-                ]
+                        pass
 
-                for sub in subdirs:
-
-                    subdir = join(
-                        TEMP_DIR,
-                        sub
-                    )
-
-                    if not exists(subdir):
-
-                        makedirs(
-                            subdir
-                        )
-
-                if DEBUG:
-
-                    print(
-                        "[Cleanup] Cleaned %s "
-                        "(kept token)"
-                        % d
-                    )
 
             # ----------------------------------------------------------------
-            # COMPLETE REMOVE
+            # Recreate required TEMP directories
             # ----------------------------------------------------------------
 
-            else:
+            subdirs = [
+                "meteogram",
+                "weather_detail",
+                "weather_map_cache/wetterkontor"
+            ]
 
-                shutil.rmtree(d)
+            for sub in subdirs:
 
-                if DEBUG:
-
-                    print(
-                        "[Cleanup] Removed %s"
-                        % d
-                    )
-
-                # ------------------------------------------------------------
-                # Recreate TEMP
-                # ------------------------------------------------------------
-
-                if d == TEMP_DIR:
-
-                    makedirs(d)
-
-                    for sub in [
-                        "meteogram",
-                        "weather_detail",
-                        "weather_map_cache/wetterkontor"
-                    ]:
-
-                        subdir = join(
-                            d,
-                            sub
-                        )
-
-                        if not exists(subdir):
-
-                            makedirs(
-                                subdir
-                            )
-
-                # ------------------------------------------------------------
-                # Recreate DEBUG
-                # ------------------------------------------------------------
-
-                elif d == DBG_DIR:
-
-                    makedirs(d)
-
-        except Exception as e:
-
-            print(
-                "[Cleanup] Error cleaning %s: %s"
-                % (
-                    d,
-                    e
+                subdir = join(
+                    TEMP_DIR,
+                    sub
                 )
+
+                if not exists(subdir):
+
+                    makedirs(
+                        subdir
+                    )
+
+
+            if DEBUG:
+
+                print(
+                    "[Cleanup] Cleaned %s "
+                    "(kept token)"
+                    % TEMP_DIR
+                )
+
+
+        # --------------------------------------------------------------------
+        # Complete remove
+        # --------------------------------------------------------------------
+
+        else:
+
+            shutil.rmtree(
+                TEMP_DIR
             )
+
+            makedirs(
+                TEMP_DIR
+            )
+
+
+            for sub in [
+                "meteogram",
+                "weather_detail",
+                "weather_map_cache/wetterkontor"
+            ]:
+
+                subdir = join(
+                    TEMP_DIR,
+                    sub
+                )
+
+                if not exists(subdir):
+
+                    makedirs(
+                        subdir
+                    )
+
+
+            if DEBUG:
+
+                print(
+                    "[Cleanup] Removed and recreated %s"
+                    % TEMP_DIR
+                )
+
+
+    except Exception as e:
+
+        print(
+            "[Cleanup] Error cleaning %s: %s"
+            % (
+                TEMP_DIR,
+                e
+            )
+        )
 
 
 # ============================================================================
