@@ -1,10 +1,11 @@
+```bash
 #!/bin/bash
 
 # =========================================================
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.1.3'
+version='1.1.5'
 changelog='Fix malformed locale language file. Added an update function. Buy me a coffee if you like this plugin.'
 
 
@@ -36,8 +37,6 @@ DOWNLOAD_URL="https://github.com/speedy005/speedy_TheWeather/archive/refs/heads/
 # =========================================================
 # DETERMINE PLUGIN PATH
 # =========================================================
-
-# Prefer an already existing Enigma2 plugin path.
 
 if [ -d "/usr/lib/enigma2/python/Plugins/Extensions" ]; then
 
@@ -130,10 +129,6 @@ detect_os()
     # -----------------------------------------------------
     # OpenEmbedded / OpenATV / OE
     # -----------------------------------------------------
-
-    # IMPORTANT:
-    # OpenATV can also have /usr/lib/enigma.info.
-    # Therefore opkg is checked FIRST.
 
     if command -v opkg >/dev/null 2>&1; then
 
@@ -986,11 +981,6 @@ remove_repository_only_files()
 {
     log "Removing repository-only files..."
 
-    # -----------------------------------------------------
-    # These files are used only in the GitHub repository.
-    # They must NOT be installed on the Enigma2 box.
-    # -----------------------------------------------------
-
     find "$PLUGIN_SOURCE" \
         -type f \
         \( \
@@ -1099,7 +1089,7 @@ install_plugin()
 
 
     # -----------------------------------------------------
-    # Remove files which belong only to GitHub repository
+    # Remove repository-only files
     # -----------------------------------------------------
 
     remove_repository_only_files
@@ -1358,79 +1348,50 @@ restart_gui()
     sync >/dev/null 2>&1 || true
 
 
-    sleep 3
+    log "Scheduling Enigma2 GUI restart..."
 
 
     # -----------------------------------------------------
-    # systemd
+    # IMPORTANT:
+    # The restart is detached from the installer.
+    #
+    # This is required when installer.sh is started from
+    # the Enigma2 plugin itself.
     # -----------------------------------------------------
 
-    if command -v systemctl >/dev/null 2>&1; then
-
-        if systemctl restart enigma2 >/dev/null 2>&1; then
-
-            log "Enigma2 GUI restarted using systemctl."
-            return 0
-
-        fi
-
-    fi
-
-
-    # -----------------------------------------------------
-    # init.d
-    # -----------------------------------------------------
-
-    if [ -x "/etc/init.d/enigma2" ]; then
-
-        if /etc/init.d/enigma2 restart >/dev/null 2>&1; then
-
-            log "Enigma2 GUI restarted using init.d."
-            return 0
-
-        fi
-
-    fi
-
-
-    # -----------------------------------------------------
-    # OpenEmbedded init
-    # -----------------------------------------------------
-
-    if command -v init >/dev/null 2>&1; then
+    (
+        sleep 3
 
         log "Restarting Enigma2 GUI using init..."
 
+        if command -v init >/dev/null 2>&1; then
 
-        init 4
+            init 4
 
-        sleep 2
+            sleep 2
 
-        init 3
+            init 3
 
-        return $?
+        elif [ -x "/etc/init.d/enigma2" ]; then
 
-    fi
+            /etc/init.d/enigma2 restart
 
+        elif command -v systemctl >/dev/null 2>&1; then
 
-    # -----------------------------------------------------
-    # Fallback
-    # -----------------------------------------------------
+            systemctl restart enigma2
 
-    if command -v killall >/dev/null 2>&1; then
+        elif command -v killall >/dev/null 2>&1; then
 
-        log "Restarting Enigma2 GUI using killall..."
+            killall -HUP enigma2 2>/dev/null || true
 
-        killall -HUP enigma2 2>/dev/null || true
+        fi
 
-        return 0
-
-    fi
+    ) >/dev/null 2>&1 &
 
 
-    log "WARNING: Could not automatically restart Enigma2 GUI."
+    log "Enigma2 GUI restart scheduled."
 
-    return 1
+    return 0
 }
 
 
@@ -1586,5 +1547,4 @@ restart_gui
 
 
 exit 0
-
-
+```
