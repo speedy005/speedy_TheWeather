@@ -417,48 +417,17 @@ msgstr "Darstellung"
 msgid "TheWeather update"
 msgstr "TheWeather Update"
 
-msgid "A new version is available: %s"
-msgstr "Eine neue Version ist verfügbar: %s"
-
 msgid "Changes:"
 msgstr "Änderungen:"
 
-msgid "Do you want to install the update now?"
-msgstr "Möchtest du das Update jetzt installieren?"
-
-msgid "Update check failed."
-msgstr "Update-Prüfung fehlgeschlagen."
-
-msgid "Update download failed."
-msgstr "Update-Download fehlgeschlagen."
-
-msgid "Update installer download failed."
-msgstr "Download des Update-Installers fehlgeschlagen."
-
-msgid "The update installer could not be started."
-msgstr "Der Update-Installer konnte nicht gestartet werden."
-
-msgid "Update started. Enigma2 will restart after installation."
-msgstr "Update gestartet. Enigma2 wird nach der Installation neu gestartet."
-
 msgid "Installer version: %s"
 msgstr "Installer-Version: %s"
+
 msgid "Update information is incomplete."
 msgstr "Update-Informationen sind unvollständig."
 
 msgid "No changes available."
 msgstr "Keine Änderungen verfügbar."
-msgid "The update is being installed."
-msgstr "Das Update wird installiert."
-
-msgid "Please wait. Enigma2 may restart automatically."
-msgstr "Bitte warten. Enigma2 wird möglicherweise automatisch neu gestartet."
-
-msgid "The update could not be installed."
-msgstr "Das Update konnte nicht installiert werden."
-
-msgid "Please check the Internet connection and try again."
-msgstr "Bitte überprüfe die Internetverbindung und versuche es erneut."
 
 msgid ""
 "A new version of speedy_TheWeather is available.\n"
@@ -480,20 +449,6 @@ msgstr ""
 "%s\n"
 "\n"
 "Möchtest du das Update installieren?"
-msgid "Fix Malformed Locale Language. Offer coffee if you like this plugin"
-msgstr "Fehlerhafte Sprachkonfiguration beheben. Wenn dir dieses Plugin gefällt, lade uns doch auf einen Kaffee ein."
-
-msgid "A new version of speedy_TheWeather is available."
-msgstr "Eine neue Version von speedy_TheWeather ist verfügbar."
-
-msgid "Installed version: %s"
-msgstr "Installierte Version: %s"
-
-msgid "New version: %s"
-msgstr "Neue Version: %s"
-
-msgid "Do you want to install the update?"
-msgstr "Möchtest du das Update installieren?"
 
 msgid ""
 "The update is being installed.\n"
