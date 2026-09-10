@@ -129,7 +129,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.5'
+version = '1.1.6'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -479,6 +479,7 @@ def _update_show_installing():
         print("[speedy_TheWeather] Could not show install message:", e)
 
 
+```python
 def _update_install():
     global _updateInstallInProgress
 
@@ -488,15 +489,128 @@ def _update_install():
     _updateInstallInProgress = True
     _updateQueue.put(("installing", None))
 
- 
-def _update_install():
-    global _updateInstallInProgress
+    def worker():
+        try:
+            print(
+                "[speedy_TheWeather] Downloading installer..."
+            )
 
-    if _updateInstallInProgress or not _updateInfo:
-        return
+            if not _update_download(
+                UPDATE_INSTALLER_URL,
+                UPDATE_INSTALLER_PATH,
+                timeout=30
+            ):
+                raise IOError(
+                    "installer download failed"
+                )
 
-    _updateInstallInProgress = True
-    _updateQueue.put(("installing", None))
+            print(
+                "[speedy_TheWeather] "
+                "Installer downloaded to: %s"
+                % UPDATE_INSTALLER_PATH
+            )
+
+            try:
+                os.chmod(
+                    UPDATE_INSTALLER_PATH,
+                    0o755
+                )
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "chmod failed: %s"
+                    % e
+                )
+
+            if not os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
+                raise IOError(
+                    "installer file does not exist"
+                )
+
+            print(
+                "[speedy_TheWeather] "
+                "Starting installer detached from Enigma2..."
+            )
+
+            # -------------------------------------------------
+            # IMPORTANT:
+            # Do NOT use os.system() here.
+            #
+            # os.system() waits for the installer.
+            # The installer restarts Enigma2, which can make
+            # os.system() hang forever.
+            # -------------------------------------------------
+
+            with open(
+                "/dev/null",
+                "rb"
+            ) as devnull_in, open(
+                "/dev/null",
+                "ab"
+            ) as devnull_out:
+
+                process = subprocess.Popen(
+                    [
+                        "/bin/bash",
+                        UPDATE_INSTALLER_PATH
+                    ],
+                    stdin=devnull_in,
+                    stdout=devnull_out,
+                    stderr=devnull_out,
+                    close_fds=True,
+                    start_new_session=True
+                )
+
+            print(
+                "[speedy_TheWeather] "
+                "Installer started detached. PID: %s"
+                % process.pid
+            )
+
+            # -------------------------------------------------
+            # The installer now runs independently.
+            # Enigma2 does NOT wait for it.
+            # -------------------------------------------------
+
+            _updateQueue.put(
+                ("installed", None)
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Update installation failed: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                ("install_error", None)
+            )
+
+        finally:
+
+            # Do NOT delete the installer here.
+            #
+            # The detached installer still needs the file.
+            # installer.sh deletes temporary files itself.
+
+            print(
+                "[speedy_TheWeather] "
+                "Update worker finished."
+            )
+
+    thread = threading.Thread(
+        target=worker,
+        name="speedy_TheWeather_UpdateInstall"
+    )
+
+    thread.daemon = True
+    thread.start()
+```
+
 
     def worker():
         try:
