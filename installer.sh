@@ -1,12 +1,11 @@
-```bash
 #!/bin/bash
 
 # =========================================================
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.1.6'
-changelog='Fix malformed locale language file. Added an update function. Buy me a coffee if you like this plugin.'
+version='1.1.7'
+changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
 
 
 # =========================================================
@@ -1344,49 +1343,91 @@ restart_gui()
     echo "========================================================="
     echo
 
-
     sync >/dev/null 2>&1 || true
 
-
-    log "Scheduling Enigma2 GUI restart..."
+    log "Preparing detached Enigma2 GUI restart..."
 
 
     # -----------------------------------------------------
     # IMPORTANT:
-    # The restart is detached from the installer.
     #
-    # This is required when installer.sh is started from
-    # the Enigma2 plugin itself.
+    # The GUI restart must NOT be executed directly by the
+    # installer process.
+    #
+    # The installer may itself have been started by Enigma2.
+    #
+    # Therefore:
+    #
+    # installer.sh
+    #      |
+    #      +-- detached restart process
+    #                |
+    #                +-- sleep
+    #                +-- init 4
+    #                +-- init 3
+    #
+    # This allows installer.sh to finish first.
     # -----------------------------------------------------
 
-    (
-        sleep 3
 
-        log "Restarting Enigma2 GUI using init..."
+    if command -v nohup >/dev/null 2>&1; then
 
-        if command -v init >/dev/null 2>&1; then
+        nohup sh -c '
+            sleep 5
 
-            init 4
+            if command -v init >/dev/null 2>&1; then
 
-            sleep 2
+                init 4
 
-            init 3
+                sleep 2
 
-        elif [ -x "/etc/init.d/enigma2" ]; then
+                init 3
 
-            /etc/init.d/enigma2 restart
+            elif [ -x "/etc/init.d/enigma2" ]; then
 
-        elif command -v systemctl >/dev/null 2>&1; then
+                /etc/init.d/enigma2 restart
 
-            systemctl restart enigma2
+            elif command -v systemctl >/dev/null 2>&1; then
 
-        elif command -v killall >/dev/null 2>&1; then
+                systemctl restart enigma2
 
-            killall -HUP enigma2 2>/dev/null || true
+            elif command -v killall >/dev/null 2>&1; then
 
-        fi
+                killall -HUP enigma2 2>/dev/null || true
 
-    ) >/dev/null 2>&1 &
+            fi
+        ' </dev/null >/dev/null 2>&1 &
+
+    else
+
+        (
+            sleep 5
+
+            if command -v init >/dev/null 2>&1; then
+
+                init 4
+
+                sleep 2
+
+                init 3
+
+            elif [ -x "/etc/init.d/enigma2" ]; then
+
+                /etc/init.d/enigma2 restart
+
+            elif command -v systemctl >/dev/null 2>&1; then
+
+                systemctl restart enigma2
+
+            elif command -v killall >/dev/null 2>&1; then
+
+                killall -HUP enigma2 2>/dev/null || true
+
+            fi
+
+        ) </dev/null >/dev/null 2>&1 &
+
+    fi
 
 
     log "Enigma2 GUI restart scheduled."
@@ -1546,5 +1587,9 @@ show_info
 restart_gui
 
 
+# =========================================================
+# FINISH
+# =========================================================
+
 exit 0
-```
+
