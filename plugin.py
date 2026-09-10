@@ -129,7 +129,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.7'
+version = '1.1.8'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -478,7 +478,6 @@ def _update_show_installing():
     except Exception as e:
         print("[speedy_TheWeather] Could not show install message:", e)
 
-
 def _update_install():
     global _updateInstallInProgress
 
@@ -491,7 +490,8 @@ def _update_install():
     def worker():
         try:
             print(
-                "[speedy_TheWeather] Downloading installer..."
+                "[speedy_TheWeather] "
+                "Downloading installer..."
             )
 
             if not _update_download(
@@ -509,6 +509,10 @@ def _update_install():
                 % UPDATE_INSTALLER_PATH
             )
 
+            # -------------------------------------------------
+            # Make installer executable
+            # -------------------------------------------------
+
             try:
                 os.chmod(
                     UPDATE_INSTALLER_PATH,
@@ -521,6 +525,10 @@ def _update_install():
                     % e
                 )
 
+            # -------------------------------------------------
+            # Verify installer exists
+            # -------------------------------------------------
+
             if not os.path.exists(
                 UPDATE_INSTALLER_PATH
             ):
@@ -528,19 +536,22 @@ def _update_install():
                     "installer file does not exist"
                 )
 
+            # -------------------------------------------------
+            # Start installer DETACHED
+            #
+            # IMPORTANT:
+            #
+            # Do NOT use os.system().
+            #
+            # The installer restarts Enigma2.
+            # os.system() waits for the installer and can
+            # therefore remain blocked during the GUI restart.
+            # -------------------------------------------------
+
             print(
                 "[speedy_TheWeather] "
                 "Starting installer detached from Enigma2..."
             )
-
-            # -------------------------------------------------
-            # IMPORTANT:
-            # Do NOT use os.system() here.
-            #
-            # os.system() waits for the installer.
-            # The installer restarts Enigma2, which can make
-            # os.system() hang forever.
-            # -------------------------------------------------
 
             with open(
                 "/dev/null",
@@ -569,8 +580,22 @@ def _update_install():
             )
 
             # -------------------------------------------------
-            # The installer now runs independently.
-            # Enigma2 does NOT wait for it.
+            # IMPORTANT:
+            #
+            # At this point the installer was successfully
+            # started.
+            #
+            # We do NOT wait for it.
+            # We do NOT check its exit code.
+            #
+            # installer.sh is responsible for:
+            #
+            #   download
+            #   installation
+            #   configuration restore
+            #   GUI restart
+            #
+            # Therefore this is NOT an installation error.
             # -------------------------------------------------
 
             _updateQueue.put(
@@ -589,18 +614,6 @@ def _update_install():
                 ("install_error", None)
             )
 
-        finally:
-
-            # Do NOT delete the installer here.
-            #
-            # The detached installer still needs the file.
-            # installer.sh deletes temporary files itself.
-
-            print(
-                "[speedy_TheWeather] "
-                "Update worker finished."
-            )
-
     thread = threading.Thread(
         target=worker,
         name="speedy_TheWeather_UpdateInstall"
@@ -609,12 +622,16 @@ def _update_install():
     thread.daemon = True
     thread.start()
 
+    print(
+        "[speedy_TheWeather] "
+        "Update installation thread started."
+    )
 
-
-    def worker():
+def worker():
         try:
             print(
-                "[speedy_TheWeather] Downloading installer..."
+                "[speedy_TheWeather] "
+                "Downloading installer..."
             )
 
             if not _update_download(
@@ -622,12 +639,19 @@ def _update_install():
                 UPDATE_INSTALLER_PATH,
                 timeout=30
             ):
-                raise IOError("installer download failed")
+                raise IOError(
+                    "installer download failed"
+                )
 
             print(
-                "[speedy_TheWeather] Installer downloaded to: %s"
+                "[speedy_TheWeather] "
+                "Installer downloaded to: %s"
                 % UPDATE_INSTALLER_PATH
             )
+
+            # -------------------------------------------------
+            # Make installer executable
+            # -------------------------------------------------
 
             try:
                 os.chmod(
@@ -636,9 +660,14 @@ def _update_install():
                 )
             except Exception as e:
                 print(
-                    "[speedy_TheWeather] chmod failed: %s"
+                    "[speedy_TheWeather] "
+                    "chmod failed: %s"
                     % e
                 )
+
+            # -------------------------------------------------
+            # Verify installer exists
+            # -------------------------------------------------
 
             if not os.path.exists(
                 UPDATE_INSTALLER_PATH
@@ -647,38 +676,74 @@ def _update_install():
                     "installer file does not exist"
                 )
 
+            # -------------------------------------------------
+            # Start installer DETACHED
+            #
+            # IMPORTANT:
+            #
+            # Do NOT use os.system().
+            #
+            # The installer restarts Enigma2.
+            # os.system() waits for the installer and can
+            # therefore remain blocked during the GUI restart.
+            # -------------------------------------------------
+
             print(
                 "[speedy_TheWeather] "
-                "Starting installer with /bin/bash..."
+                "Starting installer detached from Enigma2..."
             )
 
-            result = os.system(
-                "/bin/bash %s"
-                % UPDATE_INSTALLER_PATH
-            )
+            with open(
+                "/dev/null",
+                "rb"
+            ) as devnull_in, open(
+                "/dev/null",
+                "ab"
+            ) as devnull_out:
 
-            print(
-                "[speedy_TheWeather] "
-                "Installer exit code: %s"
-                % result
-            )
-
-            if result != 0:
-                raise RuntimeError(
-                    "installer returned %s"
-                    % result
+                process = subprocess.Popen(
+                    [
+                        "/bin/bash",
+                        UPDATE_INSTALLER_PATH
+                    ],
+                    stdin=devnull_in,
+                    stdout=devnull_out,
+                    stderr=devnull_out,
+                    close_fds=True,
+                    start_new_session=True
                 )
 
             print(
                 "[speedy_TheWeather] "
-                "Installer completed successfully."
+                "Installer started detached. PID: %s"
+                % process.pid
             )
+
+            # -------------------------------------------------
+            # IMPORTANT:
+            #
+            # At this point the installer was successfully
+            # started.
+            #
+            # We do NOT wait for it.
+            # We do NOT check its exit code.
+            #
+            # installer.sh is responsible for:
+            #
+            #   download
+            #   installation
+            #   configuration restore
+            #   GUI restart
+            #
+            # Therefore this is NOT an installation error.
+            # -------------------------------------------------
 
             _updateQueue.put(
                 ("installed", None)
             )
 
         except Exception as e:
+
             print(
                 "[speedy_TheWeather] "
                 "Update installation failed: %s"
@@ -689,27 +754,6 @@ def _update_install():
                 ("install_error", None)
             )
 
-        finally:
-            try:
-                if os.path.exists(
-                    UPDATE_INSTALLER_PATH
-                ):
-                    os.unlink(
-                        UPDATE_INSTALLER_PATH
-                    )
-
-                    print(
-                        "[speedy_TheWeather] "
-                        "Temporary installer removed."
-                    )
-
-            except Exception as e:
-                print(
-                    "[speedy_TheWeather] "
-                    "Could not remove installer: %s"
-                    % e
-                )
-
     thread = threading.Thread(
         target=worker,
         name="speedy_TheWeather_UpdateInstall"
@@ -717,6 +761,19 @@ def _update_install():
 
     thread.daemon = True
     thread.start()
+
+    print(
+        "[speedy_TheWeather] "
+        "Update installation thread started."
+    )
+
+
+
+    
+
+
+
+    
 
 
 
