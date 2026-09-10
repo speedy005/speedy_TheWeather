@@ -58,6 +58,12 @@ from Components.ActionMap import ActionMap, HelpableActionMap
 from Tools.Directories import resolveFilename, SCOPE_CONFIG, SCOPE_PLUGINS, SCOPE_LANGUAGE
 from enigma import eListboxPythonMultiContent, loadPNG, gFont, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER
 from Components.ConfigList import ConfigListScreen
+PluginLanguageDomain = "TheWeather"
+PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
+OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
+
+# Textdomain mit dem neuen Namen binden
+gettext.bindtextdomain(PluginLanguageDomain, PluginLanguagePath)
 
 # 1. Konfigurations-Variablen definieren
 config.plugins.speedy_TheWeather = ConfigSubsection()
@@ -123,7 +129,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.1'
+version = '1.0.0'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -393,21 +399,38 @@ def _update_start_check():
 
 
 def _update_show_message(info):
-    remote_version = safeStr(info.get("version", ""))
-    changes = _update_changes_text(info.get("changes", ""))
-    installer_version = safeStr(info.get("installer_version", ""))
+    remote_version = safeStr(
+        info.get("version", "")
+    )
+
+    changes = _update_changes_text(
+        info.get("changes", "")
+    )
+
+    installer_version = safeStr(
+        info.get("installer_version", "")
+    )
 
     installer_note = ""
-    if installer_version:
-        installer_note = "\n\n" + _("Installer version: %s") % installer_version
 
-    message = _(
+    if installer_version:
+        installer_note = (
+            "\n\n"
+            + _("Installer version: %s")
+            % installer_version
+        )
+
+    update_text = (
         "A new version of speedy_TheWeather is available.\n\n"
         "Installed version: %s\n"
         "New version: %s%s\n\n"
         "Changes:\n%s\n\n"
         "Do you want to install the update?"
-    ) % (
+    )
+
+    translated_text = _(update_text)
+
+    message = translated_text % (
         version,
         remote_version,
         installer_note,
@@ -415,7 +438,9 @@ def _update_show_message(info):
     )
 
     try:
+
         if _overlaySession is not None:
+
             _overlaySession.openWithCallback(
                 _update_install_callback,
                 MessageBox,
@@ -423,8 +448,14 @@ def _update_show_message(info):
                 MessageBox.TYPE_YESNO,
                 default=True
             )
+
     except Exception as e:
-        print("[speedy_TheWeather] Could not show update dialog:", e)
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not show update dialog: %s"
+            % e
+        )
 
 
 def _update_install_callback(answer):
@@ -529,14 +560,6 @@ def _update_install_error():
 PluginLanguageDomain = "TheWeather"
 PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
 OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
-
-# System-Sprache setzen
-lang = language.getLanguage()
-os.environ["LANGUAGE"] = lang
-
-# Textdomain mit dem neuen Namen binden
-gettext.bindtextdomain(PluginLanguageDomain, PluginLanguagePath)
-
 icoonpath = "Images"
 SHARED_PACK = "Images"
 backgroundpath = ""
@@ -2065,33 +2088,71 @@ class CitySearchKeyBoard(VirtualKeyBoard):
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 import gettext
+import os
 
-# Name deines Übersetzungsdomains (Ordnername unter locale/)
+
 PluginLanguageDomain = "TheWeather"
 
+PluginLanguagePath = (
+    "Extensions/speedy_TheWeather/locale"
+)
+
+
 def localeInit():
+
+    # Enigma2-Sprache holen
+    lang = language.getLanguage()[:2]
+
+    # Sprache für GNU gettext setzen
+    os.environ["LANGUAGE"] = lang
+
+    # Übersetzungspfad registrieren
     gettext.bindtextdomain(
         PluginLanguageDomain,
         resolveFilename(
             SCOPE_PLUGINS,
-            "Extensions/speedy_TheWeather/locale"
+            PluginLanguagePath
         )
     )
 
+
 localeInit()
 
+language.addCallback(localeInit)
+
+
 def _(txt):
+
     if not txt:
         return ""
 
     try:
-        t = gettext.dgettext(PluginLanguageDomain, txt)
-        if t != txt:
-            return t
-    except Exception as e:
-        print("[speedy_TheWeather] gettext error:", e)
 
-    return txt
+        path = resolveFilename(
+            SCOPE_PLUGINS,
+            "Extensions/speedy_TheWeather/locale"
+        )
+
+        lang = language.getLanguage()[:2]
+
+        translation = gettext.translation(
+            "TheWeather",
+            path,
+            languages=[lang],
+            fallback=True
+        )
+
+        return translation.gettext(txt)
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "gettext error: %s"
+            % e
+        )
+
+        return txt
 
 
 

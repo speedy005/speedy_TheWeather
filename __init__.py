@@ -24,7 +24,7 @@ except ImportError:
 # VERSION
 # ============================================================
 
-__version__ = "1.1.1"
+__version__ = "1.0.0"
 VERSION = __version__
 
 _AUTHOR_ = "by speedy - 2026"
@@ -67,7 +67,7 @@ TEMP_INSTALLER = (
 # LANGUAGE
 # ============================================================
 
-PluginLanguageDomain = "speedy_TheWeather"
+PluginLanguageDomain = "TheWeather"
 
 PluginLanguagePath = (
     "Extensions/speedy_TheWeather/locale"
