@@ -18,7 +18,7 @@ FILEPATH="/tmp/speedy_TheWeather-master.tar.gz"
 BACKUP_DIR="/tmp/foreca_backup"
 OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather-old-plugin"
 
-CONFIG_DIR="/etc/enigma2/foreca"
+CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
 
 
 # =========================================================
