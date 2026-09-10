@@ -1,101 +1,261 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-
-# ============================================================
-# speedy_TheWeather
-# ============================================================
+# Copyright (c) @speedy2026
 
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from Components.Language import language
-
-from os.path import exists, dirname
-from os import environ, remove, system
-
+from os.path import exists, join, dirname
+from enigma import getDesktop, gRGB
+from skin import parseColor
+from os import makedirs, environ, rmdir, walk, remove
 import gettext
-import ssl
-
-try:
-    from urllib.request import Request, urlopen
-except ImportError:
-    from urllib2 import Request, urlopen
-
-
-# ============================================================
-# VERSION
-# ============================================================
+import codecs
+import shutil
+import urllib.request
+import subprocess
+import os
 
 __version__ = "1.1.1"
 VERSION = __version__
 
 _AUTHOR_ = "by speedy - 2026"
+IDEAS = "@speedy"
+THANKS = "@speedy | @atvcaptain"
 
 
-# ============================================================
-# GITHUB
-# ============================================================
 
-GITHUB_REPO = (
-    "https://github.com/"
-    "speedy005/speedy_TheWeather.git"
-)
-
-GITHUB_BRANCH = "master"
-
-GITHUB_RAW = (
-    "https://raw.githubusercontent.com/"
-    "speedy005/speedy_TheWeather/"
-    + GITHUB_BRANCH
-)
-
-VERSION_URL = GITHUB_RAW + "/version.txt"
-
-INSTALLER_URL = GITHUB_RAW + "/installer.sh"
-
-
-# ============================================================
+# ============================================================================
 # PATHS
-# ============================================================
+# ============================================================================
+
+TEMP_DIR = "/tmp/speedy_TheWeather"
+SYSTEM_DIR = "/etc/enigma2/speedy_TheWeather"
 
 PLUGIN_PATH = dirname(__file__)
 
-TEMP_INSTALLER = (
-    "/tmp/speedy_TheWeather_installer.sh"
+
+
+
+# ============================================================================
+# UPDATE
+# ============================================================================
+
+GITHUB_REPOSITORY = "speedy005/speedy_TheWeather"
+GITHUB_BRANCH = "master"
+
+UPDATE_RAW_BASE = (
+    "https://raw.githubusercontent.com/"
+    "speedy005/speedy_TheWeather/"
+    "refs/heads/master"
+)
+
+UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
+UPDATE_INSTALLER_URL = UPDATE_RAW_BASE + "/installer.sh"
+
+UPDATE_INSTALLER_PATH = join(
+    TEMP_DIR,
+    "speedy_TheWeather_update_installer.sh"
 )
 
 
-# ============================================================
+def update_plugin():
+    """
+    Download and execute the latest speedy_TheWeather installer.
+    """
+
+    try:
+        print("=" * 60)
+        print("[UPDATE] speedy_TheWeather")
+        print("[UPDATE] Repository:", GITHUB_REPOSITORY)
+        print("[UPDATE] Downloading installer...")
+        print("=" * 60)
+
+        request = urllib.request.Request(
+            UPDATE_INSTALLER_URL,
+            headers={
+                "User-Agent": "speedy_TheWeather/1.5.2"
+            }
+        )
+
+        with urllib.request.urlopen(
+            request,
+            timeout=30
+        ) as response:
+            installer_data = response.read()
+
+        if not installer_data:
+            print("[UPDATE] ERROR: Empty installer")
+            return False
+
+        with open(
+            UPDATE_INSTALLER_PATH,
+            "wb"
+        ) as installer_file:
+            installer_file.write(installer_data)
+
+        print(
+            "[UPDATE] Installer downloaded:",
+            UPDATE_INSTALLER_PATH
+        )
+
+        # Make installer executable
+        try:
+            os.chmod(
+                UPDATE_INSTALLER_PATH,
+                0o755
+            )
+        except Exception as e:
+            print(
+                "[UPDATE] chmod failed:",
+                e
+            )
+
+        print("[UPDATE] Starting installer...")
+
+        result = subprocess.call(
+            ["/bin/sh", UPDATE_INSTALLER_PATH]
+        )
+
+        if result == 0:
+            print(
+                "[UPDATE] Update completed successfully"
+            )
+
+            try:
+                remove(
+                    UPDATE_INSTALLER_PATH
+                )
+            except Exception:
+                pass
+
+            return True
+
+        print(
+            "[UPDATE] Installer exited with code:",
+            result
+        )
+
+        return False
+
+    except Exception as e:
+        print(
+            "[UPDATE] ERROR:",
+            e
+        )
+
+        try:
+            if exists(
+                UPDATE_INSTALLER_PATH
+            ):
+                remove(
+                    UPDATE_INSTALLER_PATH
+                )
+        except Exception:
+            pass
+
+        return False
+
+
+# ============================================================================
+# DEBUG / CACHE
+# ============================================================================
+
+DEBUG = True
+CACHE_EXPIRE = 3600
+
+
+# ============================================================================
+# CREATE DIRECTORIES
+# ============================================================================
+
+if not exists(SYSTEM_DIR):
+    makedirs(SYSTEM_DIR)
+
+if not exists(TEMP_DIR):
+    makedirs(TEMP_DIR)
+
+if not exists(DBG_DIR):
+    makedirs(DBG_DIR)
+
+if not exists(CACHE_BASE):
+    makedirs(CACHE_BASE)
+
+if not exists(WETTERKONTOR_CACHE):
+    makedirs(WETTERKONTOR_CACHE)
+
+if not exists(METEOGRAM_CACHE):
+    makedirs(METEOGRAM_CACHE)
+
+if not exists(WEATHER_DETAIL_CACHE):
+    makedirs(WEATHER_DETAIL_CACHE)
+
+
+# ============================================================================
 # LANGUAGE
-# ============================================================
+# ============================================================================
 
-PluginLanguageDomain = "TheWeather"
+PluginLanguageDomain = "speedy_TheWeather"
+PluginLanguagePath = "Extensions/speedy_TheWeather/locale"
 
-PluginLanguagePath = (
-    "Extensions/speedy_TheWeather/locale"
-)
 
+# ============================================================================
+# HTTP HEADERS
+# ============================================================================
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/134.0.0.0 Safari/537.36"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,"
+        "application/xml;q=0.9,*/*;q=0.8"
+    ),
+    "Accept-Language": (
+        "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7"
+    ),
+    "Connection": "keep-alive",
+}
+
+
+OSM_HEADERS = {
+    "User-Agent": (
+        "speedy_TheWeather/1.5.2 "
+        "(Enigma2; OpenStreetMap; non-commercial; "
+        "+https://github.com/speedy005/speedy_TheWeather)"
+    ),
+    "Referer": "https://www.foreca.com",
+    "Accept": (
+        "image/webp,image/png,image/*;q=0.8"
+    ),
+    "Accept-Language": (
+        "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7"
+    ),
+    "Connection": "keep-alive",
+}
+
+
+# ============================================================================
+# LANGUAGE INITIALIZATION
+# ============================================================================
 
 def localeInit():
-
     lang = language.getLanguage()[:2]
 
     environ["LANGUAGE"] = lang
 
-    if (
-        PluginLanguageDomain
-        and PluginLanguagePath
-    ):
-
+    if PluginLanguageDomain and PluginLanguagePath:
         gettext.bindtextdomain(
             PluginLanguageDomain,
             resolveFilename(
                 SCOPE_PLUGINS,
                 PluginLanguagePath
-            )
+            ),
         )
 
 
 def _(txt):
-
     if not txt:
         return ""
 
@@ -107,443 +267,558 @@ def _(txt):
     if translated and translated != txt:
         return translated
 
-    return txt
+    print(
+        "[%s] fallback to default translation for %s"
+        % (
+            PluginLanguageDomain,
+            txt
+        )
+    )
+
+    return gettext.gettext(txt)
 
 
 localeInit()
-
 language.addCallback(localeInit)
 
 
-# ============================================================
-# GITHUB CONNECTION
-# ============================================================
+# ============================================================================
+# DETECT SCREEN RESOLUTION
+# ============================================================================
 
-def _github_open(url, timeout=10):
+def get_screen_resolution():
+    """Get current screen resolution."""
+
+    desktop = getDesktop(0)
+
+    return desktop.size()
+
+
+def get_resolution_type():
+    """Get resolution type: hd, fhd, wqhd."""
+
+    width = get_screen_resolution().width()
+
+    if width >= 2560:
+        return "wqhd"
+
+    elif width >= 1920:
+        return "fhd"
+
+    else:
+        # 1280x720 or smaller
+        return "hd"
+
+
+# ============================================================================
+# SKIN LOADER
+# ============================================================================
+
+def load_skin_by_class(class_name):
     """
-    Open a GitHub URL.
+    Load skin using class name and current resolution.
 
-    Compatible with older Enigma2 Python versions.
+    First tries custom skins:
+        skins_user/
+
+    Then built-in skins:
+        skins/
+
+    Finally falls back to HD.
     """
 
-    request = Request(
-        url,
-        headers={
-            "User-Agent":
-                "speedy_TheWeather-Updater"
-        }
+    if DEBUG:
+        print("\n" + "=" * 60)
+        print(
+            "[SKIN DEBUG] Looking for skin: '%s'"
+            % class_name
+        )
+        print(
+            "[SKIN DEBUG] Built-in skins path = %s"
+            % SKINS_PATH
+        )
+        print(
+            "[SKIN DEBUG] Custom skins path = %s"
+            % CUSTOM_SKINS_PATH
+        )
+
+    resolution = get_resolution_type()
+
+    if DEBUG:
+        print(
+            "[SKIN DEBUG] resolution = %s"
+            % resolution
+        )
+
+    # ------------------------------------------------------------------------
+    # Custom skin
+    # ------------------------------------------------------------------------
+
+    custom_skin_file = None
+
+    if exists(CUSTOM_SKINS_PATH):
+
+        custom_skin_file = join(
+            CUSTOM_SKINS_PATH,
+            resolution,
+            "%s.xml" % class_name
+        )
+
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] Trying custom: %s"
+                % custom_skin_file
+            )
+
+            print(
+                "[SKIN DEBUG] Exists? %s"
+                % exists(custom_skin_file)
+            )
+
+    else:
+
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] Custom skins directory "
+                "does not exist"
+            )
+
+    # ------------------------------------------------------------------------
+    # Built-in skins
+    # ------------------------------------------------------------------------
+
+    builtin_skin_file = join(
+        SKINS_PATH,
+        resolution,
+        "%s.xml" % class_name
     )
 
-    try:
+    fallback_skin_file = join(
+        SKINS_PATH,
+        "hd",
+        "%s.xml" % class_name
+    )
 
-        context = ssl._create_unverified_context()
+    # ------------------------------------------------------------------------
+    # Determine skin
+    # ------------------------------------------------------------------------
 
-        return urlopen(
-            request,
-            timeout=timeout,
-            context=context
-        )
+    skin_file = None
 
-    except TypeError:
+    if (
+        custom_skin_file
+        and exists(custom_skin_file)
+    ):
 
-        # Compatibility fallback
-        return urlopen(
-            request,
-            timeout=timeout
-        )
+        skin_file = custom_skin_file
 
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] Using custom skin"
+            )
 
-# ============================================================
-# VERSION PARSER
-# ============================================================
+    elif exists(builtin_skin_file):
 
-def _version_tuple(version):
-    """
-    Convert version string into a comparable tuple.
+        skin_file = builtin_skin_file
 
-    Example:
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] Using built-in skin "
+                "for current resolution"
+            )
 
-        1.2.10 -> (1, 2, 10)
-    """
+    elif exists(fallback_skin_file):
 
-    if not version:
-        return (0,)
+        skin_file = fallback_skin_file
 
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] Using HD fallback skin"
+            )
 
-    try:
+    else:
 
-        version = str(
-            version
-        ).strip()
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] No skin found at all"
+            )
 
+    # ------------------------------------------------------------------------
+    # Read skin
+    # ------------------------------------------------------------------------
 
-        if version.startswith("v"):
-            version = version[1:]
+    if skin_file and exists(skin_file):
 
-
-        parts = version.split(".")
-
-
-        result = []
-
-        for part in parts:
-
-            number = ""
-
-            for char in part:
-
-                if char.isdigit():
-                    number += char
-
-                else:
-                    break
-
-
-            if number:
-                result.append(
-                    int(number)
-                )
-
-            else:
-                result.append(0)
-
-
-        return tuple(result)
-
-    except Exception:
-
-        return (0,)
-
-
-# ============================================================
-# GET CURRENT GITHUB VERSION
-# ============================================================
-
-def get_github_version():
-    """
-    Get the latest version from GitHub.
-
-    GitHub file:
-
-        version.txt
-    """
-
-    try:
-
-        response = _github_open(
-            VERSION_URL,
-            timeout=10
-        )
-
-
-        data = response.read()
-
+        if DEBUG:
+            print(
+                "[SKIN DEBUG] FOUND! Loading file: %s"
+                % skin_file
+            )
 
         try:
 
-            version = data.decode(
+            with codecs.open(
+                skin_file,
+                "r",
                 "utf-8"
-            )
+            ) as f:
 
-        except AttributeError:
+                content = f.read()
 
-            version = data
+                if DEBUG:
 
+                    print(
+                        "[SKIN DEBUG] Loaded %s bytes"
+                        % len(content)
+                    )
 
-        version = version.strip()
+                    print(
+                        "[SKIN DEBUG] First 100 chars: %s"
+                        % content[:100].replace(
+                            chr(10),
+                            " "
+                        )
+                    )
 
+                    print(
+                        "=" * 60 + "\n"
+                    )
 
-        if version.startswith("v"):
-            version = version[1:]
+                return content
 
-
-        if not version:
+        except Exception as e:
 
             print(
-                "[speedy_TheWeather] "
-                "GitHub version.txt is empty"
+                "[SKIN DEBUG] Error reading file: %s"
+                % e
             )
 
-            return None
-
-
-        print(
-            "[speedy_TheWeather] "
-            "GitHub version: %s"
-            % version
-        )
-
-
-        return version
-
-
-    except Exception as e:
+    else:
 
         print(
-            "[speedy_TheWeather] "
-            "GitHub version check failed: %s"
-            % e
+            "[SKIN DEBUG] SKIN FILE MISSING: %s"
+            % skin_file
         )
 
-        return None
-
-
-# ============================================================
-# CHECK UPDATE
-# ============================================================
-
-def check_for_update():
-    """
-    Check if a newer GitHub version exists.
-
-    Returns:
-
-        version string
-        or None
-    """
-
-    latest = get_github_version()
-
-
-    if not latest:
-
-        return None
-
-
-    current_tuple = _version_tuple(
-        __version__
-    )
-
-    latest_tuple = _version_tuple(
-        latest
-    )
-
-
-    if latest_tuple > current_tuple:
-
+    if DEBUG:
         print(
-            "[speedy_TheWeather] "
-            "Update available: %s -> %s"
-            % (
-                __version__,
-                latest
-            )
+            "=" * 60 + "\n"
         )
-
-        return latest
-
-
-    print(
-        "[speedy_TheWeather] "
-        "Plugin is up to date: %s"
-        % __version__
-    )
-
 
     return None
 
 
-# ============================================================
-# DOWNLOAD INSTALLER
-# ============================================================
-
-def download_installer():
-    """
-    Download installer.sh from GitHub.
-    """
-
-    try:
-
-        response = _github_open(
-            INSTALLER_URL,
-            timeout=20
-        )
-
-
-        data = response.read()
-
-
-        if not data:
-
-            print(
-                "[speedy_TheWeather] "
-                "Downloaded installer is empty"
-            )
-
-            return False
-
-
-        with open(
-            TEMP_INSTALLER,
-            "wb"
-        ) as installer:
-
-            installer.write(data)
-
-
-        if not exists(
-            TEMP_INSTALLER
-        ):
-
-            print(
-                "[speedy_TheWeather] "
-                "Installer file was not created"
-            )
-
-            return False
-
-
-        print(
-            "[speedy_TheWeather] "
-            "Installer downloaded"
-        )
-
-
-        return True
-
-
-    except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "Installer download failed: %s"
-            % e
-        )
-
-        return False
-
-
-# ============================================================
-# INSTALL UPDATE
-# ============================================================
-
-def install_update():
-    """
-    Download and execute the GitHub installer.
-    """
-
-    if not download_installer():
-
-        return False
-
-
-    try:
-
-        # Make installer executable
-        result = system(
-            "chmod 755 %s"
-            % TEMP_INSTALLER
-        )
-
-
-        if result != 0:
-
-            print(
-                "[speedy_TheWeather] "
-                "Could not make installer executable"
-            )
-
-            return False
-
-
-        print(
-            "[speedy_TheWeather] "
-            "Starting GitHub installer..."
-        )
-
-
-        result = system(
-            "/bin/sh %s"
-            % TEMP_INSTALLER
-        )
-
-
-        if result == 0:
-
-            print(
-                "[speedy_TheWeather] "
-                "Update installer finished successfully"
-            )
-
-            return True
-
-
-        print(
-            "[speedy_TheWeather] "
-            "Installer returned error code: %s"
-            % result
-        )
-
-
-        return False
-
-
-    except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "Update execution failed: %s"
-            % e
-        )
-
-        return False
-
-
-    finally:
-
-        try:
-
-            if exists(
-                TEMP_INSTALLER
-            ):
-
-                remove(
-                    TEMP_INSTALLER
-                )
-
-        except Exception:
-
-            pass
-
-
-# ============================================================
-# UPDATE INFORMATION
-# ============================================================
-
-def get_update_info():
-    """
-    Return update information.
-
-    Example:
-
-        {
-            "current": "1.1.0",
-            "latest": "1.1.1",
-            "update": True
-        }
-    """
-
-    latest = get_github_version()
-
-
-    if not latest:
-
-        return {
-            "current": __version__,
-            "latest": None,
-            "update": False
-        }
-
-
-    update_available = (
-        _version_tuple(latest)
-        >
-        _version_tuple(__version__)
+def load_skin_for_class(cls):
+    return load_skin_by_class(
+        cls.__name__
     )
 
 
-    return {
-        "current": __version__,
-        "latest": latest,
-        "update": update_available
-    }
+# ============================================================================
+# GLOBAL THEME
+# ============================================================================
+
+def apply_global_theme(screen):
+    """
+    Applies the background color from set_color.conf
+    and transparency from set_alpha.conf.
+    """
+
+    color_file = join(
+        SYSTEM_DIR,
+        "set_color.conf"
+    )
+
+    alpha_file = join(
+        SYSTEM_DIR,
+        "set_alpha.conf"
+    )
+
+    # ------------------------------------------------------------------------
+    # Background color
+    # ------------------------------------------------------------------------
+
+    if exists(color_file):
+
+        try:
+
+            with open(
+                color_file,
+                "r"
+            ) as f:
+
+                parts = (
+                    f.read()
+                    .strip()
+                    .split()
+                )
+
+                if len(parts) >= 3:
+
+                    r = parts[0]
+                    g = parts[1]
+                    b = parts[2]
+
+                    bg_color = gRGB(
+                        int(r),
+                        int(g),
+                        int(b)
+                    )
+
+                    if "background_plate" in screen:
+
+                        screen[
+                            "background_plate"
+                        ].instance.setBackgroundColor(
+                            bg_color
+                        )
+
+        except Exception as e:
+
+            print(
+                "[Theme] Error loading color:",
+                e
+            )
+
+    # ------------------------------------------------------------------------
+    # Transparency
+    # ------------------------------------------------------------------------
+
+    if exists(alpha_file):
+
+        try:
+
+            with open(
+                alpha_file,
+                "r"
+            ) as f:
+
+                alpha = f.read().strip()
+
+                if "selection_overlay" in screen:
+
+                    screen[
+                        "selection_overlay"
+                    ].instance.setBackgroundColor(
+                        parseColor(alpha)
+                    )
+
+        except Exception as e:
+
+            print(
+                "[Theme] Error loading alpha:",
+                e
+            )
+
+
+# ============================================================================
+# ICON PATH
+# ============================================================================
+
+def get_icon_path(
+    icon_name,
+    fallback="na.png"
+):
+    """
+    Returns the full path of an icon from thumb/.
+
+    If the requested icon does not exist,
+    the fallback icon is returned.
+    """
+
+    path = join(
+        THUMB_PATH,
+        icon_name
+    )
+
+    if exists(path):
+        return path
+
+    fallback_path = join(
+        THUMB_PATH,
+        fallback
+    )
+
+    if exists(fallback_path):
+        return fallback_path
+
+    return None
+
+
+# ============================================================================
+# CLEANUP TEMP FILES
+# ============================================================================
+
+def cleanup_temp_files(keep_token=True):
+    """
+    Remove temporary folders.
+
+    If keep_token=True, token.json is preserved.
+    """
+
+    dirs_to_clean = [
+        TEMP_DIR,
+        DBG_DIR
+    ]
+
+    for d in dirs_to_clean:
+
+        if not exists(d):
+            continue
+
+        try:
+
+            # ----------------------------------------------------------------
+            # TEMP DIR - KEEP TOKEN
+            # ----------------------------------------------------------------
+
+            if (
+                keep_token
+                and d == TEMP_DIR
+            ):
+
+                token_path = join(
+                    TEMP_DIR,
+                    "weather_map_cache",
+                    "token.json"
+                )
+
+                for root, dirs, files in walk(
+                    d,
+                    topdown=False
+                ):
+
+                    # --------------------------------------------------------
+                    # Files
+                    # --------------------------------------------------------
+
+                    for name in files:
+
+                        file_path = join(
+                            root,
+                            name
+                        )
+
+                        if file_path != token_path:
+
+                            remove(
+                                file_path
+                            )
+
+                    # --------------------------------------------------------
+                    # Directories
+                    # --------------------------------------------------------
+
+                    for name in dirs:
+
+                        dir_path = join(
+                            root,
+                            name
+                        )
+
+                        if (
+                            dir_path
+                            == join(
+                                TEMP_DIR,
+                                "weather_map_cache"
+                            )
+                        ):
+                            continue
+
+                        rmdir(
+                            dir_path
+                        )
+
+                # ------------------------------------------------------------
+                # Recreate essential directories
+                # ------------------------------------------------------------
+
+                subdirs = [
+                    "meteogram",
+                    "weather_detail",
+                    "weather_map_cache/wetterkontor"
+                ]
+
+                for sub in subdirs:
+
+                    subdir = join(
+                        TEMP_DIR,
+                        sub
+                    )
+
+                    if not exists(subdir):
+
+                        makedirs(
+                            subdir
+                        )
+
+                if DEBUG:
+
+                    print(
+                        "[Cleanup] Cleaned %s "
+                        "(kept token)"
+                        % d
+                    )
+
+            # ----------------------------------------------------------------
+            # COMPLETE REMOVE
+            # ----------------------------------------------------------------
+
+            else:
+
+                shutil.rmtree(d)
+
+                if DEBUG:
+
+                    print(
+                        "[Cleanup] Removed %s"
+                        % d
+                    )
+
+                # ------------------------------------------------------------
+                # Recreate TEMP
+                # ------------------------------------------------------------
+
+                if d == TEMP_DIR:
+
+                    makedirs(d)
+
+                    for sub in [
+                        "meteogram",
+                        "weather_detail",
+                        "weather_map_cache/wetterkontor"
+                    ]:
+
+                        subdir = join(
+                            d,
+                            sub
+                        )
+
+                        if not exists(subdir):
+
+                            makedirs(
+                                subdir
+                            )
+
+                # ------------------------------------------------------------
+                # Recreate DEBUG
+                # ------------------------------------------------------------
+
+                elif d == DBG_DIR:
+
+                    makedirs(d)
+
+        except Exception as e:
+
+            print(
+                "[Cleanup] Error cleaning %s: %s"
+                % (
+                    d,
+                    e
+                )
+            )
+
+
+# ============================================================================
+# END
+# ============================================================================
