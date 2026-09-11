@@ -64,6 +64,9 @@ msgstr "Belgien"
 msgid "Changeable and chance of mist"
 msgstr "Wechselhaft, Nebel möglich"
 
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Tipp!\nDrücken Sie die Gelbe Taste im Hauptmenü, um das Regenradar zu öffnen.\n\nDrücken Sie die Grüne Taste im Hauptmenü, um das Stundenintervall zu ändern.\n\nDrücken Sie die Blaue Taste im Hauptmenü, um zwei Städte zu vergleichen.\n\nDrücken Sie hier OK, um die Temperatur-Einblendung umzuschalten: %s"
+
 msgid "Changeable cloudy light snowfall"
 msgstr "Wechselnd bewölkt, leichter Schneefall"
 
@@ -334,15 +337,6 @@ msgstr "Strenge Kälte!"
 msgid "Standard"
 msgstr "Standard"
 
-msgid ""
-"The update has been installed successfully.\n"
-"\n"
-"Please restart Enigma2 if it does not restart automatically."
-msgstr ""
-"Das Update wurde erfolgreich installiert.\n"
-"\n"
-"Bitte starte Enigma2 neu, falls es nicht automatisch neu gestartet wird."
-
 msgid "Standard (iconpack)"
 msgstr "Standard (Icon-Paket)"
 
@@ -382,7 +376,7 @@ msgstr "Abbrechen"
 msgid "Save"
 msgstr "Speichern"
 
-msgid "Show 2 location"
+msgid "Show 2 locations"
 msgstr "Zeige 2 Wetteransichten"
 
 msgid "Radar default zoom:"
@@ -400,8 +394,6 @@ msgstr "Bitte warten..."
 msgid "Map zoom: %s"
 msgstr "Kartenzoom: %s"
 
-msgid "Tip!\\nPress the hidden Yellow button in the main menu to open the RainRadar.\\n\\nPress the hidden Green button in the main menu to change the hour interval.\\n\\nPress the hidden Blue button in the main menu to compare two cities.\\n\\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Tipp!\\nDrücken Sie die Gelbe Taste im Hauptmenü, um das Regenradar zu öffnen.\\n\\nDrücken Sie die Grüne Taste im Hauptmenü, um das Stundenintervall zu ändern.\\n\\nDrücken Sie die Blaue Taste im Hauptmenü, um zwei Städte zu vergleichen.\\n\\nDrücken Sie hier OK, um die Temperatur-Einblendung umzuschalten: %s"
 
 msgid "Select city and:"
 msgstr "Stadt auswählen und:"
@@ -484,3 +476,6 @@ msgstr ""
 "Das Update konnte nicht installiert werden.\n"
 "\n"
 "Bitte überprüfe die Internetverbindung und versuche es erneut."
+
+msgid "Updating..."
+msgstr "Update wird durchgeführt..."
