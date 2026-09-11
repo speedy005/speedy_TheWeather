@@ -4,9 +4,9 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.2.8'
+version='1.2.9'
 
-changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. Converter and Renderer installation fixed.'
+changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
 
 
 # =========================================================
@@ -20,17 +20,6 @@ BACKUP_DIR="/tmp/speedy_TheWeather_backup"
 OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather-old-plugin"
 
 CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
-
-
-# =========================================================
-# ENIGMA2 COMPONENT PATHS
-# =========================================================
-
-CONVERTER_PATH="/usr/lib/enigma2/python/Components/Converter"
-RENDERER_PATH="/usr/lib/enigma2/python/Components/Renderer"
-
-CONVERTER_FILE="conv_TheWeather.py"
-RENDERER_FILE="rend_TheWeatherPixmap.py"
 
 
 # =========================================================
@@ -975,238 +964,6 @@ find_plugin_source()
 
 
 # =========================================================
-# INSTALL CONVERTER / RENDERER
-# =========================================================
-
-install_components()
-{
-    local converter_source
-    local renderer_source
-    local converter_target
-    local renderer_target
-
-
-    converter_source="$PLUGIN_SOURCE/converter/$CONVERTER_FILE"
-    renderer_source="$PLUGIN_SOURCE/renderer/$RENDERER_FILE"
-
-    converter_target="$CONVERTER_PATH/$CONVERTER_FILE"
-    renderer_target="$RENDERER_PATH/$RENDERER_FILE"
-
-
-    echo
-    echo "========================================================="
-    echo " Installing Converter / Renderer"
-    echo "========================================================="
-    echo
-
-
-    # =====================================================
-    # CHECK SOURCE DIRECTORIES
-    # =====================================================
-
-    if [ ! -d "$PLUGIN_SOURCE/converter" ]; then
-
-        error "Converter directory not found:"
-        echo "$PLUGIN_SOURCE/converter"
-
-        return 1
-
-    fi
-
-
-    if [ ! -d "$PLUGIN_SOURCE/renderer" ]; then
-
-        error "Renderer directory not found:"
-        echo "$PLUGIN_SOURCE/renderer"
-
-        return 1
-
-    fi
-
-
-    # =====================================================
-    # CHECK SOURCE FILES
-    # =====================================================
-
-    if [ ! -f "$converter_source" ]; then
-
-        error "Converter file not found:"
-        echo "$converter_source"
-
-        return 1
-
-    fi
-
-
-    if [ ! -f "$renderer_source" ]; then
-
-        error "Renderer file not found:"
-        echo "$renderer_source"
-
-        return 1
-
-    fi
-
-
-    log "Converter source:"
-    log "$converter_source"
-
-    log "Renderer source:"
-    log "$renderer_source"
-
-
-    # =====================================================
-    # CREATE TARGET DIRECTORIES
-    # =====================================================
-
-    if ! mkdir -p "$CONVERTER_PATH"; then
-
-        error "Could not create Converter directory:"
-        echo "$CONVERTER_PATH"
-
-        return 1
-
-    fi
-
-
-    if ! mkdir -p "$RENDERER_PATH"; then
-
-        error "Could not create Renderer directory:"
-        echo "$RENDERER_PATH"
-
-        return 1
-
-    fi
-
-
-    # =====================================================
-    # REMOVE OLD PYTHON CACHE
-    # =====================================================
-
-    log "Removing old Converter Python cache..."
-
-    find "$CONVERTER_PATH" \
-        -type f \
-        -name "*.pyc" \
-        -delete \
-        2>/dev/null
-
-
-    find "$CONVERTER_PATH" \
-        -type d \
-        -name "__pycache__" \
-        -exec rm -rf {} + \
-        2>/dev/null
-
-
-    log "Removing old Renderer Python cache..."
-
-    find "$RENDERER_PATH" \
-        -type f \
-        -name "*.pyc" \
-        -delete \
-        2>/dev/null
-
-
-    find "$RENDERER_PATH" \
-        -type d \
-        -name "__pycache__" \
-        -exec rm -rf {} + \
-        2>/dev/null
-
-
-    # =====================================================
-    # INSTALL CONVERTER
-    # =====================================================
-
-    log "Installing Converter..."
-
-    if ! cp -f \
-        "$converter_source" \
-        "$converter_target"
-    then
-
-        error "Could not install Converter."
-
-        return 1
-
-    fi
-
-
-    chmod 0644 "$converter_target"
-
-
-    # =====================================================
-    # INSTALL RENDERER
-    # =====================================================
-
-    log "Installing Renderer..."
-
-    if ! cp -f \
-        "$renderer_source" \
-        "$renderer_target"
-    then
-
-        error "Could not install Renderer."
-
-        return 1
-
-    fi
-
-
-    chmod 0644 "$renderer_target"
-
-
-    # =====================================================
-    # VERIFY CONVERTER
-    # =====================================================
-
-    if [ ! -f "$converter_target" ]; then
-
-        error "Converter installation verification failed."
-
-        return 1
-
-    fi
-
-
-    # =====================================================
-    # VERIFY RENDERER
-    # =====================================================
-
-    if [ ! -f "$renderer_target" ]; then
-
-        error "Renderer installation verification failed."
-
-        return 1
-
-    fi
-
-
-    # =====================================================
-    # SHOW RESULT
-    # =====================================================
-
-    echo
-    echo "---------------------------------------------------------"
-    echo "Converter:"
-    echo "$converter_target"
-    echo
-    echo "Renderer:"
-    echo "$renderer_target"
-    echo "---------------------------------------------------------"
-    echo
-
-
-    log "Converter installed successfully."
-    log "Renderer installed successfully."
-
-
-    return 0
-}
-
-
-# =========================================================
 # REMOVE REPOSITORY-ONLY FILES AND DIRECTORIES
 # =========================================================
 
@@ -1239,7 +996,7 @@ remove_repository_only_files()
 
         rm -rf "$PLUGIN_SOURCE/converter"
 
-        log "Converter folder removed from plugin source."
+        log "Converter folder removed from source."
 
     fi
 
@@ -1252,7 +1009,7 @@ remove_repository_only_files()
 
         rm -rf "$PLUGIN_SOURCE/renderer"
 
-        log "Renderer folder removed from plugin source."
+        log "Renderer folder removed from source."
 
     fi
 
@@ -1342,27 +1099,6 @@ install_plugin()
     if ! mkdir -p "$PLUGINPATH"; then
 
         error "Could not create plugin directory."
-
-        rollback_plugin
-        cleanup
-
-        exit 1
-
-    fi
-
-
-    # -----------------------------------------------------
-    # IMPORTANT
-    #
-    # Converter and Renderer are installed BEFORE
-    # remove_repository_only_files().
-    #
-    # Otherwise their source files would be deleted.
-    # -----------------------------------------------------
-
-    if ! install_components; then
-
-        error "Converter / Renderer installation failed."
 
         rollback_plugin
         cleanup
@@ -1522,38 +1258,6 @@ install_plugin()
 
 
     # -----------------------------------------------------
-    # Verify Converter system file
-    # -----------------------------------------------------
-
-    if [ ! -f "$CONVERTER_PATH/$CONVERTER_FILE" ]; then
-
-        error "Converter was not installed correctly."
-
-        rollback_plugin
-        cleanup
-
-        exit 1
-
-    fi
-
-
-    # -----------------------------------------------------
-    # Verify Renderer system file
-    # -----------------------------------------------------
-
-    if [ ! -f "$RENDERER_PATH/$RENDERER_FILE" ]; then
-
-        error "Renderer was not installed correctly."
-
-        rollback_plugin
-        cleanup
-
-        exit 1
-
-    fi
-
-
-    # -----------------------------------------------------
     # Verify installation isn't empty
     # -----------------------------------------------------
 
@@ -1676,21 +1380,10 @@ show_info()
     echo
 
 
-    echo "Converter / Renderer:"
-    echo "---------------------------------------------------------"
-    echo "Converter:"
-    echo "$CONVERTER_PATH/$CONVERTER_FILE"
-    echo
-    echo "Renderer:"
-    echo "$RENDERER_PATH/$RENDERER_FILE"
-    echo "---------------------------------------------------------"
-    echo
-
-
     echo "Repository-only directories excluded:"
     echo "---------------------------------------------------------"
-    echo "converter/       NOT INSTALLED IN PLUGIN"
-    echo "renderer/        NOT INSTALLED IN PLUGIN"
+    echo "converter/       NOT INSTALLED"
+    echo "renderer/        NOT INSTALLED"
     echo "---------------------------------------------------------"
     echo
 
@@ -1968,3 +1661,4 @@ restart_gui
 # =========================================================
 
 exit 0
+
