@@ -1,10 +1,12 @@
+```bash
 #!/bin/bash
 
 # =========================================================
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.2.20'
+version='1.2.0'
+
 changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
 
 
@@ -491,9 +493,7 @@ install_pkg()
         Debian)
 
             if ! apt-get update >/dev/null 2>&1; then
-
                 log "Warning: apt-get update failed."
-
             fi
 
 
@@ -514,9 +514,7 @@ install_pkg()
         OE)
 
             if ! opkg update >/dev/null 2>&1; then
-
                 log "Warning: opkg update failed."
-
             fi
 
 
@@ -662,9 +660,7 @@ backup_config()
 
 
     if [ -d "$BACKUP_DIR" ]; then
-
         rm -rf "$BACKUP_DIR"
-
     fi
 
 
@@ -690,9 +686,7 @@ backup_config()
 restore_config()
 {
     if [ "$BACKUP_CREATED" -ne 1 ]; then
-
         return 0
-
     fi
 
 
@@ -708,9 +702,7 @@ restore_config()
 
 
     if [ -d "$CONFIG_DIR" ]; then
-
         rm -rf "$CONFIG_DIR"
-
     fi
 
 
@@ -973,12 +965,17 @@ find_plugin_source()
 
 
 # =========================================================
-# REMOVE REPOSITORY-ONLY FILES
+# REMOVE REPOSITORY-ONLY FILES AND DIRECTORIES
 # =========================================================
 
 remove_repository_only_files()
 {
-    log "Removing repository-only files..."
+    log "Removing repository-only files and directories..."
+
+
+    # -----------------------------------------------------
+    # Repository-only files
+    # -----------------------------------------------------
 
     find "$PLUGIN_SOURCE" \
         -type f \
@@ -991,13 +988,34 @@ remove_repository_only_files()
         -print \
         -delete
 
-    # Hier fügen wir das Löschen des converter-Ordners hinzu:
+
+    # -----------------------------------------------------
+    # Repository-only directory: converter
+    # -----------------------------------------------------
+
     if [ -d "$PLUGIN_SOURCE/converter" ]; then
+
         rm -rf "$PLUGIN_SOURCE/converter"
+
         log "Converter folder removed from source."
+
     fi
 
-    log "Repository-only files removed."
+
+    # -----------------------------------------------------
+    # Repository-only directory: renderer
+    # -----------------------------------------------------
+
+    if [ -d "$PLUGIN_SOURCE/renderer" ]; then
+
+        rm -rf "$PLUGIN_SOURCE/renderer"
+
+        log "Renderer folder removed from source."
+
+    fi
+
+
+    log "Repository-only files and directories removed."
 }
 
 
@@ -1008,9 +1026,7 @@ remove_repository_only_files()
 backup_existing_plugin()
 {
     if [ -d "$OLD_PLUGIN_BACKUP" ]; then
-
         rm -rf "$OLD_PLUGIN_BACKUP"
-
     fi
 
 
@@ -1094,7 +1110,8 @@ install_plugin()
 
 
     # -----------------------------------------------------
-    # Remove repository-only files
+    # Remove repository-only files/directories
+    # BEFORE copying to the box
     # -----------------------------------------------------
 
     remove_repository_only_files
@@ -1188,6 +1205,10 @@ install_plugin()
     fi
 
 
+    # -----------------------------------------------------
+    # Verify SVG files are NOT installed
+    # -----------------------------------------------------
+
     if find "$PLUGINPATH" \
         -type f \
         -name "*.svg" \
@@ -1196,6 +1217,38 @@ install_plugin()
     then
 
         error "Installation verification failed: SVG file was installed."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Verify converter directory is NOT installed
+    # -----------------------------------------------------
+
+    if [ -d "$PLUGINPATH/converter" ]; then
+
+        error "Installation verification failed: converter folder was installed."
+
+        rollback_plugin
+        cleanup
+
+        exit 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Verify renderer directory is NOT installed
+    # -----------------------------------------------------
+
+    if [ -d "$PLUGINPATH/renderer" ]; then
+
+        error "Installation verification failed: renderer folder was installed."
 
         rollback_plugin
         cleanup
@@ -1328,6 +1381,14 @@ show_info()
     echo
 
 
+    echo "Repository-only directories excluded:"
+    echo "---------------------------------------------------------"
+    echo "converter/       NOT INSTALLED"
+    echo "renderer/        NOT INSTALLED"
+    echo "---------------------------------------------------------"
+    echo
+
+
     echo "Changelog:"
     echo "---------------------------------------------------------"
     echo "$changelog"
@@ -1349,7 +1410,9 @@ restart_gui()
     echo "========================================================="
     echo
 
+
     sync >/dev/null 2>&1 || true
+
 
     log "Preparing detached Enigma2 GUI restart..."
 
@@ -1402,6 +1465,7 @@ restart_gui()
                 killall -HUP enigma2 2>/dev/null || true
 
             fi
+
         ' </dev/null >/dev/null 2>&1 &
 
     else
@@ -1598,4 +1662,4 @@ restart_gui
 # =========================================================
 
 exit 0
-
+```
