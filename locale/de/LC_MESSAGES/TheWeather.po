@@ -334,6 +334,15 @@ msgstr "Strenge Kälte!"
 msgid "Standard"
 msgstr "Standard"
 
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Please restart Enigma2 if it does not restart automatically."
+msgstr ""
+"Das Update wurde erfolgreich installiert.\n"
+"\n"
+"Bitte starte Enigma2 neu, falls es nicht automatisch neu gestartet wird."
+
 msgid "Standard (iconpack)"
 msgstr "Standard (Icon-Paket)"
 
