@@ -4,9 +4,9 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.2.7'
+version='1.2.8'
 
-changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
+changelog='Fix malformed locale language file. Added an update function. Fixed detached GUI restart. converter and renderer fix.'
 
 
 # =========================================================
