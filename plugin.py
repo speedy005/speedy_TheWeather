@@ -2520,11 +2520,15 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             -2
         )
 
+    ```python
     def checkUpdate(self):
         """
         Startet die Update-Prüfung nur dann,
-        wenn der Menüpunkt "Search for update"
-        ausgewählt ist.
+        wenn der Menüpunkt "Search for update" ausgewählt ist.
+
+        Wichtig:
+        Session.callLater() gibt es nicht auf allen Enigma2-Versionen.
+        Deshalb wird hier ausschließlich eTimer verwendet.
         """
 
         current = self["config"].getCurrent()
@@ -2537,57 +2541,186 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         print("[speedy_TheWeather] Starting update check...")
 
-        # Update-Prüfung im Hintergrund starten,
-        # damit Enigma2 nicht einfriert.
-        threading.Thread(
-            target=_update_check_worker,
-            daemon=True
-        ).start()
+        # Alten Timer sauber entfernen
+        try:
+            if hasattr(self, "_updateCheckTimer"):
+                self._updateCheckTimer.stop()
+        except Exception:
+            pass
 
-        # Ergebnis regelmäßig prüfen
-        self.session.callLater(
-            100,
-            self.checkUpdateQueue
-        )
+        # Hintergrundprüfung starten
+        try:
+            threading.Thread(
+                target=_update_check_worker,
+                name="speedy_TheWeather_ConfigUpdateCheck"
+            ).start()
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "Could not start update thread: %s"
+                % e
+            )
+
+            self.session.open(
+                MessageBox,
+                _("Update check failed."),
+                MessageBox.TYPE_ERROR
+            )
+            return
+
+        # eTimer für Queue-Abfrage erzeugen
+        try:
+            self._updateCheckTimer = eTimer()
+
+            safeTimerCallback(
+                self._updateCheckTimer,
+                self.checkUpdateQueue
+            )
+
+            # Nach 100 ms erstmals prüfen
+            self._updateCheckTimer.start(
+                100,
+                True
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "Update result timer started."
+            )
+
+        except Exception as e:
+
+            self._updateCheckTimer = None
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not start update result timer: %s"
+                % e
+            )
+
+            self.session.open(
+                MessageBox,
+                _("Update check failed."),
+                MessageBox.TYPE_ERROR
+            )
+
 
     def checkUpdateQueue(self):
         """
-        Prüft die Queue auf das Ergebnis
-        der Hintergrundprüfung.
+        Prüft die Update-Queue.
+
+        Diese Funktion läuft immer im Enigma2-Mainthread
+        über eTimer.
         """
 
         try:
             result = _updateQueue.get_nowait()
 
-        except Exception:
+        except queue.Empty:
+
             # Noch kein Ergebnis vorhanden.
-            # Nach 100 ms erneut prüfen.
-            self.session.callLater(
-                100,
-                self.checkUpdateQueue
-            )
+            # eTimer erneut in 100 ms starten.
+
+            try:
+                if hasattr(self, "_updateCheckTimer") and \
+                   self._updateCheckTimer is not None:
+
+                    self._updateCheckTimer.start(
+                        100,
+                        True
+                    )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not restart update timer: %s"
+                    % e
+                )
+
             return
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Update queue error: %s"
+                % e
+            )
+
+            try:
+                if hasattr(self, "_updateCheckTimer") and \
+                   self._updateCheckTimer is not None:
+
+                    self._updateCheckTimer.stop()
+
+            except Exception:
+                pass
+
+            self.session.open(
+                MessageBox,
+                _("Update check failed."),
+                MessageBox.TYPE_ERROR
+            )
+
+            return
+
+
+        # -------------------------------------------------
+        # Ergebnis vorhanden
+        # -------------------------------------------------
+
+        try:
+            if hasattr(self, "_updateCheckTimer") and \
+               self._updateCheckTimer is not None:
+
+                self._updateCheckTimer.stop()
+
+        except Exception:
+            pass
+
 
         result_type, data = result
 
-        # Fehler
+
+        # -------------------------------------------------
+        # FEHLER
+        # -------------------------------------------------
+
         if result_type == "error":
+
             self.session.open(
                 MessageBox,
                 data,
                 MessageBox.TYPE_ERROR
             )
 
-        # Keine neue Version
-        elif result_type == "current":
+            return
+
+
+        # -------------------------------------------------
+        # KEIN UPDATE
+        # -------------------------------------------------
+
+        if result_type == "current":
+
             self.session.open(
                 MessageBox,
-                _("The plugin is already up to date.\n\nVersion: %s") % version,
+                _(
+                    "The plugin is already up to date.\n\n"
+                    "Version: %s"
+                ) % version,
                 MessageBox.TYPE_INFO
             )
 
-        # Neue Version verfügbar
-        elif result_type == "available":
+            return
+
+
+        # -------------------------------------------------
+        # UPDATE VERFÜGBAR
+        # -------------------------------------------------
+
+        if result_type == "available":
 
             remote_version = data.get(
                 "version",
@@ -2600,21 +2733,89 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
 
             message = _(
-                "A new version is available!\n\n"
+                "A new version of speedy_TheWeather "
+                "is available!\n\n"
                 "Installed version: %s\n"
                 "New version: %s\n\n"
-                "Changes:\n%s"
+                "Changes:\n%s\n\n"
+                "Do you want to install the update?"
             ) % (
                 version,
                 remote_version,
                 changes
             )
 
-            self.session.open(
+            self.session.openWithCallback(
+                _update_install_callback,
                 MessageBox,
                 message,
-                MessageBox.TYPE_INFO
+                MessageBox.TYPE_YESNO,
+                default=True
             )
+
+            return
+
+
+        # -------------------------------------------------
+        # INSTALLATION
+        # -------------------------------------------------
+
+        if result_type == "installing":
+
+            _update_show_installing()
+
+            return
+
+
+        # -------------------------------------------------
+        # INSTALLIERT
+        # -------------------------------------------------
+
+        if result_type == "installed":
+
+            _update_install_finished()
+
+            return
+
+
+        # -------------------------------------------------
+        # INSTALLATIONSFEHLER
+        # -------------------------------------------------
+
+        if result_type == "install_error":
+
+            _update_install_error()
+
+            return
+
+
+        print(
+            "[speedy_TheWeather] "
+            "Unknown update result: %s"
+            % result_type
+        )
+
+
+    def __del__(self):
+        """
+        Timer beim Zerstören des Config-Screens stoppen.
+        """
+
+        try:
+            if hasattr(self, "_updateCheckTimer") and \
+               self._updateCheckTimer is not None:
+
+                self._updateCheckTimer.stop()
+
+        except Exception:
+            pass
+
+        try:
+            ConfigListScreen.__del__(self)
+        except Exception:
+            pass
+```
+
 
     def openTwoLocations(self):
         self.session.open(twolocations)
