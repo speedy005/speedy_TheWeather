@@ -364,6 +364,21 @@ msgstr "EIN"
 msgid "OFF"
 msgstr "AUS"
 
+msgid "Wind speed:"
+msgstr "Wind Geschwindigkeit:"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Sgow 2 location"
+msgstr "Zeige 2 Wetteransichten"
+
+msgid "Date format:"
+msgstr "Datumsanzeige:"
+
 msgid "Loading radar..."
 msgstr "Radar wird geladen..."
 
