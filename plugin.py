@@ -2814,8 +2814,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             ConfigListScreen.__del__(self)
         except Exception:
             pass
-```
-
 
     def openTwoLocations(self):
         self.session.open(twolocations)
