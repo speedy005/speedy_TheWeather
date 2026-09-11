@@ -2520,7 +2520,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             -2
         )
 
-    ```python
+ 
     def checkUpdate(self):
         """
         Startet die Update-Prüfung nur dann,
