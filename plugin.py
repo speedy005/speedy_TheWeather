@@ -129,7 +129,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.1.8'
+version = '1.1.9'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -289,7 +289,13 @@ def _update_check_worker():
 
         if not _update_is_newer(remote_version):
             print("[speedy_TheWeather] Plugin is up to date: %s" % version)
+
+            _updateQueue.put(("current", {
+                "version": remote_version
+            }))
+
             return
+
 
         # Changelog stammt aus demselben installer.sh, den der Nutzer später
         # mit "Ja" ausführt. Die installer-Version wird nur als Zusatzinfo
@@ -478,7 +484,7 @@ def _update_show_installing():
     except Exception as e:
         print("[speedy_TheWeather] Could not show install message:", e)
 
-def _update_install():
+def _update_install(self):
     global _updateInstallInProgress
 
     if _updateInstallInProgress or not _updateInfo:
@@ -487,156 +493,135 @@ def _update_install():
     _updateInstallInProgress = True
     _updateQueue.put(("installing", None))
 
-    def worker():
+    try:
+        print(
+            "[speedy_TheWeather] "
+            "Downloading installer..."
+        )
+
+        if not _update_download(
+            UPDATE_INSTALLER_URL,
+            UPDATE_INSTALLER_PATH,
+            timeout=30
+        ):
+            raise IOError(
+                "installer download failed"
+            )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer downloaded to: %s"
+            % UPDATE_INSTALLER_PATH
+        )
+
+        # -------------------------------------------------
+        # Make installer executable
+        # -------------------------------------------------
+
         try:
-            print(
-                "[speedy_TheWeather] "
-                "Downloading installer..."
-            )
-
-            if not _update_download(
-                UPDATE_INSTALLER_URL,
+            os.chmod(
                 UPDATE_INSTALLER_PATH,
-                timeout=30
-            ):
-                raise IOError(
-                    "installer download failed"
-                )
-
-            print(
-                "[speedy_TheWeather] "
-                "Installer downloaded to: %s"
-                % UPDATE_INSTALLER_PATH
+                0o755
             )
-
-            # -------------------------------------------------
-            # Make installer executable
-            # -------------------------------------------------
-
-            try:
-                os.chmod(
-                    UPDATE_INSTALLER_PATH,
-                    0o755
-                )
-            except Exception as e:
-                print(
-                    "[speedy_TheWeather] "
-                    "chmod failed: %s"
-                    % e
-                )
-
-            # -------------------------------------------------
-            # Verify installer exists
-            # -------------------------------------------------
-
-            if not os.path.exists(
-                UPDATE_INSTALLER_PATH
-            ):
-                raise IOError(
-                    "installer file does not exist"
-                )
-
-            # -------------------------------------------------
-            # Start installer DETACHED
-            #
-            # IMPORTANT:
-            #
-            # Do NOT use os.system().
-            #
-            # The installer restarts Enigma2.
-            # os.system() waits for the installer and can
-            # therefore remain blocked during the GUI restart.
-            # -------------------------------------------------
-
-            print(
-                "[speedy_TheWeather] "
-                "Starting installer detached from Enigma2..."
-            )
-
-            with open(
-                "/dev/null",
-                "rb"
-            ) as devnull_in, open(
-                "/dev/null",
-                "ab"
-            ) as devnull_out:
-
-                process = subprocess.Popen(
-                    [
-                        "/bin/bash",
-                        UPDATE_INSTALLER_PATH
-                    ],
-                    stdin=devnull_in,
-                    stdout=devnull_out,
-                    stderr=devnull_out,
-                    close_fds=True,
-                    start_new_session=True
-                )
-
-            print(
-                "[speedy_TheWeather] "
-                "Installer started detached. PID: %s"
-                % process.pid
-            )
-
-            # -------------------------------------------------
-            # IMPORTANT:
-            #
-            # At this point the installer was successfully
-            # started.
-            #
-            # We do NOT wait for it.
-            # We do NOT check its exit code.
-            #
-            # installer.sh is responsible for:
-            #
-            #   download
-            #   installation
-            #   configuration restore
-            #   GUI restart
-            #
-            # Therefore this is NOT an installation error.
-            # -------------------------------------------------
-
-            _updateQueue.put(
-                ("installed", None)
-            )
-
         except Exception as e:
-
             print(
                 "[speedy_TheWeather] "
-                "Update installation failed: %s"
+                "chmod failed: %s"
                 % e
             )
 
-            _updateQueue.put(
-                ("install_error", None)
+        # -------------------------------------------------
+        # Verify installer exists
+        # -------------------------------------------------
+
+        if not os.path.exists(
+            UPDATE_INSTALLER_PATH
+        ):
+            raise IOError(
+                "installer file does not exist"
             )
 
-    thread = threading.Thread(
-        target=worker,
-        name="speedy_TheWeather_UpdateInstall"
-    )
+        # -------------------------------------------------
+        # Start installer in Enigma2 Console
+        #
+        # The Console screen shows the output from
+        # installer.sh.
+        # -------------------------------------------------
 
-    thread.daemon = True
-    thread.start()
+        from Screens.Console import Console
+
+        cmd = "/bin/bash \"%s\"" % UPDATE_INSTALLER_PATH
+
+        print(
+            "[speedy_TheWeather] "
+            "Starting installer in Console..."
+        )
+
+        self.session.open(
+            Console,
+            _("Updating..."),
+            cmdlist=[cmd],
+            finishedCallback=self.update_finished,
+            closeOnSuccess=False
+        )
+
+    except Exception as e:
+
+        _updateInstallInProgress = False
+
+        print(
+            "[speedy_TheWeather] "
+            "Update installation failed: %s"
+            % e
+        )
+
+        _updateQueue.put(
+            ("install_error", None)
+        )
+
+
+
+
+
+def update_finished(self, result):
+    global _updateInstallInProgress
 
     print(
         "[speedy_TheWeather] "
-        "Update installation thread started."
+        "Installer finished. Result: %s"
+        % result
     )
 
-
-def _update_install_finished():
-    global _updateInstallInProgress
     _updateInstallInProgress = False
-    print("[speedy_TheWeather] Update installer finished successfully.")
+
+    if result == 0:
+        _updateQueue.put(
+            ("installed", None)
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer completed successfully."
+        )
+
+    else:
+        _updateQueue.put(
+            ("install_error", None)
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer returned error code: %s"
+            % result
+        )
+
 
 
 def _update_install_error():
     global _updateInstallInProgress
+
     _updateInstallInProgress = False
+
     try:
         if _overlaySession is not None:
             _overlaySession.open(
@@ -648,7 +633,12 @@ def _update_install_error():
                 MessageBox.TYPE_ERROR
             )
     except Exception as e:
-        print("[speedy_TheWeather] Could not show update error:", e)
+        print(
+            "[speedy_TheWeather] "
+            "Could not show update error: %s"
+            % e
+        )
+
 
 # WICHTIG: Domain an den Dateinamen 'speedy_TheWeather.mo' anpassen!
 # Alle festen Update-Dialogtexte sind mit _() markiert und damit über
@@ -2436,17 +2426,22 @@ class localcityscreen(Screen):
 
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
-from Components.Label import Label  # Sicherstellen, dass Label importiert ist
+
+from Components.Label import Label
+from Components.config import ConfigNothing
+from Screens.MessageBox import MessageBox
+import threading
+
 
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     skin = """
     <screen name="speedy_TheWeatherSetup" position="center,center" size="700,340" title="speedy_TheWeather Settings">
         <widget name="config" position="20,20" size="660,220" scrollbarMode="showOnDemand" itemHeight="30" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" />
-        
+
         <!-- Roter Button -->
         <ePixmap pixmap="skin_default/buttons/red.png" position="20,240" size="140,40" alphatest="on" zPosition="1" />
         <widget name="key_red" position="20,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
-        
+
         <!-- Grüner Button -->
         <ePixmap pixmap="skin_default/buttons/green.png" position="180,240" size="140,40" alphatest="on" zPosition="1" />
         <widget name="key_green" position="180,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
@@ -2454,7 +2449,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         <!-- Blauer Button -->
         <ePixmap pixmap="skin_default/buttons/blue.png" position="340,240" size="140,40" alphatest="on" zPosition="1" />
         <widget name="key_blue" position="340,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
-        <!-- Gelber Button: appearance -->
+
+        <!-- Gelber Button -->
         <ePixmap pixmap="skin_default/buttons/yellow.png" position="500,240" size="140,40" alphatest="on" zPosition="1" />
         <widget name="key_yellow" position="500,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
     </screen>"""
@@ -2468,19 +2464,25 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         self["key_blue"] = Label(_("Show 2 locations"))
         self["key_yellow"] = Label(_("Appearance"))
 
+        # Menüpunkt für die Update-Suche
+        self.updateEntry = ConfigNothing()
+
         self.list = []
+
         self.list.append(
             getConfigListEntry(
                 _("Wind speed:"),
                 config.plugins.speedy_TheWeather.windunit
             )
         )
+
         self.list.append(
             getConfigListEntry(
                 _("Date format:"),
                 config.plugins.speedy_TheWeather.dateformat
             )
         )
+
         self.list.append(
             getConfigListEntry(
                 _("Radar default zoom:"),
@@ -2488,7 +2490,19 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        ConfigListScreen.__init__(self, self.list, session=session)
+        # Update-Suche
+        self.list.append(
+            getConfigListEntry(
+                _("Search for update"),
+                self.updateEntry
+            )
+        )
+
+        ConfigListScreen.__init__(
+            self,
+            self.list,
+            session=session
+        )
 
         self["actions"] = ActionMap(
             ["SetupActions", "ColorActions"],
@@ -2499,9 +2513,108 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "save": self.save,
                 "blue": self.openTwoLocations,
                 "yellow": self.openAppearance,
+
+                # OK auf "Search for update"
+                "ok": self.checkUpdate,
             },
             -2
         )
+
+    def checkUpdate(self):
+        """
+        Startet die Update-Prüfung nur dann,
+        wenn der Menüpunkt "Search for update"
+        ausgewählt ist.
+        """
+
+        current = self["config"].getCurrent()
+
+        if not current:
+            return
+
+        if current[1] != self.updateEntry:
+            return
+
+        print("[speedy_TheWeather] Starting update check...")
+
+        # Update-Prüfung im Hintergrund starten,
+        # damit Enigma2 nicht einfriert.
+        threading.Thread(
+            target=_update_check_worker,
+            daemon=True
+        ).start()
+
+        # Ergebnis regelmäßig prüfen
+        self.session.callLater(
+            100,
+            self.checkUpdateQueue
+        )
+
+    def checkUpdateQueue(self):
+        """
+        Prüft die Queue auf das Ergebnis
+        der Hintergrundprüfung.
+        """
+
+        try:
+            result = _updateQueue.get_nowait()
+
+        except Exception:
+            # Noch kein Ergebnis vorhanden.
+            # Nach 100 ms erneut prüfen.
+            self.session.callLater(
+                100,
+                self.checkUpdateQueue
+            )
+            return
+
+        result_type, data = result
+
+        # Fehler
+        if result_type == "error":
+            self.session.open(
+                MessageBox,
+                data,
+                MessageBox.TYPE_ERROR
+            )
+
+        # Keine neue Version
+        elif result_type == "current":
+            self.session.open(
+                MessageBox,
+                _("The plugin is already up to date.\n\nVersion: %s") % version,
+                MessageBox.TYPE_INFO
+            )
+
+        # Neue Version verfügbar
+        elif result_type == "available":
+
+            remote_version = data.get(
+                "version",
+                ""
+            )
+
+            changes = data.get(
+                "changes",
+                ""
+            )
+
+            message = _(
+                "A new version is available!\n\n"
+                "Installed version: %s\n"
+                "New version: %s\n\n"
+                "Changes:\n%s"
+            ) % (
+                version,
+                remote_version,
+                changes
+            )
+
+            self.session.open(
+                MessageBox,
+                message,
+                MessageBox.TYPE_INFO
+            )
 
     def openTwoLocations(self):
         self.session.open(twolocations)
