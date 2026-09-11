@@ -60,10 +60,32 @@ from enigma import eListboxPythonMultiContent, loadPNG, gFont, RT_HALIGN_LEFT, R
 from Components.ConfigList import ConfigListScreen
 PluginLanguageDomain = "TheWeather"
 PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
-OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
 
-# Textdomain mit dem neuen Namen binden
-gettext.bindtextdomain(PluginLanguageDomain, PluginLanguagePath)
+def localeInit():
+    lang = language.getLanguage()[:2]
+    os.environ["LANGUAGE"] = lang
+    gettext.bindtextdomain(PluginLanguageDomain, PluginLanguagePath)
+
+localeInit()
+language.addCallback(localeInit)
+
+def _(txt):
+    if not txt:
+        return ""
+    try:
+        lang = language.getLanguage()[:2]
+        translation = gettext.translation(
+            PluginLanguageDomain,
+            PluginLanguagePath,
+            languages=[lang],
+            fallback=True
+        )
+        return translation.gettext(txt)
+    except Exception as e:
+        print("[speedy_TheWeather] gettext error: %s" % e)
+        return txt
+
+OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
 
 # 1. Konfigurations-Variablen definieren
 config.plugins.speedy_TheWeather = ConfigSubsection()
@@ -484,7 +506,7 @@ def _update_show_installing():
     except Exception as e:
         print("[speedy_TheWeather] Could not show install message:", e)
 
-def _update_install(self):
+def _update_install():
     global _updateInstallInProgress
 
     if _updateInstallInProgress or not _updateInfo:
@@ -557,11 +579,14 @@ def _update_install(self):
             "Starting installer in Console..."
         )
 
-        self.session.open(
+        if _overlaySession is None:
+            raise RuntimeError("No active Enigma2 session available for update")
+
+        _overlaySession.open(
             Console,
             _("Updating..."),
             cmdlist=[cmd],
-            finishedCallback=self.update_finished,
+            finishedCallback=update_finished,
             closeOnSuccess=False
         )
 
@@ -583,7 +608,7 @@ def _update_install(self):
 
 
 
-def update_finished(self, result):
+def update_finished(result):
     global _updateInstallInProgress
 
     print(
@@ -615,6 +640,30 @@ def update_finished(self, result):
             % result
         )
 
+
+
+def _update_install_finished():
+    """Behandelt eine erfolgreich beendete Installation."""
+    global _updateInstallInProgress, _updateInfo
+
+    _updateInstallInProgress = False
+    _updateInfo = None
+
+    print("[speedy_TheWeather] Update installation finished successfully.")
+
+    try:
+        if _overlaySession is not None:
+            _overlaySession.open(
+                MessageBox,
+                _(
+                    "The update has been installed successfully.\n\n"
+                    "Please restart Enigma2 if it does not restart automatically."
+                ),
+                MessageBox.TYPE_INFO,
+                timeout=8
+            )
+    except Exception as e:
+        print("[speedy_TheWeather] Could not show update success message:", e)
 
 
 def _update_install_error():
@@ -2171,77 +2220,6 @@ class CitySearchKeyBoard(VirtualKeyBoard):
             text = text.encode("utf-8")
         self["suggestions"].setText(text)
 
-from Components.Language import language
-from Tools.Directories import resolveFilename, SCOPE_PLUGINS
-import gettext
-import os
-
-
-PluginLanguageDomain = "TheWeather"
-
-PluginLanguagePath = (
-    "Extensions/speedy_TheWeather/locale"
-)
-
-
-def localeInit():
-
-    # Enigma2-Sprache holen
-    lang = language.getLanguage()[:2]
-
-    # Sprache für GNU gettext setzen
-    os.environ["LANGUAGE"] = lang
-
-    # Übersetzungspfad registrieren
-    gettext.bindtextdomain(
-        PluginLanguageDomain,
-        resolveFilename(
-            SCOPE_PLUGINS,
-            PluginLanguagePath
-        )
-    )
-
-
-localeInit()
-
-language.addCallback(localeInit)
-
-
-def _(txt):
-
-    if not txt:
-        return ""
-
-    try:
-
-        path = resolveFilename(
-            SCOPE_PLUGINS,
-            "Extensions/speedy_TheWeather/locale"
-        )
-
-        lang = language.getLanguage()[:2]
-
-        translation = gettext.translation(
-            "TheWeather",
-            path,
-            languages=[lang],
-            fallback=True
-        )
-
-        return translation.gettext(txt)
-
-    except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "gettext error: %s"
-            % e
-        )
-
-        return txt
-
-
-
 class localcityscreen(Screen):
     def __init__(self, session):
         if sz_w > 1800:
@@ -2526,9 +2504,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         Startet die Update-Prüfung nur dann,
         wenn der Menüpunkt "Search for update" ausgewählt ist.
 
-        Wichtig:
-        Session.callLater() gibt es nicht auf allen Enigma2-Versionen.
-        Deshalb wird hier ausschließlich eTimer verwendet.
+        Die Prüfung läuft threadbasiert; die Rückgabe wird ausschließlich
+        über eTimer im Enigma2-Mainthread verarbeitet.
         """
 
         current = self["config"].getCurrent()
@@ -2538,6 +2515,17 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         if current[1] != self.updateEntry:
             return
+
+        global _overlaySession, _updatePollTimer
+        _overlaySession = self.session
+
+        # Die globale Poll-Abfrage darf während des manuellen Checks nicht
+        # dieselbe Queue parallel leeren.
+        try:
+            if _updatePollTimer is not None:
+                _updatePollTimer.stop()
+        except Exception:
+            pass
 
         print("[speedy_TheWeather] Starting update check...")
 
@@ -2722,37 +2710,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         if result_type == "available":
 
-            remote_version = data.get(
-                "version",
-                ""
-            )
-
-            changes = data.get(
-                "changes",
-                ""
-            )
-
-            message = _(
-                "A new version of speedy_TheWeather "
-                "is available!\n\n"
-                "Installed version: %s\n"
-                "New version: %s\n\n"
-                "Changes:\n%s\n\n"
-                "Do you want to install the update?"
-            ) % (
-                version,
-                remote_version,
-                changes
-            )
-
-            self.session.openWithCallback(
-                _update_install_callback,
-                MessageBox,
-                message,
-                MessageBox.TYPE_YESNO,
-                default=True
-            )
-
+            # Einheitliche Anzeige für automatischen und manuellen Check.
+            # Dadurch stimmt der msgid exakt mit der PO-Datei überein.
+            globals()["_updateInfo"] = data
+            _update_show_message(data)
             return
 
 
