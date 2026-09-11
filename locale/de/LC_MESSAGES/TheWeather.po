@@ -373,8 +373,11 @@ msgstr "Abbrechen"
 msgid "Save"
 msgstr "Speichern"
 
-msgid "Sgow 2 location"
+msgid "Show 2 location"
 msgstr "Zeige 2 Wetteransichten"
+
+msgid "Radar default zoom:"
+msgstr "Standard-Zoomstufe des Radars:"
 
 msgid "Date format:"
 msgstr "Datumsanzeige:"
