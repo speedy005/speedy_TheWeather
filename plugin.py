@@ -362,27 +362,57 @@ def _update_check_worker():
 def _update_poll():
     """Verarbeitet Ergebnisse des Update-Threads im Enigma2-Mainthread."""
     global _updatePollTimer, _updateInfo
+
     try:
         while True:
             result, payload = _updateQueue.get_nowait()
+
             if result == "available":
                 _updateInfo = payload
                 _update_show_message(payload)
+
+            elif result == "current":
+                remote_version = payload.get("version", "")
+
+                if _overlaySession is not None:
+                    _overlaySession.open(
+                        MessageBox,
+                        _(
+                            "The plugin is already up to date.\n\n"
+                            "Version: %s"
+                        ) % remote_version,
+                        MessageBox.TYPE_INFO
+                    )
+
             elif result == "installing":
                 _update_show_installing()
+
             elif result == "installed":
                 _update_install_finished()
+
             elif result == "error":
-                print("[speedy_TheWeather] " + safeStr(payload))
+                print(
+                    "[speedy_TheWeather] "
+                    + safeStr(payload)
+                )
+
             elif result == "install_error":
                 _update_install_error()
+
     except queue.Empty:
         pass
+
     except Exception as e:
-        print("[speedy_TheWeather] Update poll failed:", e)
+        print(
+            "[speedy_TheWeather] "
+            "Update poll failed:",
+            e
+        )
+
     try:
         if _updatePollTimer is not None:
             _updatePollTimer.start(500, True)
+
     except Exception:
         pass
 
