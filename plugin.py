@@ -1,4 +1,12 @@
-#v.4.0
+#-----------------------------------------------------------------------------
+# v.1.2.7
+# Original work by Caught
+# https://www.linuxsat-support.com/cms/user/40812-caught/
+# Modified by speedy005
+# Copyright © Caught. All rights reserved.
+# Modifications and improvements © speedy006.
+# This software is based on the original work of Caught.
+# Original author and modification credits must remain in the source code.
 # -----------------------------------------------------------------------------
 # Centralized all weather-related HTTP requests.
 # Added proper timeouts and response cleanup.
@@ -151,22 +159,8 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.2.6'
-# ---------------------------------------------------------------------------
-# Plugin-Update
-# ---------------------------------------------------------------------------
-# Updatequelle ist der gleiche GitHub-Installer wie im Repository.
-# Der Installer selbst verwendet den Branch "master" und installiert das
-# komplette Plugin inklusive __init__.py, plugin.py, locale und Images.
-#
-# Beim Start wird zuerst die aktuelle plugin.py vom GitHub-Branch master
-# geladen und nur die Versionsnummer ausgelesen. Ist sie neuer als die lokal
-# installierte Version, erscheint eine MessageBox mit Version und Changelog.
-# Bei "Ja" wird der originale installer.sh heruntergeladen und ausgeführt.
-#
-# Alle festen Texte des Update-Dialogs laufen über _() und sind damit über
-# die vorhandenen .po/.mo-Dateien übersetzbar.
-# ---------------------------------------------------------------------------
+version = '1.2.7'
+
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
 UPDATE_INSTALLER_URL = UPDATE_RAW_BASE + "/installer.sh"
