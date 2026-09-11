@@ -10,17 +10,32 @@ except ImportError:
 from Components.Converter.Converter import Converter
 from Components.Element import cached
 
-# 5 Minuten Cache-Speicher für die Wetterdaten
+# Cache für Wetterdaten
 _CACHE = {}
 _CACHE_TTL = 300
 _LOCK = threading.RLock()
+
+# Zuordnung von Buienradar/OpenData IDs zu Städtenamen
+CITY_NAMES = {
+    "2855146": "Ratingen",
+    "2759794": "Amsterdam",
+    "2750405": "Groningen",
+    "2755251": "Rotterdam",
+    "2745912": "Utrecht",
+    "2925533": "Frankfurt",
+    "2950159": "Berlin",
+    "2867714": "München",
+    "2911298": "Hamburg",
+    "2803013": "Wien",
+    "2657896": "Zürich"
+}
 
 def get_weather_data(city_id):
     now = time.time()
     with _LOCK:
         if city_id in _CACHE and (now - _CACHE[city_id][0] < _CACHE_TTL):
             return _CACHE[city_id][1]
-    
+        
     url = "https://forecast.buienradar.nl/2.0/forecast/%s" % city_id
     req = Request(url, headers={'User-Agent': 'Enigma2-TheWeather-Converter/1.0'})
     try:
@@ -41,7 +56,7 @@ class conv_TheWeather(Converter, object):
         self.day_index = 0
         self.data_type = self.type[0]
 
-        # Tag-Index bestimmen: Day1 = 0 (heute), Day2 = 1 (morgen), ..., Day5 = 4
+        # Tag-Index bestimmen (Day1 = 0, Day2 = 1, ...)
         if len(self.type) > 1:
             if self.type[0].startswith("Day"):
                 try:
@@ -50,11 +65,10 @@ class conv_TheWeather(Converter, object):
                     self.day_index = 0
                 self.data_type = self.type[1]
 
-        # Konfigurierte Stadt-ID (z. B. Amsterdam = 2759794)
-        self.city_id = "2759794"
+        # Konfigurierte Stadt-ID für Ratingen
+        self.city_id = "2855146"
 
     def ms_to_bft(self, ms):
-        """Umrechnung von m/s in die Beaufort-Skala (0-12)"""
         if ms < 0.3: return 0
         elif ms < 1.6: return 1
         elif ms < 3.4: return 2
@@ -71,6 +85,10 @@ class conv_TheWeather(Converter, object):
 
     @cached
     def getText(self):
+        # 0. STADT / LOCATION (Name aus CITY_NAMES Dictionary holen)
+        if self.data_type == "City":
+            return CITY_NAMES.get(str(self.city_id), "Ratingen")
+
         data = get_weather_data(self.city_id)
         if not data or "days" not in data or len(data["days"]) <= self.day_index:
             return "N/A"
@@ -78,7 +96,6 @@ class conv_TheWeather(Converter, object):
         try:
             day_data = data["days"][self.day_index]
 
-            # Datumsverarbeitung
             date_str = day_data.get("date", "").split("T")[0]
             dt = datetime.strptime(date_str, "%Y-%m-%d") if date_str else datetime.now()
 
@@ -137,6 +154,12 @@ class conv_TheWeather(Converter, object):
                 return "%s%%" % int(round(day_data.get("sunprobability", 0)))
             elif self.data_type == "UVIndex":
                 return "%s" % day_data.get("uvindex", 0)
+            elif self.data_type == "Sunrise":
+                sunrise = day_data.get("sunrise", "")
+                return sunrise.split("T")[1][:5] if "T" in sunrise else "N/A"
+            elif self.data_type == "Sunset":
+                sunset = day_data.get("sunset", "")
+                return sunset.split("T")[1][:5] if "T" in sunset else "N/A"
 
             # --- 8. ICON & WETTERTEXT ---
             elif self.data_type == "Icon":
