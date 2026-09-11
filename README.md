@@ -584,4 +584,4 @@ for all screens infobat secinfobar etc.
 <widget source="session.CurrentService" render="rend_TheWeatherPixmap" position="1013,642" size="120,120" font="Regular;20" halign="left" transparent="0">
    <convert type="conv_TheWeather">Day1,Icon</convert>
 </widget>
-</screen>
+</screen> 
