@@ -2427,24 +2427,24 @@ import threading
 
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     skin = """
-    <screen name="speedy_TheWeatherSetup" position="center,center" size="700,340" title="speedy_TheWeather Settings">
-        <widget name="config" position="20,20" size="660,220" scrollbarMode="showOnDemand" itemHeight="30" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" />
+    <screen name="speedy_TheWeatherSetup" position="410,220" size="1100,640" title="speedy_TheWeather Settings">
+        <widget name="config" position="4,4" size="1070,550" scrollbarMode="showOnDemand" itemHeight="45" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular; 25" />
 
         <!-- Roter Button -->
-        <ePixmap pixmap="skin_default/buttons/red.png" position="20,240" size="140,40" alphatest="on" zPosition="1" />
-        <widget name="key_red" position="20,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
+        <ePixmap pixmap="skin_default/buttons/red.png" position="11,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_red" position="36,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
 
         <!-- Grüner Button -->
-        <ePixmap pixmap="skin_default/buttons/green.png" position="180,240" size="140,40" alphatest="on" zPosition="1" />
-        <widget name="key_green" position="180,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
+        <ePixmap pixmap="skin_default/buttons/green.png" position="282,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_green" position="308,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
 
         <!-- Blauer Button -->
-        <ePixmap pixmap="skin_default/buttons/blue.png" position="340,240" size="140,40" alphatest="on" zPosition="1" />
-        <widget name="key_blue" position="340,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
+        <ePixmap pixmap="skin_default/buttons/blue.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_blue" position="580,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
 
         <!-- Gelber Button -->
-        <ePixmap pixmap="skin_default/buttons/yellow.png" position="500,240" size="140,40" alphatest="on" zPosition="1" />
-        <widget name="key_yellow" position="500,240" size="140,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
+        <ePixmap pixmap="skin_default/buttons/yellow.png" position="825,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_yellow" position="851,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="#ffffff" />
     </screen>"""
 
     def __init__(self, session):
