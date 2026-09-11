@@ -991,6 +991,12 @@ remove_repository_only_files()
         -print \
         -delete
 
+    # Hier fügen wir das Löschen des converter-Ordners hinzu:
+    if [ -d "$PLUGIN_SOURCE/converter" ]; then
+        rm -rf "$PLUGIN_SOURCE/converter"
+        log "Converter folder removed from source."
+    fi
+
     log "Repository-only files removed."
 }
 
