@@ -240,7 +240,7 @@ sh installer.sh
 for skinner
 for all screens infobat secinfobar etc.
 
-
+xml
 <screen name="TheWeather_5Days" position="center,center" size="1800,900" title="5-Tage Wettervorhersage" backgroundColor="#101010" flags="wfNoBorder">
 
 <!-- ==================== TAG 1 (HEUTE) ==================== -->
