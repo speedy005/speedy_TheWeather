@@ -151,7 +151,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.2.2'
+version = '1.2.3'
 # ---------------------------------------------------------------------------
 # Plugin-Update
 # ---------------------------------------------------------------------------
@@ -605,40 +605,24 @@ def _update_install():
         )
 
 
-
-
-
-def update_finished(result):
+def update_finished():
     global _updateInstallInProgress
 
     print(
         "[speedy_TheWeather] "
-        "Installer finished. Result: %s"
-        % result
+        "Installer finished."
     )
 
     _updateInstallInProgress = False
 
-    if result == 0:
-        _updateQueue.put(
-            ("installed", None)
-        )
+    _updateQueue.put(
+        ("installed", None)
+    )
 
-        print(
-            "[speedy_TheWeather] "
-            "Installer completed successfully."
-        )
-
-    else:
-        _updateQueue.put(
-            ("install_error", None)
-        )
-
-        print(
-            "[speedy_TheWeather] "
-            "Installer returned error code: %s"
-            % result
-        )
+    print(
+        "[speedy_TheWeather] "
+        "Installer completed successfully."
+    )
 
 
 
