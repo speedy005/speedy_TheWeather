@@ -310,7 +310,7 @@ def _update_check_worker():
             return
 
         if not _update_is_newer(remote_version):
-            print("[speedy_TheWeather] Plugin is up to date: %s" % version)
+            print("[speedy_TheWeather] Plugin is up to date: %s" % remote_version)
 
             _updateQueue.put(("current", {
                 "version": remote_version
@@ -2692,12 +2692,14 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         if result_type == "current":
 
+            remote_version = data.get("version", "")
+
             self.session.open(
                 MessageBox,
                 _(
                     "The plugin is already up to date.\n\n"
                     "Version: %s"
-                ) % version,
+                ) % remote_version,
                 MessageBox.TYPE_INFO
             )
 
