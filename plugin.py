@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.2.8
+# v.1.2.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.2.8'
+version = '1.2.9'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
