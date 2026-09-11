@@ -23,9 +23,9 @@ import os
 __version__ = "1.2.7"
 VERSION = __version__
 
-_AUTHOR_ = "by speedy - 2026"
-IDEAS = "@speedy"
-THANKS = "@speedy | @atvcaptain"
+_AUTHOR_ = "by speedy005 - 2026"
+IDEAS = "@speedy005"
+THANKS = "@speedy005 | @Caught"
 
 
 # ============================================================================
