@@ -1,17 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-04-07 18:00+0100\n"
-"Last-Translator: gutosie <DED1950>\n"
-"Language-Team: GaduGadu nr.4599553 <http://all-forum.cba.pl >\n"
-"Language: ua\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian (Ukraine)\n"
+"Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.0.1\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : n%10==0 || n%10>=5 || (n%100>=11 && n%100<=14) ? 2 : 3);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
 msgstr "Пн"
@@ -61,8 +65,11 @@ msgstr "Бельгія"
 msgid "Changeable and chance of mist"
 msgstr "Мінлива хмарність, можливий туман"
 
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Порада!\nНатисніть приховану ЖОВТУ кнопку в головному меню, щоб відкрити радар опадів.\n\nНатисніть приховану ЗЕЛЕНУ кнопку в головному меню, щоб змінити часовий інтервал.\n\nНатисніть приховану СИНЮ кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть OK тут, щоб увімкнути або вимкнути відображення температури: %s"
+
 msgid "Changeable cloudy light snowfall"
-msgstr "Мінлива хмарність, невеликий снігопад"
+msgstr "Мінлива хмарність, невеликий сніг"
 
 msgid "Clear and chance of mist"
 msgstr "Ясно, можливий туман"
@@ -77,10 +84,10 @@ msgid "Cloudy"
 msgstr "Хмарно"
 
 msgid "Cloudy and chance of showers"
-msgstr "Хмарно, можлива злива"
+msgstr "Хмарно, можливі зливи"
 
 msgid "Download error: Check spelling."
-msgstr "Помилка завантаження: Перевірте правопис."
+msgstr "Помилка завантаження: перевірте написання."
 
 msgid "Drizzle"
 msgstr "Мряка"
@@ -95,34 +102,37 @@ msgid "Exit"
 msgstr "Вихід"
 
 msgid "Favorite Locations"
-msgstr "Обрані локації"
+msgstr "Улюблені місця"
 
 msgid "Feels Like: "
+msgstr "Відчувається як: "
+
+msgid "Feels like: "
 msgstr "Відчувається як: "
 
 msgid "Hail radar"
 msgstr "Радар граду"
 
 msgid "Heavy clouds"
-msgstr "Значна хмарність"
+msgstr "Сильна хмарність"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Значна хмарність, сильні зливи"
+msgstr "Сильна хмарність, сильні зливи"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Значна хмарність, грози"
+msgstr "Сильна хмарність, грозові зливи"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Значна хмарність та сильний снігопад"
+msgstr "Сильна хмарність і сильний снігопад"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Значна хмарність, невеликий снігопад"
+msgstr "Сильна хмарність, невеликий сніг"
 
 msgid "Heavy clouds showers possible"
-msgstr "Значна хмарність, можливі зливи"
+msgstr "Сильна хмарність, можливі зливи"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Значна хмарність, зимовий дощ"
+msgstr "Сильна хмарність, зимові опади"
 
 msgid "Help"
 msgstr "Допомога"
@@ -137,16 +147,16 @@ msgid "Local Weather"
 msgstr "Місцева погода"
 
 msgid "Location +"
-msgstr "Додати локацію"
+msgstr "Місце +"
 
 msgid "Location -"
-msgstr "Видалити локацію"
+msgstr "Місце -"
 
 msgid "Location:"
-msgstr "Локація:"
+msgstr "Місце:"
 
 msgid "Mist radar"
-msgstr "Radar туману"
+msgstr "Радар туману"
 
 msgid "Mostly clear"
 msgstr "Переважно ясно"
@@ -158,25 +168,25 @@ msgid "N"
 msgstr "Пн"
 
 msgid "NE"
-msgstr "Пн-Сх"
+msgstr "ПнСх"
 
 msgid "NW"
-msgstr "Пн-Зχ"
+msgstr "ПнЗх"
 
 msgid "Rainfall radar"
 msgstr "Радар опадів"
 
 msgid "WeatherInfo"
-msgstr "ІнфоПогода"
+msgstr "Інформація про погоду"
 
 msgid "S"
 msgstr "Пд"
 
 msgid "SE"
-msgstr "Пд-Сх"
+msgstr "ПдСх"
 
 msgid "SW"
-msgstr "Пд-Зх"
+msgstr "ПдЗх"
 
 msgid "Satellite"
 msgstr "Супутник"
@@ -197,13 +207,13 @@ msgid "Sunny and chance of mist"
 msgstr "Сонячно, можливий туман"
 
 msgid "Sunny and chance of showers"
-msgstr "Сонячно, можлива злива"
+msgstr "Сонячно, можливі зливи"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Сонячно, можливі грози"
+msgstr "Сонячно, можливі грозові зливи"
 
 msgid "Sunny few clouds"
-msgstr "Сонячно, малохмарно"
+msgstr "Сонячно, невелика хмарність"
 
 msgid "Sunpower-UV"
 msgstr "УФ-індекс"
@@ -224,7 +234,7 @@ msgid "W"
 msgstr "Зх"
 
 msgid "Weather forecast-nl"
-msgstr "Прогноз погоди"
+msgstr "Прогноз погоди-nl"
 
 msgid "Wind direction: "
 msgstr "Напрямок вітру: "
@@ -236,28 +246,28 @@ msgid "Background"
 msgstr "Фон"
 
 msgid "Background reset to standard."
-msgstr "Фон скинуто на стандартний."
+msgstr "Фон скинуто до стандартного."
 
 msgid "Choose 2nd location"
-msgstr "Обрати 2-гу локацію"
+msgstr "Виберіть 2-е місце"
 
 msgid "Choose 2nd location:"
-msgstr "Обрати 2-гу локацію:"
+msgstr "Виберіть 2-е місце:"
 
 msgid "Choose background:"
-msgstr "Обрати фон:"
+msgstr "Виберіть фон:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Місто не знайдено. Натисніть ЖОВТУ кнопку для зміни."
+msgstr "Місто не знайдено. Натисніть ЖОВТУ кнопку, щоб змінити."
 
 msgid "Compare Locations"
-msgstr "Порівняти локації"
+msgstr "Порівняти місця"
 
 msgid "Data error"
 msgstr "Помилка даних"
 
 msgid "Download error: No response try again"
-msgstr "Помилка завантаження: Немає відповіді, спробуйте ще раз"
+msgstr "Помилка завантаження: немає відповіді, спробуйте ще раз"
 
 msgid "Error fetching data."
 msgstr "Помилка отримання даних."
@@ -266,7 +276,7 @@ msgid "Error loading"
 msgstr "Помилка завантаження"
 
 msgid "Extra Icons "
-msgstr "Додаткові іконки "
+msgstr "Додаткові піктограми "
 
 msgid "Extreme cold!"
 msgstr "Екстремальний холод!"
@@ -275,37 +285,43 @@ msgid "Extreme heat!"
 msgstr "Екстремальна спека!"
 
 msgid "h"
-msgstr "год"
+msgstr "г"
 
 msgid "Heavy rain!"
 msgstr "Сильний дощ!"
 
 msgid "Heavy storm!"
-msgstr "Сильний шторм!"
+msgstr "Сильна буря!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Пакет іконок змінено.\nПлагін буде перезавантажено..."
+msgstr "Пакет піктограм змінено.\nПлагін буде перезапущено..."
 
 msgid "Loading background image, please wait..."
-msgstr "Завантаження фонового зображення, будь ласка, зачекайте..."
+msgstr "Завантаження фонового зображення, зачекайте..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "Завантаження стандартних піктограм, зачекайте..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "Завантаження додаткових піктограм, зачекайте..."
 
 msgid "Loading..."
 msgstr "Завантаження..."
 
 msgid "No 2nd location"
-msgstr "Немає 2-ї локації"
+msgstr "Немає 2-го місця"
 
 msgid "No info"
 msgstr "Немає інформації"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Не знайдено збережених міст.\nСпочатку додайте міста на екрані локацій."
+msgstr "Збережених міст не знайдено.\nСпочатку додайте міста через екран вибору місця."
 
 msgid "Not found"
 msgstr "Не знайдено"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Натисніть ЖОВТУ кнопку, щоб обрати 2-гу локацію."
+msgstr "Натисніть ЖОВТУ кнопку, щоб вибрати 2-е місце."
 
 msgid "Rain: "
 msgstr "Дощ: "
@@ -320,13 +336,13 @@ msgid "Severe cold!"
 msgstr "Сильний мороз!"
 
 msgid "Standard"
-msgstr "Стандартний"
+msgstr "Стандарт"
 
 msgid "Standard (iconpack)"
-msgstr "Стандартний (пакет іконок)"
+msgstr "Стандартний (пакет піктограм)"
 
 msgid "Standard Icons"
-msgstr "Стандартні іконки"
+msgstr "Стандартні піктограми"
 
 msgid "Strong wind!"
 msgstr "Сильний вітер!"
@@ -341,25 +357,126 @@ msgid "Warm weather!"
 msgstr "Тепла погода!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Упс!\nПовільне інтернет-з'єднання або його відсутність\nБудь ласка, спробуйте ще раз"
+msgstr "Ой!\nПовільне або відсутнє підключення до Інтернету\nСпробуйте ще раз"
 
 msgid "Wind: "
 msgstr "Вітер: "
 
+msgid "ON"
+msgstr "УВІМК."
+
+msgid "OFF"
+msgstr "ВИМК."
+
+msgid "Wind speed:"
+msgstr "Швидкість вітру:"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Save"
+msgstr "Зберегти"
+
+msgid "Show 2 locations"
+msgstr "Показувати 2 місця"
+
+msgid "Radar default zoom:"
+msgstr "Масштаб радара за замовчуванням:"
+
+msgid "Date format:"
+msgstr "Формат дати:"
+
 msgid "Loading radar..."
-msgstr "Завантаження радару..."
+msgstr "Завантаження радара..."
 
 msgid "Please wait..."
-msgstr "Будь ласка, зачекайте..."
+msgstr "Зачекайте..."
 
 msgid "Map zoom: %s"
 msgstr "Масштаб карти: %s"
 
-msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Порада!\nНатисніть приховану жовту кнопку в головному меню, щоб відкрити радар опадів.\n\nНатисніть приховану зелену кнопку в головному меню, щоб змінити часовий інтервал.\n\nНатисніть приховану синю кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть тут OK, щоб увімкнути/вимкнути накладання температури: %s"
+msgid "Select city and:"
+msgstr "Виберіть місто та:"
 
-msgid "ON"
-msgstr "УВІМК"
+msgid "- Press Ok for Weather info"
+msgstr "- Натисніть OK для інформації про погоду"
 
-msgid "OFF"
-msgstr "ВИМК"
+msgid "- Press Menu for RainRadar"
+msgstr "- Натисніть Menu для радара опадів"
+
+msgid "Appearance"
+msgstr "Вигляд"
+
+# Update
+
+msgid "TheWeather update"
+msgstr "Оновлення TheWeather"
+
+msgid "Search for update"
+msgstr "Перевірити оновлення"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"Плагін уже оновлено до останньої версії.\n"
+"\n"
+"Версія: %s"
+
+msgid "Update check failed."
+msgstr "Не вдалося перевірити наявність оновлень."
+
+msgid "Changes:"
+msgstr "Зміни:"
+
+msgid "Installer version: %s"
+msgstr "Версія інсталятора: %s"
+
+msgid "Update information is incomplete."
+msgstr "Інформація про оновлення неповна."
+
+msgid "No changes available."
+msgstr "Немає доступних змін."
+
+msgid ""
+"A new version of speedy_TheWeather is available.\n"
+"\n"
+"Installed version: %s\n"
+"New version: %s%s\n"
+"\n"
+"Changes:\n"
+"%s\n"
+"\n"
+"Do you want to install the update?"
+msgstr ""
+"Доступна нова версія speedy_TheWeather.\n"
+"\n"
+"Встановлена версія: %s\n"
+"Нова версія: %s%s\n"
+"\n"
+"Зміни:\n"
+"%s\n"
+"\n"
+"Бажаєте встановити оновлення?"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait. Enigma2 may restart automatically."
+msgstr ""
+"Оновлення встановлюється.\n"
+"\n"
+"Будь ласка, зачекайте. Enigma2 може автоматично перезапуститися."
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"Не вдалося встановити оновлення.\n"
+"\n"
+"Перевірте підключення до Інтернету та спробуйте ще раз."
+
+msgid "Updating..."
+msgstr "Оновлення..."

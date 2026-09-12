@@ -5,38 +5,38 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: \n"
-"Language: de_DE\n"
+"Language-Team: Greek (Greece)\n"
+"Language: el_GR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
-"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "ΔΕ"
+msgstr "Δε"
 
 msgid "Tu"
-msgstr "ΤΡ"
+msgstr "Τρ"
 
 msgid "We"
-msgstr "ΤΕ"
+msgstr "Τε"
 
 msgid "Th"
-msgstr "ΠΕ"
+msgstr "Πε"
 
 msgid "Fr"
-msgstr "ΠΑ"
+msgstr "Πα"
 
 msgid "Sa"
-msgstr "ΣΑ"
+msgstr "Σα"
 
 msgid "Su"
-msgstr "ΚΥ"
+msgstr "Κυ"
 
 msgid "Monday"
 msgstr "Δευτέρα"
@@ -63,25 +63,28 @@ msgid "Belgium"
 msgstr "Βέλγιο"
 
 msgid "Changeable and chance of mist"
-msgstr "Μεταβλητός με πιθανότητα ομίχλης"
+msgstr "Μεταβλητός καιρός, πιθανή ομίχλη"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Συμβουλή!\nΠατήστε το κρυφό ΚΙΤΡΙΝΟ κουμπί στο κύριο μενού για να ανοίξετε το ραντάρ βροχής.\n\nΠατήστε το κρυφό ΠΡΑΣΙΝΟ κουμπί στο κύριο μενού για να αλλάξετε το χρονικό διάστημα ωρών.\n\nΠατήστε το κρυφό ΜΠΛΕ κουμπί στο κύριο μενού για να συγκρίνετε δύο πόλεις.\n\nΠατήστε OK εδώ για εναλλαγή της ένδειξης θερμοκρασίας: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Μεταβλητός συννεφιά ελαφριά χιονόπτωση"
+msgstr "Μεταβλητές νεφώσεις, ασθενής χιονόπτωση"
 
 msgid "Clear and chance of mist"
-msgstr "Καθαρός με πιθανότητα ομίχλης"
+msgstr "Αίθριος, πιθανή ομίχλη"
 
 msgid "Clear night"
-msgstr "Καθαρή Νύχτα"
+msgstr "Αίθρια νύχτα"
 
 msgid "Clouds radar"
-msgstr "Ραντάρ σύννεφων"
+msgstr "Ραντάρ νεφώσεων"
 
 msgid "Cloudy"
-msgstr "Νεφώσεις"
+msgstr "Νεφελώδης"
 
 msgid "Cloudy and chance of showers"
-msgstr "Συννεφιά με πιθανότητα βροχής"
+msgstr "Νεφελώδης, πιθανές βροχές"
 
 msgid "Download error: Check spelling."
 msgstr "Σφάλμα λήψης: Ελέγξτε την ορθογραφία."
@@ -99,49 +102,52 @@ msgid "Exit"
 msgstr "Έξοδος"
 
 msgid "Favorite Locations"
-msgstr "Αγαπημένες Τοποθεσίες"
+msgstr "Αγαπημένες τοποθεσίες"
 
 msgid "Feels Like: "
-msgstr "Αίσθηση: "
+msgstr "Αισθητή θερμοκρασία: "
+
+msgid "Feels like: "
+msgstr "Αισθητή θερμοκρασία: "
 
 msgid "Hail radar"
 msgstr "Ραντάρ χαλαζιού"
 
 msgid "Heavy clouds"
-msgstr "Συννεφιά"
+msgstr "Πυκνές νεφώσεις"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Συννεφιά έντονη βροχή"
+msgstr "Πυκνές νεφώσεις, ισχυρές βροχές"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Συννεφιά καταιγίδα"
+msgstr "Πυκνές νεφώσεις, καταιγίδες"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Συννεφιά και έντονη χιονόπτωση"
+msgstr "Πυκνές νεφώσεις και ισχυρή χιονόπτωση"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Συννεφιά χαμηλή χιονόπτωση"
+msgstr "Πυκνές νεφώσεις, ασθενής χιονόπτωση"
 
 msgid "Heavy clouds showers possible"
-msgstr "Συννεφιά πιθανότητα βροχής"
+msgstr "Πυκνές νεφώσεις, πιθανές βροχές"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Συννεφιά χιονόνερο"
+msgstr "Πυκνές νεφώσεις, χειμερινές βροχές"
 
 msgid "Help"
 msgstr "Βοήθεια"
 
 msgid "Km/h"
-msgstr "Χλμ/ώ"
+msgstr "Km/h"
 
 msgid "Light cloudy"
-msgstr "Αραιές νεφώσεις"
+msgstr "Λίγες νεφώσεις"
 
 msgid "Local Weather"
-msgstr "Τοπικός Καιρός"
+msgstr "Τοπικός καιρός"
 
 msgid "Location +"
-msgstr "Τοποθεσία+"
+msgstr "Τοποθεσία +"
 
 msgid "Location -"
 msgstr "Τοποθεσία -"
@@ -153,10 +159,10 @@ msgid "Mist radar"
 msgstr "Ραντάρ ομίχλης"
 
 msgid "Mostly clear"
-msgstr "Καθαρός"
+msgstr "Κυρίως αίθριος"
 
 msgid "Mostly sunny"
-msgstr "Ηλιοφάνεια"
+msgstr "Κυρίως ηλιόλουστος"
 
 msgid "N"
 msgstr "Β"
@@ -171,7 +177,7 @@ msgid "Rainfall radar"
 msgstr "Ραντάρ βροχής"
 
 msgid "WeatherInfo"
-msgstr "Πληροφορίες Καιρού"
+msgstr "Πληροφορίες καιρού"
 
 msgid "S"
 msgstr "Ν"
@@ -186,31 +192,31 @@ msgid "Satellite"
 msgstr "Δορυφόρος"
 
 msgid "Showers and chance of thunder"
-msgstr "Βροχή και πιθανότητα καταιγίδας"
+msgstr "Βροχές, πιθανές καταιγίδες"
 
 msgid "Snow radar"
 msgstr "Ραντάρ χιονιού"
 
 msgid "Sun radar"
-msgstr "Ραντάρ Ηλιοφάνειας"
+msgstr "Ραντάρ ηλιοφάνειας"
 
 msgid "Sunny / Clear"
-msgstr "Ηλιοφάνεια / Καθαρός"
+msgstr "Ηλιόλουστος / Αίθριος"
 
 msgid "Sunny and chance of mist"
-msgstr "Ηλιοφάνεια και πιθανότητα ομίχλης"
+msgstr "Ηλιόλουστος, πιθανή ομίχλη"
 
 msgid "Sunny and chance of showers"
-msgstr "Ηλιοφάνεια και πιθανότητα βροχής"
+msgstr "Ηλιόλουστος, πιθανές βροχές"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Ηλιοφάνεια και πιθανότητα καταιγίδων"
+msgstr "Ηλιόλουστος, πιθανές καταιγίδες"
 
 msgid "Sunny few clouds"
-msgstr "Ηλιοφάνεια αραιή συννεφιά"
+msgstr "Ηλιόλουστος με λίγες νεφώσεις"
 
 msgid "Sunpower-UV"
-msgstr "Ένταση ηλίου-UV"
+msgstr "Δείκτης UV"
 
 msgid "Temperature"
 msgstr "Θερμοκρασία"
@@ -228,10 +234,10 @@ msgid "W"
 msgstr "Δ"
 
 msgid "Weather forecast-nl"
-msgstr "Πρόγνωση καιρού"
+msgstr "Πρόγνωση καιρού-Ολλανδία"
 
 msgid "Wind direction: "
-msgstr "Διεύθυνση ανέμου: "
+msgstr "Κατεύθυνση ανέμου: "
 
 msgid "Back"
 msgstr "Πίσω"
@@ -240,7 +246,7 @@ msgid "Background"
 msgstr "Φόντο"
 
 msgid "Background reset to standard."
-msgstr "Επαναφορά φόντου στο προεπιλεγμένο."
+msgstr "Το φόντο επαναφέρθηκε στο προεπιλεγμένο."
 
 msgid "Choose 2nd location"
 msgstr "Επιλογή 2ης τοποθεσίας"
@@ -252,10 +258,10 @@ msgid "Choose background:"
 msgstr "Επιλογή φόντου:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Η πόλη δεν βρέθηκε. Πιέστε το ΚΙΤΡΙΝΟ για αλλαγή."
+msgstr "Η πόλη δεν βρέθηκε. Πατήστε ΚΙΤΡΙΝΟ για αλλαγή."
 
 msgid "Compare Locations"
-msgstr "Σύγκριση Τοποθεσιών"
+msgstr "Σύγκριση τοποθεσιών"
 
 msgid "Data error"
 msgstr "Σφάλμα δεδομένων"
@@ -270,46 +276,52 @@ msgid "Error loading"
 msgstr "Σφάλμα φόρτωσης"
 
 msgid "Extra Icons "
-msgstr "Επιπλέον Εικονίδια "
+msgstr "Επιπλέον εικονίδια "
 
 msgid "Extreme cold!"
 msgstr "Ακραίο ψύχος!"
 
 msgid "Extreme heat!"
-msgstr "Ακραίος καύσωνας!"
+msgstr "Ακραία ζέστη!"
 
 msgid "h"
-msgstr "ώ"
+msgstr "ώρ."
 
 msgid "Heavy rain!"
-msgstr "Έντονη βροχή!"
+msgstr "Ισχυρή βροχή!"
 
 msgid "Heavy storm!"
 msgstr "Ισχυρή καταιγίδα!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Το πακέτο εικονιδίων άλλαξε.\nΤο πρόσθετο θα επανεκκινηθεί..."
+msgstr "Το πακέτο εικονιδίων άλλαξε.\nΤο πρόσθετο θα επανεκκινήσει..."
 
 msgid "Loading background image, please wait..."
 msgstr "Φόρτωση εικόνας φόντου, παρακαλώ περιμένετε..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "Φόρτωση τυπικών εικονιδίων, παρακαλώ περιμένετε..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "Φόρτωση επιπλέον εικονιδίων, παρακαλώ περιμένετε..."
 
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
 msgid "No 2nd location"
-msgstr "Χωρίς 2η τοποθεσία"
+msgstr "Δεν υπάρχει 2η τοποθεσία"
 
 msgid "No info"
-msgstr "Χωρίς πληροφορίες"
+msgstr "Δεν υπάρχουν πληροφορίες"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Δεν βρέθηκαν αποθηκευμένες πόλεις.\nΠροσθέστε πρώτα πόλεις μέσω της οθόνης τοποθεσίας."
+msgstr "Δεν βρέθηκαν αποθηκευμένες πόλεις.\nΠροσθέστε πρώτα πόλεις από την οθόνη τοποθεσίας."
 
 msgid "Not found"
 msgstr "Δεν βρέθηκε"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Πιέστε το ΚΙΤΡΙΝΟ για να επιλέξετε μια 2η τοποθεσία."
+msgstr "Πατήστε ΚΙΤΡΙΝΟ για να επιλέξετε 2η τοποθεσία."
 
 msgid "Rain: "
 msgstr "Βροχή: "
@@ -324,31 +336,55 @@ msgid "Severe cold!"
 msgstr "Δριμύ ψύχος!"
 
 msgid "Standard"
-msgstr "Προεπιλογή"
+msgstr "Τυπικό"
 
 msgid "Standard (iconpack)"
-msgstr "Προεπιλογή (πακέτο εικονιδίων)"
+msgstr "Τυπικό (πακέτο εικονιδίων)"
 
 msgid "Standard Icons"
-msgstr "Προεπιλεγμένα Εικονίδια"
+msgstr "Τυπικά εικονίδια"
 
 msgid "Strong wind!"
-msgstr "Ισχυρός άνεμος!"
+msgstr "Ισχυροί άνεμοι!"
 
 msgid "Sun: "
 msgstr "Ήλιος: "
 
 msgid "Very heavy rain!"
-msgstr "Πολύ έντονη βροχή!"
+msgstr "Πολύ ισχυρή βροχή!"
 
 msgid "Warm weather!"
 msgstr "Ζεστός καιρός!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ωχ!\nΑργή ή καθόλου σύνδεση στο Διαδίκτυο\nΠαρακαλώ δοκιμάστε ξανά"
+msgstr "Ωχ!\nΑργή ή ανύπαρκτη σύνδεση στο Internet\nΠαρακαλώ δοκιμάστε ξανά"
 
 msgid "Wind: "
 msgstr "Άνεμος: "
+
+msgid "ON"
+msgstr "ΕΝΕΡΓΟ"
+
+msgid "OFF"
+msgstr "ΑΝΕΝΕΡΓΟ"
+
+msgid "Wind speed:"
+msgstr "Ταχύτητα ανέμου:"
+
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+msgid "Save"
+msgstr "Αποθήκευση"
+
+msgid "Show 2 locations"
+msgstr "Εμφάνιση 2 τοποθεσιών"
+
+msgid "Radar default zoom:"
+msgstr "Προεπιλεγμένη μεγέθυνση ραντάρ:"
+
+msgid "Date format:"
+msgstr "Μορφή ημερομηνίας:"
 
 msgid "Loading radar..."
 msgstr "Φόρτωση ραντάρ..."
@@ -357,13 +393,90 @@ msgid "Please wait..."
 msgstr "Παρακαλώ περιμένετε..."
 
 msgid "Map zoom: %s"
-msgstr "Ζουμ χάρτη: %s"
+msgstr "Μεγέθυνση χάρτη: %s"
 
-msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Συμβουλή!\nΠατήστε το κρυφό κίτρινο κουμπί στο κύριο μενού για να ανοίξετε το ραντάρ βροχής.\n\nΠατήστε το κρυφό πράσινο κουμπί στο κύριο μενού για να αλλάξετε το χρονικό διάστημα ωρών.\n\nΠατήστε το κρυφό μπλε κουμπί στο κύριο μενού για να συγκρίνετε δύο πόλεις.\n\nΠατήστε OK εδώ για εναλλαγή της επικάλυψης θερμοκρασίας: %s"
+msgid "Select city and:"
+msgstr "Επιλέξτε πόλη και:"
 
-msgid "ON"
-msgstr "ΕΝΕΡΓΟ"
+msgid "- Press Ok for Weather info"
+msgstr "- Πατήστε OK για πληροφορίες καιρού"
 
-msgid "OFF"
-msgstr "ΑΝΕΝΕΡΓΟ"
+msgid "- Press Menu for RainRadar"
+msgstr "- Πατήστε Menu για το ραντάρ βροχής"
+
+msgid "Appearance"
+msgstr "Εμφάνιση"
+
+# Update
+
+msgid "TheWeather update"
+msgstr "Ενημέρωση TheWeather"
+
+msgid "Search for update"
+msgstr "Αναζήτηση ενημέρωσης"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"Το πρόσθετο είναι ήδη ενημερωμένο.\n"
+"\n"
+"Έκδοση: %s"
+
+msgid "Update check failed."
+msgstr "Ο έλεγχος ενημέρωσης απέτυχε."
+
+msgid "Changes:"
+msgstr "Αλλαγές:"
+
+msgid "Installer version: %s"
+msgstr "Έκδοση εγκαταστάτη: %s"
+
+msgid "Update information is incomplete."
+msgstr "Οι πληροφορίες ενημέρωσης είναι ελλιπείς."
+
+msgid "No changes available."
+msgstr "Δεν υπάρχουν διαθέσιμες αλλαγές."
+
+msgid ""
+"A new version of speedy_TheWeather is available.\n"
+"\n"
+"Installed version: %s\n"
+"New version: %s%s\n"
+"\n"
+"Changes:\n"
+"%s\n"
+"\n"
+"Do you want to install the update?"
+msgstr ""
+"Διατίθεται νέα έκδοση του speedy_TheWeather.\n"
+"\n"
+"Εγκατεστημένη έκδοση: %s\n"
+"Νέα έκδοση: %s%s\n"
+"\n"
+"Αλλαγές:\n"
+"%s\n"
+"\n"
+"Θέλετε να εγκαταστήσετε την ενημέρωση;"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait. Enigma2 may restart automatically."
+msgstr ""
+"Η ενημέρωση εγκαθίσταται.\n"
+"\n"
+"Παρακαλώ περιμένετε. Το Enigma2 ενδέχεται να επανεκκινήσει αυτόματα."
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης.\n"
+"\n"
+"Ελέγξτε τη σύνδεση στο Internet και δοκιμάστε ξανά."
+
+msgid "Updating..."
+msgstr "Ενημέρωση..."

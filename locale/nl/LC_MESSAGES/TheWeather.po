@@ -2,16 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-23 16:09+0200\n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
-"Language-Team: \n"
+"Last-Translator: \n"
+"Language-Team: Dutch (Netherlands)\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.6\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
 msgstr "Ma"
@@ -56,16 +60,19 @@ msgid "Sunday"
 msgstr "Zondag"
 
 msgid "Belgium"
-msgstr "Belgie"
+msgstr "België"
 
 msgid "Changeable and chance of mist"
-msgstr "Wisselvallig met kans op nevel"
+msgstr "Wisselend, kans op mist"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Tip!\nDruk op de verborgen GELE knop in het hoofdmenu om de regenradar te openen.\n\nDruk op de verborgen GROENE knop in het hoofdmenu om het uurinterval te wijzigen.\n\nDruk op de verborgen BLAUWE knop in het hoofdmenu om twee steden te vergelijken.\n\nDruk hier op OK om de temperatuuroverlay in of uit te schakelen: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Wisselend bewolkt lichte sneeuwval"
+msgstr "Wisselend bewolkt, lichte sneeuwval"
 
 msgid "Clear and chance of mist"
-msgstr "Helder met kans nevel"
+msgstr "Helder, kans op mist"
 
 msgid "Clear night"
 msgstr "Heldere nacht"
@@ -77,67 +84,67 @@ msgid "Cloudy"
 msgstr "Bewolkt"
 
 msgid "Cloudy and chance of showers"
-msgstr "Bewolkt met kans op buien"
+msgstr "Bewolkt, kans op buien"
 
 msgid "Download error: Check spelling."
-msgstr "Download fout: Controleer spelling."
+msgstr "Downloadfout: controleer de spelling."
 
 msgid "Drizzle"
-msgstr "Motregenradar"
+msgstr "Motregen"
 
 msgid "E"
 msgstr "O"
-
-msgid "Enter cityname e.g. london or london_gb or london-2643743"
-msgstr "Vul stad in b.v. london of london_gb of london-2643743"
 
 msgid "Europe"
 msgstr "Europa"
 
 msgid "Exit"
-msgstr "Exit"
+msgstr "Afsluiten"
 
 msgid "Favorite Locations"
-msgstr "Favoriete Locaties"
+msgstr "Favoriete locaties"
 
 msgid "Feels Like: "
-msgstr "GevoelsTemp: "
+msgstr "Voelt als: "
+
+msgid "Feels like: "
+msgstr "Voelt als: "
 
 msgid "Hail radar"
 msgstr "Hagelradar"
 
 msgid "Heavy clouds"
-msgstr "Zwaar bewolkt"
+msgstr "Zware bewolking"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Zwaar bewolkt  hevige buien"
+msgstr "Zware bewolking, zware buien"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Zwaar bewolkt  onweersbuien"
+msgstr "Zware bewolking, onweersbuien"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Zwaar bewolkt en zware sneeuwval"
+msgstr "Zware bewolking en zware sneeuwval"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Zwaar bewolkt lichte sneeuwval"
+msgstr "Zware bewolking, lichte sneeuwval"
 
 msgid "Heavy clouds showers possible"
-msgstr "Zwaar bewolkt  buien mogelijk"
+msgstr "Zware bewolking, buien mogelijk"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Zwaarbewolkt winterse neerslag"
+msgstr "Zware bewolking, winterse neerslag"
 
 msgid "Help"
 msgstr "Help"
 
 msgid "Km/h"
-msgstr "Km/u"
+msgstr "km/u"
 
 msgid "Light cloudy"
-msgstr "Lichte bewolking"
+msgstr "Licht bewolkt"
 
 msgid "Local Weather"
-msgstr "WeerInfo"
+msgstr "Lokaal weer"
 
 msgid "Location +"
 msgstr "Locatie +"
@@ -148,31 +155,14 @@ msgstr "Locatie -"
 msgid "Location:"
 msgstr "Locatie:"
 
-msgid ""
-"Manual adding Citynumbers:\n"
-"Go to www.bbc.com/weather\n"
-"Search city and find citycode in the internetlink.\n"
-"\n"
-"Go back to \"Location +\" and add cityname-number e.g.\n"
-"\"Dusseldorf-2934246\" or \"Dusseld-2934246\"\n"
-"Don't forget the \"-\" sign."
-msgstr ""
-"Handmatig toevoegen van Steden:\n"
-"Go to www.bbc.com/weather\n"
-"Zoek stad en vind stadscode in de internetlink.\n"
-"\n"
-"Ga terug naar \"Locatie +\" en voeg de stadsnaam-number b.v.\n"
-"\"Dusseldorf-2934246\" of \"Dusseld-2934246\" toe.\n"
-"Vergeet het \"-\" teken niet."
-
 msgid "Mist radar"
 msgstr "Mistradar"
 
 msgid "Mostly clear"
-msgstr "Overwegend   helder"
+msgstr "Overwegend helder"
 
 msgid "Mostly sunny"
-msgstr "Overwegend   zonnig"
+msgstr "Overwegend zonnig"
 
 msgid "N"
 msgstr "N"
@@ -184,10 +174,10 @@ msgid "NW"
 msgstr "NW"
 
 msgid "Rainfall radar"
-msgstr "Buienradar"
+msgstr "Neerslagradar"
 
-msgid "RainfallRadar & WeatherInfo"
-msgstr "BuienRadar & WeerInfo"
+msgid "WeatherInfo"
+msgstr "Weersinformatie"
 
 msgid "S"
 msgstr "Z"
@@ -202,7 +192,7 @@ msgid "Satellite"
 msgstr "Satelliet"
 
 msgid "Showers and chance of thunder"
-msgstr "Buien en kans op onweer"
+msgstr "Buien, kans op onweer"
 
 msgid "Snow radar"
 msgstr "Sneeuwradar"
@@ -214,19 +204,19 @@ msgid "Sunny / Clear"
 msgstr "Zonnig / Helder"
 
 msgid "Sunny and chance of mist"
-msgstr "Zon met kans op nevel"
+msgstr "Zonnig, kans op mist"
 
 msgid "Sunny and chance of showers"
-msgstr "Zonnig met kans op buien"
+msgstr "Zonnig, kans op buien"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Zon met kans op buien of onweer"
+msgstr "Zonnig, kans op onweersbuien"
 
 msgid "Sunny few clouds"
-msgstr "Zon met (lichte) bewolking"
+msgstr "Zonnig met enkele wolken"
 
 msgid "Sunpower-UV"
-msgstr "Zonkracht-UV"
+msgstr "UV-index"
 
 msgid "Temperature"
 msgstr "Temperatuur"
@@ -244,7 +234,7 @@ msgid "W"
 msgstr "W"
 
 msgid "Weather forecast-nl"
-msgstr "Weerbericht"
+msgstr "Weersverwachting-nl"
 
 msgid "Wind direction: "
 msgstr "Windrichting: "
@@ -274,22 +264,22 @@ msgid "Compare Locations"
 msgstr "Locaties vergelijken"
 
 msgid "Data error"
-msgstr "Datafout"
+msgstr "Gegevensfout"
 
 msgid "Download error: No response try again"
-msgstr "Download fout: Geen reactie, probeer opnieuw"
+msgstr "Downloadfout: geen antwoord, probeer opnieuw"
 
 msgid "Error fetching data."
-msgstr "Fout bij ophalen data."
+msgstr "Fout bij ophalen van gegevens."
 
 msgid "Error loading"
 msgstr "Fout bij laden"
 
 msgid "Extra Icons "
-msgstr "Extra Icons "
+msgstr "Extra pictogrammen "
 
 msgid "Extreme cold!"
-msgstr "Extreme koude!"
+msgstr "Extreme kou!"
 
 msgid "Extreme heat!"
 msgstr "Extreme hitte!"
@@ -304,10 +294,16 @@ msgid "Heavy storm!"
 msgstr "Zware storm!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Iconpakket gewijzigd.\nDe plugin herstart..."
+msgstr "Pictogrampakket gewijzigd.\nDe plugin wordt opnieuw gestart..."
 
 msgid "Loading background image, please wait..."
 msgstr "Achtergrondafbeelding laden, even geduld..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "Standaardpictogrammen laden, even geduld..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "Extra pictogrammen laden, even geduld..."
 
 msgid "Loading..."
 msgstr "Laden..."
@@ -316,7 +312,7 @@ msgid "No 2nd location"
 msgstr "Geen 2e locatie"
 
 msgid "No info"
-msgstr "Geen info"
+msgstr "Geen informatie"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
 msgstr "Geen opgeslagen steden gevonden.\nVoeg eerst steden toe via het locatiescherm."
@@ -337,25 +333,22 @@ msgid "Settings"
 msgstr "Instellingen"
 
 msgid "Severe cold!"
-msgstr "Strenge koude!"
+msgstr "Ernstige kou!"
 
 msgid "Standard"
 msgstr "Standaard"
 
 msgid "Standard (iconpack)"
-msgstr "Standaard (iconpakket)"
+msgstr "Standaard (pictogrampakket)"
 
 msgid "Standard Icons"
-msgstr "Standaard Icons"
+msgstr "Standaardpictogrammen"
 
 msgid "Strong wind!"
-msgstr "Harde wind!"
+msgstr "Sterke wind!"
 
 msgid "Sun: "
 msgstr "Zon: "
-
-msgid "TheWeather_v.%s"
-msgstr "HetWeer_v.%s"
 
 msgid "Very heavy rain!"
 msgstr "Zeer zware regen!"
@@ -369,15 +362,121 @@ msgstr "Oeps!\nTrage of geen internetverbinding\nProbeer het opnieuw"
 msgid "Wind: "
 msgstr "Wind: "
 
+msgid "ON"
+msgstr "AAN"
+
+msgid "OFF"
+msgstr "UIT"
+
+msgid "Wind speed:"
+msgstr "Windsnelheid:"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Show 2 locations"
+msgstr "2 locaties tonen"
+
+msgid "Radar default zoom:"
+msgstr "Standaard zoomniveau radar:"
+
+msgid "Date format:"
+msgstr "Datumformaat:"
+
 msgid "Loading radar..."
 msgstr "Radar laden..."
 
 msgid "Please wait..."
-msgstr "Even wachten..."
+msgstr "Even geduld..."
 
 msgid "Map zoom: %s"
 msgstr "Kaartzoom: %s"
 
-msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Tip!\nDruk op de verborgen gele knop in het hoofdmenu om de regenradar te openen.\n\nDruk op de verborgen groene knop in het hoofdmenu om het uurinterval te wijzigen.\n\nDruk op de verborgen blauwe knop in het hoofdmenu om twee steden te vergelijken.\n\nDruk hier op OK om de temperatuuroverlay in of uit te schakelen: %s"
+msgid "Select city and:"
+msgstr "Selecteer een stad en:"
 
+msgid "- Press Ok for Weather info"
+msgstr "- Druk op OK voor weersinformatie"
+
+msgid "- Press Menu for RainRadar"
+msgstr "- Druk op Menu voor de regenradar"
+
+msgid "Appearance"
+msgstr "Uiterlijk"
+
+# Update
+
+msgid "TheWeather update"
+msgstr "TheWeather-update"
+
+msgid "Search for update"
+msgstr "Zoeken naar updates"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"De plugin is al up-to-date.\n"
+"\n"
+"Versie: %s"
+
+msgid "Update check failed."
+msgstr "Controle op updates mislukt."
+
+msgid "Changes:"
+msgstr "Wijzigingen:"
+
+msgid "Installer version: %s"
+msgstr "Installerversie: %s"
+
+msgid "Update information is incomplete."
+msgstr "De update-informatie is onvolledig."
+
+msgid "No changes available."
+msgstr "Geen wijzigingen beschikbaar."
+
+msgid ""
+"A new version of speedy_TheWeather is available.\n"
+"\n"
+"Installed version: %s\n"
+"New version: %s%s\n"
+"\n"
+"Changes:\n"
+"%s\n"
+"\n"
+"Do you want to install the update?"
+msgstr ""
+"Er is een nieuwe versie van speedy_TheWeather beschikbaar.\n"
+"\n"
+"Geïnstalleerde versie: %s\n"
+"Nieuwe versie: %s%s\n"
+"\n"
+"Wijzigingen:\n"
+"%s\n"
+"\n"
+"Wil je de update installeren?"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait. Enigma2 may restart automatically."
+msgstr ""
+"De update wordt geïnstalleerd.\n"
+"\n"
+"Even geduld. Enigma2 kan automatisch opnieuw opstarten."
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"De update kon niet worden geïnstalleerd.\n"
+"\n"
+"Controleer de internetverbinding en probeer het opnieuw."
+
+msgid "Updating..."
+msgstr "Bijwerken..."

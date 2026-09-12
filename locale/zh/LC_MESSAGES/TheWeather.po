@@ -4,17 +4,17 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: icanbefly 804381256@qq.com\n"
-"Language-Team: icanbefly\n"
-"Language: zh\n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
-"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.8.3\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
@@ -63,16 +63,19 @@ msgid "Belgium"
 msgstr "比利时"
 
 msgid "Changeable and chance of mist"
-msgstr "天色多变并可能有雾"
+msgstr "天气多变，可能有雾"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "提示！\n按主菜单中隐藏的黄色按钮打开降雨雷达。\n\n按主菜单中隐藏的绿色按钮更改小时间隔。\n\n按主菜单中隐藏的蓝色按钮比较两个城市。\n\n在此按 OK 键切换温度显示：%s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "多变的多云小雪"
+msgstr "多云天气变化，可能有小雪"
 
 msgid "Clear and chance of mist"
-msgstr "晴朗有雾"
+msgstr "晴朗，可能有雾"
 
 msgid "Clear night"
-msgstr "晴朗的夜晚"
+msgstr "晴朗夜间"
 
 msgid "Clouds radar"
 msgstr "云层雷达"
@@ -81,13 +84,13 @@ msgid "Cloudy"
 msgstr "多云"
 
 msgid "Cloudy and chance of showers"
-msgstr "多云和可能有阵雨"
+msgstr "多云，可能有阵雨"
 
 msgid "Download error: Check spelling."
-msgstr "下载错误：检查拼写。"
+msgstr "下载错误：请检查拼写。"
 
 msgid "Drizzle"
-msgstr "细雨"
+msgstr "毛毛雨"
 
 msgid "E"
 msgstr "东"
@@ -99,34 +102,37 @@ msgid "Exit"
 msgstr "退出"
 
 msgid "Favorite Locations"
-msgstr "最喜欢的地点"
+msgstr "收藏地点"
 
 msgid "Feels Like: "
-msgstr "体感温度: "
+msgstr "体感温度："
+
+msgid "Feels like: "
+msgstr "体感温度："
 
 msgid "Hail radar"
 msgstr "冰雹雷达"
 
 msgid "Heavy clouds"
-msgstr "乌云密布"
+msgstr "浓云"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "大风大雨"
+msgstr "浓云，强阵雨"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "强雷阵雨"
+msgstr "浓云，雷阵雨"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "大雪纷飞"
+msgstr "浓云，大雪"
 
 msgid "Heavy clouds light snowfall"
-msgstr "阴天有小雪"
+msgstr "浓云，小雪"
 
 msgid "Heavy clouds showers possible"
-msgstr "阴天可能有阵雨"
+msgstr "浓云，可能有阵雨"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "阴天有冬季降雨"
+msgstr "浓云，冬季降水"
 
 msgid "Help"
 msgstr "帮助"
@@ -141,22 +147,22 @@ msgid "Local Weather"
 msgstr "当地天气"
 
 msgid "Location +"
-msgstr "添加地点"
+msgstr "地点 +"
 
 msgid "Location -"
-msgstr "删除地点"
+msgstr "地点 -"
 
 msgid "Location:"
-msgstr "地点:"
+msgstr "地点："
 
 msgid "Mist radar"
-msgstr "大雾雷达"
+msgstr "雾雷达"
 
 msgid "Mostly clear"
 msgstr "大部晴朗"
 
 msgid "Mostly sunny"
-msgstr "大部晴朗"
+msgstr "大部晴天"
 
 msgid "N"
 msgstr "北"
@@ -183,31 +189,31 @@ msgid "SW"
 msgstr "西南"
 
 msgid "Satellite"
-msgstr "卫星云图"
+msgstr "卫星"
 
 msgid "Showers and chance of thunder"
-msgstr "阵雨并可能有雷暴"
+msgstr "阵雨，可能有雷暴"
 
 msgid "Snow radar"
 msgstr "降雪雷达"
 
 msgid "Sun radar"
-msgstr "光照雷达"
+msgstr "太阳雷达"
 
 msgid "Sunny / Clear"
-msgstr "晴朗"
+msgstr "晴朗 / 晴天"
 
 msgid "Sunny and chance of mist"
-msgstr "晴朗可能有雾"
+msgstr "晴朗，可能有雾"
 
 msgid "Sunny and chance of showers"
-msgstr "晴朗可能有阵雨"
+msgstr "晴朗，可能有阵雨"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "晴朗可能有雷阵雨"
+msgstr "晴朗，可能有雷阵雨"
 
 msgid "Sunny few clouds"
-msgstr "晴间多云"
+msgstr "晴朗，少量云层"
 
 msgid "Sunpower-UV"
 msgstr "紫外线指数"
@@ -222,16 +228,16 @@ msgid "TheWeather"
 msgstr "天气"
 
 msgid "Thunder radar"
-msgstr "雷电雷达"
+msgstr "雷暴雷达"
 
 msgid "W"
 msgstr "西"
 
 msgid "Weather forecast-nl"
-msgstr "天气预报"
+msgstr "天气预报-nl"
 
 msgid "Wind direction: "
-msgstr "风向: "
+msgstr "风向："
 
 msgid "Back"
 msgstr "返回"
@@ -240,31 +246,31 @@ msgid "Background"
 msgstr "背景"
 
 msgid "Background reset to standard."
-msgstr "背景已重置为标准。"
+msgstr "背景已恢复为默认设置。"
 
 msgid "Choose 2nd location"
-msgstr "选择第二地点"
+msgstr "选择第二个地点"
 
 msgid "Choose 2nd location:"
-msgstr "选择第二地点:"
+msgstr "选择第二个地点："
 
 msgid "Choose background:"
-msgstr "选择背景:"
+msgstr "选择背景："
 
 msgid "City not found. Press YELLOW to change."
-msgstr "未找到城市。按黄色键进行更改。"
+msgstr "未找到城市。按黄色按钮进行更改。"
 
 msgid "Compare Locations"
-msgstr "对比地点"
+msgstr "比较地点"
 
 msgid "Data error"
 msgstr "数据错误"
 
 msgid "Download error: No response try again"
-msgstr "下载错误：无响应，请重试"
+msgstr "下载错误：没有响应，请重试"
 
 msgid "Error fetching data."
-msgstr "获取数据错误。"
+msgstr "获取数据时出错。"
 
 msgid "Error loading"
 msgstr "加载错误"
@@ -273,46 +279,52 @@ msgid "Extra Icons "
 msgstr "额外图标 "
 
 msgid "Extreme cold!"
-msgstr "极度严寒！"
+msgstr "极度寒冷！"
 
 msgid "Extreme heat!"
-msgstr "极端酷热！"
+msgstr "极端高温！"
 
 msgid "h"
 msgstr "小时"
 
 msgid "Heavy rain!"
-msgstr "大雨滂沱！"
+msgstr "大雨！"
 
 msgid "Heavy storm!"
-msgstr "强暴风雨！"
+msgstr "强烈风暴！"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "图标包已更改。\n插件即将重启..."
+msgstr "图标包已更改。\n插件将重新启动..."
 
 msgid "Loading background image, please wait..."
 msgstr "正在加载背景图片，请稍候..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "正在加载标准图标，请稍候..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "正在加载额外图标，请稍候..."
 
 msgid "Loading..."
 msgstr "正在加载..."
 
 msgid "No 2nd location"
-msgstr "未设置第二地点"
+msgstr "没有第二个地点"
 
 msgid "No info"
-msgstr "暂无信息"
+msgstr "无信息"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "未找到已保存的城市。\n请先通过地点屏幕添加城市。"
+msgstr "未找到已保存的城市。\n请先通过地点界面添加城市。"
 
 msgid "Not found"
 msgstr "未找到"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "按黄色键选择第二地点。"
+msgstr "按黄色按钮选择第二个地点。"
 
 msgid "Rain: "
-msgstr "降雨: "
+msgstr "降雨："
 
 msgid "Select"
 msgstr "选择"
@@ -321,34 +333,58 @@ msgid "Settings"
 msgstr "设置"
 
 msgid "Severe cold!"
-msgstr "严寒天气！"
+msgstr "严寒！"
 
 msgid "Standard"
 msgstr "标准"
 
 msgid "Standard (iconpack)"
-msgstr "标准 (图标包)"
+msgstr "标准（图标包）"
 
 msgid "Standard Icons"
 msgstr "标准图标"
 
 msgid "Strong wind!"
-msgstr "大风警告！"
+msgstr "强风！"
 
 msgid "Sun: "
-msgstr "日照: "
+msgstr "阳光："
 
 msgid "Very heavy rain!"
-msgstr "特大暴雨！"
+msgstr "暴雨！"
 
 msgid "Warm weather!"
-msgstr "天气温暖！"
+msgstr "温暖天气！"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "哎呀！\n网络连接缓慢或断开\n请重试"
+msgstr "糟糕！\n互联网连接缓慢或没有连接\n请重试"
 
 msgid "Wind: "
-msgstr "风速: "
+msgstr "风："
+
+msgid "ON"
+msgstr "开启"
+
+msgid "OFF"
+msgstr "关闭"
+
+msgid "Wind speed:"
+msgstr "风速："
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Show 2 locations"
+msgstr "显示两个地点"
+
+msgid "Radar default zoom:"
+msgstr "雷达默认缩放："
+
+msgid "Date format:"
+msgstr "日期格式："
 
 msgid "Loading radar..."
 msgstr "正在加载雷达..."
@@ -359,11 +395,88 @@ msgstr "请稍候..."
 msgid "Map zoom: %s"
 msgstr "地图缩放：%s"
 
-msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "提示！\n按下主菜单中隐藏的黄色按钮以打开降雨雷达。\n\n按下主菜单中隐藏的绿色按钮以更改小时间隔。\n\n按下主菜单中隐藏的蓝色按钮以比较两个城市。\n\n在此按确定以切换温度叠加层：%s"
+msgid "Select city and:"
+msgstr "选择城市并："
 
-msgid "ON"
-msgstr "开"
+msgid "- Press Ok for Weather info"
+msgstr "- 按 OK 查看天气信息"
 
-msgid "OFF"
-msgstr "关"
+msgid "- Press Menu for RainRadar"
+msgstr "- 按 Menu 打开降雨雷达"
+
+msgid "Appearance"
+msgstr "外观"
+
+# Update
+
+msgid "TheWeather update"
+msgstr "TheWeather 更新"
+
+msgid "Search for update"
+msgstr "检查更新"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"插件已经是最新版本。\n"
+"\n"
+"版本：%s"
+
+msgid "Update check failed."
+msgstr "检查更新失败。"
+
+msgid "Changes:"
+msgstr "更改："
+
+msgid "Installer version: %s"
+msgstr "安装程序版本：%s"
+
+msgid "Update information is incomplete."
+msgstr "更新信息不完整。"
+
+msgid "No changes available."
+msgstr "没有可用的更改。"
+
+msgid ""
+"A new version of speedy_TheWeather is available.\n"
+"\n"
+"Installed version: %s\n"
+"New version: %s%s\n"
+"\n"
+"Changes:\n"
+"%s\n"
+"\n"
+"Do you want to install the update?"
+msgstr ""
+"有新版本的 speedy_TheWeather 可用。\n"
+"\n"
+"已安装版本：%s\n"
+"新版本：%s%s\n"
+"\n"
+"更改：\n"
+"%s\n"
+"\n"
+"是否要安装更新？"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait. Enigma2 may restart automatically."
+msgstr ""
+"正在安装更新。\n"
+"\n"
+"请稍候。Enigma2 可能会自动重新启动。"
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"无法安装更新。\n"
+"\n"
+"请检查互联网连接，然后重试。"
+
+msgid "Updating..."
+msgstr "正在更新..."
