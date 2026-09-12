@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.2.9
+# v.1.3.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.2.9'
+version = '1.3.0'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -1181,54 +1181,86 @@ class sevendays(Screen):
         self.hourStep = 1
         protemp = []
         peocpic = ""
+
         try:
             for procdays in dataDagen:
-                for prochours in procdays["hours"]:
+                for prochours in procdays.get("hours", []):
                     protemp.append(round(prochours["temperature"]))
                 if len(protemp) > 3:
                     break
         except Exception:
             pass
-        if protemp[0] > protemp[1]:
-            peocpic = "tempcold.png"
-        elif protemp[0] < protemp[1]:
-            peocpic = "temphot.png"
+
+        if len(protemp) >= 2:
+            if protemp[0] > protemp[1]:
+                peocpic = "tempcold.png"
+            elif protemp[0] < protemp[1]:
+                peocpic = "temphot.png"
+            else:
+                peocpic = "tempeven.png"
         else:
             peocpic = "tempeven.png"
+
         peocpichd = """<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/%s" position="1112,143" size="90,80" zPosition="2" transparent="0" alphatest="blend"/>""" % (peocpic)
         peocpicsd = """<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/%s" position="752,99" size="60,53" scale="1" zPosition="2" transparent="0" alphatest="on"/>""" % (peocpic)
+
         if sz_w > 1800:
             for day in range(0, 7):
                 uurcount = 0
-                dagen = dataDagen[day + 1]
-                happydays = dataDagen[day]
+
+                dagen = dataDagen[day] if day < len(dataDagen) else {}
+                happydays = dataDagen[day] if day < len(dataDagen) else {}
+
                 windkracht = "na"
                 losticon = "na"
                 dataUrr = "na"
                 sunrise = "na"
                 sunset = "na"
+
                 try:
-                    windkracht = dataDagen[0]["hours"][0]["winddirection"]
-                    dataUrr = dataDagen[0]["hours"][0]["iconcode"]
-                    sunrise = (str(dataDagen[0]["sunrise"]).split("T")[1])[:-3]
-                    sunset = (str(dataDagen[0]["sunset"]).split("T")[1])[:-3]
+                    windkracht = str(dagen.get("winddirection") or "na")
+                    dataUrr = str(dagen.get("iconcode") or "na")
+
+                    hours = dagen.get("hours", [])
+                    if dataUrr == "na" and hours:
+                        dataUrr = str(hours[0].get("iconcode") or "na")
+                    if windkracht == "na" and hours:
+                        windkracht = str(hours[0].get("winddirection") or "na")
+
+                    if day == 0:
+                        sunrise = (str(dataDagen[0]["sunrise"]).split("T")[1])[:-3]
+                        sunset = (str(dataDagen[0]["sunset"]).split("T")[1])[:-3]
                 except Exception:
-                    0+0
+                    pass
+
                 if happydays.get("iconcode"):
-                    losticon = happydays["iconcode"]
-                dagenbefore = dataDagen[day]
-                curtemp = int(dagenbefore["maxtemperature"])
-                tempdiff = (int(dataDagen[day + 1]["maxtemperature"]) - curtemp)
+                    losticon = str(happydays["iconcode"])
+
+                dagenbefore = dataDagen[day] if day < len(dataDagen) else {}
+                nextdagen = dataDagen[day + 1] if day + 1 < len(dataDagen) else dagenbefore
+
+                try:
+                    curtemp = int(dagenbefore["maxtemperature"])
+                    tempdiff = int(nextdagen["maxtemperature"]) - curtemp
+                except Exception:
+                    tempdiff = 0
+
                 lineheight = 0
                 if tempdiff > 0:
-                    lineheight = tempdiff*31
-                yposline = (1200-(curtemp*31))-lineheight
-                curtemp = int(dagenbefore["mintemperature"])
-                tempdiff = (int(dataDagen[day + 1]["mintemperature"]) - curtemp)
+                    lineheight = tempdiff * 31
+                yposline = (1200 - (curtemp * 31)) - lineheight
+
+                try:
+                    curtemp = int(dagenbefore["mintemperature"])
+                    tempdiff = int(nextdagen["mintemperature"]) - curtemp
+                except Exception:
+                    tempdiff = 0
+
                 lineheight = 0
                 if tempdiff > 0:
-                    lineheight = tempdiff*31
-                yposline = (1200-(curtemp*31))-lineheight
+                    lineheight = tempdiff * 31
+                yposline = (1200 - (curtemp * 31)) - lineheight
+
                 dayinfoblok += """
                     <widget name="bigWeerIcon1""" + str(day) + """" position="636,102" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconbighd/""" + str(dataUrr) + """.png" zPosition="3" alphatest="blend"/>
                     <widget name="bigDirIcon1""" + str(day) + """" position="1170,343" size="42,42" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + str(windkracht) + """.png" zPosition="1" alphatest="blend"/>
@@ -1239,7 +1271,9 @@ class sevendays(Screen):
                     <widget render="Label" source="weertype2""" + str(day) + """" position=\"""" + str(99 + (248 * day)) + """,617" size="220,86" zPosition="3" valign="center" halign="center" font="Regular;24" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="sunriselab" position="625,362" size="200,40" zPosition="3" font="Regular;28" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/sunupdownhd.png" zPosition="3" position="650,295" size="120,60" alphatest="blend"/>"""
-                dataUrr = dataDagen[day]["hours"]
+
+                dataUrr = dagen.get("hours", [])
+
                 self["bigWeerIcon1" + str(day)] = Pixmap()
                 self["bigDirIcon1" + str(day)] = Pixmap()
                 self["smallday2" + str(day)] = StaticText()
@@ -1247,11 +1281,15 @@ class sevendays(Screen):
                 self["minitemp2" + str(day)] = StaticText()
                 self["weertype2" + str(day)] = StaticText()
                 self["sunriselab" + str(day)] = StaticText()
+
                 for slotIdx in range(0, min(8, len(dataUrr))):
                     data = dataUrr[slotIdx]
-                    dayinfoblok += """<widget name="dayIcon""" + str(day) + "" + str(uurcount) + """" position=\"""" + str(120 + (216 * uurcount)) + """,749" size="72,72" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/"""+data["iconcode"]+""".png" zPosition="1" alphatest="blend"/>"""
-                    uurcount += 1
-                    self["dayIcon" + str(day) + str(uurcount)] = Pixmap()
+                    iconcode = str(data.get("iconcode") or "na")
+                    iconname = "dayIcon" + str(day) + str(slotIdx)
+
+                    dayinfoblok += """<widget name=\"""" + iconname + """" position=\"""" + str(120 + (216 * slotIdx)) + """,749" size="72,72" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/""" + iconcode + """.png" zPosition="1" alphatest="blend"/>"""
+
+                    self[iconname] = Pixmap()
 
             for uur in range(0, 8):
                 slotNr = uur
@@ -1267,6 +1305,7 @@ class sevendays(Screen):
                     <widget name="rainicon""" + str(uur) + """" position=\"""" + str(116 + (216 * uur)) + """,921" size="30,30" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/rainhd.png" alphatest="blend"/>
                     <widget name="rhicon""" + str(uur) + """" position=\"""" + str(120 + (216 * uur)) + """,960" size="23,30" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/rhhd.png" alphatest="blend"/>
                     <widget name="windicon""" + str(uur) + """" position=\"""" + str(119 + (216 * uur)) + """,997" size="38,38" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/turbinehd.png" alphatest="blend"/>"""
+
                 self["vlakuur" + str(uur)] = Pixmap()
                 self["sunicon" + str(uur)] = Pixmap()
                 self["rainicon" + str(uur)] = Pixmap()
@@ -1278,6 +1317,7 @@ class sevendays(Screen):
                 self["daypercent3" + str(uur)] = StaticText()
                 self["hrdayper3" + str(uur)] = StaticText()
                 self["dayspeed3" + str(uur)] = StaticText()
+
             skin = """
                     <screen name="sevenday" title="seven" flags="wfNoBorder" position="center,center" size="1920,1080" backgroundColor="#ff000000">
                     <widget name="bgpic" position="0,0" size="1920,1080" zPosition="-1" alphatest="blend"/>
@@ -1297,38 +1337,66 @@ class sevendays(Screen):
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/menubutton.png" position="1423,46" size="90,54" zPosition="3" alphatest="blend"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/okbutton.png" position="1531,46" size="54,54" zPosition="3" alphatest="blend"/>
                     </screen>"""
+
+            self.skin = skin
+
         else:
             for day in range(0, 7):
                 uurcount = 0
-                dagen = dataDagen[day + 1]
-                happydays = dataDagen[day]
+
+                dagen = dataDagen[day] if day < len(dataDagen) else {}
+                happydays = dataDagen[day] if day < len(dataDagen) else {}
+
                 windkracht = "na"
                 losticon = "na"
                 dataUrr = "na"
                 sunrise = "na"
                 sunset = "na"
+
                 try:
-                    windkracht = dataDagen[0]["hours"][0]["winddirection"]
-                    dataUrr = dataDagen[0]["hours"][0]["iconcode"]
-                    sunrise = (str(dataDagen[0]["sunrise"]).split("T")[1])[:-3]
-                    sunset = (str(dataDagen[0]["sunset"]).split("T")[1])[:-3]
+                    windkracht = str(dagen.get("winddirection") or "na")
+                    dataUrr = str(dagen.get("iconcode") or "na")
+
+                    hours = dagen.get("hours", [])
+                    if dataUrr == "na" and hours:
+                        dataUrr = str(hours[0].get("iconcode") or "na")
+                    if windkracht == "na" and hours:
+                        windkracht = str(hours[0].get("winddirection") or "na")
+
+                    if day == 0:
+                        sunrise = (str(dataDagen[0]["sunrise"]).split("T")[1])[:-3]
+                        sunset = (str(dataDagen[0]["sunset"]).split("T")[1])[:-3]
                 except Exception:
-                    0+0
+                    pass
+
                 if happydays.get("iconcode"):
-                    losticon = happydays["iconcode"]
-                dagenbefore = dataDagen[day]
-                curtemp = int(dagenbefore["maxtemperature"])
-                tempdiff = (int(dataDagen[day + 1]["maxtemperature"]) - curtemp)
+                    losticon = str(happydays["iconcode"])
+
+                dagenbefore = dataDagen[day] if day < len(dataDagen) else {}
+                nextdagen = dataDagen[day + 1] if day + 1 < len(dataDagen) else dagenbefore
+
+                try:
+                    curtemp = int(dagenbefore["maxtemperature"])
+                    tempdiff = int(nextdagen["maxtemperature"]) - curtemp
+                except Exception:
+                    tempdiff = 0
+
                 lineheight = 0
                 if tempdiff > 0:
-                    lineheight = tempdiff*31
-                yposline = (1200-(curtemp*31))-lineheight
-                curtemp = int(dagenbefore["mintemperature"])
-                tempdiff = (int(dataDagen[day + 1]["mintemperature"]) - curtemp)
+                    lineheight = tempdiff * 31
+                yposline = (1200 - (curtemp * 31)) - lineheight
+
+                try:
+                    curtemp = int(dagenbefore["mintemperature"])
+                    tempdiff = int(nextdagen["mintemperature"]) - curtemp
+                except Exception:
+                    tempdiff = 0
+
                 lineheight = 0
                 if tempdiff > 0:
-                    lineheight = tempdiff*31
-                yposline = (1200-(curtemp*31))-lineheight
+                    lineheight = tempdiff * 31
+                yposline = (1200 - (curtemp * 31)) - lineheight
+
                 dayinfoblok += """
                     <widget name="bigWeerIcon1""" + str(day) + """" position="422,76" size="100,100" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconbighd/""" + str(dataUrr) + """.png" zPosition="3" alphatest="blend"/>
                     <widget name="bigDirIcon1""" + str(day) + """" position="778,234" size="28,28" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + str(windkracht) + """.png" zPosition="1" alphatest="blend"/>
@@ -1339,7 +1407,9 @@ class sevendays(Screen):
                     <widget render="Label" source="weertype2""" + str(day) + """" position=\"""" + str(69 + (165 * day)) + """,410" size="138,54" zPosition="3" valign="center" halign="center" font="Regular;16" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="sunriselab" position="416,248" size="200,40" zPosition="3" font="Regular;18" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/sunupdownhd.png" zPosition="3" position="426,206" size="80,40" scale="1" alphatest="blend"/>"""
-                dataUrr = dataDagen[day]["hours"]
+
+                dataUrr = dagen.get("hours", [])
+
                 self["bigWeerIcon1" + str(day)] = Pixmap()
                 self["bigDirIcon1" + str(day)] = Pixmap()
                 self["smallday2" + str(day)] = StaticText()
@@ -1347,11 +1417,15 @@ class sevendays(Screen):
                 self["minitemp2" + str(day)] = StaticText()
                 self["weertype2" + str(day)] = StaticText()
                 self["sunriselab" + str(day)] = StaticText()
+
                 for slotIdx in range(0, min(8, len(dataUrr))):
                     data = dataUrr[slotIdx]
-                    dayinfoblok += """<widget name="dayIcon""" + str(day) + "" + str(uurcount) + """" position=\"""" + str(80 + (144 * uurcount)) + """,494" size="48,48" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/"""+data["iconcode"]+""".png" zPosition="1" alphatest="blend"/>"""
-                    uurcount += 1
-                    self["dayIcon" + str(day) + str(uurcount)] = Pixmap()
+                    iconcode = str(data.get("iconcode") or "na")
+                    iconname = "dayIcon" + str(day) + str(slotIdx)
+
+                    dayinfoblok += """<widget name=\"""" + iconname + """" position=\"""" + str(80 + (144 * slotIdx)) + """,494" size="48,48" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/""" + iconcode + """.png" zPosition="1" alphatest="blend"/>"""
+
+                    self[iconname] = Pixmap()
 
             for uur in range(0, 8):
                 slotNr = uur
@@ -1367,6 +1441,7 @@ class sevendays(Screen):
                                 <widget name="rainicon""" + str(uur) + """" position=\"""" + str(77 + (144 * uur)) + """,605" size="20,20" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/rainhd.png" scale="1" alphatest="blend"/>
                                 <widget name="rhicon""" + str(uur) + """" position=\"""" + str(79 + (144 * uur)) + """,632" size="16,20" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/rhhd.png" scale="1" alphatest="blend"/>
                                 <widget name="windicon""" + str(uur) + """" position=\"""" + str(79 + (144 * uur)) + """,656" size="25,25" zPosition="3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/turbinehd.png" scale="1" alphatest="blend"/>"""
+
                 self["vlakuur" + str(uur)] = Pixmap()
                 self["sunicon" + str(uur)] = Pixmap()
                 self["rainicon" + str(uur)] = Pixmap()
@@ -1379,7 +1454,7 @@ class sevendays(Screen):
                 self["hrdayper3" + str(uur)] = StaticText()
                 self["dayspeed3" + str(uur)] = StaticText()
 
-            self.skin = """<screen name="sevenday" title="seven" flags="wfNoBorder" position="center,center" size="1280,720">
+            skin = """<screen name="sevenday" title="seven" flags="wfNoBorder" position="center,center" size="1280,720">
                     <widget name="bgpic" position="0,0" size="1280,720" zPosition="-1" alphatest="blend"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/backgroundhd.png" position="center,center" size="1280,720" scale="1" zPosition="0" alphatest="blend"/>
                     <widget source="global.CurrentTime" render="Label" position="1091,12" size="150,55" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#00ffffff" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
@@ -1390,16 +1465,16 @@ class sevendays(Screen):
                     <widget render="Label" source="bigweathertype1" position="565,208" size="320,30" zPosition="3" valign="center" halign="left" font="Regular;18" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="GevoelsTemp1" position="565,176" size="236,30" zPosition="3" valign="center" halign="left" font="Regular;18" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="winddir1" position="565,240" size="230,30" zPosition="3" valign="center" halign="left" font="Regular;18" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="weatheralertbg1"   position="877,162"  size="398,48"  zPosition="2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/alert/vlak_alertsd.png" alphatest="on"/>
-                    <widget name="weatheralerticon1" position="883,165"  size="42,42"   zPosition="4" alphatest="blend" transparent="1"/>
-                    <widget name="weatheralert1" position="955,165"  size="340,42"  zPosition="3" valign="center" halign="left" font="Regular;32" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>""" + peocpicsd + dayinfoblok + """
+                    <widget name="weatheralertbg1" position="877,162" size="398,48" zPosition="2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/alert/vlak_alertsd.png" alphatest="on"/>
+                    <widget name="weatheralerticon1" position="883,165" size="42,42" zPosition="4" alphatest="blend" transparent="1"/>
+                    <widget name="weatheralert1" position="955,165" size="340,42" zPosition="3" valign="center" halign="left" font="Regular;32" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>""" + peocpicsd + dayinfoblok + """
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/buttonsdx.png" position="1070,29" size="36,36" zPosition="3" alphatest="blend"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/menubuttonsd.png" position="949,29" size="60,36" zPosition="3" alphatest="blend"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/okbuttonsd.png" position="1021,29" size="36,36" zPosition="3" alphatest="blend"/>
                     </screen>"""
 
-        # Apply the configured date format to both variants used by the skins.
-        # Some screens use dots (DD.MM.YYYY), others slashes (DD/MM/YYYY).
+            self.skin = skin
+
         try:
             date_format = getDateFormat()
             self.skin = self.skin.replace("Format:%a %d/%m/%y", date_format)
@@ -1419,6 +1494,7 @@ class sevendays(Screen):
         self["weatheralert1"] = Label("")
         self["yellowdot"] = MovingPixmap()
         self["bgpic"] = Pixmap()
+
         try:
             self.picload = ePicLoad()
             self._picload_conn = safeSignalConnect(self.picload.PictureData, self.bgPictureLoaded)
@@ -1426,6 +1502,7 @@ class sevendays(Screen):
         except Exception as e:
             print("speedy_TheWeather: ePicLoad niet beschikbaar, standaard achtergrond:", e)
             self.picload = None
+
         for uur in range(0, 8):
             self["dayhour3" + str(uur)] = StaticText()
             self["dayhour3" + str(uur)].text = "00h"
@@ -1439,14 +1516,16 @@ class sevendays(Screen):
             self["hrdayper3" + str(uur)].text = "--%"
             self["dayspeed3" + str(uur)] = StaticText()
             self["dayspeed3" + str(uur)].text = "--Km/h"
+
             for day in range(0, 7):
                 self["dayIcon" + str(day) + str(uur)] = Pixmap()
                 self["dayIcon" + str(day) + str(uur)].hide()
+
         dataDagen = weatherData["days"]
 
-        # Sonnenaufgang und -untergang direkt vor der Schleife setzen
         sunrise_val = "na"
         sunset_val = "na"
+
         try:
             if len(dataDagen) > 0:
                 if "sunrise" in dataDagen[0]:
@@ -1459,60 +1538,103 @@ class sevendays(Screen):
         self["sunriselab"] = StaticText()
         self["sunriselab"].text = sunrise_val + " - " + sunset_val
 
-        for day in range(1, 8):
-            dagen = dataDagen[day-1]
+        for day in range(0, 7):
+            dagen = dataDagen[day] if day < len(dataDagen) else {}
             hasData = bool(dagen) and (dagen.get("iconcode") or dagen.get("maxtemperature") or dagen.get("mintemperature"))
 
-            self["smallday2" + str(day-1)] = StaticText()
-            self["maxtemp2" + str(day-1)] = StaticText()
-            self["minitemp2" + str(day-1)] = StaticText()
-            self["weertype2" + str(day-1)] = StaticText()
+            self["smallday2" + str(day)] = StaticText()
+            self["maxtemp2" + str(day)] = StaticText()
+            self["minitemp2" + str(day)] = StaticText()
+            self["weertype2" + str(day)] = StaticText()
 
             if not hasData:
-                self["smallday2" + str(day-1)].text = ""
-                self["maxtemp2" + str(day-1)].text = ""
-                self["minitemp2" + str(day-1)].text = ""
-                self["weertype2" + str(day-1)].text = ""
-                self["bigWeerIcon1" + str(day-1)].hide()
-                self["bigDirIcon1" + str(day-1)].hide()
+                self["smallday2" + str(day)].text = ""
+                self["maxtemp2" + str(day)].text = ""
+                self["minitemp2" + str(day)].text = ""
+                self["weertype2" + str(day)].text = ""
+
+                try:
+                    self["bigWeerIcon1" + str(day)].hide()
+                    self["bigDirIcon1" + str(day)].hide()
+                except Exception:
+                    pass
+
             else:
-                self["bigWeerIcon1" + str(day-1)].show()
-                self["bigDirIcon1" + str(day-1)].show()
+                try:
+                    self["bigWeerIcon1" + str(day)].show()
+                    self["bigDirIcon1" + str(day)].show()
+                except Exception:
+                    pass
 
                 iconclass = "na"
+
                 if dagen.get("iconcode"):
-                    iconclass = dagen["iconcode"]
+                    iconclass = str(dagen["iconcode"])
+
                 info1 = ""
                 info2 = ""
                 info3 = ""
+
                 if dagen.get("date"):
-                    dagen1 = dataDagen[day]
-                    mydate = dagen1["date"][:-9]
-                    unixtimecode = time.mktime(datetime.datetime(int(mydate[:4]), int(mydate[5:][:2]), int(mydate[8:][:2])).timetuple())
-                    unixtimecode = unixtimecode-(86400)
-                    info1 += _(str(strftime("%A", localtime(unixtimecode))).title()[:2])
-                    info1 += str(strftime(" %d.%m", localtime(unixtimecode)))
+                    mydate = dagen["date"][:-9]
+
+                    try:
+                        unixtimecode = time.mktime(
+                            datetime.datetime(
+                                int(mydate[:4]),
+                                int(mydate[5:7]),
+                                int(mydate[8:10])
+                            ).timetuple()
+                        )
+
+                        unixtimecode = unixtimecode - 86400
+
+                        info1 += _(str(strftime("%A", localtime(unixtimecode))).title()[:2])
+                        info1 += str(strftime(" %d.%m", localtime(unixtimecode)))
+                    except Exception:
+                        pass
+
                 if dagen.get("mintemp"):
                     info2 += '{:>3}'.format(str("%.0f" % dagen["mintemp"]) + "\xb0")
                 elif dagen.get("mintemperature"):
                     info2 += '{:>3}'.format(str("%.0f" % dagen["mintemperature"]) + "\xb0")
+
                 if dagen.get("maxtemp"):
                     info3 += '{:>3}'.format(str("%.0f" % dagen["maxtemp"]) + "\xb0")
                 elif dagen.get("maxtemperature"):
                     info3 += '{:>3}'.format(str("%.0f" % dagen["maxtemperature"]) + "\xb0")
 
-                self["smallday2" + str(day-1)].text = info1
-                self["maxtemp2" + str(day-1)].text = info3
-                self["minitemp2" + str(day-1)].text = info2
-                self["weertype2" + str(day-1)].text = icontotext(iconclass)
+                self["smallday2" + str(day)].text = info1
+                self["maxtemp2" + str(day)].text = info3
+                self["minitemp2" + str(day)].text = info2
+                self["weertype2" + str(day)].text = icontotext(iconclass)
 
-        self["myActionMap"] = ActionMap(["SetupActions", "MenuActions", "ColorActions"], {"menu": self.KeyMenu, "left": self.left, "right": self.right, "cancel": self.cancel, "red": self.cancel, "ok": self.fourteendays, "green": self.toggleHourStep, "yellow": self.openRadar, "blue": self.openTwoLocations}, -1)
-        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
+        self["myActionMap"] = ActionMap(
+            ["SetupActions", "MenuActions", "ColorActions"],
+            {
+                "menu": self.KeyMenu,
+                "left": self.left,
+                "right": self.right,
+                "cancel": self.cancel,
+                "red": self.cancel,
+                "ok": self.fourteendays,
+                "green": self.toggleHourStep,
+                "yellow": self.openRadar,
+                "blue": self.openTwoLocations
+            },
+            -1
+        )
+
         self.updateFrameselect()
-            
+
         self.alertFixTimer = eTimer()
-        self._alertFixTimer_conn = safeTimerCallback(self.alertFixTimer, self.updateFrameselect)
+        self._alertFixTimer_conn = safeTimerCallback(
+            self.alertFixTimer,
+            self.updateFrameselect
+        )
         self.alertFixTimer.start(200, True)
+
+
 
     def getSlotHours(self, day):
         global weatherData
