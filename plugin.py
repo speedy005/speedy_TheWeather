@@ -2519,12 +2519,12 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         <widget name="key_green" position="308,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="green" />
 
         <!-- Blauer Button -->
-        <ePixmap pixmap="skin_default/buttons/blue.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_blue" position="580,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="blue" />
+        <ePixmap pixmap="skin_default/buttons/blue.png" position="825,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_blue" position="851,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="blue" />
 
         <!-- Gelber Button -->
-        <ePixmap pixmap="skin_default/buttons/yellow.png" position="825,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_yellow" position="851,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" />
+        <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_yellow" position="579,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" />
     </screen>"""
 
     def __init__(self, session):
