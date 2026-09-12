@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.0
+# v.1.3.1
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.0'
+version = '1.3.1'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -175,7 +175,6 @@ _updateCheckStarted = False
 _updateWorkerStarted = False
 _updateInstallInProgress = False
 _updateInfo = None
-
 
 def _version_tuple(value):
     """Versionsnummer robust vergleichen, z.B. 5.6 < 5.10."""
@@ -194,10 +193,8 @@ def _version_tuple(value):
     except Exception:
         return (0,)
 
-
 def _update_is_newer(remote_version):
     return _version_tuple(remote_version) > _version_tuple(version)
-
 
 def _update_download(url, destination, timeout=None):
     """Lädt eine Datei mit HTTP-Timeout und User-Agent herunter."""
@@ -230,7 +227,6 @@ def _update_download(url, destination, timeout=None):
             except Exception:
                 pass
 
-
 def _update_extract_plugin_version(source):
     """Liest 'version = ...' aus der entfernten plugin.py ohne sie auszuführen."""
     try:
@@ -249,7 +245,6 @@ def _update_extract_plugin_version(source):
         print("[speedy_TheWeather] Could not read GitHub plugin version:", e)
     return ""
 
-
 def _update_extract_installer_info(source):
     """Liest version/changelog aus dem vorhandenen installer.sh."""
     result = {"version": "", "changelog": ""}
@@ -265,7 +260,6 @@ def _update_extract_installer_info(source):
         print("[speedy_TheWeather] Could not read installer information:", e)
     return result
 
-
 def _update_changes_text(changes):
     if isinstance(changes, (list, tuple)):
         items = [safeStr(item).strip() for item in changes if safeStr(item).strip()]
@@ -274,7 +268,6 @@ def _update_changes_text(changes):
     if safeStr(changes).strip():
         return _(safeStr(changes).strip())
     return _("No changes available.")
-
 
 def _update_check_worker():
     """Netzwerkprüfung im Hintergrund, damit Enigma2 nicht einfriert."""
@@ -352,7 +345,6 @@ def _update_check_worker():
                 except Exception:
                     pass
 
-
 def _update_poll():
     """Verarbeitet Ergebnisse des Update-Threads im Enigma2-Mainthread."""
     global _updatePollTimer, _updateInfo
@@ -410,7 +402,6 @@ def _update_poll():
     except Exception:
         pass
 
-
 def _update_begin_worker():
     """Startet die GitHub-Prüfung nach der Startverzögerung."""
     global _updatePollTimer, _updateWorkerStarted
@@ -432,7 +423,6 @@ def _update_begin_worker():
     thread.start()
     print("[speedy_TheWeather] GitHub update check started.")
 
-
 def _update_start_check():
     """Plant den Update-Check nach dem vollständigen GUI-Start ein."""
     global _updateStartTimer, _updateCheckStarted
@@ -448,7 +438,6 @@ def _update_start_check():
         _updateStartTimer = None
         _updateCheckStarted = False
         print("[speedy_TheWeather] Could not start update timer:", e)
-
 
 def _update_show_message(info):
     remote_version = safeStr(
@@ -509,11 +498,9 @@ def _update_show_message(info):
             % e
         )
 
-
 def _update_install_callback(answer):
     if answer:
         _update_install()
-
 
 def _update_show_installing():
     try:
@@ -628,7 +615,6 @@ def _update_install():
             ("install_error", None)
         )
 
-
 def update_finished():
     global _updateInstallInProgress
 
@@ -647,8 +633,6 @@ def update_finished():
         "[speedy_TheWeather] "
         "Installer completed successfully."
     )
-
-
 
 def _update_install_finished():
     """Behandelt eine erfolgreich beendete Installation."""
@@ -673,7 +657,6 @@ def _update_install_finished():
     except Exception as e:
         print("[speedy_TheWeather] Could not show update success message:", e)
 
-
 def _update_install_error():
     global _updateInstallInProgress
 
@@ -695,7 +678,6 @@ def _update_install_error():
             "Could not show update error: %s"
             % e
         )
-
 
 # WICHTIG: Domain an den Dateinamen 'speedy_TheWeather.mo' anpassen!
 # Alle festen Update-Dialogtexte sind mit _() markiert und damit über
@@ -804,7 +786,6 @@ _weatherCache = {}
 _weatherCacheLock = threading.RLock()
 _WEATHER_CACHE_TTL = 5 * 60
 
-
 def _http_get(url, timeout=HTTP_TIMEOUT, headers=None):
     req_headers = dict(HTTP_HEADERS)
     if headers:
@@ -821,7 +802,6 @@ def _http_get(url, timeout=HTTP_TIMEOUT, headers=None):
             except Exception:
                 pass
 
-
 def _http_json(url, timeout=HTTP_TIMEOUT, headers=None):
     try:
         raw = _http_get(url, timeout, headers)
@@ -836,7 +816,6 @@ def _http_json(url, timeout=HTTP_TIMEOUT, headers=None):
         print('[speedy_TheWeather] unexpected HTTP error:', e)
     return None
 
-
 def _weather_cache_get(key):
     now = time.time()
     with _weatherCacheLock:
@@ -845,11 +824,9 @@ def _weather_cache_get(key):
             return item[1]
     return None
 
-
 def _weather_cache_put(key, data):
     with _weatherCacheLock:
         _weatherCache[key] = (time.time(), data)
-
 
 def _get_weather_by_city_id(city_id):
     try:
@@ -864,7 +841,6 @@ def _get_weather_by_city_id(city_id):
     if data is not None:
         _weather_cache_put(key, data)
     return data
-
 
 def _search_city(query):
     query = safeStr(query).strip()
@@ -894,7 +870,6 @@ def _search_city(query):
     name = '%s  %s' % (selected.get('name', city), selected.get('countrycode', ''))
     return data, name.strip()
 
-
 def getLocWeer(iscity=None):
     global weatherData, lockaaleStad, citynamedisplay
     lockaaleStad = iscity
@@ -919,7 +894,6 @@ def getLocWeer(iscity=None):
     citynamedisplay = safeStr(name)
     _updateOverlayFromWeatherData()
     return True
-
 
 def getLocWeerFor(inputCity):
     inputCity = stripCoords(inputCity)
@@ -968,7 +942,6 @@ def getLocWeerFor(inputCity):
         except Exception as e:
             print("getLocWeerFor fout:", e)
             return None, None
-
 
 def icontotext(icon):
     text = ""
@@ -1040,7 +1013,6 @@ def icontotext(icon):
         text = _("No info")
     return text
 
-
 def winddirtext(dirtext):
     text = ""
     if dirtext == "N":
@@ -1061,7 +1033,6 @@ def winddirtext(dirtext):
         text = _("NW")
     return text
 
-
 def kmh_to_beaufort(kmh):
     
     try:
@@ -1074,7 +1045,6 @@ def kmh_to_beaufort(kmh):
             return bft
     return 12
 
-
 def getDateFormat():
     try:
         if config.plugins.speedy_TheWeather.dateformat.value == "dot":
@@ -1082,7 +1052,6 @@ def getDateFormat():
     except Exception:
         pass
     return "Format:%a %d/%m/%y"
-
 
 def format_windspeed(kmh):
     try:
@@ -1096,14 +1065,12 @@ def format_windspeed(kmh):
         pass
     return "%.1f km/h" % value
 
-
 def windspeed_with_beaufort(kmh):
     bft = kmh_to_beaufort(kmh)
     speed = format_windspeed(kmh)
     if bft is None:
         return speed
     return "%s (Bft %s)" % (speed, bft)
-
 
 def localWeatherAlert(dayData):
     
@@ -1167,7 +1134,6 @@ def checkInternet():
     except Exception as e:
         print('[speedy_TheWeather] connectivity check failed:', e)
         return False
-
 
 class sevendays(Screen):
     def __init__(self, session):
@@ -1906,7 +1872,6 @@ class sevendays(Screen):
     def cancel(self):
         ClosePlugin()
 
-
 class fourteen(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -2539,7 +2504,6 @@ from Components.Label import Label
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 import threading
-
 
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     skin = """
@@ -3180,7 +3144,6 @@ class infoscreen(Screen):
         _restartTimerConn = safeTimerCallback(_restartTimer, lambda: _doIconpackRestart(sess))
         _restartTimer.start(50, True)
 
-
 class CityPickerScreen(Screen):
     """2e location"""
 
@@ -3257,7 +3220,6 @@ class CityPickerScreen(Screen):
 
     def annuleer(self):
         self.close(None)
-
 
 class twolocations(Screen):
     
@@ -3535,7 +3497,6 @@ class twolocations(Screen):
     def exit(self):
         self.close()
 
-
 class BackgroundPickerScreen(Screen):
     BG_CFG = CFG_DIR + "/speedy_TheWeather_bg.cfg"
     BG_DIR = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/backgrounds/"
@@ -3770,7 +3731,6 @@ def latlon_to_tile(lat, lon, zoom):
     xtile = int((lon + 180.0) / 360.0 * n)
     ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
     return xtile, ytile
-
 
 def fetchRadarTest(lat, lon, zoom=7, outdir="/tmp"):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
@@ -4399,7 +4359,6 @@ def autostart(reason, **kwargs):
     elif reason == 1:
         print("[speedy_TheWeather] autostart: reason=1, opruimen /tmp/speedy_TheWeather")
         shutil.rmtree("/tmp/speedy_TheWeather", ignore_errors=True)
-
 
 def menu(menuid, **kwargs):
     if menuid == "mainmenu":
