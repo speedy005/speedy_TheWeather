@@ -1,0 +1,512 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hetweer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Czech (Czech Republic)\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Mo"
+msgstr "Po"
+
+msgid "Tu"
+msgstr "Út"
+
+msgid "We"
+msgstr "St"
+
+msgid "Th"
+msgstr "Čt"
+
+msgid "Fr"
+msgstr "Pá"
+
+msgid "Sa"
+msgstr "So"
+
+msgid "Su"
+msgstr "Ne"
+
+msgid "Monday"
+msgstr "Pondělí"
+
+msgid "Tuesday"
+msgstr "Úterý"
+
+msgid "Wednesday"
+msgstr "Středa"
+
+msgid "Thursday"
+msgstr "Čtvrtek"
+
+msgid "Friday"
+msgstr "Pátek"
+
+msgid "Saturday"
+msgstr "Sobota"
+
+msgid "Sunday"
+msgstr "Neděle"
+
+msgid "Belgium"
+msgstr "Belgie"
+
+msgid "Changeable and chance of mist"
+msgstr "Proměnlivo, možnost mlhy"
+
+msgid ""
+"Tip!\n"
+"Press the hidden Yellow button in the main menu to open the RainRadar.\n"
+"\n"
+"Press the hidden Green button in the main menu to change the hour interval.\n"
+"\n"
+"Press the hidden Blue button in the main menu to compare two cities.\n"
+"\n"
+"Press OK here to toggle the temperature overlay: %s"
+msgstr ""
+"Tip!\n"
+"Stisknutím skrytého Žlutého tlačítka v hlavním menu otevřete RainRadar.\n"
+"\n"
+"Stisknutím skrytého Zeleného tlačítka v hlavním menu změníte hodinový interval.\n"
+"\n"
+"Stisknutím skrytého Modrého tlačítka v hlavním menu porovnáte dvě města.\n"
+"\n"
+"Stisknutím OK zde zapnete/vypnete zobrazení teploty: %s"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Proměnlivá oblačnost, slabé sněžení"
+
+msgid "Clear and chance of mist"
+msgstr "Jasno, možnost mlhy"
+
+msgid "Clear night"
+msgstr "Jasná noc"
+
+msgid "Clouds radar"
+msgstr "Radar oblačnosti"
+
+msgid "Cloudy"
+msgstr "Oblačno"
+
+msgid "Cloudy and chance of showers"
+msgstr "Oblačno, možnost přeháněk"
+
+msgid "Download error: Check spelling."
+msgstr "Chyba stahování: Zkontrolujte pravopis."
+
+msgid "Drizzle"
+msgstr "Mrholení"
+
+msgid "E"
+msgstr "V"
+
+msgid "Europe"
+msgstr "Evropa"
+
+msgid "Exit"
+msgstr "Konec"
+
+msgid "Favorite Locations"
+msgstr "Oblíbená místa"
+
+msgid "Feels Like: "
+msgstr "Pocitová teplota: "
+
+msgid "Feels like: "
+msgstr "Pocitová teplota: "
+
+msgid "Hail radar"
+msgstr "Radar krupobití"
+
+msgid "Heavy clouds"
+msgstr "Hustá oblačnost"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Hustá oblačnost, silné přeháňky"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Hustá oblačnost, bouřkové přeháňky"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Hustá oblačnost a silné sněžení"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Hustá oblačnost, slabé sněžení"
+
+msgid "Heavy clouds showers possible"
+msgstr "Hustá oblačnost, možnost přeháněk"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Hustá oblačnost, zimní srážky"
+
+msgid "Help"
+msgstr "Nápověda"
+
+msgid "Km/h"
+msgstr "km/h"
+
+msgid "Light cloudy"
+msgstr "Malá oblačnost"
+
+msgid "Local Weather"
+msgstr "Místní počasí"
+
+msgid "Location +"
+msgstr "Místo +"
+
+msgid "Location -"
+msgstr "Místo -"
+
+msgid "Location:"
+msgstr "Místo:"
+
+msgid "Mist radar"
+msgstr "Radar mlhy"
+
+msgid "Mostly clear"
+msgstr "Většinou jasno"
+
+msgid "Mostly sunny"
+msgstr "Většinou slunečno"
+
+msgid "N"
+msgstr "S"
+
+msgid "NE"
+msgstr "SV"
+
+msgid "NW"
+msgstr "SZ"
+
+msgid "Rainfall radar"
+msgstr "Radar srážek"
+
+msgid "WeatherInfo"
+msgstr "Informace o počasí"
+
+msgid "S"
+msgstr "J"
+
+msgid "SE"
+msgstr "JV"
+
+msgid "SW"
+msgstr "JZ"
+
+msgid "Satellite"
+msgstr "Satelit"
+
+msgid "Showers and chance of thunder"
+msgstr "Přeháňky, možnost bouřek"
+
+msgid "Snow radar"
+msgstr "Radar sněžení"
+
+msgid "Sun radar"
+msgstr "Radar slunce"
+
+msgid "Sunny / Clear"
+msgstr "Slunečno / Jasno"
+
+msgid "Sunny and chance of mist"
+msgstr "Slunečno, možnost mlhy"
+
+msgid "Sunny and chance of showers"
+msgstr "Slunečno, možnost přeháněk"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Slunečno, možnost bouřkových přeháněk"
+
+msgid "Sunny few clouds"
+msgstr "Slunečno, pár oblaků"
+
+msgid "Sunpower-UV"
+msgstr "UV záření"
+
+msgid "Temperature"
+msgstr "Teplota"
+
+msgid "The Netherlands"
+msgstr "Nizozemsko"
+
+msgid "TheWeather"
+msgstr "TheWeather"
+
+msgid "Thunder radar"
+msgstr "Radar bouřek"
+
+msgid "W"
+msgstr "Z"
+
+msgid "Weather forecast-nl"
+msgstr "Předpověď počasí-nl"
+
+msgid "Wind direction: "
+msgstr "Směr větru: "
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Background"
+msgstr "Pozadí"
+
+msgid "Background reset to standard."
+msgstr "Pozadí bylo obnoveno na standardní."
+
+msgid "Choose 2nd location"
+msgstr "Vybrat 2. místo"
+
+msgid "Choose 2nd location:"
+msgstr "Vyberte 2. místo:"
+
+msgid "Choose background:"
+msgstr "Vyberte pozadí:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "Město nebylo nalezeno. Stiskněte ŽLUTÉ tlačítko pro změnu."
+
+msgid "Compare Locations"
+msgstr "Porovnat místa"
+
+msgid "Data error"
+msgstr "Chyba dat"
+
+msgid "Download error: No response try again"
+msgstr "Chyba stahování: Žádná odpověď, zkuste to znovu"
+
+msgid "Error fetching data."
+msgstr "Chyba při načítání dat."
+
+msgid "Error loading"
+msgstr "Chyba načítání"
+
+msgid "Extra Icons "
+msgstr "Extra ikony "
+
+msgid "Extreme cold!"
+msgstr "Extrémní chlad!"
+
+msgid "Extreme heat!"
+msgstr "Extrémní horko!"
+
+msgid "h"
+msgstr "h"
+
+msgid "Heavy rain!"
+msgstr "Silný déšť!"
+
+msgid "Heavy storm!"
+msgstr "Silná bouře!"
+
+msgid ""
+"Icon pack changed.\n"
+"The plugin will restart..."
+msgstr ""
+"Balíček ikon byl změněn.\n"
+"Plugin se restartuje..."
+
+msgid "Loading background image, please wait..."
+msgstr "Načítání obrázku pozadí, čekejte prosím..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "Načítání standardních ikon, čekejte prosím..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "Načítání extra ikon, čekejte prosím..."
+
+msgid "Loading..."
+msgstr "Načítání..."
+
+msgid "No 2nd location"
+msgstr "Žádné 2. místo"
+
+msgid "No info"
+msgstr "Žádné informace"
+
+msgid ""
+"No saved cities found.\n"
+"First add cities via the location screen."
+msgstr ""
+"Žádná uložená města nebyla nalezena.\n"
+"Nejprve přidejte města přes obrazovku míst."
+
+msgid "Not found"
+msgstr "Nenalezeno"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "Stiskněte ŽLUTÉ tlačítko pro výběr 2. místa."
+
+msgid "Rain: "
+msgstr "Déšť: "
+
+msgid "Select"
+msgstr "Vybrat"
+
+msgid "Settings"
+msgstr "Nastavení"
+
+msgid "Severe cold!"
+msgstr "Silný mráz!"
+
+msgid "Standard"
+msgstr "Standardní"
+
+msgid "Standard (iconpack)"
+msgstr "Standardní (balíček ikon)"
+
+msgid "Standard Icons"
+msgstr "Standardní ikony"
+
+msgid "Strong wind!"
+msgstr "Silný vítr!"
+
+msgid "Sun: "
+msgstr "Slunce: "
+
+msgid "Very heavy rain!"
+msgstr "Velmi silný déšť!"
+
+msgid "Warm weather!"
+msgstr "Teplé počasí!"
+
+msgid ""
+"Whoops!\n"
+"Slow or no Internet connection\n"
+"Please try again"
+msgstr ""
+"Jejda!\n"
+"Pomalé nebo žádné připojení k internetu\n"
+"Zkuste to prosím znovu"
+
+msgid "Wind: "
+msgstr "Vítr: "
+
+msgid "ON"
+msgstr "ZAP"
+
+msgid "OFF"
+msgstr "VYP"
+
+msgid "Wind speed:"
+msgstr "Rychlost větru:"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Show 2 locations"
+msgstr "Zobrazit 2 místa"
+
+msgid "Radar default zoom:"
+msgstr "Výchozí přiblížení radaru:"
+
+msgid "Date format:"
+msgstr "Formát data:"
+
+msgid "Loading radar..."
+msgstr "Načítání radaru..."
+
+msgid "Please wait..."
+msgstr "Čekejte prosím..."
+
+msgid "Map zoom: %s"
+msgstr "Přiblížení mapy: %s"
+
+msgid "Select city and:"
+msgstr "Vyberte město a:"
+
+msgid "- Press Ok for Weather info"
+msgstr "- Stiskněte OK pro informace o počasí"
+
+msgid "- Press Menu for RainRadar"
+msgstr "- Stiskněte Menu pro RainRadar"
+
+msgid "Appearance"
+msgstr "Vzhled"
+
+# Update comment
+
+msgid "TheWeather update"
+msgstr "Aktualizace TheWeather"
+
+msgid "Search for update"
+msgstr "Hledat aktualizaci"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"Plugin je již aktuální.\n"
+"\n"
+"Verze: %s"
+
+msgid "Update check failed."
+msgstr "Kontrola aktualizací se nezdařila."
+
+msgid "Changes:"
+msgstr "Změny:"
+
+msgid "Installer version: %s"
+msgstr "Verze instalátoru: %s"
+
+msgid "Update information is incomplete."
+msgstr "Informace o aktualizaci nejsou úplné."
+
+msgid "No changes available."
+msgstr "Nejsou k dispozici žádné změny."
+
+msgid ""
+"A new version of speedy_TheWeather is available.\n"
+"\n"
+"Installed version: %s\n"
+"New version: %s%s\n"
+"\n"
+"Changes:\n"
+"%s\n"
+"\n"
+"Do you want to install the update?"
+msgstr ""
+"Je k dispozici nová verze speedy_TheWeather.\n"
+"\n"
+"Nainstalovaná verze: %s\n"
+"Nová verze: %s%s\n"
+"\n"
+"Změny:\n"
+"%s\n"
+"\n"
+"Chcete nainstalovat aktualizaci?"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait. Enigma2 may restart automatically."
+msgstr ""
+"Aktualizace se instaluje.\n"
+"\n"
+"Čekejte prosím. Enigma2 se může automaticky restartovat."
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"Aktualizaci se nepodařilo nainstalovat.\n"
+"\n"
+"Zkontrolujte připojení k internetu a zkuste to znovu."
+
+msgid "Updating..."
+msgstr "Probíhá aktualizace..."
