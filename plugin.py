@@ -4,7 +4,7 @@
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
 # Copyright © Caught. All rights reserved.
-# Modifications and improvements © speedy006.
+# Modifications and improvements © speedy005.
 # This software is based on the original work of Caught.
 # Original author and modification credits must remain in the source code.
 # -----------------------------------------------------------------------------
