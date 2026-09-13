@@ -4,9 +4,9 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.3.9'
+version='1.4.0'
 
-changelog='Fix malformed locale language file. Added an update function. Fixed date in seven day screen weather. Fixed weather icons .Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
+changelog='Fix malformed locale language file. Added an update function. Fixed date in seven day screen weather. Fixed weather icons. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
 
 
 # =========================================================
@@ -1359,7 +1359,8 @@ show_info()
     echo "#  Developed by LULULLA                                #"
     echo "#  https://corvoboys.org                                #"
     echo "#                                                       #"
-    echo "#  GUI WILL RESTART AUTOMATICALLY                       #"
+    echo "#  GUI WILL NOT RESTART AUTOMATICALLY                   #"
+    echo "#  You will be asked after installation.                #"
     echo "#                                                       #"
     echo "#########################################################"
     echo
@@ -1397,16 +1398,16 @@ show_info()
 
 
 # =========================================================
-# RESTART ENIGMA2 GUI
+# FINISH INSTALLATION
 # =========================================================
 
-restart_gui()
+finish_install()
 {
     echo
     echo "========================================================="
     echo " speedy_TheWeather v$version installed successfully."
     echo " Enigma2 GUI was NOT restarted automatically."
-    echo " Please restart Enigma2 manually when convenient."
+    echo " The GUI can be restarted manually."
     echo "========================================================="
     echo
 
@@ -1563,10 +1564,10 @@ show_info
 
 
 # =========================================================
-# AUTOMATIC GUI RESTART
+# FINISH INSTALLATION
 # =========================================================
 
-restart_gui
+finish_install
 
 
 # =========================================================
@@ -1574,4 +1575,3 @@ restart_gui
 # =========================================================
 
 exit 0
-
