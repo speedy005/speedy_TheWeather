@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.9
+# v.1.4.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.9'
+version = '1.4.0'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -634,21 +634,54 @@ def _update_install_finished():
     _updateInstallInProgress = False
     _updateInfo = None
 
-    print("[speedy_TheWeather] Update installation finished successfully.")
+    print(
+        "[speedy_TheWeather] "
+        "Update installation finished successfully."
+    )
+
+    def restart_gui_callback(answer):
+        if answer:
+            print(
+                "[speedy_TheWeather] "
+                "User chose to restart Enigma2 GUI."
+            )
+
+            try:
+                from enigma import quitMainloop
+
+                quitMainloop(3)
+
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not restart Enigma2 GUI:",
+                    e
+                )
+
+        else:
+            print(
+                "[speedy_TheWeather] "
+                "User chose NOT to restart Enigma2 GUI."
+            )
 
     try:
         if _overlaySession is not None:
-            _overlaySession.open(
+            _overlaySession.openWithCallback(
+                restart_gui_callback,
                 MessageBox,
                 _(
                     "The update has been installed successfully.\n\n"
-                    "Please restart Enigma2 if it does not restart automatically."
+                    "Would you like to restart the Enigma2 GUI now?"
                 ),
-                MessageBox.TYPE_INFO,
-                timeout=8
+                MessageBox.TYPE_YESNO
             )
+
     except Exception as e:
-        print("[speedy_TheWeather] Could not show update success message:", e)
+        print(
+            "[speedy_TheWeather] "
+            "Could not show update restart question:",
+            e
+        )
 
 def _update_install_error():
     global _updateInstallInProgress
