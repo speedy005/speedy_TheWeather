@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.8
+# v.1.3.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.8'
+version = '1.3.9'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -2819,35 +2819,85 @@ class sevendays(Screen):
         elif self.selected > 6:
             self.selected = 0
 
+        # ---------------------------------------------------------
+        # Gelben Punkt unter dem ausgewählten Tag verschieben
+        # ---------------------------------------------------------
         if sz_w > 1800:
             self["yellowdot"].moveTo(275 + (248 * self.selected), 463, 2)
         else:
             self["yellowdot"].moveTo(184 + (165 * self.selected), 307, 2)
+
         self["yellowdot"].startMoving()
+
         global weatherData
         dataDagen = weatherData["days"]
 
+        # ---------------------------------------------------------
+        # Sicherheit: Daten vorhanden?
+        # ---------------------------------------------------------
+        if not dataDagen:
+            return
+
+        # ---------------------------------------------------------
+        # Oberer Bereich
+        # Die Anzeige oben bleibt weiterhin auf Tag 0 / aktuelle
+        # Wetterstunde bezogen, wie im bisherigen Code.
+        # ---------------------------------------------------------
         temptext = "na"
-        if dataDagen[self.selected+0].get("temperature"):
-            temptext = dataDagen[self.selected+0]["temperature"]
-        dataPerUur = weatherData["days"][0]["hours"]
+
+        try:
+            if dataDagen[self.selected + 0].get("temperature"):
+                temptext = dataDagen[self.selected + 0]["temperature"]
+        except Exception:
+            pass
+
+        try:
+            dataPerUur = weatherData["days"][0]["hours"]
+        except Exception:
+            dataPerUur = []
+
         self["bigtemp1"].setText("")
         self["bigweathertype1"].setText("")
         self["GevoelsTemp1"].setText("")
         self["winddir1"].setText("")
-        try:
-            self["bigtemp1"].setText('{:>4}'.format(str("%.1f" % dataPerUur[(0)]["temperature"])))
-            self["GevoelsTemp1"].setText(_("Feels Like: ") + str("%.1f" % dataPerUur[(0)]["feeltemperature"]) + "\xb0C")
-            self["winddir1"].setText(_("Wind direction: ") + str(winddirtext(dataPerUur[(0)]["winddirection"])))
-            self["bigweathertype1"].setText(icontotext(str(dataPerUur[(0)]["iconcode"])))
-        except Exception:
-            0+0
 
+        try:
+            if dataPerUur:
+                self["bigtemp1"].setText(
+                    '{:>4}'.format(
+                        str("%.1f" % dataPerUur[0]["temperature"])
+                    )
+                )
+
+                self["GevoelsTemp1"].setText(
+                    _("Feels Like: ")
+                    + str("%.1f" % dataPerUur[0]["feeltemperature"])
+                    + "\xb0C"
+                )
+
+                self["winddir1"].setText(
+                    _("Wind direction: ")
+                    + str(winddirtext(dataPerUur[0]["winddirection"]))
+                )
+
+                self["bigweathertype1"].setText(
+                    icontotext(str(dataPerUur[0]["iconcode"]))
+                )
+        except Exception:
+            pass
+
+        # ---------------------------------------------------------
+        # Wetterwarnung
+        # ---------------------------------------------------------
         try:
             alertKleur, alertTekst = localWeatherAlert(dataDagen[0])
         except Exception as e:
             alertKleur, alertTekst = "", ""
-            print("updateFrameselect: fout bij bepalen weeralarm:", e)
+            print(
+                "updateFrameselect: fout bij bepalen weeralarm:",
+                e
+            )
+
         if alertTekst:
             kleurwaarde = {
                 "yellow": gRGB(0xf2c200),
@@ -2855,112 +2905,507 @@ class sevendays(Screen):
                 "red":    gRGB(0xe02020),
                 "blue":   gRGB(0x40a0ff),
             }.get(alertKleur, gRGB(0xffffff))
+
             self["weatheralert1"].setText(alertTekst)
+
             try:
                 if self["weatheralert1"].instance is not None:
-                    self["weatheralert1"].instance.setForegroundColor(kleurwaarde)
+                    self["weatheralert1"].instance.setForegroundColor(
+                        kleurwaarde
+                    )
             except Exception as e:
-                print("updateFrameselect: fout bij instellen weeralarm-kleur:", e)
+                print(
+                    "updateFrameselect: fout bij instellen "
+                    "weeralarm-kleur:",
+                    e
+                )
+
             try:
                 if sz_w > 1800:
-                    iconpad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/alert/alert_" + alertKleur + ".png"
+                    iconpad = (
+                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "speedy_TheWeather/"
+                        + SHARED_PACK
+                        + "/alert/alert_"
+                        + alertKleur
+                        + ".png"
+                    )
                 else:
-                    iconpad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/alert/alert_" + alertKleur + "_sd.png"
+                    iconpad = (
+                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "speedy_TheWeather/"
+                        + SHARED_PACK
+                        + "/alert/alert_"
+                        + alertKleur
+                        + "_sd.png"
+                    )
+
                 if self["weatheralerticon1"].instance is not None:
-                    self["weatheralerticon1"].instance.setPixmapFromFile(iconpad)
+                    self["weatheralerticon1"].instance.setPixmapFromFile(
+                        iconpad
+                    )
                     self["weatheralerticon1"].show()
+
             except Exception as e:
-                print("updateFrameselect: fout bij laden alert-icoon:", e)
+                print(
+                    "updateFrameselect: fout bij laden alert-icoon:",
+                    e
+                )
                 self["weatheralerticon1"].hide()
+
             self["weatheralertbg1"].show()
+
         else:
             self["weatheralert1"].setText("")
             self["weatheralerticon1"].hide()
             self["weatheralertbg1"].hide()
 
+        # ---------------------------------------------------------
+        # Werte des ausgewählten Tages
+        # ---------------------------------------------------------
         feeltext = "na"
-        if dataDagen[0].get("feeltemperature"):
-            feeltext = dataDagen[0]["feeltemperature"]
+
+        try:
+            if dataDagen[0].get("feeltemperature"):
+                feeltext = dataDagen[0]["feeltemperature"]
+        except Exception:
+            pass
 
         windtext = "na"
-        if dataDagen[0].get("winddirection"):
-            windtext = dataDagen[0]["winddirection"]
+
+        try:
+            if dataDagen[0].get("winddirection"):
+                windtext = dataDagen[0]["winddirection"]
+        except Exception:
+            pass
 
         typetext = "na"
-        if dataDagen[0].get("iconcode"):
-            typetext = dataDagen[0]["iconcode"]
 
-        dataPerUur = weatherData["days"][self.selected]["hours"]
-        self["bigWeerIcon1" + str(0)].show()
-        self["bigDirIcon1" + str(0)].show()
+        try:
+            if dataDagen[0].get("iconcode"):
+                typetext = dataDagen[0]["iconcode"]
+        except Exception:
+            pass
+
+        # ---------------------------------------------------------
+        # WICHTIG:
+        # Alle großen Tages-Wettericons zuerst verstecken.
+        #
+        # bigWeerIcon10 ... bigWeerIcon16 liegen absichtlich
+        # auf derselben Position. Es darf deshalb immer nur
+        # EIN Icon sichtbar sein.
+        # ---------------------------------------------------------
+        for day in range(0, 7):
+            try:
+                self["bigWeerIcon1" + str(day)].hide()
+            except Exception:
+                pass
+
+            try:
+                self["bigDirIcon1" + str(day)].hide()
+            except Exception:
+                pass
+
+        # ---------------------------------------------------------
+        # Nur das große Wettericon des ausgewählten Tages anzeigen
+        # ---------------------------------------------------------
+        try:
+            self["bigWeerIcon1" + str(self.selected)].show()
+        except Exception:
+            pass
+
+        try:
+            self["bigDirIcon1" + str(self.selected)].show()
+        except Exception:
+            pass
+
+        # ---------------------------------------------------------
+        # Stunden des ausgewählten Tages
+        # ---------------------------------------------------------
+        try:
+            dataPerUur = weatherData["days"][self.selected]["hours"]
+        except Exception:
+            dataPerUur = []
 
         slotHours = self.getSlotHours(self.selected)
 
+        # ---------------------------------------------------------
+        # 8 Stundenfelder aktualisieren
+        # ---------------------------------------------------------
         for perUurUpdate in range(0, 8):
+
+            # -----------------------------------------------------
+            # Alle Tages-Icons für diesen Stundenplatz verstecken
+            # -----------------------------------------------------
             for day in range(0, 7):
-                self["dayIcon" + str(day) + str(perUurUpdate)].hide()
-            self["vlakuur" + str(perUurUpdate)].hide()
-            self["sunicon" + str(perUurUpdate)].hide()
-            self["rainicon" + str(perUurUpdate)].hide()
-            self["rhicon" + str(perUurUpdate)].hide()
-            self["windicon" + str(perUurUpdate)].hide()
-
-            slotHasData = perUurUpdate < len(slotHours)
-
-            if slotHasData:
-                self["dayIcon" + str(self.selected) + str(perUurUpdate)].show()
-                self["vlakuur" + str(perUurUpdate)].show()
-                self["sunicon" + str(perUurUpdate)].show()
-                iconpath = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + icoonpath + "/iconhd/" + slotHours[perUurUpdate]["iconcode"] + ".png"
-                                
                 try:
-                    self["dayIcon" + str(self.selected) + str(perUurUpdate)].instance.setPixmap(loadPNG(iconpath))
+                    self[
+                        "dayIcon"
+                        + str(day)
+                        + str(perUurUpdate)
+                    ].hide()
                 except Exception:
                     pass
-                self["rainicon" + str(perUurUpdate)].show()
-                self["rhicon" + str(perUurUpdate)].show()
-                self["windicon" + str(perUurUpdate)].show()
+
+            # -----------------------------------------------------
+            # Stundenfeld und Zusatzicons verstecken
+            # -----------------------------------------------------
+            try:
+                self["vlakuur" + str(perUurUpdate)].hide()
+            except Exception:
+                pass
 
             try:
-                if slotHasData:
-                    entry = slotHours[perUurUpdate]
-                    self["dayhour3" + str(perUurUpdate)].setText(str(entry["hour"]) + _("h"))
-                    self["daytemp3" + str(perUurUpdate)].setText('{:>4}'.format(str("%.0f" % entry["temperature"]) + "\xb0C"))
-                    self["daypercent3" + str(perUurUpdate)].setText(str(entry["precipation"]) + "%")
-                    self["dayspeed3" + str(perUurUpdate)].setText(format_windspeed(entry.get("windspeed")))
-                    self["sunpercent3" + str(perUurUpdate)].setText(str(entry["sunshine"]) + "%")
-                    self["hrdayper3" + str(perUurUpdate)].setText(str(entry["humidity"]) + "%")
-                else:
-                    self["dayhour3" + str(perUurUpdate)].setText("")
-                    self["daytemp3" + str(perUurUpdate)].setText("")
-                    self["daypercent3" + str(perUurUpdate)].setText("")
-                    self["dayspeed3" + str(perUurUpdate)].setText("")
-                    self["sunpercent3" + str(perUurUpdate)].setText("")
-                    self["hrdayper3" + str(perUurUpdate)].setText("")
+                self["sunicon" + str(perUurUpdate)].hide()
             except Exception:
+                pass
+
+            try:
+                self["rainicon" + str(perUurUpdate)].hide()
+            except Exception:
+                pass
+
+            try:
+                self["rhicon" + str(perUurUpdate)].hide()
+            except Exception:
+                pass
+
+            try:
+                self["windicon" + str(perUurUpdate)].hide()
+            except Exception:
+                pass
+
+            # -----------------------------------------------------
+            # Prüfen, ob für diesen Slot Daten vorhanden sind
+            # -----------------------------------------------------
+            slotHasData = (
+                perUurUpdate < len(slotHours)
+            )
+
+            if slotHasData:
+
+                # -------------------------------------------------
+                # Icon des ausgewählten Tages anzeigen
+                # -------------------------------------------------
+                try:
+                    self[
+                        "dayIcon"
+                        + str(self.selected)
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+                # -------------------------------------------------
+                # Stundenfeld anzeigen
+                # -------------------------------------------------
+                try:
+                    self[
+                        "vlakuur"
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+                try:
+                    self[
+                        "sunicon"
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+                # -------------------------------------------------
+                # Wettericon laden
+                # -------------------------------------------------
+                try:
+                    iconpath = (
+                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "speedy_TheWeather/"
+                        + icoonpath
+                        + "/iconhd/"
+                        + str(
+                            slotHours[perUurUpdate]["iconcode"]
+                        )
+                        + ".png"
+                    )
+
+                    self[
+                        "dayIcon"
+                        + str(self.selected)
+                        + str(perUurUpdate)
+                    ].instance.setPixmap(
+                        loadPNG(iconpath)
+                    )
+
+                except Exception:
+                    pass
+
+                # -------------------------------------------------
+                # Regen / Luftfeuchtigkeit / Wind anzeigen
+                # -------------------------------------------------
+                try:
+                    self[
+                        "rainicon"
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+                try:
+                    self[
+                        "rhicon"
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+                try:
+                    self[
+                        "windicon"
+                        + str(perUurUpdate)
+                    ].show()
+                except Exception:
+                    pass
+
+            # -----------------------------------------------------
+            # Texte der Stundenfelder
+            # -----------------------------------------------------
+            try:
+                if slotHasData:
+
+                    entry = slotHours[perUurUpdate]
+
+                    self[
+                        "dayhour3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        str(entry["hour"]) + _("h")
+                    )
+
+                    self[
+                        "daytemp3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        '{:>4}'.format(
+                            str(
+                                "%.0f"
+                                % entry["temperature"]
+                            )
+                            + "\xb0C"
+                        )
+                    )
+
+                    # Schreibweise des ursprünglichen Codes beibehalten
+                    try:
+                        precipitation = entry["precipation"]
+                    except Exception:
+                        precipitation = entry["precipitation"]
+
+                    self[
+                        "daypercent3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        str(precipitation) + "%"
+                    )
+
+                    self[
+                        "dayspeed3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        format_windspeed(
+                            entry.get("windspeed")
+                        )
+                    )
+
+                    self[
+                        "sunpercent3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        str(entry["sunshine"]) + "%"
+                    )
+
+                    self[
+                        "hrdayper3"
+                        + str(perUurUpdate)
+                    ].setText(
+                        str(entry["humidity"]) + "%"
+                    )
+
+                else:
+                    self[
+                        "dayhour3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+                    self[
+                        "daytemp3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+                    self[
+                        "daypercent3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+                    self[
+                        "dayspeed3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+                    self[
+                        "sunpercent3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+                    self[
+                        "hrdayper3"
+                        + str(perUurUpdate)
+                    ].setText("")
+
+            except Exception:
+
+                # -------------------------------------------------
+                # Fallback für unterschiedliche API-Schreibweisen
+                # -------------------------------------------------
                 try:
                     if slotHasData:
+
                         entry = slotHours[perUurUpdate]
-                        self["dayhour3" + str(perUurUpdate)].setText(str(entry["hour"]) + _("h"))
-                        self["daytemp3" + str(perUurUpdate)].setText('{:>4}'.format(str("%.0f" % entry["temperature"]) + "\xb0C"))
-                        self["daypercent3" + str(perUurUpdate)].setText(str(entry["precipitation"]) + "%")
-                        self["dayspeed3" + str(perUurUpdate)].setText(format_windspeed(entry.get("windspeed")))
-                        self["sunpercent3" + str(perUurUpdate)].setText(str(entry["sunshine"]) + "%")
-                        self["hrdayper3" + str(perUurUpdate)].setText(str(entry["humidity"]) + "%")
+
+                        self[
+                            "dayhour3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            str(entry["hour"]) + _("h")
+                        )
+
+                        self[
+                            "daytemp3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            '{:>4}'.format(
+                                str(
+                                    "%.0f"
+                                    % entry["temperature"]
+                                )
+                                + "\xb0C"
+                            )
+                        )
+
+                        self[
+                            "daypercent3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            str(
+                                entry["precipitation"]
+                            ) + "%"
+                        )
+
+                        self[
+                            "dayspeed3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            format_windspeed(
+                                entry.get("windspeed")
+                            )
+                        )
+
+                        self[
+                            "sunpercent3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            str(entry["sunshine"]) + "%"
+                        )
+
+                        self[
+                            "hrdayper3"
+                            + str(perUurUpdate)
+                        ].setText(
+                            str(entry["humidity"]) + "%"
+                        )
+
                     else:
-                        self["dayhour3" + str(perUurUpdate)].setText("")
-                        self["daytemp3" + str(perUurUpdate)].setText("")
-                        self["daypercent3" + str(perUurUpdate)].setText("")
-                        self["dayspeed3" + str(perUurUpdate)].setText("")
-                        self["sunpercent3" + str(perUurUpdate)].setText("")
-                        self["hrdayper3" + str(perUurUpdate)].setText("")
+                        self[
+                            "dayhour3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
+                        self[
+                            "daytemp3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
+                        self[
+                            "daypercent3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
+                        self[
+                            "dayspeed3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
+                        self[
+                            "sunpercent3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
+                        self[
+                            "hrdayper3"
+                            + str(perUurUpdate)
+                        ].setText("")
+
                 except Exception:
-                    self["dayIcon" + str(self.selected) + str(perUurUpdate)].hide()
-                    self["vlakuur" + str(perUurUpdate)].hide()
-                    self["sunicon" + str(perUurUpdate)].hide()
-                    self["rainicon" + str(perUurUpdate)].hide()
-                    self["rhicon" + str(perUurUpdate)].hide()
-                    self["windicon" + str(perUurUpdate)].hide()
+
+                    try:
+                        self[
+                            "dayIcon"
+                            + str(self.selected)
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
+
+                    try:
+                        self[
+                            "vlakuur"
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
+
+                    try:
+                        self[
+                            "sunicon"
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
+
+                    try:
+                        self[
+                            "rainicon"
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
+
+                    try:
+                        self[
+                            "rhicon"
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
+
+                    try:
+                        self[
+                            "windicon"
+                            + str(perUurUpdate)
+                        ].hide()
+                    except Exception:
+                        pass
 
     def KeyMenu(self):
         self.session.open(localcityscreen)
