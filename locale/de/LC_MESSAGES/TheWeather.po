@@ -10,7 +10,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\nX-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 3.9\n"
@@ -394,7 +395,6 @@ msgstr "Bitte warten..."
 msgid "Map zoom: %s"
 msgstr "Kartenzoom: %s"
 
-
 msgid "Select city and:"
 msgstr "Stadt auswählen und:"
 
@@ -407,7 +407,11 @@ msgstr "- Drücken Sie Menü für Regenradar"
 msgid "Appearance"
 msgstr "Darstellung"
 
+
+# ============================================================
 # Update
+# ============================================================
+
 msgid "TheWeather update"
 msgstr "TheWeather Update"
 
@@ -462,11 +466,11 @@ msgstr ""
 msgid ""
 "The update is being installed.\n"
 "\n"
-"Please wait. Enigma2 may restart automatically."
+"Please wait. Enigma2 will not restart automatically."
 msgstr ""
 "Das Update wird installiert.\n"
 "\n"
-"Bitte warten. Enigma2 wird möglicherweise automatisch neu gestartet."
+"Bitte warten. Enigma2 wird nicht automatisch neu gestartet."
 
 msgid ""
 "The update could not be installed.\n"
@@ -479,3 +483,12 @@ msgstr ""
 
 msgid "Updating..."
 msgstr "Update wird durchgeführt..."
+
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Would you like to restart the Enigma2 GUI now?"
+msgstr ""
+"Das Update wurde erfolgreich installiert.\n"
+"\n"
+"Möchtest du die Enigma2-GUI jetzt neu starten?"
