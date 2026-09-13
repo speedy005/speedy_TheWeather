@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.0
+# v.1.4.1
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.4.0'
+version = '1.4.1'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -2269,17 +2269,17 @@ class sevendays(Screen):
             content=content,
 
             clock=self._clock_xml(
-                "1634,35",
-                "225,45",
-                36,
-                "%-H:%M:%S"
+                "1460,35",
+                "400,45",
+                30,
+                "%H:%M:%S"
             ),
 
             date=self._clock_xml(
                 "1409,72",
                 "450,35",
-                24,
-                "%a %d/%m/%y"
+                30,
+                "%d.%m.%y"
             ),
 
             main=self._main_widgets(
@@ -2388,14 +2388,14 @@ class sevendays(Screen):
                 "1091,12",
                 "150,55",
                 24,
-                "%-H:%M:%S"
+                "%H:%M:%S"
             ),
 
             date=self._clock_xml(
                 "941,32",
                 "300,55",
                 16,
-                "%a %d.%m"
+                "%a.%d.%m"
             ),
 
             main=self._main_widgets(
