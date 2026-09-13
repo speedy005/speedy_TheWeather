@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.4
+# v.1.3.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.4'
+version = '1.3.5'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -1343,7 +1343,7 @@ class sevendays(Screen):
                 # ----------------------------------------------------
                 dayinfoblok += """
                     <widget name="bigWeerIcon1""" + str(day) + """" position="636,102" size="150,150" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconbighd/""" + str(dataUrr) + """.png" zPosition="3" alphatest="blend"/>
-                    <widget name="bigDirIcon1""" + str(day) + """" position="1170,343" size="42,42" scale="1" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + str(windkracht) + """.png" zPosition="1" alphatest="blend"/>
+                    
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/""" + str(losticon) + """.png" position=\"""" + str(131 + (248 * day)) + """,498" size="72,72" zPosition="3" transparent="0" alphatest="blend"/>
                     <widget render="Label" source="smallday2""" + str(day) + """" position=\"""" + str(138 + (248 * day)) + """,461" size="155,40" zPosition="3" valign="center" halign="left" font="Regular;34" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="maxtemp2""" + str(day) + """" position=\"""" + str(130 + (248 * day)) + """,571" size="90,54" zPosition="3" font="Regular;48" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2" />
@@ -1899,7 +1899,7 @@ class sevendays(Screen):
                 # ----------------------------------------------------
                 if dagen.get("date"):
 
-                    mydate = dagen["date"][:-9]
+                    mydate = str(dagen["date"]).split("T")[0]
 
                     try:
                         unixtimecode = time.mktime(
@@ -1910,17 +1910,11 @@ class sevendays(Screen):
                             ).timetuple()
                         )
 
-                        unixtimecode = (
-                            unixtimecode - 86400
-                        )
-
                         info1 += _(
                             str(
                                 strftime(
                                     "%A",
-                                    localtime(
-                                        unixtimecode
-                                    )
+                                    localtime(unixtimecode)
                                 )
                             ).title()[:2]
                         )
@@ -1928,14 +1922,12 @@ class sevendays(Screen):
                         info1 += str(
                             strftime(
                                 " %d.%m",
-                                localtime(
-                                    unixtimecode
-                                )
+                                localtime(unixtimecode)
                             )
                         )
 
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print("[speedy_TheWeather] Datum Fehler:", e)
 
 
                 # ----------------------------------------------------
