@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.7
+# v.1.3.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.7'
+version = '1.3.8'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -358,17 +358,10 @@ def _update_poll():
                 _update_show_message(payload)
 
             elif result == "current":
-                remote_version = payload.get("version", "")
-
-                if _overlaySession is not None:
-                    _overlaySession.open(
-                        MessageBox,
-                        _(
-                            "The plugin is already up to date.\n\n"
-                            "Version: %s"
-                        ) % remote_version,
-                        MessageBox.TYPE_INFO
-                    )
+                print(
+                    "[speedy_TheWeather] Plugin is up to date: %s"
+                    % payload.get("version", "")
+                )
 
             elif result == "installing":
                 _update_show_installing()
