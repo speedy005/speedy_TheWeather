@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.3.5
+# v.1.3.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -119,7 +119,7 @@ config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
     ]
 )
 
-# add Lululla
+# add speedy005
 PY3 = False
 import sys
 if sys.version_info[0] >= 3:
@@ -137,7 +137,7 @@ else:
     from urllib import quote_plus
     import urllib2
     import cookielib
-# add Lululla end
+# add speedy005 end
 
 def safeStr(value):
     if value is None:
@@ -159,7 +159,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.3.5'
+version = '1.3.6'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -1449,7 +1449,7 @@ class sevendays(Screen):
                 <widget render="Label" source="bigweathertype1" position="870,298" size="480,40" zPosition="3" valign="center" halign="left" font="Regular;28" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget render="Label" source="GevoelsTemp1" position="870,250" size="354,40" zPosition="3" valign="center" halign="left" font="Regular;28" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget render="Label" source="winddir1" position="870,346" size="330,45" zPosition="3" valign="center" halign="left" font="Regular;28" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="winddiricon1" position="1235,326" size="56,56" zPosition="4" alphatest="blend" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + winddir_top + """.png"/>
+                <widget name="winddiricon1" position="1100,346" scale="1" size="36,36" zPosition="4" alphatest="blend" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + winddir_top + """.png"/>
                 <widget name="weatheralertbg1" position="1322,240" size="588,72" zPosition="2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/alert/vlak_alert.png" alphatest="on"/>
                 <widget name="weatheralerticon1" position="1332,244" size="64,64" zPosition="4" alphatest="blend" transparent="1"/>
                 <widget name="weatheralert1" position="1440,244" size="576,64" zPosition="3" valign="center" halign="left" font="Regular;48" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
