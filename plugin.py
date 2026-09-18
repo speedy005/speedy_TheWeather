@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.1
+# v.1.4.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -35,9 +35,13 @@ import shutil
 import gettext
 import datetime
 import threading
-import gc
 import tempfile
 import subprocess
+try:
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+except ImportError:
+    ThreadPoolExecutor = None
+    as_completed = None
 try:
     import Queue as queue
 except ImportError:
@@ -159,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.4.1'
+version = '1.4.2'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -841,6 +845,52 @@ _weatherCache = {}
 _weatherCacheLock = threading.RLock()
 _WEATHER_CACHE_TTL = 5 * 60
 
+# Shared, bounded caches. They are deliberately small because Enigma2 receivers
+# often have limited RAM/flash compared with a desktop system.
+_ICON_CACHE = {}
+_ICON_CACHE_MAX = 96
+_TILE_CACHE_TTL = 30 * 60
+_TILE_CACHE_LOCK = threading.RLock()
+_TILE_CACHE_DIR = "/tmp/speedy_TheWeather/cache"
+_RADAR_MAX_WORKERS = 4
+
+def _cache_file_for_url(url):
+    import hashlib
+    digest = hashlib.md5(safeStr(url).encode("utf-8")).hexdigest()
+    return os.path.join(_TILE_CACHE_DIR, digest + ".png")
+
+def _ensure_cache_dir():
+    try:
+        if not os.path.isdir(_TILE_CACHE_DIR):
+            os.makedirs(_TILE_CACHE_DIR)
+    except OSError:
+        pass
+
+def _load_cached_png(path):
+    try:
+        stat = os.stat(path)
+        if stat.st_size <= 0 or time.time() - stat.st_mtime > _TILE_CACHE_TTL:
+            return None
+        return loadPNG(path)
+    except Exception:
+        return None
+
+def _load_icon_cached(path):
+    if not path:
+        return None
+    try:
+        cached = _ICON_CACHE.get(path)
+        if cached is not None:
+            return cached
+        pix = loadPNG(path)
+        if pix is not None:
+            if len(_ICON_CACHE) >= _ICON_CACHE_MAX:
+                _ICON_CACHE.pop(next(iter(_ICON_CACHE)))
+            _ICON_CACHE[path] = pix
+        return pix
+    except Exception:
+        return None
+
 def _http_get(url, timeout=HTTP_TIMEOUT, headers=None):
     req_headers = dict(HTTP_HEADERS)
     if headers:
@@ -951,52 +1001,33 @@ def getLocWeer(iscity=None):
     return True
 
 def getLocWeerFor(inputCity):
+    """Legacy API kept for compatibility, but uses the shared HTTP layer."""
     inputCity = stripCoords(inputCity)
     try:
         citynumb = int(inputCity.rsplit("-", 1)[1])
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
-        cookie_jar = cookielib.CookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
-        urllib2.install_opener(opener)
-        req = urllib2.Request("http://api.buienradar.nl/data/forecast/1.1/all/" + str(citynumb), data=None, headers=headers)
-        handler = urllib2.urlopen(req, timeout=15)
-        antw = handler.read()
-        data = json.loads(antw)
-        naam = str(inputCity.rsplit("-", 1)[0])
-        return data, naam
-    except Exception:
-        try:
-            snewy = inputCity.replace(" ", "%20").split("_")
-            countycodenewy = ""
-            citynamenewy = snewy[0]
-            if len(snewy) >= 2:
-                countycodenewy = snewy[1]
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
-            cookie_jar = cookielib.CookieJar()
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
-            urllib2.install_opener(opener)
-            req = urllib2.Request("https://location.buienradar.nl/1.1/location/search?query=" + citynamenewy.replace(" ", "%20"), data=None, headers=headers)
-            handler = urllib2.urlopen(req, timeout=15)
-            antw = handler.read()
-            staddata = json.loads(antw)
-            entryselect = 0
-            entrselect = 0
-            if citynamenewy:
-                for ecpts in staddata:
-                    countcode = str(ecpts["countrycode"]).lower()
-                    if countcode == countycodenewy.lower():
-                        entryselect = entrselect
-                        break
-                    entrselect += 1
-            req = urllib2.Request("https://forecast.buienradar.nl/2.0/forecast/" + str(staddata[entryselect]["id"]), data=None, headers=headers)
-            handler = urllib2.urlopen(req, timeout=15)
-            antw = handler.read()
-            data = json.loads(antw)
-            naam = staddata[entryselect]["name"] + "  " + staddata[entryselect]["countrycode"]
-            return data, naam
-        except Exception as e:
-            print("getLocWeerFor fout:", e)
-            return None, None
+        data = _http_json(
+            "http://api.buienradar.nl/data/forecast/1.1/all/%s" % citynumb,
+            timeout=HTTP_TIMEOUT
+        )
+        if data is not None:
+            return data, str(inputCity.rsplit("-", 1)[0])
+    except (TypeError, ValueError, IndexError):
+        pass
+    except Exception as e:
+        print("[speedy_TheWeather] getLocWeerFor error: %s" % e)
+
+    # Fallback for old config entries that do not contain a numeric city id.
+    try:
+        query = quote_plus(inputCity.replace("_", " "))
+        data = _http_json(
+            "https://location.buienradar.nl/1.1/location/search?query=%s" % query,
+            timeout=HTTP_TIMEOUT
+        )
+        if data:
+            return data, str(inputCity)
+    except Exception as e:
+        print("[speedy_TheWeather] location fallback error: %s" % e)
+    return None
 
 def icontotext(icon):
     text = ""
@@ -3168,7 +3199,7 @@ class sevendays(Screen):
                         + str(self.selected)
                         + str(perUurUpdate)
                     ].instance.setPixmap(
-                        loadPNG(iconpath)
+                        _load_icon_cached(iconpath)
                     )
 
                 except Exception:
@@ -4044,6 +4075,13 @@ class localcityscreen(Screen):
         self.radarLoadTimer = eTimer()
         self._radarLoadTimerConn = safeTimerCallback(self.radarLoadTimer, self._openRadarDeferred)
         self.res = []
+        self._citySearchTimer = eTimer()
+        self._citySearchTimerConn = safeTimerCallback(self._citySearchTimer, self._pollCitySearch)
+        self._citySearchThread = None
+        self._citySearchResult = None
+        self._citySearchError = None
+        self._citySearchRequestId = 0
+        self._citySearchBusy = False
 
         global SavedLokaleWeer
         for x in SavedLokaleWeer:
@@ -4116,49 +4154,126 @@ class localcityscreen(Screen):
             self.close()
     
     def onCityTyped(self, searchterm=None):
-        if not searchterm:
+        if not searchterm or self._citySearchBusy:
             return
+
+        self._citySearchRequestId += 1
+        req_id = self._citySearchRequestId
+        self._citySearchBusy = True
+        self._citySearchResult = None
+        self._citySearchError = None
+        query = safeStr(searchterm).strip()
+
+        def worker():
+            try:
+                url = "https://location.buienradar.nl/1.1/location/search?query=%s" % quote_plus(query)
+                results = _http_json(url, timeout=12)
+                if req_id == self._citySearchRequestId:
+                    self._citySearchResult = results or []
+            except Exception as e:
+                if req_id == self._citySearchRequestId:
+                    self._citySearchError = e
+
+        self._citySearchThread = threading.Thread(target=worker)
+        self._citySearchThread.daemon = True
+        self._citySearchThread.start()
+        self._citySearchTimer.start(100, True)
+
+    def _pollCitySearch(self):
+        if self._citySearchResult is None and self._citySearchError is None:
+            if self._citySearchThread is not None and self._citySearchThread.is_alive():
+                self._citySearchTimer.start(100, True)
+                return
+
+        result = self._citySearchResult
+        error = self._citySearchError
+        self._citySearchResult = None
+        self._citySearchError = None
+        self._citySearchBusy = False
+
+        if error is not None:
+            print("[speedy_TheWeather] city search error: %s" % error)
+            self.session.open(
+                MessageBox,
+                _("No matching cities found."),
+                MessageBox.TYPE_INFO
+            )
+            return
+
+        if not result:
+            self.session.open(
+                MessageBox,
+                _("No matching cities found."),
+                MessageBox.TYPE_INFO
+            )
+            return
+
+        self.session.openWithCallback(
+            self.onCityChosen,
+            CitySuggestListScreen,
+            result
+        )
+
+    def close(self, *args):
+        self._citySearchRequestId += 1
+        self._citySearchBusy = False
+
         try:
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
-            cookie_jar = cookielib.CookieJar()
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
-            urllib2.install_opener(opener)
-            req = urllib2.Request("https://location.buienradar.nl/1.1/location/search?query=" + searchterm.replace(" ", "%20"), data=None, headers=headers)
-            handler = urllib2.urlopen(req, timeout=15)
-            antw = handler.read()
-            results = json.loads(antw)
-        except Exception as e:
-            print("[speedy_TheWeather] onCityTyped fout:", e)
-            results = []
-        if not results:
-            self.session.open(MessageBox, _("No matching cities found."), MessageBox.TYPE_INFO)
-            return
-        self.session.openWithCallback(self.onCityChosen, CitySuggestListScreen, results)
+            self._citySearchTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.radarLoadTimer.stop()
+        except Exception:
+            pass
+
+        Screen.close(self, *args)
 
     def onCityChosen(self, chosen=None):
         if chosen is None:
             return
-    
+
         loc = chosen.get("location") or {}
-        entry = "%s-%s|%s|%s" % (chosen["name"], chosen["id"], loc.get("lat", ""), loc.get("lon", ""))
+        name = safeStr(chosen.get("name", ""))
+        city_id = chosen.get("id", "")
+        entry = "%s-%s|%s|%s" % (
+            name,
+            city_id,
+            loc.get("lat", ""),
+            loc.get("lon", "")
+        )
+
         global SavedLokaleWeer
-        SavedLokaleWeer.append(entry)
-        file = open(CFG_DIR + "/speedy_TheWeather.cfg", "w")
-        for x in SavedLokaleWeer:
-            file.write(safeStr(x) + "\n")
-        file.close()
+        if entry not in SavedLokaleWeer:
+            SavedLokaleWeer.append(entry)
+
+        try:
+            with open(CFG_DIR + "/speedy_TheWeather.cfg", "w") as file:
+                for x in SavedLokaleWeer:
+                    file.write(safeStr(x) + "\n")
+        except Exception as e:
+            print("[speedy_TheWeather] Could not save location: %s" % e)
+            self.session.open(
+                MessageBox,
+                _("Could not save the selected location."),
+                MessageBox.TYPE_ERROR
+            )
+            return
+
         self.close()
-        self.close()
-    
+
     def addcityinf(self):
-        # Öffnet nun direkt den Setup-Bildschirm (Blaue Taste)
+        # Öffnet direkt den Setup-Bildschirm (Blaue Taste).
         self.session.open(speedy_TheWeatherSetup)
 
     def exit(self):
-        self.close(localcityscreen)
+        self.close()
 
     def cancel(self):
-        self.close(localcityscreen)
+        self.close()
+
+
 
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
@@ -4166,7 +4281,6 @@ class localcityscreen(Screen):
 from Components.Label import Label
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
-import threading
 
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     skin = """
@@ -5695,84 +5809,315 @@ class RadarScreen(Screen):
         self["key_blue"].setText(_("Loading..."))
         self.loadDelayTimer.start(50, True)
 
-    def _clear_pixmaps(self):
-        """Entfernt alte C++ Pixmap-Referenzen aus dem Speicher, um Leaks zu verhindern."""
-        self.basePixmaps.clear()
-        self.framePixmaps = []
-        gc.collect()
+def _clear_pixmaps(self):
+    """Release old C++ pixmap references without forcing a full GC cycle."""
+    self.basePixmaps.clear()
+    self.framePixmaps = []
 
-    def cleanupFrames(self):
-        """Löscht temporäre Dateien im tmpDir."""
-        if os.path.exists(self.tmpDir):
-            for f in os.listdir(self.tmpDir):
-                if f.startswith("speedy_TheWeather_frame_") or f.startswith("speedy_TheWeather_base_"):
-                    try:
-                        os.remove(os.path.join(self.tmpDir, f))
-                    except Exception:
-                        pass
-
-    def cleanupAll(self):
-        """Führt eine vollständige Bereinigung beim Schließen aus."""
-        self._clear_pixmaps()
-        self.cleanupFrames()
-
-    def _tile_xy(self, lat, lon, zoom):
-        x, y = latlon_to_tile(lat, lon, zoom)
-        n = int(2 ** zoom)
-        x = x % n
-        y = max(0, min(n - 1, y))
-        return x, y
-
-    def _download_file(self, url, path):
-        headers = {'User-Agent': 'Mozilla/5.0 speedy_TheWeather/4.0'}
-        req = urllib2.Request(url, data=None, headers=headers)
-        response = None
+def cleanupFrames(self):
+    """Remove request-specific temporary files; keep the reusable tile cache."""
+    if not os.path.exists(self.tmpDir):
+        return
+    for name in os.listdir(self.tmpDir):
+        if not (name.startswith("speedy_TheWeather_frame_") or
+                name.startswith("speedy_TheWeather_base_")):
+            continue
         try:
-            response = urllib2.urlopen(req, timeout=12)
-            data = response.read()
-            if not data:
-                raise IOError("empty response")
-            with open(path, "wb") as f:
-                f.write(data)
-        finally:
+            os.remove(os.path.join(self.tmpDir, name))
+        except OSError:
+            pass
+
+def cleanupAll(self):
+    self._clear_pixmaps()
+    self.cleanupFrames()
+
+def _tile_xy(self, lat, lon, zoom):
+    x, y = latlon_to_tile(lat, lon, zoom)
+    n = int(2 ** zoom)
+    return x % n, max(0, min(n - 1, y))
+
+def _download_file(self, url, path):
+    """Download one tile, using a TTL cache and atomic replacement."""
+    _ensure_cache_dir()
+    cache_path = _cache_file_for_url(url)
+    with _TILE_CACHE_LOCK:
+        try:
+            stat = os.stat(cache_path)
+            if stat.st_size > 0 and time.time() - stat.st_mtime <= _TILE_CACHE_TTL:
+                if cache_path != path:
+                    shutil.copyfile(cache_path, path)
+                return path
+        except OSError:
+            pass
+
+    req = Request(url, data=None, headers={
+        "User-Agent": "speedy_TheWeather/4.0",
+        "Accept": "image/png,image/*,*/*"
+    })
+    response = None
+    tmp_path = path + ".part.%s" % threading.current_thread().ident
+    try:
+        response = urlopen(req, timeout=12)
+        data = response.read()
+        if not data:
+            raise IOError("empty response")
+        with open(tmp_path, "wb") as f:
+            f.write(data)
+        os.replace(tmp_path, path)
+        with _TILE_CACHE_LOCK:
             try:
-                if response is not None:
-                    response.close()
+                shutil.copyfile(path, cache_path)
+            except OSError:
+                pass
+        return path
+    finally:
+        if response is not None:
+            try:
+                response.close()
             except Exception:
                 pass
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except OSError:
+            pass
 
-    def startFetch(self):
-        if self._closed:
+def _download_jobs(self, jobs, req_id):
+    """Run at most four network requests at once; return successful jobs."""
+    results = {}
+    if not jobs:
+        return results
+
+    def one(job):
+        key, url, path = job
+        if self._closed or req_id != self._fetchRequestId:
+            return key, None
+        try:
+            return key, self._download_file(url, path)
+        except Exception as e:
+            return key, e
+
+    if ThreadPoolExecutor is None:
+        for job in jobs:
+            key, value = one(job)
+            if isinstance(value, Exception):
+                raise value
+            results[key] = value
+        return results
+
+    pool = ThreadPoolExecutor(max_workers=_RADAR_MAX_WORKERS)
+    try:
+        futures = [pool.submit(one, job) for job in jobs]
+        for future in futures:
+            key, value = future.result()
+            if isinstance(value, Exception):
+                raise value
+            results[key] = value
+            if self._closed or req_id != self._fetchRequestId:
+                return {}
+    finally:
+        pool.shutdown(wait=True)
+    return results
+
+def startFetch(self):
+    if self._closed:
+        return
+    # Never stack refresh workers. A manual zoom starts a new request only
+    # after the previous one has finished.
+    if self.fetchBusy:
+        return
+
+    self.fetchBusy = True
+    self._fetchRequestId += 1
+    req_id = self._fetchRequestId
+    self._radarResult = None
+    self._radarError = None
+    self.animTimer.stop()
+    self.animTimerStarted = False
+
+    if "key_blue" in self:
+        self["key_blue"].setText(_("Loading..."))
+
+    if self._radarPollTimer is None:
+        self._radarPollTimer = eTimer()
+        self._radarPollTimerConn = safeTimerCallback(
+            self._radarPollTimer, self._pollRadarWorker
+        )
+
+    self._radarThread = threading.Thread(
+        target=self._fetchTilesWorker, args=(req_id,)
+    )
+    self._radarThread.daemon = True
+    self._radarThread.start()
+    self._radarPollTimer.start(200, False)
+
+def _doZoomFetch(self):
+    self.startFetch()
+
+def fetchTiles(self):
+    return self._fetchTilesWorker(self._fetchRequestId)
+
+def _fetchTilesWorker(self, req_id):
+    """Fetch metadata and tiles off the Enigma2 GUI thread."""
+    try:
+        zoom = int(self.BASE_ZOOM_OVERRIDE if self.BASE_ZOOM_OVERRIDE is not None else self.zoom)
+        radarZoom = min(zoom, self.RADAR_ZOOM_MAX)
+        baseX, baseY = self._tile_xy(self.lat, self.lon, zoom)
+        radarX, radarY = self._tile_xy(self.lat, self.lon, radarZoom)
+
+        meta = _http_json(
+            "https://api.rainviewer.com/public/weather-maps.json",
+            timeout=12,
+            headers={"User-Agent": "speedy_TheWeather/4.0"}
+        )
+        if not meta:
+            raise RuntimeError("RainViewer metadata unavailable")
+        if self._closed or req_id != self._fetchRequestId:
             return
-            
-        self.fetchBusy = True
-        self._fetchRequestId += 1
-        current_req_id = self._fetchRequestId
-        
-        self._radarResult = None
-        self._radarError = None
-        
-        self.animTimer.stop()
-        self.animTimerStarted = False
 
+        past = (meta.get("radar") or {}).get("past") or []
+        if not past:
+            raise RuntimeError("RainViewer returned no radar frames")
+        frames = past[-self.RADAR_FRAME_COUNT:]
+        host = meta.get("host") or "https://tilecache.rainviewer.com"
+
+        jobs = []
+        baseFiles = {}
         for row in range(self.GRID):
             for col in range(self.GRID):
-                widget = self.get("radarOverlay_%s_%s" % (row, col))
-                if widget and widget.instance:
-                    widget.instance.setPixmap(None)
+                x = (baseX + col - 1) % int(2 ** zoom)
+                y = max(0, min(int(2 ** zoom) - 1, baseY + row - 1))
+                url = "https://tile.openstreetmap.org/%s/%s/%s.png" % (zoom, x, y)
+                path = os.path.join(
+                    self.tmpDir, "speedy_TheWeather_base_%s_%s.png" % (row, col)
+                )
+                jobs.append((("base", row, col), url, path))
+        downloaded = self._download_jobs(jobs, req_id)
+        if not downloaded and jobs:
+            raise RuntimeError("Base map download cancelled")
 
-        if "key_blue" in self:
-            self["key_blue"].setText(_("Loading..."))
+        for key, path in downloaded.items():
+            baseFiles[(key[1], key[2])] = path
 
-        self._radarThread = threading.Thread(target=self._fetchTilesWorker, args=(current_req_id,))
-        self._radarThread.daemon = True
-        self._radarThread.start()
-        
-        if not hasattr(self, '_radarPollTimer') or self._radarPollTimer is None:
-            self._radarPollTimer = eTimer()
-            self._radarPollTimerConn = safeTimerCallback(self._radarPollTimer, self._pollRadarWorker)
-            
-        self._radarPollTimer.start(200, False)
+        frameFiles = []
+        frameTimes = []
+        for frameIndex, frame in enumerate(frames):
+            framePath = frame.get("path")
+            if not framePath:
+                continue
+            ts = frame.get("time")
+            jobs = []
+            for row in range(self.GRID):
+                for col in range(self.GRID):
+                    x = (radarX + col - 1) % int(2 ** radarZoom)
+                    y = max(0, min(int(2 ** radarZoom) - 1, radarY + row - 1))
+                    url = "%s%s/256/%s/%s/%s/2/1_1.png" % (
+                        host.rstrip("/"), framePath, radarZoom, x, y
+                    )
+                    path = os.path.join(
+                        self.tmpDir,
+                        "speedy_TheWeather_frame_%s_%s_%s.png" %
+                        (frameIndex, row, col)
+                    )
+                    jobs.append((("frame", row, col), url, path))
+            downloaded = self._download_jobs(jobs, req_id)
+            if self._closed or req_id != self._fetchRequestId:
+                return
+            if len(downloaded) != len(jobs):
+                raise RuntimeError("Radar tile download incomplete")
+            frameFiles.append({
+                (key[1], key[2]): path for key, path in downloaded.items()
+            })
+            frameTimes.append(ts)
+
+        if not frameFiles:
+            raise RuntimeError("No usable radar frames downloaded")
+        self._radarResult = {
+            "reqId": req_id,
+            "baseFiles": baseFiles,
+            "frameFiles": frameFiles,
+            "frameTimes": frameTimes,
+            "radarZoom": radarZoom,
+            "baseZoom": zoom,
+        }
+    except Exception as e:
+        if req_id == self._fetchRequestId and not self._closed:
+            self._radarError = e
+
+def _pollRadarWorker(self):
+    if self._closed:
+        return
+    if self._radarResult is None and self._radarError is None:
+        if self._radarThread is not None and self._radarThread.is_alive():
+            self._radarPollTimer.start(200, False)
+            return
+        self.fetchBusy = False
+        self["lastUpdate"].setText(_("Radar unavailable"))
+        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+        return
+
+    if self._radarError is not None:
+        err = self._radarError
+        self._radarError = None
+        self.fetchBusy = False
+        self["lastUpdate"].setText(_("Radar unavailable"))
+        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+        print("[speedy_TheWeather] Radar fetch error: %s" % err)
+        return
+
+    result = self._radarResult
+    self._radarResult = None
+    if not result or result.get("reqId") != self._fetchRequestId:
+        self.fetchBusy = False
+        return
+
+    try:
+        # Decode only here, on the Enigma2 GUI thread. Keeping old tiles
+        # visible until all new tiles are decoded avoids loading flicker.
+        newBasePixmaps = {}
+        for key, path in result["baseFiles"].items():
+            pix = _load_cached_png(path) or loadPNG(path)
+            newBasePixmaps[key] = pix
+            if pix is not None:
+                self["radarBase_%s_%s" % key].instance.setPixmap(pix)
+                self["radarBase_%s_%s" % key].show()
+
+        newFrames = []
+        for frameFiles in result["frameFiles"]:
+            pixmaps = {}
+            for key, path in frameFiles.items():
+                try:
+                    pix = loadPNG(path) if path and os.path.exists(path) else None
+                except Exception:
+                    pix = None
+                pixmaps[key] = pix
+            newFrames.append(pixmaps)
+
+        self._clear_pixmaps()
+        self.basePixmaps = newBasePixmaps
+        self.framePixmaps = newFrames
+        self.frameTimes = result["frameTimes"]
+        self.frameIsForecast = [False] * len(newFrames)
+        self.currentFrameIndex = 0
+        self.fetchBusy = False
+        self.startAnimation()
+        self["key_blue"].setText(_("Map zoom: %s") % result["baseZoom"])
+    except Exception as e:
+        self.fetchBusy = False
+        self["lastUpdate"].setText(_("Radar display error"))
+        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+        print("[speedy_TheWeather] Critical display error: %s" % e)
+
+def close(self, *args):
+    self._closed = True
+    self._fetchRequestId += 1
+    for timer in (self.refreshTimer, self.animTimer, self.loadDelayTimer, self._radarPollTimer):
+        try:
+            if timer:
+                timer.stop()
+        except Exception:
+            pass
+    Screen.close(self, *args)
 
     def togglePause(self):
         if self.paused:
