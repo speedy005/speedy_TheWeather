@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.7
+# v.1.4.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.4.7"
+__version__ = "1.4.8"
 VERSION = __version__
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
@@ -713,7 +713,7 @@ def _update_install_error():
         pr# ============================================================================
 # UPDATE
 # ============================================================================
-version = '1.4.7'
+version = '1.4.8'
 
 
 UPDATE_RAW_BASE = (
