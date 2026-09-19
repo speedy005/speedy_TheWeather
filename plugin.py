@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.2
+# v.1.4.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.4.2'
+version = '1.4.3'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -5809,379 +5809,196 @@ class RadarScreen(Screen):
         self["key_blue"].setText(_("Loading..."))
         self.loadDelayTimer.start(50, True)
 
-def _clear_pixmaps(self):
-    """Release old C++ pixmap references without forcing a full GC cycle."""
-    self.basePixmaps.clear()
-    self.framePixmaps = []
-
-def cleanupFrames(self):
-    """Remove request-specific temporary files; keep the reusable tile cache."""
-    if not os.path.exists(self.tmpDir):
-        return
-    for name in os.listdir(self.tmpDir):
-        if not (name.startswith("speedy_TheWeather_frame_") or
-                name.startswith("speedy_TheWeather_base_")):
-            continue
-        try:
-            os.remove(os.path.join(self.tmpDir, name))
-        except OSError:
-            pass
-
-def cleanupAll(self):
-    self._clear_pixmaps()
-    self.cleanupFrames()
-
-def _tile_xy(self, lat, lon, zoom):
-    x, y = latlon_to_tile(lat, lon, zoom)
-    n = int(2 ** zoom)
-    return x % n, max(0, min(n - 1, y))
-
-def _download_file(self, url, path):
-    """Download one tile, using a TTL cache and atomic replacement."""
-    _ensure_cache_dir()
-    cache_path = _cache_file_for_url(url)
-    with _TILE_CACHE_LOCK:
-        try:
-            stat = os.stat(cache_path)
-            if stat.st_size > 0 and time.time() - stat.st_mtime <= _TILE_CACHE_TTL:
-                if cache_path != path:
-                    shutil.copyfile(cache_path, path)
-                return path
-        except OSError:
-            pass
-
-    req = Request(url, data=None, headers={
-        "User-Agent": "speedy_TheWeather/4.0",
-        "Accept": "image/png,image/*,*/*"
-    })
-    response = None
-    tmp_path = path + ".part.%s" % threading.current_thread().ident
-    try:
-        response = urlopen(req, timeout=12)
-        data = response.read()
-        if not data:
-            raise IOError("empty response")
-        with open(tmp_path, "wb") as f:
-            f.write(data)
-        os.replace(tmp_path, path)
-        with _TILE_CACHE_LOCK:
+    def _clear_pixmaps(self):
+        """Release old C++ pixmap references without forcing a full GC cycle."""
+        self.basePixmaps.clear()
+        self.framePixmaps = []
+    
+    def cleanupFrames(self):
+        """Remove request-specific temporary files; keep the reusable tile cache."""
+        if not os.path.exists(self.tmpDir):
+            return
+        for name in os.listdir(self.tmpDir):
+            if not (name.startswith("speedy_TheWeather_frame_") or
+                    name.startswith("speedy_TheWeather_base_")):
+                continue
             try:
-                shutil.copyfile(path, cache_path)
+                os.remove(os.path.join(self.tmpDir, name))
             except OSError:
                 pass
-        return path
-    finally:
-        if response is not None:
-            try:
-                response.close()
-            except Exception:
-                pass
-        try:
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
-        except OSError:
-            pass
-
-def _download_jobs(self, jobs, req_id):
-    """Run at most four network requests at once; return successful jobs."""
-    results = {}
-    if not jobs:
-        return results
-
-    def one(job):
-        key, url, path = job
-        if self._closed or req_id != self._fetchRequestId:
-            return key, None
-        try:
-            return key, self._download_file(url, path)
-        except Exception as e:
-            return key, e
-
-    if ThreadPoolExecutor is None:
-        for job in jobs:
-            key, value = one(job)
-            if isinstance(value, Exception):
-                raise value
-            results[key] = value
-        return results
-
-    pool = ThreadPoolExecutor(max_workers=_RADAR_MAX_WORKERS)
-    try:
-        futures = [pool.submit(one, job) for job in jobs]
-        for future in futures:
-            key, value = future.result()
-            if isinstance(value, Exception):
-                raise value
-            results[key] = value
-            if self._closed or req_id != self._fetchRequestId:
-                return {}
-    finally:
-        pool.shutdown(wait=True)
-    return results
-
-def startFetch(self):
-    if self._closed:
-        return
-    # Never stack refresh workers. A manual zoom starts a new request only
-    # after the previous one has finished.
-    if self.fetchBusy:
-        return
-
-    self.fetchBusy = True
-    self._fetchRequestId += 1
-    req_id = self._fetchRequestId
-    self._radarResult = None
-    self._radarError = None
-    self.animTimer.stop()
-    self.animTimerStarted = False
-
-    if "key_blue" in self:
-        self["key_blue"].setText(_("Loading..."))
-
-    if self._radarPollTimer is None:
-        self._radarPollTimer = eTimer()
-        self._radarPollTimerConn = safeTimerCallback(
-            self._radarPollTimer, self._pollRadarWorker
-        )
-
-    self._radarThread = threading.Thread(
-        target=self._fetchTilesWorker, args=(req_id,)
-    )
-    self._radarThread.daemon = True
-    self._radarThread.start()
-    self._radarPollTimer.start(200, False)
-
-def _doZoomFetch(self):
-    self.startFetch()
-
-def fetchTiles(self):
-    return self._fetchTilesWorker(self._fetchRequestId)
-
-def _fetchTilesWorker(self, req_id):
-    """Fetch metadata and tiles off the Enigma2 GUI thread."""
-    try:
-        zoom = int(self.BASE_ZOOM_OVERRIDE if self.BASE_ZOOM_OVERRIDE is not None else self.zoom)
-        radarZoom = min(zoom, self.RADAR_ZOOM_MAX)
-        baseX, baseY = self._tile_xy(self.lat, self.lon, zoom)
-        radarX, radarY = self._tile_xy(self.lat, self.lon, radarZoom)
-
-        meta = _http_json(
-            "https://api.rainviewer.com/public/weather-maps.json",
-            timeout=12,
-            headers={"User-Agent": "speedy_TheWeather/4.0"}
-        )
-        if not meta:
-            raise RuntimeError("RainViewer metadata unavailable")
-        if self._closed or req_id != self._fetchRequestId:
-            return
-
-        past = (meta.get("radar") or {}).get("past") or []
-        if not past:
-            raise RuntimeError("RainViewer returned no radar frames")
-        frames = past[-self.RADAR_FRAME_COUNT:]
-        host = meta.get("host") or "https://tilecache.rainviewer.com"
-
-        jobs = []
-        baseFiles = {}
-        for row in range(self.GRID):
-            for col in range(self.GRID):
-                x = (baseX + col - 1) % int(2 ** zoom)
-                y = max(0, min(int(2 ** zoom) - 1, baseY + row - 1))
-                url = "https://tile.openstreetmap.org/%s/%s/%s.png" % (zoom, x, y)
-                path = os.path.join(
-                    self.tmpDir, "speedy_TheWeather_base_%s_%s.png" % (row, col)
-                )
-                jobs.append((("base", row, col), url, path))
-        downloaded = self._download_jobs(jobs, req_id)
-        if not downloaded and jobs:
-            raise RuntimeError("Base map download cancelled")
-
-        for key, path in downloaded.items():
-            baseFiles[(key[1], key[2])] = path
-
-        frameFiles = []
-        frameTimes = []
-        for frameIndex, frame in enumerate(frames):
-            framePath = frame.get("path")
-            if not framePath:
-                continue
-            ts = frame.get("time")
-            jobs = []
-            for row in range(self.GRID):
-                for col in range(self.GRID):
-                    x = (radarX + col - 1) % int(2 ** radarZoom)
-                    y = max(0, min(int(2 ** radarZoom) - 1, radarY + row - 1))
-                    url = "%s%s/256/%s/%s/%s/2/1_1.png" % (
-                        host.rstrip("/"), framePath, radarZoom, x, y
-                    )
-                    path = os.path.join(
-                        self.tmpDir,
-                        "speedy_TheWeather_frame_%s_%s_%s.png" %
-                        (frameIndex, row, col)
-                    )
-                    jobs.append((("frame", row, col), url, path))
-            downloaded = self._download_jobs(jobs, req_id)
-            if self._closed or req_id != self._fetchRequestId:
-                return
-            if len(downloaded) != len(jobs):
-                raise RuntimeError("Radar tile download incomplete")
-            frameFiles.append({
-                (key[1], key[2]): path for key, path in downloaded.items()
-            })
-            frameTimes.append(ts)
-
-        if not frameFiles:
-            raise RuntimeError("No usable radar frames downloaded")
-        self._radarResult = {
-            "reqId": req_id,
-            "baseFiles": baseFiles,
-            "frameFiles": frameFiles,
-            "frameTimes": frameTimes,
-            "radarZoom": radarZoom,
-            "baseZoom": zoom,
-        }
-    except Exception as e:
-        if req_id == self._fetchRequestId and not self._closed:
-            self._radarError = e
-
-def _pollRadarWorker(self):
-    if self._closed:
-        return
-    if self._radarResult is None and self._radarError is None:
-        if self._radarThread is not None and self._radarThread.is_alive():
-            self._radarPollTimer.start(200, False)
-            return
-        self.fetchBusy = False
-        self["lastUpdate"].setText(_("Radar unavailable"))
-        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-        return
-
-    if self._radarError is not None:
-        err = self._radarError
-        self._radarError = None
-        self.fetchBusy = False
-        self["lastUpdate"].setText(_("Radar unavailable"))
-        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-        print("[speedy_TheWeather] Radar fetch error: %s" % err)
-        return
-
-    result = self._radarResult
-    self._radarResult = None
-    if not result or result.get("reqId") != self._fetchRequestId:
-        self.fetchBusy = False
-        return
-
-    try:
-        # Decode only here, on the Enigma2 GUI thread. Keeping old tiles
-        # visible until all new tiles are decoded avoids loading flicker.
-        newBasePixmaps = {}
-        for key, path in result["baseFiles"].items():
-            pix = _load_cached_png(path) or loadPNG(path)
-            newBasePixmaps[key] = pix
-            if pix is not None:
-                self["radarBase_%s_%s" % key].instance.setPixmap(pix)
-                self["radarBase_%s_%s" % key].show()
-
-        newFrames = []
-        for frameFiles in result["frameFiles"]:
-            pixmaps = {}
-            for key, path in frameFiles.items():
-                try:
-                    pix = loadPNG(path) if path and os.path.exists(path) else None
-                except Exception:
-                    pix = None
-                pixmaps[key] = pix
-            newFrames.append(pixmaps)
-
+    
+    def cleanupAll(self):
         self._clear_pixmaps()
-        self.basePixmaps = newBasePixmaps
-        self.framePixmaps = newFrames
-        self.frameTimes = result["frameTimes"]
-        self.frameIsForecast = [False] * len(newFrames)
-        self.currentFrameIndex = 0
-        self.fetchBusy = False
-        self.startAnimation()
-        self["key_blue"].setText(_("Map zoom: %s") % result["baseZoom"])
-    except Exception as e:
-        self.fetchBusy = False
-        self["lastUpdate"].setText(_("Radar display error"))
-        self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-        print("[speedy_TheWeather] Critical display error: %s" % e)
-
-def close(self, *args):
-    self._closed = True
-    self._fetchRequestId += 1
-    for timer in (self.refreshTimer, self.animTimer, self.loadDelayTimer, self._radarPollTimer):
-        try:
-            if timer:
-                timer.stop()
-        except Exception:
-            pass
-    Screen.close(self, *args)
-
-    def togglePause(self):
-        if self.paused:
-            self.animTimer.start(1600, False)
-            self["key_yellow"].setText(_("Pause"))
-        else:
-            self.animTimer.stop()
-            self["key_yellow"].setText(_("Play"))
-        self.paused = not self.paused
-
-    def _doZoomFetch(self):
-        self.startFetch()
-
-    def fetchTiles(self):
-        return self._fetchTilesWorker(self._fetchRequestId)
-
-    def _fetchTilesWorker(self, req_id):
-        """Lädt Kacheln herunter. Verwirft das Ergebnis, wenn eine neuere Anfrage gestartet wurde."""
-        try:
-            zoom = int(self.BASE_ZOOM_OVERRIDE if self.BASE_ZOOM_OVERRIDE is not None else self.zoom)
-            self.zoom = zoom
-            
-            radarZoom = min(zoom, self.RADAR_ZOOM_MAX)
-
-            baseX, baseY = self._tile_xy(self.lat, self.lon, zoom)
-            radarX, radarY = self._tile_xy(self.lat, self.lon, radarZoom)
-
-            apiUrl = "https://api.rainviewer.com/public/weather-maps.json"
-            headers = {'User-Agent': 'Mozilla/5.0 speedy_TheWeather/4.0'}
-            req = urllib2.Request(apiUrl, data=None, headers=headers)
-            response = None
+        self.cleanupFrames()
+    
+    def _tile_xy(self, lat, lon, zoom):
+        x, y = latlon_to_tile(lat, lon, zoom)
+        n = int(2 ** zoom)
+        return x % n, max(0, min(n - 1, y))
+    
+    def _download_file(self, url, path):
+        """Download one tile, using a TTL cache and atomic replacement."""
+        _ensure_cache_dir()
+        cache_path = _cache_file_for_url(url)
+        with _TILE_CACHE_LOCK:
             try:
-                response = urllib2.urlopen(req, timeout=12)
-                meta = json.loads(response.read())
-            finally:
+                stat = os.stat(cache_path)
+                if stat.st_size > 0 and time.time() - stat.st_mtime <= _TILE_CACHE_TTL:
+                    if cache_path != path:
+                        shutil.copyfile(cache_path, path)
+                    return path
+            except OSError:
+                pass
+    
+        req = Request(url, data=None, headers={
+            "User-Agent": "speedy_TheWeather/4.0",
+            "Accept": "image/png,image/*,*/*"
+        })
+        response = None
+        tmp_path = path + ".part.%s" % threading.current_thread().ident
+        try:
+            response = urlopen(req, timeout=12)
+            data = response.read()
+            if not data:
+                raise IOError("empty response")
+            with open(tmp_path, "wb") as f:
+                f.write(data)
+            os.replace(tmp_path, path)
+            with _TILE_CACHE_LOCK:
                 try:
-                    if response is not None:
-                        response.close()
+                    shutil.copyfile(path, cache_path)
+                except OSError:
+                    pass
+            return path
+        finally:
+            if response is not None:
+                try:
+                    response.close()
                 except Exception:
                     pass
-
-            if req_id != self._fetchRequestId:
+            try:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
+    
+    def _download_jobs(self, jobs, req_id):
+        """Run at most four network requests at once; return successful jobs."""
+        results = {}
+        if not jobs:
+            return results
+    
+        def one(job):
+            key, url, path = job
+            if self._closed or req_id != self._fetchRequestId:
+                return key, None
+            try:
+                return key, self._download_file(url, path)
+            except Exception as e:
+                return key, e
+    
+        if ThreadPoolExecutor is None:
+            for job in jobs:
+                key, value = one(job)
+                if isinstance(value, Exception):
+                    raise value
+                results[key] = value
+            return results
+    
+        pool = ThreadPoolExecutor(max_workers=_RADAR_MAX_WORKERS)
+        try:
+            futures = [pool.submit(one, job) for job in jobs]
+            for future in futures:
+                key, value = future.result()
+                if isinstance(value, Exception):
+                    raise value
+                results[key] = value
+                if self._closed or req_id != self._fetchRequestId:
+                    return {}
+        finally:
+            pool.shutdown(wait=True)
+        return results
+    
+    def startFetch(self):
+        if self._closed:
+            return
+        # Never stack refresh workers. A manual zoom starts a new request only
+        # after the previous one has finished.
+        if self.fetchBusy:
+            return
+    
+        self.fetchBusy = True
+        self._fetchRequestId += 1
+        req_id = self._fetchRequestId
+        self._radarResult = None
+        self._radarError = None
+        self.animTimer.stop()
+        self.animTimerStarted = False
+    
+        if "key_blue" in self:
+            self["key_blue"].setText(_("Loading..."))
+    
+        if self._radarPollTimer is None:
+            self._radarPollTimer = eTimer()
+            self._radarPollTimerConn = safeTimerCallback(
+                self._radarPollTimer, self._pollRadarWorker
+            )
+    
+        self._radarThread = threading.Thread(
+            target=self._fetchTilesWorker, args=(req_id,)
+        )
+        self._radarThread.daemon = True
+        self._radarThread.start()
+        self._radarPollTimer.start(200, False)
+    
+    def _doZoomFetch(self):
+        self.startFetch()
+    
+    def fetchTiles(self):
+        return self._fetchTilesWorker(self._fetchRequestId)
+    
+    def _fetchTilesWorker(self, req_id):
+        """Fetch metadata and tiles off the Enigma2 GUI thread."""
+        try:
+            zoom = int(self.BASE_ZOOM_OVERRIDE if self.BASE_ZOOM_OVERRIDE is not None else self.zoom)
+            radarZoom = min(zoom, self.RADAR_ZOOM_MAX)
+            baseX, baseY = self._tile_xy(self.lat, self.lon, zoom)
+            radarX, radarY = self._tile_xy(self.lat, self.lon, radarZoom)
+    
+            meta = _http_json(
+                "https://api.rainviewer.com/public/weather-maps.json",
+                timeout=12,
+                headers={"User-Agent": "speedy_TheWeather/4.0"}
+            )
+            if not meta:
+                raise RuntimeError("RainViewer metadata unavailable")
+            if self._closed or req_id != self._fetchRequestId:
                 return
-
-            radar = meta.get("radar") or {}
-            past = radar.get("past") or []
+    
+            past = (meta.get("radar") or {}).get("past") or []
             if not past:
                 raise RuntimeError("RainViewer returned no radar frames")
-
             frames = past[-self.RADAR_FRAME_COUNT:]
             host = meta.get("host") or "https://tilecache.rainviewer.com"
-
+    
+            jobs = []
             baseFiles = {}
             for row in range(self.GRID):
                 for col in range(self.GRID):
-                    if req_id != self._fetchRequestId:
-                        return
                     x = (baseX + col - 1) % int(2 ** zoom)
                     y = max(0, min(int(2 ** zoom) - 1, baseY + row - 1))
-                    path = os.path.join(self.tmpDir, "speedy_TheWeather_base_%s_%s.png" % (row, col))
                     url = "https://tile.openstreetmap.org/%s/%s/%s.png" % (zoom, x, y)
-                    self._download_file(url, path)
-                    baseFiles[(row, col)] = path
-
+                    path = os.path.join(
+                        self.tmpDir, "speedy_TheWeather_base_%s_%s.png" % (row, col)
+                    )
+                    jobs.append((("base", row, col), url, path))
+            downloaded = self._download_jobs(jobs, req_id)
+            if not downloaded and jobs:
+                raise RuntimeError("Base map download cancelled")
+    
+            for key, path in downloaded.items():
+                baseFiles[(key[1], key[2])] = path
+    
             frameFiles = []
             frameTimes = []
             for frameIndex, frame in enumerate(frames):
@@ -6189,26 +6006,32 @@ def close(self, *args):
                 if not framePath:
                     continue
                 ts = frame.get("time")
-                cellFiles = {}
+                jobs = []
                 for row in range(self.GRID):
                     for col in range(self.GRID):
-                        if req_id != self._fetchRequestId:
-                            return
                         x = (radarX + col - 1) % int(2 ** radarZoom)
                         y = max(0, min(int(2 ** radarZoom) - 1, radarY + row - 1))
-                        path = os.path.join(self.tmpDir, "speedy_TheWeather_frame_%s_%s_%s.png" % (frameIndex, row, col))
-                        url = "%s%s/256/%s/%s/%s/2/1_1.png" % (host.rstrip('/'), framePath, radarZoom, x, y)
-                        self._download_file(url, path)
-                        cellFiles[(row, col)] = path
-                frameFiles.append(cellFiles)
+                        url = "%s%s/256/%s/%s/%s/2/1_1.png" % (
+                            host.rstrip("/"), framePath, radarZoom, x, y
+                        )
+                        path = os.path.join(
+                            self.tmpDir,
+                            "speedy_TheWeather_frame_%s_%s_%s.png" %
+                            (frameIndex, row, col)
+                        )
+                        jobs.append((("frame", row, col), url, path))
+                downloaded = self._download_jobs(jobs, req_id)
+                if self._closed or req_id != self._fetchRequestId:
+                    return
+                if len(downloaded) != len(jobs):
+                    raise RuntimeError("Radar tile download incomplete")
+                frameFiles.append({
+                    (key[1], key[2]): path for key, path in downloaded.items()
+                })
                 frameTimes.append(ts)
-
-            if req_id != self._fetchRequestId:
-                return
-
+    
             if not frameFiles:
                 raise RuntimeError("No usable radar frames downloaded")
-
             self._radarResult = {
                 "reqId": req_id,
                 "baseFiles": baseFiles,
@@ -6218,82 +6041,73 @@ def close(self, *args):
                 "baseZoom": zoom,
             }
         except Exception as e:
-            if req_id == self._fetchRequestId:
+            if req_id == self._fetchRequestId and not self._closed:
                 self._radarError = e
-
+    
     def _pollRadarWorker(self):
         if self._closed:
             return
         if self._radarResult is None and self._radarError is None:
-            try:
-                if self._radarThread is not None and self._radarThread.is_alive():
-                    self._radarPollTimer.start(200, False)
-                    return
-            except Exception:
-                pass
-            self._radarPollTimer.start(200, False)
-            return
-
-        if self._radarError is not None:
+            if self._radarThread is not None and self._radarThread.is_alive():
+                self._radarPollTimer.start(200, False)
+                return
             self.fetchBusy = False
             self["lastUpdate"].setText(_("Radar unavailable"))
             self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-            print("[speedy_TheWeather] Radar fetch error: %s" % self._radarError)
-            self._radarError = None
             return
-
+    
+        if self._radarError is not None:
+            err = self._radarError
+            self._radarError = None
+            self.fetchBusy = False
+            self["lastUpdate"].setText(_("Radar unavailable"))
+            self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+            print("[speedy_TheWeather] Radar fetch error: %s" % err)
+            return
+    
         result = self._radarResult
         self._radarResult = None
-
-        if result.get("reqId") != self._fetchRequestId:
+        if not result or result.get("reqId") != self._fetchRequestId:
+            self.fetchBusy = False
             return
-
+    
         try:
-            self._clear_pixmaps()
-
+            # Decode only here, on the Enigma2 GUI thread. Keeping old tiles
+            # visible until all new tiles are decoded avoids loading flicker.
             newBasePixmaps = {}
             for key, path in result["baseFiles"].items():
-                pix = None
-                if path and os.path.exists(path) and os.path.getsize(path) > 0:
-                    try:
-                        pix = loadPNG(path)
-                    except Exception as e:
-                        print("[speedy_TheWeather] loadPNG Base-Tile error %s: %s" % (key, e))
-                
+                pix = _load_cached_png(path) or loadPNG(path)
                 newBasePixmaps[key] = pix
                 if pix is not None:
                     self["radarBase_%s_%s" % key].instance.setPixmap(pix)
                     self["radarBase_%s_%s" % key].show()
-
-            self.basePixmaps = newBasePixmaps
-
+    
             newFrames = []
             for frameFiles in result["frameFiles"]:
                 pixmaps = {}
                 for key, path in frameFiles.items():
-                    pix = None
-                    if path and os.path.exists(path) and os.path.getsize(path) > 0:
-                        try:
-                            pix = loadPNG(path)
-                        except Exception as e:
-                            print("[speedy_TheWeather] loadPNG Radar-Tile error %s: %s" % (key, e))
+                    try:
+                        pix = loadPNG(path) if path and os.path.exists(path) else None
+                    except Exception:
+                        pix = None
                     pixmaps[key] = pix
                 newFrames.append(pixmaps)
-
+    
+            self._clear_pixmaps()
+            self.basePixmaps = newBasePixmaps
             self.framePixmaps = newFrames
             self.frameTimes = result["frameTimes"]
-            self.frameIsForecast = [False] * len(self.framePixmaps)
+            self.frameIsForecast = [False] * len(newFrames)
             self.currentFrameIndex = 0
             self.fetchBusy = False
             self.startAnimation()
             self["key_blue"].setText(_("Map zoom: %s") % result["baseZoom"])
-            
         except Exception as e:
             self.fetchBusy = False
             self["lastUpdate"].setText(_("Radar display error"))
             self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
             print("[speedy_TheWeather] Critical display error: %s" % e)
-
+    
     def close(self, *args):
         self._closed = True
         try:
@@ -6314,6 +6128,14 @@ def close(self, *args):
         except Exception:
             pass
         Screen.close(self, *args)
+    def togglePause(self):
+        if self.paused:
+            self.animTimer.start(1600, False)
+            self["key_yellow"].setText(_("Pause"))
+        else:
+            self.animTimer.stop()
+            self["key_yellow"].setText(_("Play"))
+        self.paused = not self.paused
 
     def startAnimation(self):
         if not self.framePixmaps or self.paused:
