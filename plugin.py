@@ -489,52 +489,74 @@ def _update_start_check():
         print("[speedy_TheWeather] Could not start update timer:", e)
 
 def _update_show_message(info):
+    """Show available update information."""
 
     remote_version = safeStr(
         info.get("version", "")
-    )
+    ).strip()
 
-    changes = _update_changes_text(
+    changes = safeStr(
         info.get("changes", "")
-    )
+    ).strip()
 
     installer_version = safeStr(
         info.get("installer_version", "")
-    )
+    ).strip()
+
+    # ------------------------------------------------------------
+    # Changelog fallback
+    # ------------------------------------------------------------
+
+    if not changes:
+        changes = _(
+            "No changes available."
+        )
+
+    # ------------------------------------------------------------
+    # Installer version
+    # ------------------------------------------------------------
 
     installer_note = ""
 
     if installer_version:
 
         installer_note = (
-            "\n\n"
+            "\n"
             + _("Installer version: %s")
             % installer_version
         )
 
-    update_text = _(
-        "A new version of speedy_TheWeather is available.\n"
-        "\n"
-        "Installed version: %s\n"
-        "New version: %s%s\n"
-        "\n"
-        "Changes:\n"
-        "%s\n"
-        "\n"
-        "Do you want to install the update?"
-    )
+    # ------------------------------------------------------------
+    # Update message
+    # ------------------------------------------------------------
 
-    message = update_text % (
-        VERSION,
-        remote_version,
-        installer_note,
-        changes
+    message = (
+        _("A new version of speedy_TheWeather is available.")
+        + "\n\n"
+        + _("Installed version: %s")
+        % VERSION
+        + "\n"
+        + _("New version: %s")
+        % remote_version
+        + installer_note
+        + "\n\n"
+        + _("Changes:")
+        + "\n"
+        + changes
+        + "\n\n"
+        + _("Do you want to install the update?")
     )
 
     print(
         "[speedy_TheWeather] "
         "Update changes: %s"
         % changes
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Update installer version: %s"
+        % installer_version
     )
 
     try:
@@ -979,8 +1001,8 @@ def _update_download(
 
 def _update_extract_plugin_version(source):
     """
-    Liest 'version = ...' aus der entfernten plugin.py,
-    ohne den fremden Code auszuführen.
+    Read the plugin version from remote plugin.py
+    without executing the remote code.
     """
 
     try:
@@ -992,57 +1014,69 @@ def _update_extract_plugin_version(source):
             filename="plugin.py"
         )
 
+        # ------------------------------------------------------------
+        # Check direct string assignments.
+        #
+        # Supported:
+        #
+        # version = "1.4.4"
+        # __version__ = "1.4.4"
+        #
+        # ------------------------------------------------------------
+
         for node in tree.body:
 
-            if isinstance(
+            if not isinstance(
                 node,
                 ast.Assign
             ):
+                continue
 
-                for target in node.targets:
+            for target in node.targets:
 
-                    if (
-                        isinstance(
-                            target,
-                            ast.Name
-                        )
-                        and
-                        target.id == "version"
-                    ):
+                if not isinstance(
+                    target,
+                    ast.Name
+                ):
+                    continue
 
-                        value = node.value
+                if target.id not in (
+                    "version",
+                    "__version__"
+                ):
+                    continue
 
-                        if isinstance(
-                            value,
-                            ast.Constant
-                        ):
+                value = node.value
 
-                            return safeStr(
-                                value.value
-                            ).strip()
+                if isinstance(
+                    value,
+                    ast.Constant
+                ) and isinstance(
+                    value.value,
+                    str
+                ):
 
-                        if (
-                            hasattr(
-                                ast,
-                                "Str"
-                            )
-                            and
-                            isinstance(
-                                value,
-                                ast.Str
-                            )
-                        ):
+                    return value.value.strip()
 
-                            return safeStr(
-                                value.s
-                            ).strip()
+                if (
+                    hasattr(
+                        ast,
+                        "Str"
+                    )
+                    and isinstance(
+                        value,
+                        ast.Str
+                    )
+                ):
+
+                    return value.s.strip()
 
     except Exception as e:
 
         print(
             "[speedy_TheWeather] "
-            "Could not read GitHub plugin version:",
-            e
+            "Could not read GitHub plugin version: %s"
+            % e
         )
 
     return ""
