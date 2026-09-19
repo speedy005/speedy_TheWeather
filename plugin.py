@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.8
+# v.1.4.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.4.8"
+__version__ = "1.4.9"
 VERSION = __version__
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
@@ -251,18 +251,69 @@ def _update_extract_plugin_version(source):
     return ""
 
 def _update_extract_installer_info(source):
-    """Liest version/changelog aus dem vorhandenen installer.sh."""
-    result = {"version": "", "changelog": ""}
+    """Read version and changelog from installer.sh."""
+
+    result = {
+        "version": "",
+        "changelog": ""
+    }
+
     try:
+
         import re
-        match = re.search(r"^version=['\"]([^'\"]+)['\"]", source, re.MULTILINE)
+
+        # ------------------------------------------------------------
+        # Installer version
+        # ------------------------------------------------------------
+
+        match = re.search(
+            r"^\s*version\s*=\s*(['\"])(.*?)\1",
+            source,
+            re.MULTILINE
+        )
+
         if match:
-            result["version"] = match.group(1).strip()
-        match = re.search(r"^(?:changelog|hangelog)=['\"](.*?)['\"]", source, re.MULTILINE)
+
+            result["version"] = (
+                match.group(2).strip()
+            )
+
+        # ------------------------------------------------------------
+        # Installer changelog
+        # ------------------------------------------------------------
+
+        match = re.search(
+            r"^\s*changelog\s*=\s*(['\"])(.*?)\1",
+            source,
+            re.MULTILINE
+        )
+
         if match:
-            result["changelog"] = match.group(1).strip()
+
+            result["changelog"] = (
+                match.group(2).strip()
+            )
+
     except Exception as e:
-        print("[speedy_TheWeather] Could not read installer information:", e)
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not read installer information: %s"
+            % e
+        )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer version: %s"
+        % result["version"]
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer changelog: %s"
+        % result["changelog"]
+    )
+
     return result
 
 def _update_changes_text(changes):
@@ -438,6 +489,7 @@ def _update_start_check():
         print("[speedy_TheWeather] Could not start update timer:", e)
 
 def _update_show_message(info):
+
     remote_version = safeStr(
         info.get("version", "")
     )
@@ -453,27 +505,36 @@ def _update_show_message(info):
     installer_note = ""
 
     if installer_version:
+
         installer_note = (
             "\n\n"
             + _("Installer version: %s")
             % installer_version
         )
 
-    update_text = (
-        "A new version of speedy_TheWeather is available.\n\n"
+    update_text = _(
+        "A new version of speedy_TheWeather is available.\n"
+        "\n"
         "Installed version: %s\n"
-        "New version: %s%s\n\n"
-        "Changes:\n%s\n\n"
+        "New version: %s%s\n"
+        "\n"
+        "Changes:\n"
+        "%s\n"
+        "\n"
         "Do you want to install the update?"
     )
 
-    translated_text = _(update_text)
-
-    message = translated_text % (
-        version,
+    message = update_text % (
+        VERSION,
         remote_version,
         installer_note,
         changes
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Update changes: %s"
+        % changes
     )
 
     try:
@@ -713,7 +774,7 @@ def _update_install_error():
         pr# ============================================================================
 # UPDATE
 # ============================================================================
-version = '1.4.8'
+version = '1.4.9'
 
 
 UPDATE_RAW_BASE = (
