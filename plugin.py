@@ -3537,11 +3537,41 @@ class sevendays(Screen):
 
     def openRadar(self):
         global lockaaleStad
+
+        print(
+            "[speedy_TheWeather] openRadar lockaaleStad=%r"
+            % lockaaleStad
+        )
+
         lat, lon = getCoordsFromEntry(lockaaleStad)
+
         if lat is not None and lon is not None:
-            self.session.open(RadarScreen, lat=lat, lon=lon, zoom=7) #map zoom
+
+            parts = safeStr(lockaaleStad).split("|")
+            location_name = parts[0].strip() if parts else ""
+
+            print(
+                "[speedy_TheWeather] radar location_name=%r"
+                % location_name
+            )
+
+            self.session.open(
+                RadarScreen,
+                lat=lat,
+                lon=lon,
+                zoom=7,
+                location_name=location_name
+            )
+
         else:
-            self.session.open(MessageBox, _("No radar coordinates for this location.\nRemove and re-add it via search to enable radar."), MessageBox.TYPE_INFO)
+            self.session.open(
+                MessageBox,
+                _(
+                    "No radar coordinates for this location.\n"
+                    "Remove and re-add it via search to enable radar."
+                ),
+                MessageBox.TYPE_INFO
+            )
     
     #Temporary button for the twolocations
     def openTwoLocations(self):
@@ -4131,10 +4161,37 @@ class localcityscreen(Screen):
                 self.session.open(MessageBox, _("No radar coordinates for this location.\nRemove and re-add it to enable radar."), MessageBox.TYPE_INFO)
 
     def _openRadarDeferred(self):
+        global lockaaleStad
+
         lat, lon = self.pendingRadarCoords
-        # Holt sich den dynamischen Zoom-Wert aus den Einstellungen:
-        user_zoom = int(config.plugins.speedy_TheWeather.defaultzoom.value)
-        self.session.openWithCallback(self._radarClosed, RadarScreen, lat=lat, lon=lon, zoom=user_zoom)
+
+        # Dynamischen Zoom aus den Einstellungen holen
+        user_zoom = int(
+            config.plugins.speedy_TheWeather.defaultzoom.value
+        )
+
+        # Ortsnamen aus dem gespeicherten Eintrag holen
+        parts = safeStr(lockaaleStad).split("|")
+        location_name = (
+            parts[0].strip()
+            if parts
+            else ""
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Radar deferred location=%r"
+            % location_name
+        )
+
+        self.session.openWithCallback(
+            self._radarClosed,
+            RadarScreen,
+            lat=lat,
+            lon=lon,
+            zoom=user_zoom,
+            location_name=location_name
+        )
 
     def _radarClosed(self, *args):
         self["helpinfo"].setText(self.helpInfoDefault)
@@ -5683,7 +5740,10 @@ class RadarScreen(Screen):
         self._radarPollTimer = None
         self._fetchRequestId = 0
 
+        # =========================================================
         # Incremental decoder
+        # =========================================================
+
         self._decodeTimer = eTimer()
         self._decodeTimerConn = safeTimerCallback(
             self._decodeTimer,
@@ -5701,9 +5761,11 @@ class RadarScreen(Screen):
         # =========================================================
 
         self.location_name = self._resolve_location_name()
+
         self["radarLocation"] = Label(
             self.location_name
         )
+
         # =========================================================
         # Datumsformat
         # =========================================================
@@ -5722,6 +5784,10 @@ class RadarScreen(Screen):
 
         baseWidgets = ""
         overlayWidgets = ""
+
+        # =========================================================
+        # FHD
+        # =========================================================
 
         if sz_w > 1800:
 
@@ -5792,7 +5858,7 @@ class RadarScreen(Screen):
                     zPosition="1"/>
 
                 <!-- =================================================
-                     Normale Box-Uhr oben rechts
+                     Uhr oben rechts
                      ================================================= -->
 
                 <widget
@@ -5834,7 +5900,67 @@ class RadarScreen(Screen):
                 </widget>
 
                 <!-- =================================================
+                     RainViewer - BLAU
+                     ================================================= -->
+
+                <widget
+                    name="radarTitle"
+                    position="30,50"
+                    size="250,36"
+                    zPosition="3"
+                    foregroundColor="#000404b3"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;40"
+                    noWrap="1"
+                    valign="center"
+                    halign="left"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
+                     Radar-Zeit - ROT
+                     Direkt über dem Radar
+                     ================================================= -->
+
+                <widget
+                    name="lastUpdate"
+                    position="959,115"
+                    size="400,36"
+                    zPosition="3"
+                    font="Bold;28"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ff0000"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    noWrap="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
+                     Ort - GRÜN
+                     Direkt über dem Radar
+                     ================================================= -->
+
+                <widget
+                    name="radarLocation"
+                    position="1359,115"
+                    size="397,36"
+                    zPosition="3"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;28"
+                    noWrap="1"
+                    valign="center"
+                    halign="right"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
                      TV-Bild links
+                     POSITION UNVERÄNDERT
                      ================================================= -->
 
                 <widget
@@ -5846,55 +5972,8 @@ class RadarScreen(Screen):
                     zPosition="1"/>
 
                 <!-- =================================================
-                     RainViewer / Ort
-                     Gleiche Kopfzeile wie vorher,
-                     nur sauber aufgeteilt.
+                     Attribution
                      ================================================= -->
-
-                <widget
-                    name="radarTitle"
-                    position="30,125"
-                    size="250,36"
-                    zPosition="3"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    transparent="1"
-                    font="Bold;28"
-                    noWrap="1"
-                    valign="center"
-                    halign="left"/>
-
-                <widget
-                    name="radarLocation"
-                    position="280,125"
-                    size="470,36"
-                    zPosition="3"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    transparent="1"
-                    font="Bold;28"
-                    noWrap="1"
-                    valign="center"
-                    halign="right"/>
-
-                <!-- =================================================
-                     Radar Zeit
-                     ================================================= -->
-
-                <widget
-                    name="lastUpdate"
-                    position="957,125"
-                    size="400,36"
-                    zPosition="3"
-                    font="Bold;28"
-                    halign="left"
-                    valign="center"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    transparent="1"
-                    noWrap="1"
-                    shadowColor="black"
-                    shadowOffset="-2,-2"/>
 
                 <widget
                     name="attribution"
@@ -5969,11 +6048,11 @@ class RadarScreen(Screen):
                 </screen>
             """
 
-        else:
+        # =========================================================
+        # SD
+        # =========================================================
 
-            # =====================================================
-            # SD
-            # =====================================================
+        else:
 
             cell = self.CELL_SD
             x0, y0 = 639, 127
@@ -6030,16 +6109,20 @@ class RadarScreen(Screen):
                 """ + baseWidgets + overlayWidgets + """
 
                 <ePixmap
-                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
                     position="0,88"
-                    size="1280,2"
+                    size="1280,3"
                     zPosition="1"/>
 
                 <ePixmap
-                    pixmap="/usr/lib/python2/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
                     position="0,648"
-                    size="1280,2"
+                    size="1280,3"
                     zPosition="1"/>
+
+                <!-- =================================================
+                     Uhr oben rechts
+                     ================================================= -->
 
                 <widget
                     source="global.CurrentTime"
@@ -6047,8 +6130,8 @@ class RadarScreen(Screen):
                     position="1091,12"
                     size="150,55"
                     transparent="1"
-                    zPosition="1"
-                    font="Regular;24"
+                    zPosition="3"
+                    font="Regular;26"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     valign="center"
@@ -6066,8 +6149,8 @@ class RadarScreen(Screen):
                     position="941,32"
                     size="300,55"
                     transparent="1"
-                    zPosition="1"
-                    font="Regular;16"
+                    zPosition="3"
+                    font="Regular;20"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     valign="center"
@@ -6079,6 +6162,69 @@ class RadarScreen(Screen):
 
                 </widget>
 
+                <!-- =================================================
+                     RainViewer - BLAU
+                     ================================================= -->
+
+                <widget
+                    name="radarTitle"
+                    position="85,35"
+                    size="180,32"
+                    zPosition="3"
+                    foregroundColor="#000404b3"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;38"
+                    noWrap="1"
+                    valign="center"
+                    halign="left"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
+                     Radar-Zeit - ROT
+                     Direkt über dem Radar
+                     ================================================= -->
+
+                <widget
+                    name="lastUpdate"
+                    position="639,92"
+                    size="300,30"
+                    zPosition="3"
+                    font="Bold;21"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ff0000"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    noWrap="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
+                     Ort - GRÜN
+                     ================================================= -->
+
+                <widget
+                    name="radarLocation"
+                    position="939,92"
+                    size="195,30"
+                    zPosition="3"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;21"
+                    noWrap="1"
+                    valign="center"
+                    halign="right"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <!-- =================================================
+                     TV-Bild
+                     POSITION UNVERÄNDERT
+                     ================================================= -->
+
                 <widget
                     source="session.VideoPicture"
                     render="Pig"
@@ -6087,71 +6233,35 @@ class RadarScreen(Screen):
                     backgroundColor="#ff000000"
                     zPosition="1"/>
 
-                <!-- RainViewer -->
-
-                <widget
-                    name="radarTitle"
-                    position="85,93"
-                    size="145,32"
-                    zPosition="3"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    transparent="1"
-                    font="Bold;24"
-                    noWrap="1"
-                    valign="center"
-                    halign="left"/>
-
-                <!-- Ort -->
-
-                <widget
-                    name="radarLocation"
-                    position="230,93"
-                    size="272,32"
-                    zPosition="3"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    transparent="1"
-                    font="Bold;24"
-                    noWrap="1"
-                    valign="center"
-                    halign="right"/>
-
-                <!-- Radar Zeit -->
-
-                <widget
-                    name="lastUpdate"
-                    position="638,103"
-                    size="400,25"
-                    font="Bold;16"
-                    transparent="1"
-                    foregroundColor="#00ffffff"
-                    backgroundColor="#00202020"
-                    noWrap="1"
-                    valign="center"
-                    halign="left"/>
+                <!-- =================================================
+                     Attribution
+                     ================================================= -->
 
                 <widget
                     name="attribution"
                     position="10,620"
-                    size="500,17"
-                    font="Regular;12"
+                    size="400,22"
+                    font="Regular;14"
                     transparent="1"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"/>
 
+                <!-- =================================================
+                     Buttons
+                     ================================================= -->
+
                 <ePixmap
-                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png"
-                    position="145,663"
-                    size="26,26"
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png"
+                    position="100,665"
+                    size="34,34"
                     alphatest="blend"/>
 
                 <widget
                     name="key_red"
-                    position="185,663"
-                    size="220,32"
+                    position="150,658"
+                    size="250,40"
                     zPosition="1"
-                    font="Regular;24"
+                    font="Regular;28"
                     halign="left"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
@@ -6160,17 +6270,17 @@ class RadarScreen(Screen):
                     shadowOffset="-2,-2"/>
 
                 <ePixmap
-                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png"
-                    position="700,663"
-                    size="26,26"
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png"
+                    position="480,665"
+                    size="34,34"
                     alphatest="blend"/>
 
                 <widget
                     name="key_yellow"
-                    position="735,663"
-                    size="280,32"
+                    position="530,658"
+                    size="300,40"
                     zPosition="1"
-                    font="Regular;24"
+                    font="Regular;28"
                     halign="left"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
@@ -6179,17 +6289,17 @@ class RadarScreen(Screen):
                     shadowOffset="-2,-2"/>
 
                 <ePixmap
-                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue26.png"
-                    position="970,663"
-                    size="26,26"
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue34.png"
+                    position="850,665"
+                    size="34,34"
                     alphatest="blend"/>
 
                 <widget
                     name="key_blue"
-                    position="1010,663"
-                    size="220,32"
+                    position="900,658"
+                    size="300,40"
                     zPosition="1"
-                    font="Regular;24"
+                    font="Regular;28"
                     halign="left"
                     foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
@@ -6398,71 +6508,13 @@ class RadarScreen(Screen):
 
     def _resolve_location_name(self):
 
-        # Explizit übergebener Ort
         try:
-
-            value = str(
-                self.location_name
-            ).strip()
-
+            value = str(self.location_name).strip()
             if value:
                 return value
-
         except Exception:
             pass
 
-        # Config
-        try:
-
-            cfg = config.plugins.speedy_TheWeather
-
-            attributes = (
-                "city",
-                "cityname",
-                "location",
-                "locationname",
-                "place",
-                "placename",
-                "town",
-                "village",
-            )
-
-            for attr in attributes:
-
-                try:
-
-                    obj = getattr(
-                        cfg,
-                        attr,
-                        None
-                    )
-
-                    if obj is None:
-                        continue
-
-                    value = getattr(
-                        obj,
-                        "value",
-                        obj
-                    )
-
-                    if value is None:
-                        continue
-
-                    value = str(
-                        value
-                    ).strip()
-
-                    if value:
-                        return value
-
-                except Exception:
-                    continue
-
-        except Exception:
-            pass
-
-        # NIEMALS Koordinaten anzeigen.
         return _("Unknown location")
 
     # =============================================================
