@@ -1669,15 +1669,15 @@ def _update_show_message(info):
             "version",
             ""
         )
-    )
+    ).strip()
 
 
-    changes = _update_changes_text(
+    changes = safeStr(
         info.get(
             "changes",
             ""
         )
-    )
+    ).strip()
 
 
     installer_version = safeStr(
@@ -1685,7 +1685,14 @@ def _update_show_message(info):
             "installer_version",
             ""
         )
-    )
+    ).strip()
+
+
+    if not changes:
+
+        changes = _(
+            "No changes available."
+        )
 
 
     installer_note = ""
@@ -1694,7 +1701,7 @@ def _update_show_message(info):
     if installer_version:
 
         installer_note = (
-            "\n\n"
+            "\n"
             + _(
                 "Installer version: %s"
             )
@@ -1702,31 +1709,51 @@ def _update_show_message(info):
         )
 
 
-    update_text = (
-        "A new version of "
-        "speedy_TheWeather is available."
-        "\n\n"
-        "Installed version: %s\n"
-        "New version: %s%s\n\n"
-        "Changes:\n%s\n\n"
-        "Do you want to install the update?"
-    )
-
-
-    translated_text = _(
-        update_text
-    )
-
-
     message = (
-        translated_text
-        %
-        (
-            version,
-            remote_version,
-            installer_note,
-            changes
+        _(
+            "A new version of speedy_TheWeather "
+            "is available."
         )
+        + "\n\n"
+        + _(
+            "Installed version: %s"
+        )
+        % VERSION
+        + "\n"
+        + _(
+            "New version: %s"
+        )
+        % remote_version
+        + installer_note
+        + "\n\n"
+        + _(
+            "Changes:"
+        )
+        + "\n"
+        + changes
+        + "\n\n"
+        + _(
+            "Do you want to install the update?"
+        )
+    )
+
+
+    print(
+        "[speedy_TheWeather] "
+        "Update version: %s"
+        % remote_version
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer version: %s"
+        % installer_version
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Update changes: %s"
+        % changes
     )
 
 
