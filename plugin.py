@@ -5633,6 +5633,10 @@ class TempOverlay(Screen):
         except Exception:
             pass
 
+# ================================================================
+# RADAR SCREEN
+# ================================================================
+
 class RadarScreen(Screen):
     GRID = 3
     CELL_HD = 250
@@ -5641,11 +5645,69 @@ class RadarScreen(Screen):
     RADAR_ZOOM_MAX = 7
     RADAR_FRAME_COUNT = 6
 
-    def __init__(self, session, lat=51.05, lon=3.72, zoom=7):
+    def __init__(
+        self,
+        session,
+        lat=51.05,
+        lon=3.72,
+        zoom=7,
+        location_name=""
+    ):
         Screen.__init__(self, session)
         self.skinName = ["RadarScreen"]
 
-        # Dynamisches Datumsformat basierend auf den Einstellungen ermitteln
+        # =========================================================
+        # Grundzustand SOFORT initialisieren
+        # =========================================================
+
+        self.lat = lat
+        self.lon = lon
+        self.location_name = location_name or ""
+
+        self.paused = False
+        self.animTimerStarted = False
+        self.fetchBusy = False
+        self._closed = False
+
+        self.currentFrameIndex = 0
+
+        self.framePixmaps = []
+        self.frameReady = []
+        self.frameTimes = []
+        self.frameIsForecast = []
+        self.basePixmaps = {}
+
+        self._radarThread = None
+        self._radarResult = None
+        self._radarError = None
+        self._radarPollTimer = None
+        self._fetchRequestId = 0
+
+        # Incremental decoder
+        self._decodeTimer = eTimer()
+        self._decodeTimerConn = safeTimerCallback(
+            self._decodeTimer,
+            self._decodeNextTile
+        )
+
+        self._decodeQueue = []
+        self._decodeActive = False
+        self._decodeBaseFiles = {}
+        self._decodeFrameFiles = []
+        self._decodeRemaining = []
+
+        # =========================================================
+        # Ort bestimmen
+        # =========================================================
+
+        self.location_name = self._resolve_location_name()
+        self["radarLocation"] = Label(
+            self.location_name
+        )
+        # =========================================================
+        # Datumsformat
+        # =========================================================
+
         try:
             if config.plugins.speedy_TheWeather.dateformat.value == "dot":
                 date_fmt = "Format:%a %d.%m.%y"
@@ -5654,384 +5716,1536 @@ class RadarScreen(Screen):
         except Exception:
             date_fmt = "Format:%a %d/%m/%y"
 
+        # =========================================================
+        # Dynamische Radar-Kacheln
+        # =========================================================
+
         baseWidgets = ""
         overlayWidgets = ""
+
         if sz_w > 1800:
+
             cell = self.CELL_HD
             x0, y0 = 959, 160
+
             for row in range(self.GRID):
                 for col in range(self.GRID):
-                    px, py = x0 + col * cell, y0 + row * cell
-                    baseWidgets += '<widget name="radarBase_%s_%s" position="%s,%s" size="%s,%s" zPosition="1" transparent="1" alphatest="blend" scale="1"/>' % (row, col, px, py, cell, cell)
-                    overlayWidgets += '<widget name="radarOverlay_%s_%s" position="%s,%s" size="%s,%s" zPosition="2" transparent="1" alphatest="blend" scale="1"/>' % (row, col, px, py, cell, cell)
+
+                    px = x0 + col * cell
+                    py = y0 + row * cell
+
+                    baseWidgets += (
+                        '<widget name="radarBase_%s_%s" '
+                        'position="%s,%s" '
+                        'size="%s,%s" '
+                        'zPosition="1" '
+                        'transparent="1" '
+                        'alphatest="blend" '
+                        'scale="1"/>'
+                        % (
+                            row,
+                            col,
+                            px,
+                            py,
+                            cell,
+                            cell
+                        )
+                    )
+
+                    overlayWidgets += (
+                        '<widget name="radarOverlay_%s_%s" '
+                        'position="%s,%s" '
+                        'size="%s,%s" '
+                        'zPosition="2" '
+                        'transparent="1" '
+                        'alphatest="blend" '
+                        'scale="1"/>'
+                        % (
+                            row,
+                            col,
+                            px,
+                            py,
+                            cell,
+                            cell
+                        )
+                    )
+
             self.skin = """
-                <screen name="RadarScreen" position="center,center" size="1920,1080" flags="wfNoBorder" title="Rain radar">
+                <screen name="RadarScreen"
+                    position="center,center"
+                    size="1920,1080"
+                    flags="wfNoBorder"
+                    title="RainViewer">
+
                 """ + baseWidgets + overlayWidgets + """
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffffff" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffffff" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">""" + date_fmt + """</convert></widget>
-                <widget source="session.VideoPicture" render="Pig" position="30,160" size="720,405" backgroundColor="#ff000000" zPosition="1"/>
-                <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
-                <widget name="attribution" position="10,990" size="600,25" font="Regular;16" transparent="1" foregroundColor="#00ffffff" backgroundColor="#00202020"/>
-                <widget name="lastUpdate" position="957,125" size="400,36" zPosition="1" font="Regular;28" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="900,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_yellow" position="950,1015" size="400,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue34.png" position="1500,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_blue" position="1550,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                </screen>"""
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
+                    position="0,112"
+                    size="1920,3"
+                    zPosition="1"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
+                    position="0,1010"
+                    size="1920,3"
+                    zPosition="1"/>
+
+                <!-- =================================================
+                     Normale Box-Uhr oben rechts
+                     ================================================= -->
+
+                <widget
+                    source="global.CurrentTime"
+                    render="Label"
+                    position="1634,35"
+                    size="225,45"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;36"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+
+                    <convert type="ClockToText">
+                        Format:%-H:%M:%S
+                    </convert>
+
+                </widget>
+
+                <widget
+                    source="global.CurrentTime"
+                    render="Label"
+                    position="1409,74"
+                    size="450,37"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;24"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+
+                    <convert type="ClockToText">
+                        """ + date_fmt + """
+                    </convert>
+
+                </widget>
+
+                <!-- =================================================
+                     TV-Bild links
+                     ================================================= -->
+
+                <widget
+                    source="session.VideoPicture"
+                    render="Pig"
+                    position="30,160"
+                    size="720,405"
+                    backgroundColor="#ff000000"
+                    zPosition="1"/>
+
+                <!-- =================================================
+                     RainViewer / Ort
+                     Gleiche Kopfzeile wie vorher,
+                     nur sauber aufgeteilt.
+                     ================================================= -->
+
+                <widget
+                    name="radarTitle"
+                    position="30,125"
+                    size="250,36"
+                    zPosition="3"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;28"
+                    noWrap="1"
+                    valign="center"
+                    halign="left"/>
+
+                <widget
+                    name="radarLocation"
+                    position="280,125"
+                    size="470,36"
+                    zPosition="3"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;28"
+                    noWrap="1"
+                    valign="center"
+                    halign="right"/>
+
+                <!-- =================================================
+                     Radar Zeit
+                     ================================================= -->
+
+                <widget
+                    name="lastUpdate"
+                    position="957,125"
+                    size="400,36"
+                    zPosition="3"
+                    font="Bold;28"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    noWrap="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget
+                    name="attribution"
+                    position="10,990"
+                    size="600,25"
+                    font="Regular;16"
+                    transparent="1"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"/>
+
+                <!-- =================================================
+                     Buttons
+                     ================================================= -->
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png"
+                    position="192,1022"
+                    size="34,34"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_red"
+                    position="242,1015"
+                    size="370,48"
+                    zPosition="1"
+                    font="Regular;40"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png"
+                    position="900,1022"
+                    size="34,34"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_yellow"
+                    position="950,1015"
+                    size="400,48"
+                    zPosition="1"
+                    font="Regular;40"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue34.png"
+                    position="1500,1022"
+                    size="34,34"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_blue"
+                    position="1550,1015"
+                    size="370,48"
+                    zPosition="1"
+                    font="Regular;40"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                </screen>
+            """
+
         else:
+
+            # =====================================================
+            # SD
+            # =====================================================
+
             cell = self.CELL_SD
             x0, y0 = 639, 127
+
             for row in range(self.GRID):
                 for col in range(self.GRID):
-                    px, py = x0 + col * cell, y0 + row * cell
-                    baseWidgets += '<widget name="radarBase_%s_%s" position="%s,%s" size="%s,%s" zPosition="1" transparent="1" alphatest="blend" scale="1"/>' % (row, col, px, py, cell, cell)
-                    overlayWidgets += '<widget name="radarOverlay_%s_%s" position="%s,%s" size="%s,%s" zPosition="2" transparent="1" alphatest="blend" scale="1"/>' % (row, col, px, py, cell, cell)
+
+                    px = x0 + col * cell
+                    py = y0 + row * cell
+
+                    baseWidgets += (
+                        '<widget name="radarBase_%s_%s" '
+                        'position="%s,%s" '
+                        'size="%s,%s" '
+                        'zPosition="1" '
+                        'transparent="1" '
+                        'alphatest="blend" '
+                        'scale="1"/>'
+                        % (
+                            row,
+                            col,
+                            px,
+                            py,
+                            cell,
+                            cell
+                        )
+                    )
+
+                    overlayWidgets += (
+                        '<widget name="radarOverlay_%s_%s" '
+                        'position="%s,%s" '
+                        'size="%s,%s" '
+                        'zPosition="2" '
+                        'transparent="1" '
+                        'alphatest="blend" '
+                        'scale="1"/>'
+                        % (
+                            row,
+                            col,
+                            px,
+                            py,
+                            cell,
+                            cell
+                        )
+                    )
+
             self.skin = """
-                <screen name="RadarScreen" position="center,center" size="1280,720" flags="wfNoBorder" title="Rain radar">
+                <screen name="RadarScreen"
+                    position="center,center"
+                    size="1280,720"
+                    flags="wfNoBorder"
+                    title="RainViewer">
+
                 """ + baseWidgets + overlayWidgets + """
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png" position="0,88" size="1280,2" zPosition="1"/>
-                <ePixmap pixmap="/usr/lib/python2/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png" position="0,648" size="1280,2" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1091,12" size="150,55" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#00ffffff" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="941,32" size="300,55" transparent="1" zPosition="1" font="Regular;16" foregroundColor="#00ffffff" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">""" + date_fmt + """</convert></widget>
-                <widget source="session.VideoPicture" render="Pig" position="85,120" size="417,243" backgroundColor="#ff000000" zPosition="1"/>
-                <widget source="session.CurrentService" render="Label" position="85,93" size="417,32" zPosition="1" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
-                <widget name="attribution" position="10,620" size="500,17" font="Regular;12" transparent="1" foregroundColor="#00ffffff" backgroundColor="#00202020"/>
-                <widget name="lastUpdate" position="638,103" size="400,25" font="Regular;16" transparent="1" foregroundColor="#00ffffff" backgroundColor="#00202020"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png" position="145,663" size="26,26" alphatest="blend"/>
-                <widget name="key_red" position="185,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png" position="700,663" size="26,26" alphatest="blend"/>
-                <widget name="key_yellow" position="735,663" size="280,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue26.png" position="970,663" size="26,26" alphatest="blend"/>
-                <widget name="key_blue" position="1010,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffffff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                </screen>"""
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    position="0,88"
+                    size="1280,2"
+                    zPosition="1"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/python2/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    position="0,648"
+                    size="1280,2"
+                    zPosition="1"/>
+
+                <widget
+                    source="global.CurrentTime"
+                    render="Label"
+                    position="1091,12"
+                    size="150,55"
+                    transparent="1"
+                    zPosition="1"
+                    font="Regular;24"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+
+                    <convert type="ClockToText">
+                        Format:%-H:%M:%S
+                    </convert>
+
+                </widget>
+
+                <widget
+                    source="global.CurrentTime"
+                    render="Label"
+                    position="941,32"
+                    size="300,55"
+                    transparent="1"
+                    zPosition="1"
+                    font="Regular;16"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+
+                    <convert type="ClockToText">
+                        """ + date_fmt + """
+                    </convert>
+
+                </widget>
+
+                <widget
+                    source="session.VideoPicture"
+                    render="Pig"
+                    position="85,120"
+                    size="417,243"
+                    backgroundColor="#ff000000"
+                    zPosition="1"/>
+
+                <!-- RainViewer -->
+
+                <widget
+                    name="radarTitle"
+                    position="85,93"
+                    size="145,32"
+                    zPosition="3"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;24"
+                    noWrap="1"
+                    valign="center"
+                    halign="left"/>
+
+                <!-- Ort -->
+
+                <widget
+                    name="radarLocation"
+                    position="230,93"
+                    size="272,32"
+                    zPosition="3"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    font="Bold;24"
+                    noWrap="1"
+                    valign="center"
+                    halign="right"/>
+
+                <!-- Radar Zeit -->
+
+                <widget
+                    name="lastUpdate"
+                    position="638,103"
+                    size="400,25"
+                    font="Bold;16"
+                    transparent="1"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    noWrap="1"
+                    valign="center"
+                    halign="left"/>
+
+                <widget
+                    name="attribution"
+                    position="10,620"
+                    size="500,17"
+                    font="Regular;12"
+                    transparent="1"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png"
+                    position="145,663"
+                    size="26,26"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_red"
+                    position="185,663"
+                    size="220,32"
+                    zPosition="1"
+                    font="Regular;24"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png"
+                    position="700,663"
+                    size="26,26"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_yellow"
+                    position="735,663"
+                    size="280,32"
+                    zPosition="1"
+                    font="Regular;24"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue26.png"
+                    position="970,663"
+                    size="26,26"
+                    alphatest="blend"/>
+
+                <widget
+                    name="key_blue"
+                    position="1010,663"
+                    size="220,32"
+                    zPosition="1"
+                    font="Regular;24"
+                    halign="left"
+                    foregroundColor="#00ffffff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                </screen>
+            """
+
+        # =========================================================
+        # Pixmap Widgets
+        # =========================================================
 
         for row in range(self.GRID):
             for col in range(self.GRID):
-                self["radarBase_%s_%s" % (row, col)] = Pixmap()
-                self["radarOverlay_%s_%s" % (row, col)] = Pixmap()
 
-        self["attribution"] = Label(_("Weather data by RainViewer"))
+                self[
+                    "radarBase_%s_%s" % (row, col)
+                ] = Pixmap()
+
+                self[
+                    "radarOverlay_%s_%s" % (row, col)
+                ] = Pixmap()
+
+        # =========================================================
+        # Labels
+        # =========================================================
+
+        self["radarTitle"] = Label(
+            _("RainViewer")
+        )
+
+        self["radarLocation"] = Label(
+            self.location_name
+        )
+
+        self["attribution"] = Label(
+            _("Weather data by RainViewer")
+        )
+
+        # WICHTIG:
+        # Hier KEIN "Radar unavailable" setzen.
         self["lastUpdate"] = Label("")
-        self["key_red"] = Label(_("Exit"))
-        self["key_yellow"] = Label(_("Pause"))
 
-        # Feinere Zoomstufen
-        self.ZOOM_LEVELS = [5, 6, 7, 8, 9, 10, 11, 12]
-        
-        # Standard-Zoom aus der Config auslesen (falls angegeben)
+        self["key_red"] = Label(
+            _("Exit")
+        )
+
+        self["key_yellow"] = Label(
+            _("Pause")
+        )
+
+        # =========================================================
+        # Zoom
+        # =========================================================
+
+        self.ZOOM_LEVELS = [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+        ]
+
         try:
-            init_zoom = int(config.plugins.speedy_TheWeather.defaultzoom.value)
+
+            init_zoom = int(
+                config.plugins.speedy_TheWeather.defaultzoom.value
+            )
+
         except Exception:
-            init_zoom = zoom
+
+            try:
+                init_zoom = int(zoom)
+            except Exception:
+                init_zoom = 7
 
         if init_zoom in self.ZOOM_LEVELS:
-            self.zoomIndex = self.ZOOM_LEVELS.index(init_zoom)
+
+            self.zoomIndex = (
+                self.ZOOM_LEVELS.index(
+                    init_zoom
+                )
+            )
+
         else:
-            self.zoomIndex = 2 # Default auf 7
 
-        self.BASE_ZOOM_OVERRIDE = self.ZOOM_LEVELS[self.zoomIndex]
-        self["key_blue"] = Label(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+            self.zoomIndex = 2
 
-        # ActionMap um DirectionActions für direkte Zoom-Tasten (P+/P- oder Steuerkreuz) erweitern
-        self["actions"] = ActionMap(["OkCancelActions", "ColorActions", "DirectionActions"], {
-            "cancel": self.close,
-            "red": self.close,
-            "yellow": self.togglePause,
-            "blue": self.cycleBaseZoom,
-            "up": self.zoomIn,
-            "down": self.zoomOut,
-            "pageUp": self.zoomIn,
-            "pageDown": self.zoomOut,
-        }, -1)
+        self.BASE_ZOOM_OVERRIDE = (
+            self.ZOOM_LEVELS[
+                self.zoomIndex
+            ]
+        )
 
-        self.lat = lat
-        self.lon = lon
-        self.zoom = self.ZOOM_LEVELS[self.zoomIndex]
-        self.framePixmaps = []
-        self.frameTimes = []
-        self.frameIsForecast = []
-        self.basePixmaps = {}
-        self.currentFrameIndex = 0
-        self.animTimerStarted = False
-        self.paused = False
-        self.fetchBusy = False
-        self._radarThread = None
-        self._radarResult = None
-        self._radarError = None
-        self._radarPollTimer = None
-        self._closed = False
-        self._fetchRequestId = 0
+        self["key_blue"] = Label(
+            _("Map zoom: %s")
+            % self.ZOOM_LEVELS[
+                self.zoomIndex
+            ]
+        )
+
+        # =========================================================
+        # Actions
+        # =========================================================
+
+        self["actions"] = ActionMap(
+            [
+                "OkCancelActions",
+                "ColorActions",
+                "DirectionActions"
+            ],
+            {
+                "cancel": self.close,
+                "red": self.close,
+                "yellow": self.togglePause,
+                "blue": self.cycleBaseZoom,
+                "up": self.zoomIn,
+                "down": self.zoomOut,
+                "pageUp": self.zoomIn,
+                "pageDown": self.zoomOut,
+            },
+            -1
+        )
+
+        self.zoom = self.ZOOM_LEVELS[
+            self.zoomIndex
+        ]
+
+        # =========================================================
+        # Refresh Timer
+        # =========================================================
 
         self.refreshTimer = eTimer()
-        self._refreshTimerConn = safeTimerCallback(self.refreshTimer, self.startFetch)
-        self.refreshTimer.start(10 * 60 * 1000, False)
+
+        self._refreshTimerConn = safeTimerCallback(
+            self.refreshTimer,
+            self.startFetch
+        )
+
+        self.refreshTimer.start(
+            10 * 60 * 1000,
+            False
+        )
+
+        # =========================================================
+        # Animation Timer
+        # =========================================================
 
         self.animTimer = eTimer()
-        self._animTimerConn = safeTimerCallback(self.animTimer, self.nextFrame)
+
+        self._animTimerConn = safeTimerCallback(
+            self.animTimer,
+            self.nextFrame
+        )
+
+        # =========================================================
+        # Zoom Delay
+        # =========================================================
 
         self.loadDelayTimer = eTimer()
-        self._loadDelayTimerConn = safeTimerCallback(self.loadDelayTimer, self._doZoomFetch)
 
-        self.tmpDir = "/tmp/speedy_TheWeather"
-        if not os.path.exists(self.tmpDir):
-            os.makedirs(self.tmpDir)
-        self.onClose.append(self.cleanupAll)
-        self.onLayoutFinish.append(self.startFetch)
+        self._loadDelayTimerConn = safeTimerCallback(
+            self.loadDelayTimer,
+            self._doZoomFetch
+        )
+
+        # =========================================================
+        # Temporary Directory
+        # =========================================================
+
+        self.tmpDir = (
+            "/tmp/speedy_TheWeather"
+        )
+
+        if not os.path.exists(
+            self.tmpDir
+        ):
+
+            try:
+                os.makedirs(
+                    self.tmpDir
+                )
+            except OSError:
+                pass
+
+        # =========================================================
+        # Close
+        # =========================================================
+
+        self.onClose.append(
+            self.cleanupAll
+        )
+
+        self.onLayoutFinish.append(
+            self.startFetch
+        )
+
+    # =============================================================
+    # LOCATION
+    # =============================================================
+
+    def _resolve_location_name(self):
+
+        # Explizit übergebener Ort
+        try:
+
+            value = str(
+                self.location_name
+            ).strip()
+
+            if value:
+                return value
+
+        except Exception:
+            pass
+
+        # Config
+        try:
+
+            cfg = config.plugins.speedy_TheWeather
+
+            attributes = (
+                "city",
+                "cityname",
+                "location",
+                "locationname",
+                "place",
+                "placename",
+                "town",
+                "village",
+            )
+
+            for attr in attributes:
+
+                try:
+
+                    obj = getattr(
+                        cfg,
+                        attr,
+                        None
+                    )
+
+                    if obj is None:
+                        continue
+
+                    value = getattr(
+                        obj,
+                        "value",
+                        obj
+                    )
+
+                    if value is None:
+                        continue
+
+                    value = str(
+                        value
+                    ).strip()
+
+                    if value:
+                        return value
+
+                except Exception:
+                    continue
+
+        except Exception:
+            pass
+
+        # NIEMALS Koordinaten anzeigen.
+        return _("Unknown location")
+
+    # =============================================================
+    # ZOOM
+    # =============================================================
 
     def zoomIn(self):
-        if self.zoomIndex < len(self.ZOOM_LEVELS) - 1:
+
+        if self.fetchBusy:
+            return
+
+        if self.zoomIndex < (
+            len(self.ZOOM_LEVELS) - 1
+        ):
+
             self.zoomIndex += 1
             self.applyZoomChange()
 
     def zoomOut(self):
+
+        if self.fetchBusy:
+            return
+
         if self.zoomIndex > 0:
+
             self.zoomIndex -= 1
             self.applyZoomChange()
 
     def cycleBaseZoom(self):
+
         if self.fetchBusy:
-            self["key_blue"].setText(_("Please wait..."))
+
+            self["key_blue"].setText(
+                _("Please wait...")
+            )
+
             return
-        self.zoomIndex = (self.zoomIndex + 1) % len(self.ZOOM_LEVELS)
+
+        self.zoomIndex = (
+            self.zoomIndex + 1
+        ) % len(self.ZOOM_LEVELS)
+
         self.applyZoomChange()
 
     def applyZoomChange(self):
+
         if self.fetchBusy:
             return
-        newZoom = self.ZOOM_LEVELS[self.zoomIndex]
+
+        newZoom = self.ZOOM_LEVELS[
+            self.zoomIndex
+        ]
+
         self.zoom = newZoom
         self.BASE_ZOOM_OVERRIDE = newZoom
-        self.fetchBusy = True
-        self["key_blue"].setText(_("Loading..."))
-        self.loadDelayTimer.start(50, True)
+
+        self["key_blue"].setText(
+            _("Loading...")
+        )
+
+        try:
+            self.loadDelayTimer.stop()
+        except Exception:
+            pass
+
+        self.loadDelayTimer.start(
+            50,
+            True
+        )
+
+    # =============================================================
+    # PIXMAPS
+    # =============================================================
 
     def _clear_pixmaps(self):
-        """Release old C++ pixmap references without forcing a full GC cycle."""
+
         self.basePixmaps.clear()
         self.framePixmaps = []
-    
+        self.frameReady = []
+        self.frameTimes = []
+        self.frameIsForecast = []
+
+    # =============================================================
+    # CLEANUP
+    # =============================================================
+
     def cleanupFrames(self):
-        """Remove request-specific temporary files; keep the reusable tile cache."""
-        if not os.path.exists(self.tmpDir):
+
+        if not os.path.exists(
+            self.tmpDir
+        ):
             return
-        for name in os.listdir(self.tmpDir):
-            if not (name.startswith("speedy_TheWeather_frame_") or
-                    name.startswith("speedy_TheWeather_base_")):
-                continue
-            try:
-                os.remove(os.path.join(self.tmpDir, name))
-            except OSError:
-                pass
-    
-    def cleanupAll(self):
-        self._clear_pixmaps()
-        self.cleanupFrames()
-    
-    def _tile_xy(self, lat, lon, zoom):
-        x, y = latlon_to_tile(lat, lon, zoom)
-        n = int(2 ** zoom)
-        return x % n, max(0, min(n - 1, y))
-    
-    def _download_file(self, url, path):
-        """Download one tile, using a TTL cache and atomic replacement."""
-        _ensure_cache_dir()
-        cache_path = _cache_file_for_url(url)
-        with _TILE_CACHE_LOCK:
-            try:
-                stat = os.stat(cache_path)
-                if stat.st_size > 0 and time.time() - stat.st_mtime <= _TILE_CACHE_TTL:
-                    if cache_path != path:
-                        shutil.copyfile(cache_path, path)
-                    return path
-            except OSError:
-                pass
-    
-        req = Request(url, data=None, headers={
-            "User-Agent": "speedy_TheWeather/4.0",
-            "Accept": "image/png,image/*,*/*"
-        })
-        response = None
-        tmp_path = path + ".part.%s" % threading.current_thread().ident
+
         try:
-            response = urlopen(req, timeout=12)
+            names = os.listdir(
+                self.tmpDir
+            )
+        except OSError:
+            return
+
+        for name in names:
+
+            if not (
+                name.startswith(
+                    "speedy_TheWeather_frame_"
+                )
+                or
+                name.startswith(
+                    "speedy_TheWeather_base_"
+                )
+            ):
+                continue
+
+            try:
+
+                os.remove(
+                    os.path.join(
+                        self.tmpDir,
+                        name
+                    )
+                )
+
+            except OSError:
+                pass
+
+    def cleanupAll(self):
+
+        self._decodeActive = False
+        self._decodeQueue = []
+
+        try:
+            self._decodeTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.animTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.refreshTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.loadDelayTimer.stop()
+        except Exception:
+            pass
+
+        try:
+
+            if self._radarPollTimer is not None:
+                self._radarPollTimer.stop()
+
+        except Exception:
+            pass
+
+        self._clear_pixmaps()
+
+        self.cleanupFrames()
+
+    # =============================================================
+    # TILE
+    # =============================================================
+
+    def _tile_xy(
+        self,
+        lat,
+        lon,
+        zoom
+    ):
+
+        x, y = latlon_to_tile(
+            lat,
+            lon,
+            zoom
+        )
+
+        n = int(
+            2 ** zoom
+        )
+
+        return (
+            x % n,
+            max(
+                0,
+                min(
+                    n - 1,
+                    y
+                )
+            )
+        )
+
+    # =============================================================
+    # DOWNLOAD
+    # =============================================================
+
+    def _download_file(
+        self,
+        url,
+        path
+    ):
+
+        _ensure_cache_dir()
+
+        cache_path = _cache_file_for_url(
+            url
+        )
+
+        with _TILE_CACHE_LOCK:
+
+            try:
+
+                stat = os.stat(
+                    cache_path
+                )
+
+                if (
+                    stat.st_size > 0
+                    and
+                    time.time()
+                    - stat.st_mtime
+                    <= _TILE_CACHE_TTL
+                ):
+
+                    if cache_path != path:
+
+                        shutil.copyfile(
+                            cache_path,
+                            path
+                        )
+
+                    return path
+
+            except OSError:
+                pass
+
+        req = Request(
+            url,
+            data=None,
+            headers={
+                "User-Agent":
+                    "speedy_TheWeather/4.0",
+                "Accept":
+                    "image/png,image/*,*/*"
+            }
+        )
+
+        response = None
+
+        tmp_path = (
+            path
+            + ".part.%s"
+            % threading.current_thread().ident
+        )
+
+        try:
+
+            response = urlopen(
+                req,
+                timeout=12
+            )
+
             data = response.read()
+
             if not data:
-                raise IOError("empty response")
-            with open(tmp_path, "wb") as f:
+                raise IOError(
+                    "empty response"
+                )
+
+            with open(
+                tmp_path,
+                "wb"
+            ) as f:
+
                 f.write(data)
-            os.replace(tmp_path, path)
+
+            try:
+
+                os.replace(
+                    tmp_path,
+                    path
+                )
+
+            except AttributeError:
+
+                os.rename(
+                    tmp_path,
+                    path
+                )
+
             with _TILE_CACHE_LOCK:
+
                 try:
-                    shutil.copyfile(path, cache_path)
+
+                    shutil.copyfile(
+                        path,
+                        cache_path
+                    )
+
                 except OSError:
                     pass
+
             return path
+
         finally:
+
             if response is not None:
+
                 try:
                     response.close()
                 except Exception:
                     pass
+
             try:
-                if os.path.exists(tmp_path):
-                    os.remove(tmp_path)
+
+                if os.path.exists(
+                    tmp_path
+                ):
+
+                    os.remove(
+                        tmp_path
+                    )
+
             except OSError:
                 pass
-    
-    def _download_jobs(self, jobs, req_id):
-        """Run at most four network requests at once; return successful jobs."""
+
+    # =============================================================
+    # DOWNLOAD JOBS
+    # =============================================================
+
+    def _download_jobs(
+        self,
+        jobs,
+        req_id
+    ):
+
         results = {}
+
         if not jobs:
             return results
-    
+
         def one(job):
+
             key, url, path = job
-            if self._closed or req_id != self._fetchRequestId:
+
+            if (
+                self._closed
+                or
+                req_id != self._fetchRequestId
+            ):
+
                 return key, None
+
             try:
-                return key, self._download_file(url, path)
+
+                return (
+                    key,
+                    self._download_file(
+                        url,
+                        path
+                    )
+                )
+
             except Exception as e:
+
                 return key, e
-    
+
         if ThreadPoolExecutor is None:
+
             for job in jobs:
+
                 key, value = one(job)
-                if isinstance(value, Exception):
+
+                if isinstance(
+                    value,
+                    Exception
+                ):
                     raise value
+
                 results[key] = value
+
             return results
-    
-        pool = ThreadPoolExecutor(max_workers=_RADAR_MAX_WORKERS)
+
+        pool = ThreadPoolExecutor(
+            max_workers=_RADAR_MAX_WORKERS
+        )
+
         try:
-            futures = [pool.submit(one, job) for job in jobs]
+
+            futures = [
+                pool.submit(
+                    one,
+                    job
+                )
+                for job in jobs
+            ]
+
             for future in futures:
+
                 key, value = future.result()
-                if isinstance(value, Exception):
+
+                if isinstance(
+                    value,
+                    Exception
+                ):
                     raise value
+
                 results[key] = value
-                if self._closed or req_id != self._fetchRequestId:
+
+                if (
+                    self._closed
+                    or
+                    req_id != self._fetchRequestId
+                ):
+
                     return {}
+
         finally:
-            pool.shutdown(wait=True)
+
+            pool.shutdown(
+                wait=True
+            )
+
         return results
-    
+
+    # =============================================================
+    # FETCH
+    # =============================================================
+
     def startFetch(self):
+
         if self._closed:
             return
-        # Never stack refresh workers. A manual zoom starts a new request only
-        # after the previous one has finished.
+
         if self.fetchBusy:
             return
-    
+
         self.fetchBusy = True
+
         self._fetchRequestId += 1
+
         req_id = self._fetchRequestId
+
         self._radarResult = None
         self._radarError = None
-        self.animTimer.stop()
+
+        try:
+            self.animTimer.stop()
+        except Exception:
+            pass
+
         self.animTimerStarted = False
-    
-        if "key_blue" in self:
-            self["key_blue"].setText(_("Loading..."))
-    
-        if self._radarPollTimer is None:
-            self._radarPollTimer = eTimer()
-            self._radarPollTimerConn = safeTimerCallback(
-                self._radarPollTimer, self._pollRadarWorker
-            )
-    
-        self._radarThread = threading.Thread(
-            target=self._fetchTilesWorker, args=(req_id,)
+
+        self["key_blue"].setText(
+            _("Loading...")
         )
+
+        if self._radarPollTimer is None:
+
+            self._radarPollTimer = eTimer()
+
+            self._radarPollTimerConn = safeTimerCallback(
+                self._radarPollTimer,
+                self._pollRadarWorker
+            )
+
+        self._radarThread = threading.Thread(
+            target=self._fetchTilesWorker,
+            args=(req_id,)
+        )
+
         self._radarThread.daemon = True
+
         self._radarThread.start()
-        self._radarPollTimer.start(200, False)
-    
+
+        self._radarPollTimer.start(
+            200,
+            False
+        )
+
     def _doZoomFetch(self):
         self.startFetch()
-    
+
     def fetchTiles(self):
-        return self._fetchTilesWorker(self._fetchRequestId)
-    
-    def _fetchTilesWorker(self, req_id):
-        """Fetch metadata and tiles off the Enigma2 GUI thread."""
+        return self._fetchTilesWorker(
+            self._fetchRequestId
+        )
+
+    # =============================================================
+    # WORKER
+    # =============================================================
+
+    def _fetchTilesWorker(
+        self,
+        req_id
+    ):
+
         try:
-            zoom = int(self.BASE_ZOOM_OVERRIDE if self.BASE_ZOOM_OVERRIDE is not None else self.zoom)
-            radarZoom = min(zoom, self.RADAR_ZOOM_MAX)
-            baseX, baseY = self._tile_xy(self.lat, self.lon, zoom)
-            radarX, radarY = self._tile_xy(self.lat, self.lon, radarZoom)
-    
+
+            zoom = int(
+                self.BASE_ZOOM_OVERRIDE
+                if self.BASE_ZOOM_OVERRIDE is not None
+                else self.zoom
+            )
+
+            radarZoom = min(
+                zoom,
+                self.RADAR_ZOOM_MAX
+            )
+
+            baseX, baseY = self._tile_xy(
+                self.lat,
+                self.lon,
+                zoom
+            )
+
+            radarX, radarY = self._tile_xy(
+                self.lat,
+                self.lon,
+                radarZoom
+            )
+
+            # -----------------------------------------------------
+            # RainViewer Metadata
+            # -----------------------------------------------------
+
             meta = _http_json(
                 "https://api.rainviewer.com/public/weather-maps.json",
                 timeout=12,
-                headers={"User-Agent": "speedy_TheWeather/4.0"}
+                headers={
+                    "User-Agent":
+                        "speedy_TheWeather/4.0"
+                }
             )
+
             if not meta:
-                raise RuntimeError("RainViewer metadata unavailable")
-            if self._closed or req_id != self._fetchRequestId:
+                raise RuntimeError(
+                    "RainViewer metadata unavailable"
+                )
+
+            if (
+                self._closed
+                or
+                req_id != self._fetchRequestId
+            ):
                 return
-    
-            past = (meta.get("radar") or {}).get("past") or []
+
+            radar = (
+                meta.get("radar")
+                or {}
+            )
+
+            past = (
+                radar.get("past")
+                or []
+            )
+
             if not past:
-                raise RuntimeError("RainViewer returned no radar frames")
-            frames = past[-self.RADAR_FRAME_COUNT:]
-            host = meta.get("host") or "https://tilecache.rainviewer.com"
-    
+                raise RuntimeError(
+                    "RainViewer returned no radar frames"
+                )
+
+            frames = past[
+                -self.RADAR_FRAME_COUNT:
+            ]
+
+            host = (
+                meta.get("host")
+                or
+                "https://tilecache.rainviewer.com"
+            )
+
+            # -----------------------------------------------------
+            # Base Map
+            # -----------------------------------------------------
+
             jobs = []
-            baseFiles = {}
+
             for row in range(self.GRID):
+
                 for col in range(self.GRID):
-                    x = (baseX + col - 1) % int(2 ** zoom)
-                    y = max(0, min(int(2 ** zoom) - 1, baseY + row - 1))
-                    url = "https://tile.openstreetmap.org/%s/%s/%s.png" % (zoom, x, y)
-                    path = os.path.join(
-                        self.tmpDir, "speedy_TheWeather_base_%s_%s.png" % (row, col)
+
+                    x = (
+                        baseX
+                        + col
+                        - 1
+                    ) % int(
+                        2 ** zoom
                     )
-                    jobs.append((("base", row, col), url, path))
-            downloaded = self._download_jobs(jobs, req_id)
-            if not downloaded and jobs:
-                raise RuntimeError("Base map download cancelled")
-    
+
+                    y = max(
+                        0,
+                        min(
+                            int(2 ** zoom) - 1,
+                            baseY
+                            + row
+                            - 1
+                        )
+                    )
+
+                    url = (
+                        "https://tile.openstreetmap.org/"
+                        "%s/%s/%s.png"
+                        % (
+                            zoom,
+                            x,
+                            y
+                        )
+                    )
+
+                    path = os.path.join(
+                        self.tmpDir,
+                        "speedy_TheWeather_base_%s_%s.png"
+                        % (
+                            row,
+                            col
+                        )
+                    )
+
+                    jobs.append(
+                        (
+                            (
+                                "base",
+                                row,
+                                col
+                            ),
+                            url,
+                            path
+                        )
+                    )
+
+            downloaded = self._download_jobs(
+                jobs,
+                req_id
+            )
+
+            if (
+                not downloaded
+                and jobs
+            ):
+
+                raise RuntimeError(
+                    "Base map download cancelled"
+                )
+
+            baseFiles = {}
+
             for key, path in downloaded.items():
-                baseFiles[(key[1], key[2])] = path
-    
+
+                baseFiles[
+                    (
+                        key[1],
+                        key[2]
+                    )
+                ] = path
+
+            # -----------------------------------------------------
+            # Radar Frames
+            # -----------------------------------------------------
+
             frameFiles = []
             frameTimes = []
-            for frameIndex, frame in enumerate(frames):
-                framePath = frame.get("path")
+
+            for frameIndex, frame in enumerate(
+                frames
+            ):
+
+                if (
+                    self._closed
+                    or
+                    req_id != self._fetchRequestId
+                ):
+                    return
+
+                framePath = frame.get(
+                    "path"
+                )
+
                 if not framePath:
                     continue
-                ts = frame.get("time")
+
+                ts = frame.get(
+                    "time"
+                )
+
                 jobs = []
+
                 for row in range(self.GRID):
+
                     for col in range(self.GRID):
-                        x = (radarX + col - 1) % int(2 ** radarZoom)
-                        y = max(0, min(int(2 ** radarZoom) - 1, radarY + row - 1))
-                        url = "%s%s/256/%s/%s/%s/2/1_1.png" % (
-                            host.rstrip("/"), framePath, radarZoom, x, y
+
+                        x = (
+                            radarX
+                            + col
+                            - 1
+                        ) % int(
+                            2 ** radarZoom
                         )
+
+                        y = max(
+                            0,
+                            min(
+                                int(2 ** radarZoom) - 1,
+                                radarY
+                                + row
+                                - 1
+                            )
+                        )
+
+                        url = (
+                            "%s%s/256/%s/%s/%s/2/1_1.png"
+                            % (
+                                host.rstrip("/"),
+                                framePath,
+                                radarZoom,
+                                x,
+                                y
+                            )
+                        )
+
                         path = os.path.join(
                             self.tmpDir,
-                            "speedy_TheWeather_frame_%s_%s_%s.png" %
-                            (frameIndex, row, col)
+                            "speedy_TheWeather_frame_%s_%s_%s.png"
+                            % (
+                                frameIndex,
+                                row,
+                                col
+                            )
                         )
-                        jobs.append((("frame", row, col), url, path))
-                downloaded = self._download_jobs(jobs, req_id)
-                if self._closed or req_id != self._fetchRequestId:
+
+                        jobs.append(
+                            (
+                                (
+                                    "frame",
+                                    row,
+                                    col
+                                ),
+                                url,
+                                path
+                            )
+                        )
+
+                downloaded = self._download_jobs(
+                    jobs,
+                    req_id
+                )
+
+                if (
+                    self._closed
+                    or
+                    req_id != self._fetchRequestId
+                ):
                     return
+
                 if len(downloaded) != len(jobs):
-                    raise RuntimeError("Radar tile download incomplete")
-                frameFiles.append({
-                    (key[1], key[2]): path for key, path in downloaded.items()
-                })
-                frameTimes.append(ts)
-    
+
+                    raise RuntimeError(
+                        "Radar tile download incomplete"
+                    )
+
+                frameFiles.append(
+                    {
+                        (
+                            key[1],
+                            key[2]
+                        ): path
+                        for key, path
+                        in downloaded.items()
+                    }
+                )
+
+                frameTimes.append(
+                    ts
+                )
+
             if not frameFiles:
-                raise RuntimeError("No usable radar frames downloaded")
+
+                raise RuntimeError(
+                    "No usable radar frames downloaded"
+                )
+
             self._radarResult = {
                 "reqId": req_id,
                 "baseFiles": baseFiles,
@@ -6040,165 +7254,1036 @@ class RadarScreen(Screen):
                 "radarZoom": radarZoom,
                 "baseZoom": zoom,
             }
+
         except Exception as e:
-            if req_id == self._fetchRequestId and not self._closed:
+
+            if (
+                req_id == self._fetchRequestId
+                and not self._closed
+            ):
+
                 self._radarError = e
-    
+
+    # =============================================================
+    # POLL WORKER
+    # =============================================================
+
     def _pollRadarWorker(self):
+
         if self._closed:
             return
-        if self._radarResult is None and self._radarError is None:
-            if self._radarThread is not None and self._radarThread.is_alive():
-                self._radarPollTimer.start(200, False)
+
+        # ---------------------------------------------------------
+        # Worker läuft noch
+        # ---------------------------------------------------------
+
+        if (
+            self._radarResult is None
+            and
+            self._radarError is None
+        ):
+
+            if (
+                self._radarThread is not None
+                and
+                self._radarThread.is_alive()
+            ):
+
+                self._radarPollTimer.start(
+                    200,
+                    False
+                )
+
                 return
+
+            # Worker ist beendet, aber ohne Ergebnis.
             self.fetchBusy = False
-            self["lastUpdate"].setText(_("Radar unavailable"))
-            self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
+
+            self["key_blue"].setText(
+                _("Map zoom: %s")
+                % self.ZOOM_LEVELS[
+                    self.zoomIndex
+                ]
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "Radar unavailable"
+            )
+
             return
-    
+
+        # ---------------------------------------------------------
+        # WICHTIG:
+        # Poll-Timer stoppen, sobald Ergebnis/Fehler vorhanden ist.
+        # Sonst läuft er während des Decoders weiter.
+        # ---------------------------------------------------------
+
+        try:
+
+            if self._radarPollTimer is not None:
+                self._radarPollTimer.stop()
+
+        except Exception:
+            pass
+
+        # ---------------------------------------------------------
+        # Fehler
+        # ---------------------------------------------------------
+
         if self._radarError is not None:
+
             err = self._radarError
+
             self._radarError = None
             self.fetchBusy = False
-            self["lastUpdate"].setText(_("Radar unavailable"))
-            self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-            print("[speedy_TheWeather] Radar fetch error: %s" % err)
+
+            self["key_blue"].setText(
+                _("Map zoom: %s")
+                % self.ZOOM_LEVELS[
+                    self.zoomIndex
+                ]
+            )
+
+            # NICHT lastUpdate verändern!
+            # Dadurch bleibt die letzte gültige Radarzeit stehen.
+            print(
+                "[speedy_TheWeather] "
+                "Radar fetch error: %s"
+                % err
+            )
+
             return
-    
+
+        # ---------------------------------------------------------
+        # Ergebnis
+        # ---------------------------------------------------------
+
         result = self._radarResult
+
         self._radarResult = None
-        if not result or result.get("reqId") != self._fetchRequestId:
+
+        if (
+            not result
+            or
+            result.get("reqId")
+            != self._fetchRequestId
+        ):
+
             self.fetchBusy = False
             return
-    
+
+        # ---------------------------------------------------------
+        # Inkrementelle Dekodierung
+        # ---------------------------------------------------------
+
+        self._beginIncrementalDecode(
+            result
+        )
+
+    # =============================================================
+    # INCREMENTAL DECODE START
+    # =============================================================
+
+    def _beginIncrementalDecode(
+        self,
+        result
+    ):
+
+        if self._closed:
+            return
+
         try:
-            # Decode only here, on the Enigma2 GUI thread. Keeping old tiles
-            # visible until all new tiles are decoded avoids loading flicker.
-            newBasePixmaps = {}
-            for key, path in result["baseFiles"].items():
-                pix = _load_cached_png(path) or loadPNG(path)
-                newBasePixmaps[key] = pix
-                if pix is not None:
-                    self["radarBase_%s_%s" % key].instance.setPixmap(pix)
-                    self["radarBase_%s_%s" % key].show()
-    
-            newFrames = []
-            for frameFiles in result["frameFiles"]:
-                pixmaps = {}
-                for key, path in frameFiles.items():
+            self._decodeTimer.stop()
+        except Exception:
+            pass
+
+        self._decodeActive = True
+
+        self._decodeQueue = []
+
+        self._decodeBaseFiles = dict(
+            result.get(
+                "baseFiles",
+                {}
+            )
+        )
+
+        self._decodeFrameFiles = list(
+            result.get(
+                "frameFiles",
+                []
+            )
+        )
+
+        self.framePixmaps = [
+            {}
+            for _ in self._decodeFrameFiles
+        ]
+
+        self.frameReady = [
+            False
+            for _ in self._decodeFrameFiles
+        ]
+
+        self.frameTimes = list(
+            result.get(
+                "frameTimes",
+                []
+            )
+        )
+
+        self.frameIsForecast = [
+            False
+            for _ in self._decodeFrameFiles
+        ]
+
+        self.currentFrameIndex = 0
+
+        self._decodeRemaining = [
+            len(files)
+            for files in self._decodeFrameFiles
+        ]
+
+        # ---------------------------------------------------------
+        # Base zuerst
+        # ---------------------------------------------------------
+
+        for key, path in (
+            self._decodeBaseFiles.items()
+        ):
+
+            self._decodeQueue.append(
+                (
+                    "base",
+                    key,
+                    path
+                )
+            )
+
+        # ---------------------------------------------------------
+        # Frame 0 direkt danach
+        # ---------------------------------------------------------
+
+        if self._decodeFrameFiles:
+
+            for key, path in (
+                self._decodeFrameFiles[0].items()
+            ):
+
+                self._decodeQueue.append(
+                    (
+                        "frame",
+                        0,
+                        key,
+                        path
+                    )
+                )
+
+        # ---------------------------------------------------------
+        # Restliche Frames
+        # ---------------------------------------------------------
+
+        for frameIndex in range(
+            1,
+            len(
+                self._decodeFrameFiles
+            )
+        ):
+
+            for key, path in (
+                self._decodeFrameFiles[
+                    frameIndex
+                ].items()
+            ):
+
+                self._decodeQueue.append(
+                    (
+                        "frame",
+                        frameIndex,
+                        key,
+                        path
+                    )
+                )
+
+        try:
+            self.animTimer.stop()
+        except Exception:
+            pass
+
+        self.animTimerStarted = False
+
+        if self._decodeQueue:
+
+            self._decodeTimer.start(
+                20,
+                True
+            )
+
+        else:
+
+            self._finishDecode()
+
+    # =============================================================
+    # EIN TILE DEKODIEREN
+    # =============================================================
+
+    def _decodeNextTile(self):
+
+        if self._closed:
+            return
+
+        if not self._decodeActive:
+            return
+
+        if not self._decodeQueue:
+
+            self._finishDecode()
+            return
+
+        item = self._decodeQueue.pop(
+            0
+        )
+
+        try:
+
+            itemType = item[0]
+
+            # =====================================================
+            # BASE
+            # =====================================================
+
+            if itemType == "base":
+
+                key = item[1]
+                path = item[2]
+
+                pix = None
+
+                try:
+
+                    pix = _load_cached_png(
+                        path
+                    )
+
+                except Exception:
+                    pix = None
+
+                if pix is None:
+
                     try:
-                        pix = loadPNG(path) if path and os.path.exists(path) else None
+
+                        pix = loadPNG(
+                            path
+                        )
+
                     except Exception:
                         pix = None
-                    pixmaps[key] = pix
-                newFrames.append(pixmaps)
-    
-            self._clear_pixmaps()
-            self.basePixmaps = newBasePixmaps
-            self.framePixmaps = newFrames
-            self.frameTimes = result["frameTimes"]
-            self.frameIsForecast = [False] * len(newFrames)
-            self.currentFrameIndex = 0
-            self.fetchBusy = False
-            self.startAnimation()
-            self["key_blue"].setText(_("Map zoom: %s") % result["baseZoom"])
+
+                if pix is not None:
+
+                    self.basePixmaps[
+                        key
+                    ] = pix
+
+                    try:
+
+                        widget = self[
+                            "radarBase_%s_%s"
+                            % (
+                                key[0],
+                                key[1]
+                            )
+                        ]
+
+                        widget.instance.setPixmap(
+                            pix
+                        )
+
+                        widget.show()
+
+                    except Exception:
+                        pass
+
+            # =====================================================
+            # RADAR FRAME
+            # =====================================================
+
+            elif itemType == "frame":
+
+                frameIndex = item[1]
+                key = item[2]
+                path = item[3]
+
+                pix = None
+
+                try:
+
+                    pix = _load_cached_png(
+                        path
+                    )
+
+                except Exception:
+                    pix = None
+
+                if pix is None:
+
+                    try:
+
+                        if (
+                            path
+                            and
+                            os.path.exists(
+                                path
+                            )
+                        ):
+
+                            pix = loadPNG(
+                                path
+                            )
+
+                    except Exception:
+                        pix = None
+
+                if (
+                    frameIndex
+                    <
+                    len(
+                        self.framePixmaps
+                    )
+                ):
+
+                    if pix is not None:
+
+                        self.framePixmaps[
+                            frameIndex
+                        ][key] = pix
+
+                    self._decodeRemaining[
+                        frameIndex
+                    ] -= 1
+
+                    if (
+                        self._decodeRemaining[
+                            frameIndex
+                        ]
+                        <= 0
+                    ):
+
+                        self._markFrameReady(
+                            frameIndex
+                        )
+
         except Exception as e:
-            self.fetchBusy = False
-            self["lastUpdate"].setText(_("Radar display error"))
-            self["key_blue"].setText(_("Map zoom: %s") % self.ZOOM_LEVELS[self.zoomIndex])
-            print("[speedy_TheWeather] Critical display error: %s" % e)
-    
-    def close(self, *args):
+
+            print(
+                "[speedy_TheWeather] "
+                "Decode tile error: %s"
+                % e
+            )
+
+        # ---------------------------------------------------------
+        # Nächsten Tile mit Abstand verarbeiten.
+        # ---------------------------------------------------------
+
+        if (
+            self._decodeActive
+            and
+            not self._closed
+        ):
+
+            try:
+
+                self._decodeTimer.start(
+                    20,
+                    True
+                )
+
+            except Exception:
+
+                self._decodeNextTile()
+
+    # =============================================================
+    # FRAME READY
+    # =============================================================
+
+    def _markFrameReady(
+        self,
+        frameIndex
+    ):
+
+        if self._closed:
+            return
+
+        if (
+            frameIndex < 0
+            or
+            frameIndex >= len(
+                self.frameReady
+            )
+        ):
+            return
+
+        if self.frameReady[
+            frameIndex
+        ]:
+            return
+
+        self.frameReady[
+            frameIndex
+        ] = True
+
+        # Erster Frame sofort anzeigen.
+        if frameIndex == 0:
+
+            self.showFrame(
+                0
+            )
+
+            if not self.paused:
+
+                self.startAnimation()
+
+    # =============================================================
+    # DECODE FERTIG
+    # =============================================================
+
+    def _finishDecode(self):
+
+        if self._closed:
+            return
+
+        self._decodeActive = False
+        self._decodeQueue = []
+
+        self._decodeBaseFiles = {}
+        self._decodeFrameFiles = []
+        self._decodeRemaining = []
+
+        self.fetchBusy = False
+
+        self["key_blue"].setText(
+            _("Map zoom: %s")
+            % self.ZOOM_LEVELS[
+                self.zoomIndex
+            ]
+        )
+
+        if (
+            self.frameReady
+            and
+            self.frameReady[0]
+            and
+            not self.paused
+        ):
+
+            self.startAnimation()
+
+    # =============================================================
+    # RADAR ZEIT
+    # =============================================================
+
+    def _setRadarFrameTime(
+        self,
+        timestamp
+    ):
+
+        try:
+
+            timestamp = int(
+                timestamp
+            )
+
+            if timestamp <= 0:
+                return
+
+            try:
+
+                if (
+                    config.plugins.speedy_TheWeather.dateformat.value
+                    == "dot"
+                ):
+
+                    fmt = (
+                        "%d.%m.%Y %H:%M"
+                    )
+
+                else:
+
+                    fmt = (
+                        "%d/%m/%Y %H:%M"
+                    )
+
+            except Exception:
+
+                fmt = (
+                    "%d.%m.%Y %H:%M"
+                )
+
+            radarTime = time.strftime(
+                fmt,
+                time.localtime(
+                    timestamp
+                )
+            )
+
+            self["lastUpdate"].setText(
+                _("Radar: %s")
+                % radarTime
+            )
+
+        except Exception:
+            pass
+
+    # =============================================================
+    # FRAME ANZEIGEN
+    # =============================================================
+
+    def showFrame(
+        self,
+        index
+    ):
+
+        if self._closed:
+            return
+
+        if (
+            index < 0
+            or
+            index >= len(
+                self.framePixmaps
+            )
+        ):
+            return
+
+        if (
+            self.frameReady
+            and
+            not self.frameReady[index]
+        ):
+            return
+
+        self.currentFrameIndex = index
+
+        # ---------------------------------------------------------
+        # Alte Overlay-Tiles komplett ausblenden.
+        # Verhindert Geisterbilder alter Frames.
+        # ---------------------------------------------------------
+
+        for row in range(
+            self.GRID
+        ):
+
+            for col in range(
+                self.GRID
+            ):
+
+                try:
+
+                    self[
+                        "radarOverlay_%s_%s"
+                        % (
+                            row,
+                            col
+                        )
+                    ].hide()
+
+                except Exception:
+                    pass
+
+        # ---------------------------------------------------------
+        # Neues Frame
+        # ---------------------------------------------------------
+
+        cellPix = self.framePixmaps[
+            index
+        ]
+
+        for (
+            row,
+            col
+        ), pix in cellPix.items():
+
+            if pix is None:
+                continue
+
+            try:
+
+                widget = self[
+                    "radarOverlay_%s_%s"
+                    % (
+                        row,
+                        col
+                    )
+                ]
+
+                widget.instance.setPixmap(
+                    pix
+                )
+
+                widget.show()
+
+            except Exception:
+                pass
+
+        # ---------------------------------------------------------
+        # Nur hier wird die Radar-Zeit verändert.
+        # ---------------------------------------------------------
+
+        try:
+
+            ts = self.frameTimes[
+                index
+            ]
+
+            if ts is not None:
+
+                self._setRadarFrameTime(
+                    ts
+                )
+
+        except Exception:
+            pass
+
+    # =============================================================
+    # ANIMATION START
+    # =============================================================
+
+    def startAnimation(self):
+
+        if self._closed:
+            return
+
+        if self.paused:
+            return
+
+        if not self.framePixmaps:
+            return
+
+        if (
+            not self.frameReady
+            or
+            self.currentFrameIndex
+            >= len(self.frameReady)
+        ):
+            return
+
+        if not self.frameReady[
+            self.currentFrameIndex
+        ]:
+
+            return
+
+        if self.animTimerStarted:
+            return
+
+        self.animTimerStarted = True
+
+        try:
+
+            self.animTimer.start(
+                1600,
+                False
+            )
+
+        except Exception:
+
+            self.animTimerStarted = False
+
+    # =============================================================
+    # NEXT FRAME
+    # =============================================================
+
+    def nextFrame(self):
+
+        if self._closed:
+            return
+
+        if self.paused:
+            return
+
+        if not self.framePixmaps:
+            return
+
+        if len(
+            self.framePixmaps
+        ) <= 1:
+            return
+
+        nextIndex = (
+            self.currentFrameIndex + 1
+        ) % len(
+            self.framePixmaps
+        )
+
+        # Nur vollständig dekodierte Frames anzeigen.
+        if (
+            self.frameReady
+            and
+            nextIndex < len(
+                self.frameReady
+            )
+            and
+            self.frameReady[
+                nextIndex
+            ]
+        ):
+
+            self.showFrame(
+                nextIndex
+            )
+
+    # =============================================================
+    # PAUSE / PLAY
+    # =============================================================
+
+    def togglePause(self):
+
+        if self._closed:
+            return
+
+        if self.paused:
+
+            # -----------------------------------------------------
+            # PLAY
+            # -----------------------------------------------------
+
+            self.paused = False
+
+            self["key_yellow"].setText(
+                _("Pause")
+            )
+
+            if (
+                self.framePixmaps
+                and
+                self.frameReady
+                and
+                self.currentFrameIndex
+                < len(
+                    self.frameReady
+                )
+                and
+                self.frameReady[
+                    self.currentFrameIndex
+                ]
+            ):
+
+                self.startAnimation()
+
+        else:
+
+            # -----------------------------------------------------
+            # PAUSE
+            # -----------------------------------------------------
+
+            self.paused = True
+
+            try:
+                self.animTimer.stop()
+            except Exception:
+                pass
+
+            self.animTimerStarted = False
+
+            self["key_yellow"].setText(
+                _("Play")
+            )
+
+    # =============================================================
+    # CLOSE
+    # =============================================================
+
+    def close(
+        self,
+        *args
+    ):
+
+        if self._closed:
+            return
+
         self._closed = True
+
+        # Laufende Worker ungültig machen.
+        self._fetchRequestId += 1
+
+        self._decodeActive = False
+        self._decodeQueue = []
+
         try:
             self.refreshTimer.stop()
         except Exception:
             pass
+
         try:
             self.animTimer.stop()
         except Exception:
             pass
+
         try:
             self.loadDelayTimer.stop()
         except Exception:
             pass
+
         try:
-            if hasattr(self, '_radarPollTimer') and self._radarPollTimer:
-                self._radarPollTimer.stop()
+            self._decodeTimer.stop()
         except Exception:
             pass
-        Screen.close(self, *args)
-    def togglePause(self):
-        if self.paused:
-            self.animTimer.start(1600, False)
-            self["key_yellow"].setText(_("Pause"))
-        else:
-            self.animTimer.stop()
-            self["key_yellow"].setText(_("Play"))
-        self.paused = not self.paused
 
-    def startAnimation(self):
-        if not self.framePixmaps or self.paused:
-            return
-        self.currentFrameIndex = 0
-        self.showFrame(self.currentFrameIndex)
-        if not self.animTimerStarted:
-            self.animTimerStarted = True
-            self.animTimer.start(1600, False)
-
-    def showFrame(self, index):
-        if index < 0 or index >= len(self.framePixmaps):
-            return
         try:
-            ts = self.frameTimes[index]
-            if ts is not None:
-                self["lastUpdate"].setText(_("Radar: ") + time.strftime("%H:%M", time.localtime(ts)))
-        except Exception as e:
+
+            if self._radarPollTimer is not None:
+                self._radarPollTimer.stop()
+
+        except Exception:
             pass
-        cellPix = self.framePixmaps[index]
-        for (row, col), pix in cellPix.items():
-            if pix is not None:
-                self["radarOverlay_%s_%s" % (row, col)].instance.setPixmap(pix)
-                self["radarOverlay_%s_%s" % (row, col)].show()
 
-    def nextFrame(self):
-        if not self.framePixmaps or self.paused:
-            return
-        self.currentFrameIndex = (self.currentFrameIndex + 1) % len(self.framePixmaps)
-        self.showFrame(self.currentFrameIndex)
+        self.animTimerStarted = False
 
-def autostart(reason, **kwargs):
-    global _overlayScreen, _overlayEnabled, _overlaySession
-    print("[speedy_TheWeather] autostart aangeroepen, reason=%s, session=%s" % (reason, kwargs.get("session")))
-    if reason == 0:
-        session = kwargs.get("session")
-        if session is None:
-            print("[speedy_TheWeather] autostart: geen session in kwargs, stoppen")
-            return
-        _overlaySession = session
         try:
-            _overlayEnabled = _readOverlayConfig()
-            print("[speedy_TheWeather] autostart: _overlayEnabled=%s" % _overlayEnabled)
-            _overlayScreen = session.instantiateDialog(TempOverlay)
-            print("[speedy_TheWeather] autostart: _overlayScreen aangemaakt: %s" % _overlayScreen)
+
+            Screen.close(
+                self,
+                *args
+            )
+
+        except Exception:
+
+            try:
+                Screen.close(
+                    self
+                )
+            except Exception:
+                pass
+
+
+# ====================================================================
+# AUTOSTART
+# ====================================================================
+
+def autostart(
+    reason,
+    **kwargs
+):
+
+    global _overlayScreen
+    global _overlayEnabled
+    global _overlaySession
+
+    print(
+        "[speedy_TheWeather] "
+        "autostart aangeroepen, "
+        "reason=%s, session=%s"
+        %
+        (
+            reason,
+            kwargs.get(
+                "session"
+            )
+        )
+    )
+
+    if reason == 0:
+
+        session = kwargs.get(
+            "session"
+        )
+
+        if session is None:
+
+            print(
+                "[speedy_TheWeather] "
+                "autostart: keine session"
+            )
+
+            return
+
+        _overlaySession = session
+
+        try:
+
+            _overlayEnabled = (
+                _readOverlayConfig()
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "autostart: "
+                "_overlayEnabled=%s"
+                %
+                _overlayEnabled
+            )
+
+            _overlayScreen = (
+                session.instantiateDialog(
+                    TempOverlay
+                )
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "autostart: overlay=%s"
+                %
+                _overlayScreen
+            )
+
             _overlayCheckVisibility()
 
         except Exception as e:
-            print("[speedy_TheWeather] autostart: fout bij opzetten overlay:", e)
+
+            print(
+                "[speedy_TheWeather] "
+                "autostart error: %s"
+                % e
+            )
 
     elif reason == 1:
-        print("[speedy_TheWeather] autostart: reason=1, opruimen /tmp/speedy_TheWeather")
-        shutil.rmtree("/tmp/speedy_TheWeather", ignore_errors=True)
 
-def menu(menuid, **kwargs):
+        print(
+            "[speedy_TheWeather] "
+            "autostart: cleanup"
+        )
+
+        shutil.rmtree(
+            "/tmp/speedy_TheWeather",
+            ignore_errors=True
+        )
+
+
+# ====================================================================
+# MENU
+# ====================================================================
+
+def menu(
+    menuid,
+    **kwargs
+):
+
     if menuid == "mainmenu":
+
         return [
-            ("speedy_TheWeather", main, "speedy_TheWeather_mainmenu", 50)
+            (
+                "speedy_TheWeather",
+                main,
+                "speedy_TheWeather_mainmenu",
+                50
+            )
         ]
+
     return []
-    
-def Plugins(path, **kwargs):
+
+
+# ====================================================================
+# PLUGIN DESCRIPTOR
+# ====================================================================
+
+def Plugins(
+    path,
+    **kwargs
+):
+
     return [
+
         PluginDescriptor(
             name="speedy_TheWeather",
             description="WeatherInfo",
