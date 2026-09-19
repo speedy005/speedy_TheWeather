@@ -4,9 +4,17 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.4.7'
+version='1.4.8'
 
-changelog='Fix malformed locale language file. Added an update function. Fixed Rainradar Screen. Fixed date in seven day screen weather. Fixed weather icons. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
+changelog = (
+    'Fixed malformed locale language file. '
+    'Added an update function. '
+    'Fixed Rain Radar Screen. '
+    'Fixed the date display in the Seven Day Weather Screen. '
+    'Fixed weather icons. '
+    'Fixed detached GUI restart. '
+    'Buy me a coffee if you like this plugin.'
+)
 
 
 # =========================================================
