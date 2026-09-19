@@ -707,7 +707,7 @@ def _update_install_error():
 # UPDATE
 # ============================================================================
 
-version = '1.4.3'
+version = '1.4.4'
 
 UPDATE_RAW_BASE = (
     "https://raw.githubusercontent.com/"
