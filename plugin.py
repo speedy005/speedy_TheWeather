@@ -317,13 +317,33 @@ def _update_extract_installer_info(source):
     return result
 
 def _update_changes_text(changes):
+
     if isinstance(changes, (list, tuple)):
-        items = [safeStr(item).strip() for item in changes if safeStr(item).strip()]
+
+        items = []
+
+        for item in changes:
+
+            item = safeStr(item).strip()
+
+            if item:
+                items.append(
+                    "- " + item
+                )
+
         if items:
-            return "\n".join("- " + _(item) for item in items)
-    if safeStr(changes).strip():
-        return _(safeStr(changes).strip())
-    return _("No changes available.")
+            return "\n".join(items)
+
+    changes = safeStr(
+        changes
+    ).strip()
+
+    if changes:
+        return changes
+
+    return _(
+        "No changes available."
+    )
 
 def _update_check_worker():
     """Netzwerkprüfung im Hintergrund, damit Enigma2 nicht einfriert."""
@@ -492,25 +512,29 @@ def _update_show_message(info):
     """Show available update information."""
 
     remote_version = safeStr(
-        info.get("version", "")
-    ).strip()
-
-    changes = safeStr(
-        info.get("changes", "")
+        info.get(
+            "version",
+            ""
+        )
     ).strip()
 
     installer_version = safeStr(
-        info.get("installer_version", "")
+        info.get(
+            "installer_version",
+            ""
+        )
     ).strip()
 
     # ------------------------------------------------------------
-    # Changelog fallback
+    # Changelog
     # ------------------------------------------------------------
 
-    if not changes:
-        changes = _(
-            "No changes available."
+    changes = _update_changes_text(
+        info.get(
+            "changes",
+            ""
         )
+    )
 
     # ------------------------------------------------------------
     # Installer version
@@ -522,7 +546,9 @@ def _update_show_message(info):
 
         installer_note = (
             "\n"
-            + _("Installer version: %s")
+            + _(
+                "Installer version: %s"
+            )
             % installer_version
         )
 
@@ -531,21 +557,36 @@ def _update_show_message(info):
     # ------------------------------------------------------------
 
     message = (
-        _("A new version of speedy_TheWeather is available.")
+        _(
+            "A new version of speedy_TheWeather "
+            "is available."
+        )
         + "\n\n"
-        + _("Installed version: %s")
+        + _(
+            "Installed version: %s"
+        )
         % VERSION
         + "\n"
-        + _("New version: %s")
+        + _(
+            "New version: %s"
+        )
         % remote_version
         + installer_note
         + "\n\n"
-        + _("Changes:")
+        + _(
+            "Changes:"
+        )
         + "\n"
         + changes
         + "\n\n"
-        + _("Do you want to install the update?")
+        + _(
+            "Do you want to install the update?"
+        )
     )
+
+    # ------------------------------------------------------------
+    # Debug
+    # ------------------------------------------------------------
 
     print(
         "[speedy_TheWeather] "
@@ -558,6 +599,10 @@ def _update_show_message(info):
         "Update installer version: %s"
         % installer_version
     )
+
+    # ------------------------------------------------------------
+    # Show dialog
+    # ------------------------------------------------------------
 
     try:
 
