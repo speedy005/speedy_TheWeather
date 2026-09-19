@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.4
+# v.1.4.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,8 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.4.4'
+__version__ = "1.4.5"
+VERSION = __version__
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -707,7 +708,7 @@ def _update_install_error():
 # UPDATE
 # ============================================================================
 
-version = '1.4.4'
+
 
 UPDATE_RAW_BASE = (
     "https://raw.githubusercontent.com/"
@@ -2889,19 +2890,19 @@ class sevendays(Screen):
         if hd:
 
             buttons = [
-                ("key_red", "27,1040", "310,45", "red", "20,1050", "8,25", 30),
-                ("key_green", "342,1040", "310,45", "green", "335,1050", "8,25", 30),
-                ("key_yellow", "657,1040", "310,45", "yellow", "650,1050", "8,25", 30),
-                ("key_blue", "972,1040", "310,45", "blue", "965,1050", "8,25", 30)
+                ("key_red", "27,1040", "310,45", "red", "20,1050", "8,25", 38),
+                ("key_green", "342,1040", "310,45", "green", "335,1050", "8,25", 38),
+                ("key_yellow", "657,1040", "310,45", "yellow", "650,1050", "8,25", 38),
+                ("key_blue", "972,1040", "310,45", "blue", "965,1050", "8,25", 38)
             ]
 
         else:
 
             buttons = [
-                ("key_red", "20,684", "300,28", "red", "13,691", "6,14", 18),
-                ("key_green", "325,684", "300,28", "green", "318,691", "6,14", 18),
-                ("key_yellow", "630,684", "300,28", "yellow", "623,691", "6,14", 18),
-                ("key_blue", "935,684", "300,28", "blue", "928,691", "6,14", 18)
+                ("key_red", "20,684", "300,28", "red", "13,691", "6,14", 25),
+                ("key_green", "325,684", "300,28", "green", "318,691", "6,14", 25),
+                ("key_yellow", "630,684", "300,28", "yellow", "623,691", "6,14", 25),
+                ("key_blue", "935,684", "300,28", "blue", "928,691", "6,14", 25)
             ]
 
         xml = ""
