@@ -492,3 +492,13 @@ msgstr ""
 "Das Update wurde erfolgreich installiert.\n"
 "\n"
 "Möchtest du die Enigma2-GUI jetzt neu starten?"
+
+
+msgid "Hours"
+msgstr "Stunden"
+
+msgid "Radar"
+msgstr "Radar"
+
+msgid "Locations"
+msgstr "Orte"
