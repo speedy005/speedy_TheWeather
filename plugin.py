@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.9
+# v.1.5.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.4.9"
+__version__ = "1.5.0"
 VERSION = __version__
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
@@ -1029,7 +1029,7 @@ def _update_install_error():
         pr# ============================================================================
 # UPDATE
 # ============================================================================
-version = '1.4.9'
+version = '1.5.0'
 
 
 UPDATE_RAW_BASE = (
@@ -1083,7 +1083,7 @@ def _version_tuple(value):
 
     Beispiele:
         5.6  <  5.10
-        1.4.3 < 1.4.4
+        1.5.03 < 1.5.04
     """
 
     try:
@@ -1252,8 +1252,8 @@ def _update_extract_plugin_version(source):
         #
         # Supported:
         #
-        # version = "1.4.4"
-        # __version__ = "1.4.4"
+        # version = "1.5.04"
+        # __version__ = "1.5.04"
         #
         # ------------------------------------------------------------
 
@@ -7657,8 +7657,8 @@ class RadarScreen(Screen):
 
                 <widget
                     name="radarTitle"
-                    position="30,50"
-                    size="250,36"
+                    position="30,40"
+                    size="250,50"
                     zPosition="3"
                     foregroundColor="#000404b3"
                     backgroundColor="#00202020"
@@ -7920,8 +7920,8 @@ class RadarScreen(Screen):
 
                 <widget
                     name="radarTitle"
-                    position="85,35"
-                    size="180,32"
+                    position="85,30"
+                    size="180,40"
                     zPosition="3"
                     foregroundColor="#000404b3"
                     backgroundColor="#00202020"
