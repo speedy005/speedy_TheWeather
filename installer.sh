@@ -6,7 +6,7 @@
 
 version='1.4.9'
 
-changelog = 'Fixed malformed locale language file. Added an update function. Fixed Rain Radar Screen. Fixed the date display in the Seven Day Weather Screen. Fixed weather icons. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
+changelog='Fixed malformed locale language file. Added an update function. Fixed Rain Radar Screen. Fixed the date display in the Seven Day Weather Screen. Fixed weather icons. Fixed detached GUI restart. Buy me a coffee if you like this plugin.'
 
 
 # =========================================================
