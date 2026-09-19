@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.3
+# v.1.4.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-version = '1.4.3'
+version = '1.4.4'
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
 UPDATE_PLUGIN_URL = UPDATE_RAW_BASE + "/plugin.py"
@@ -1254,11 +1254,8 @@ class sevendays(Screen):
 
     def _icon(self, day):
         """
-        WICHTIG:
-        Das Tages-/große Wettericon wird exakt wie in twolocations
-        aus days[n]["iconcode"] genommen.
-
-        Kein Fallback auf hours[0]["iconcode"].
+        Tages-/großes Wettericon exakt aus iconcode.
+        Kein Fallback auf hours[0].
         """
 
         try:
@@ -1396,19 +1393,77 @@ class sevendays(Screen):
         )
 
     # ================================================================
+    # FARBTASTEN
+    #
+    # Keine externen PNG-Dateien nötig.
+    # Die Beschriftungen werden direkt als Label erzeugt.
+    # ================================================================
+
+    # ================================================================
+# FARBTASTEN
+# ================================================================
+
+    def _color_buttons_xml(self, hd=True):
+
+        if hd:
+
+            buttons = [
+                ("key_red", "27,1040", "310,45", "red", "20,1050", "8,25", 30),
+                ("key_green", "342,1040", "310,45", "green", "335,1050", "8,25", 30),
+                ("key_yellow", "657,1040", "310,45", "yellow", "650,1050", "8,25", 30),
+                ("key_blue", "972,1040", "310,45", "blue", "965,1050", "8,25", 30)
+            ]
+
+        else:
+
+            buttons = [
+                ("key_red", "20,684", "300,28", "red", "13,691", "6,14", 18),
+                ("key_green", "325,684", "300,28", "green", "318,691", "6,14", 18),
+                ("key_yellow", "630,684", "300,28", "yellow", "623,691", "6,14", 18),
+                ("key_blue", "935,684", "300,28", "blue", "928,691", "6,14", 18)
+            ]
+
+        xml = ""
+
+        for name, pos, size, foreground, button_pos, button_size, font in buttons:
+
+            xml += """
+                <eLabel
+                    position="{button_pos}"
+                    size="{button_size}"
+                    zPosition="12"
+                    backgroundColor="{foreground}"
+                    foregroundColor="{foreground}"/>
+
+                <widget
+                    source="{name}"
+                    render="Label"
+                    position="{pos}"
+                    size="{size}"
+                    zPosition="11"
+                    font="Regular;{font}"
+                    noWrap="1"
+                    valign="center"
+                    halign="center"
+                    transparent="1"
+                    backgroundColor="black"
+                    foregroundColor="{foreground}"/>
+            """.format(
+                name=name,
+                pos=pos,
+                size=size,
+                font=font,
+                foreground=foreground,
+                button_pos=button_pos,
+                button_size=button_size
+            )
+
+        return xml
+    # ================================================================
     # TAGESBEREICH
     # ================================================================
 
     def _build_day_section(self, day, data, hd=True):
-
-        # ------------------------------------------------------------
-        # EXAKT wie twolocations:
-        #
-        # dag = data["days"][0]
-        # iconcode = dag.get("iconcode", "")
-        #
-        # Kein Stunden-Fallback.
-        # ------------------------------------------------------------
 
         icon = self._icon(data)
         wind = self._wind(data)
@@ -1519,15 +1574,6 @@ class sevendays(Screen):
 
         xml = ""
 
-        # ------------------------------------------------------------
-        # GROSSES TAGES-WETTERICON
-        #
-        # EXAKT:
-        # icoonpath/iconbighd/<iconcode>.png
-        #
-        # Genau dieselbe Datei wie twolocations.
-        # ------------------------------------------------------------
-
         xml += self._icon_xml(
             "bigWeerIcon1{}".format(day),
             cfg["bigpos"],
@@ -1539,10 +1585,6 @@ class sevendays(Screen):
             ),
             cfg["bigscale"]
         )
-
-        # ------------------------------------------------------------
-        # GROSSER WINDPFEIL SD
-        # ------------------------------------------------------------
 
         if not hd:
 
@@ -1559,10 +1601,6 @@ class sevendays(Screen):
                 1
             )
 
-        # ------------------------------------------------------------
-        # KLEINES TAGESICON
-        # ------------------------------------------------------------
-
         xml += self._eicon_xml(
             "{},{}".format(
                 cfg["smallx"],
@@ -1576,10 +1614,6 @@ class sevendays(Screen):
             ),
             cfg["smallscale"]
         )
-
-        # ------------------------------------------------------------
-        # TAGESWERTE
-        # ------------------------------------------------------------
 
         xml += self._label_xml(
             "smallday2{}".format(day),
@@ -1627,10 +1661,6 @@ class sevendays(Screen):
             not hd
         )
 
-        # ------------------------------------------------------------
-        # WIDGET-OBJEKTE
-        # ------------------------------------------------------------
-
         self._pixmap(
             "bigWeerIcon1{}".format(day)
         )
@@ -1654,10 +1684,6 @@ class sevendays(Screen):
         self._label(
             "weertype2{}".format(day)
         )
-
-        # ------------------------------------------------------------
-        # 8 STUNDEN-ICONS
-        # ------------------------------------------------------------
 
         for slot in range(8):
 
@@ -1721,85 +1747,19 @@ class sevendays(Screen):
             )
 
             labels = [
-                (
-                    "dayhour3",
-                    205 + x,
-                    757,
-                    "105,42",
-                    33,
-                    "left"
-                ),
-                (
-                    "daytemp3",
-                    120 + x,
-                    820,
-                    "180,54",
-                    48,
-                    "left"
-                ),
-                (
-                    "sunpercent3",
-                    168 + x,
-                    883,
-                    "123,32",
-                    27,
-                    "left"
-                ),
-                (
-                    "daypercent3",
-                    168 + x,
-                    922,
-                    "120,30",
-                    27,
-                    "left"
-                ),
-                (
-                    "hrdayper3",
-                    168 + x,
-                    961,
-                    "123,32",
-                    27,
-                    "left"
-                ),
-                (
-                    "dayspeed3",
-                    168 + x,
-                    1000,
-                    "123,32",
-                    27,
-                    "left"
-                )
+                ("dayhour3", 205 + x, 757, "105,42", 33, "left"),
+                ("daytemp3", 120 + x, 820, "180,54", 48, "left"),
+                ("sunpercent3", 168 + x, 883, "123,32", 27, "left"),
+                ("daypercent3", 168 + x, 922, "120,30", 27, "left"),
+                ("hrdayper3", 168 + x, 961, "123,32", 27, "left"),
+                ("dayspeed3", 168 + x, 1000, "123,32", 27, "left")
             ]
 
             icons = [
-                (
-                    "sunicon",
-                    114 + x,
-                    879,
-                    "36,36",
-                    "sunpchd.png"
-                ),
-                (
-                    "rainicon",
-                    116 + x,
-                    921,
-                    "30,30",
-                    "rainhd.png"
-                ),
-                (
-                    "rhicon",
-                    120 + x,
-                    960,
-                    "23,30",
-                    "rhhd.png"
-                ),
-                (
-                    "windicon",
-                    119 + x,
-                    997,
-                    "38,38",
-                    "turbinehd.png"
-                )
+                ("sunicon", 114 + x, 879, "36,36", "sunpchd.png"),
+                ("rainicon", 116 + x, 921, "30,30", "rainhd.png"),
+                ("rhicon", 120 + x, 960, "23,30", "rhhd.png"),
+                ("windicon", 119 + x, 997, "38,38", "turbinehd.png")
             ]
 
             scale = False
@@ -1816,101 +1776,28 @@ class sevendays(Screen):
             )
 
             labels = [
-                (
-                    "dayhour3",
-                    64 + x,
-                    506,
-                    "129,28",
-                    20,
-                    "center"
-                ),
-                (
-                    "daytemp3",
-                    80 + x,
-                    540,
-                    "120,36",
-                    32,
-                    "left"
-                ),
-                (
-                    "sunpercent3",
-                    112 + x,
-                    580,
-                    "82,21",
-                    18,
-                    "left"
-                ),
-                (
-                    "daypercent3",
-                    112 + x,
-                    606,
-                    "80,20",
-                    18,
-                    "left"
-                ),
-                (
-                    "hrdayper3",
-                    112 + x,
-                    632,
-                    "80,20",
-                    18,
-                    "left"
-                ),
-                (
-                    "dayspeed3",
-                    112 + x,
-                    658,
-                    "82,21",
-                    18,
-                    "left"
-                )
+                ("dayhour3", 64 + x, 506, "129,28", 20, "center"),
+                ("daytemp3", 80 + x, 540, "120,36", 32, "left"),
+                ("sunpercent3", 112 + x, 580, "82,21", 18, "left"),
+                ("daypercent3", 112 + x, 606, "80,20", 18, "left"),
+                ("hrdayper3", 112 + x, 632, "80,20", 18, "left"),
+                ("dayspeed3", 112 + x, 658, "82,21", 18, "left")
             ]
 
             icons = [
-                (
-                    "sunicon",
-                    76 + x,
-                    578,
-                    "24,24",
-                    "sunpchd.png"
-                ),
-                (
-                    "rainicon",
-                    77 + x,
-                    605,
-                    "20,20",
-                    "rainhd.png"
-                ),
-                (
-                    "rhicon",
-                    79 + x,
-                    632,
-                    "16,20",
-                    "rhhd.png"
-                ),
-                (
-                    "windicon",
-                    79 + x,
-                    656,
-                    "25,25",
-                    "turbinehd.png"
-                )
+                ("sunicon", 76 + x, 578, "24,24", "sunpchd.png"),
+                ("rainicon", 77 + x, 605, "20,20", "rainhd.png"),
+                ("rhicon", 79 + x, 632, "16,20", "rhhd.png"),
+                ("windicon", 79 + x, 656, "25,25", "turbinehd.png")
             ]
 
             scale = True
-
-        # ------------------------------------------------------------
-        # STUNDEN-HINTERGRUND
-        # ------------------------------------------------------------
 
         name = "vlakuur{}".format(hour)
 
         xml = self._icon_xml(
             name,
-            "{},{}".format(
-                bg[0],
-                bg[1]
-            ),
+            "{},{}".format(bg[0], bg[1]),
             bg[2],
             "{}/{}/patches/{}".format(
                 base,
@@ -1921,20 +1808,11 @@ class sevendays(Screen):
             0
         )
 
-        # WICHTIG:
-        # updateFrameselect() greift auf vlakuur0-7 zu.
         self._pixmap(name)
-
-        # ------------------------------------------------------------
-        # LABELS
-        # ------------------------------------------------------------
 
         for prefix, px, py, size, font, align in labels:
 
-            name = "{}{}".format(
-                prefix,
-                hour
-            )
+            name = "{}{}".format(prefix, hour)
 
             xml += self._label_xml(
                 name,
@@ -1946,16 +1824,9 @@ class sevendays(Screen):
 
             self._label(name)
 
-        # ------------------------------------------------------------
-        # STUNDEN-ICONS
-        # ------------------------------------------------------------
-
         for prefix, px, py, size, filename in icons:
 
-            name = "{}{}".format(
-                prefix,
-                hour
-            )
+            name = "{}{}".format(prefix, hour)
 
             xml += self._icon_xml(
                 name,
@@ -2026,13 +1897,9 @@ class sevendays(Screen):
                     alphatest="blend"/>
 
                 {city}
-
                 {temp}
-
                 {type}
-
                 {feel}
-
                 {wind}
 
                 <widget name="winddiricon1"
@@ -2247,7 +2114,7 @@ class sevendays(Screen):
                 alphatest="blend"/>
 
             <ePixmap
-                pixmap="{base}/{pack}/backgroundhd.png"
+                pixmap="{base}/{pack}/backgroundhd_2.png"
                 position="center,center"
                 size="1920,1080"
                 zPosition="0"
@@ -2269,26 +2136,29 @@ class sevendays(Screen):
 
             {content}
 
-            <ePixmap
-                pixmap="{base}/{pack}/buttons/buttonx.png"
-                position="1604,46"
-                size="54,54"
-                zPosition="3"
-                alphatest="blend"/>
+            <!-- ================================================= -->
+            <!-- MENU + OK OBEN RECHTS                            -->
+            <!-- ================================================= -->
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/menubutton.png"
-                position="1423,46"
+                position="1580,46"
                 size="90,54"
                 zPosition="3"
                 alphatest="blend"/>
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/okbutton.png"
-                position="1531,46"
+                position="1685,46"
                 size="54,54"
                 zPosition="3"
                 alphatest="blend"/>
+
+            <!-- ================================================= -->
+            <!-- FARBTASTEN UNTEN                                 -->
+            <!-- ================================================= -->
+
+            {colorbuttons}
 
         </screen>
         """.format(
@@ -2316,7 +2186,9 @@ class sevendays(Screen):
             main=self._main_widgets(
                 True,
                 winddir_top
-            )
+            ),
+
+            colorbuttons=self._color_buttons_xml(True)
         )
 
     # ================================================================
@@ -2361,7 +2233,7 @@ class sevendays(Screen):
                 alphatest="blend"/>
 
             <ePixmap
-                pixmap="{base}/{pack}/backgroundhd.png"
+                pixmap="{base}/{pack}/backgroundhd_2.png"
                 position="center,center"
                 size="1280,720"
                 scale="1"
@@ -2385,26 +2257,29 @@ class sevendays(Screen):
 
             {content}
 
-            <ePixmap
-                pixmap="{base}/{pack}/buttons/buttonsdx.png"
-                position="1070,29"
-                size="36,36"
-                zPosition="3"
-                alphatest="blend"/>
+            <!-- ================================================= -->
+            <!-- MENU + OK UNTEN RECHTS                          -->
+            <!-- ================================================= -->
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/menubuttonsd.png"
-                position="949,29"
+                position="1100,680"
                 size="60,36"
-                zPosition="3"
+                zPosition="10"
                 alphatest="blend"/>
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/okbuttonsd.png"
-                position="1021,29"
+                position="1170,680"
                 size="36,36"
-                zPosition="3"
+                zPosition="10"
                 alphatest="blend"/>
+
+            <!-- ================================================= -->
+            <!-- FARBTASTEN UNTEN                                 -->
+            <!-- ================================================= -->
+
+            {colorbuttons}
 
         </screen>
         """.format(
@@ -2432,7 +2307,9 @@ class sevendays(Screen):
             main=self._main_widgets(
                 False,
                 winddir_top
-            )
+            ),
+
+            colorbuttons=self._color_buttons_xml(False)
         )
 
     # ================================================================
@@ -2506,6 +2383,7 @@ class sevendays(Screen):
             return
 
         try:
+
             self[
                 "bigWeerIcon1{}".format(day)
             ].show()
@@ -2804,7 +2682,14 @@ class sevendays(Screen):
                 day,
                 self._day(data, day)
             )
+        # ------------------------------------------------------------
+        # FARBTASTEN-BESCHRIFTUNGEN
+        # ------------------------------------------------------------
 
+        self["key_red"] = StaticText(_("Back"))
+        self["key_green"] = StaticText(_("Hours"))
+        self["key_yellow"] = StaticText(_("Radar"))
+        self["key_blue"] = StaticText(_("Locations"))
         # ------------------------------------------------------------
         # ACTIONMAP
         # ------------------------------------------------------------
@@ -3493,7 +3378,7 @@ class sevendays(Screen):
             return
 
         bg_folder = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/backgrounds"
-        default_bg = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd.png"
+        default_bg = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd_2.png"
 
         bgfile = None
         if backgroundpath and os.path.isabs(backgroundpath) and os.path.exists(backgroundpath):
@@ -5448,9 +5333,9 @@ class BackgroundPickerScreen(Screen):
         pad = self._bestanden[idx] if idx < len(self._bestanden) else ""
         if not pad:
             if sz_w > 1800:
-                pad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd.png"
+                pad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd_2.png"
             else:
-                pad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd.png"
+                pad = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd_2.png"
         try:
             if sz_w > 1800:
                 self.picload.setPara([720, 405, 1, 1, False, 1, "#ff000000"])
