@@ -4,10 +4,14 @@
 
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from Components.Language import language
+from Screens.MessageBox import MessageBox
+
 from os.path import exists, join, dirname
-from enigma import getDesktop, gRGB
+from enigma import getDesktop, gRGB, quitMainloop
 from skin import parseColor
+
 from os import makedirs, environ, rmdir, walk, remove
+
 import gettext
 import codecs
 import shutil
@@ -60,9 +64,97 @@ UPDATE_INSTALLER_PATH = join(
 )
 
 
-def update_plugin():
+# ============================================================================
+# UPDATE - GUI RESTART CALLBACK
+# ============================================================================
+
+def restartGuiCallback(answer):
+    """
+    Called after the update confirmation dialog.
+
+    YES:
+        Restart Enigma2 GUI.
+
+    NO:
+        Do nothing and keep Enigma2 running.
+    """
+
+    if answer:
+
+        print(
+            "[UPDATE] User selected YES."
+        )
+
+        print(
+            "[UPDATE] Restarting Enigma2 GUI..."
+        )
+
+        quitMainloop(3)
+
+    else:
+
+        print(
+            "[UPDATE] User selected NO."
+        )
+
+        print(
+            "[UPDATE] Enigma2 GUI will not be restarted."
+        )
+
+
+# ============================================================================
+# UPDATE - ASK FOR GUI RESTART
+# ============================================================================
+
+def askRestartGui(session):
+    """
+    Ask the user whether the Enigma2 GUI should be restarted
+    after a successful plugin update.
+    """
+
+    if session is None:
+
+        print(
+            "[UPDATE] No Enigma2 session available."
+        )
+
+        return
+
+
+    print(
+        "[UPDATE] Opening GUI restart confirmation..."
+    )
+
+
+    session.openWithCallback(
+        restartGuiCallback,
+        MessageBox,
+        _(
+            "speedy_TheWeather was updated successfully."
+            "\n\n"
+            "Do you want to restart the GUI now?"
+        ),
+        MessageBox.TYPE_YESNO
+    )
+
+
+# ============================================================================
+# UPDATE
+# ============================================================================
+
+def update_plugin(session=None):
     """
     Download and execute the latest speedy_TheWeather installer.
+
+    The installer runs completely first.
+
+    When the installer exits with code 0:
+        -> remove temporary installer
+        -> show restart confirmation in Enigma2
+
+    When the installer fails:
+        -> no restart dialog
+        -> return False
     """
 
     try:
@@ -70,8 +162,14 @@ def update_plugin():
         print("=" * 60)
         print("[UPDATE] speedy_TheWeather")
         print("[UPDATE] Repository:", GITHUB_REPOSITORY)
+        print("[UPDATE] Branch:", GITHUB_BRANCH)
         print("[UPDATE] Downloading installer...")
         print("=" * 60)
+
+
+        # --------------------------------------------------------------------
+        # DOWNLOAD INSTALLER
+        # --------------------------------------------------------------------
 
         request = urllib.request.Request(
             UPDATE_INSTALLER_URL,
@@ -80,6 +178,7 @@ def update_plugin():
             }
         )
 
+
         with urllib.request.urlopen(
             request,
             timeout=30
@@ -87,15 +186,30 @@ def update_plugin():
 
             installer_data = response.read()
 
+
         if not installer_data:
 
-            print("[UPDATE] ERROR: Empty installer")
+            print(
+                "[UPDATE] ERROR: Empty installer"
+            )
 
             return False
 
+
+        # --------------------------------------------------------------------
+        # CREATE TEMP DIRECTORY
+        # --------------------------------------------------------------------
+
         if not exists(TEMP_DIR):
 
-            makedirs(TEMP_DIR)
+            makedirs(
+                TEMP_DIR
+            )
+
+
+        # --------------------------------------------------------------------
+        # SAVE INSTALLER
+        # --------------------------------------------------------------------
 
         with open(
             UPDATE_INSTALLER_PATH,
@@ -106,10 +220,16 @@ def update_plugin():
                 installer_data
             )
 
+
         print(
             "[UPDATE] Installer downloaded:",
             UPDATE_INSTALLER_PATH
         )
+
+
+        # --------------------------------------------------------------------
+        # MAKE INSTALLER EXECUTABLE
+        # --------------------------------------------------------------------
 
         try:
 
@@ -125,17 +245,46 @@ def update_plugin():
                 e
             )
 
-        print("[UPDATE] Starting installer...")
+
+        # --------------------------------------------------------------------
+        # START INSTALLER
+        # --------------------------------------------------------------------
+
+        print(
+            "[UPDATE] Starting installer..."
+        )
+
+        print(
+            "[UPDATE] Waiting for installer to finish..."
+        )
+
 
         result = subprocess.call(
-            ["/bin/sh", UPDATE_INSTALLER_PATH]
+            [
+                "/bin/sh",
+                UPDATE_INSTALLER_PATH
+            ]
         )
+
+
+        # --------------------------------------------------------------------
+        # INSTALLER SUCCESS
+        # --------------------------------------------------------------------
 
         if result == 0:
 
             print(
-                "[UPDATE] Update completed successfully"
+                "[UPDATE] Installer finished successfully."
             )
+
+            print(
+                "[UPDATE] Update completed successfully."
+            )
+
+
+            # ----------------------------------------------------------------
+            # REMOVE DOWNLOADED INSTALLER
+            # ----------------------------------------------------------------
 
             try:
 
@@ -143,25 +292,63 @@ def update_plugin():
                     UPDATE_INSTALLER_PATH
                 )
 
-            except Exception:
+                print(
+                    "[UPDATE] Temporary installer removed."
+                )
 
-                pass
+            except Exception as e:
+
+                print(
+                    "[UPDATE] Could not remove temporary installer:",
+                    e
+                )
+
+
+            # ----------------------------------------------------------------
+            # ASK FOR GUI RESTART
+            #
+            # IMPORTANT:
+            # The installer is already completely finished here.
+            # The MessageBox comes from the running plugin.
+            # ----------------------------------------------------------------
+
+            if session is not None:
+
+                print(
+                    "[UPDATE] Asking user for GUI restart..."
+                )
+
+                askRestartGui(
+                    session
+                )
+
+            else:
+
+                print(
+                    "[UPDATE] No session supplied."
+                )
+
+                print(
+                    "[UPDATE] Cannot display restart dialog."
+                )
+
 
             return True
+
+
+        # --------------------------------------------------------------------
+        # INSTALLER FAILED
+        # --------------------------------------------------------------------
 
         print(
             "[UPDATE] Installer exited with code:",
             result
         )
 
-        return False
 
-    except Exception as e:
-
-        print(
-            "[UPDATE] ERROR:",
-            e
-        )
+        # --------------------------------------------------------------------
+        # REMOVE FAILED INSTALLER
+        # --------------------------------------------------------------------
 
         try:
 
@@ -173,9 +360,46 @@ def update_plugin():
                     UPDATE_INSTALLER_PATH
                 )
 
-        except Exception:
+        except Exception as e:
 
-            pass
+            print(
+                "[UPDATE] Could not remove failed installer:",
+                e
+            )
+
+
+        return False
+
+
+    except Exception as e:
+
+        print(
+            "[UPDATE] ERROR:",
+            e
+        )
+
+
+        # --------------------------------------------------------------------
+        # CLEANUP AFTER ERROR
+        # --------------------------------------------------------------------
+
+        try:
+
+            if exists(
+                UPDATE_INSTALLER_PATH
+            ):
+
+                remove(
+                    UPDATE_INSTALLER_PATH
+                )
+
+        except Exception as cleanup_error:
+
+            print(
+                "[UPDATE] Cleanup error:",
+                cleanup_error
+            )
+
 
         return False
 
@@ -464,6 +688,7 @@ def cleanup_temp_files(keep_token=True):
                 "token.json"
             )
 
+
             for root, dirs, files in walk(
                 d,
                 topdown=False
@@ -498,6 +723,7 @@ def cleanup_temp_files(keep_token=True):
                         name
                     )
 
+
                     if (
                         dir_path
                         == join(
@@ -507,6 +733,7 @@ def cleanup_temp_files(keep_token=True):
                     ):
 
                         continue
+
 
                     try:
 
@@ -529,12 +756,14 @@ def cleanup_temp_files(keep_token=True):
                 "weather_map_cache/wetterkontor"
             ]
 
+
             for sub in subdirs:
 
                 subdir = join(
                     TEMP_DIR,
                     sub
                 )
+
 
                 if not exists(subdir):
 
@@ -562,6 +791,7 @@ def cleanup_temp_files(keep_token=True):
                 TEMP_DIR
             )
 
+
             makedirs(
                 TEMP_DIR
             )
@@ -577,6 +807,7 @@ def cleanup_temp_files(keep_token=True):
                     TEMP_DIR,
                     sub
                 )
+
 
                 if not exists(subdir):
 
