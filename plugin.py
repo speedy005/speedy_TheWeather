@@ -347,77 +347,265 @@ def _update_changes_text(changes):
 
 def _update_check_worker():
     """Netzwerkprüfung im Hintergrund, damit Enigma2 nicht einfriert."""
+
     plugin_path = None
     installer_path = None
+
     try:
+
+        # ============================================================
+        # Remote plugin.py herunterladen
+        # ============================================================
+
         fd, plugin_path = tempfile.mkstemp(
             prefix=".speedy_TheWeather_remote_",
             suffix=".py",
             dir="/tmp"
         )
+
         os.close(fd)
 
-        if not _update_download(UPDATE_PLUGIN_URL, plugin_path):
-            _updateQueue.put(("error", _("Update check failed.")))
+        if not _update_download(
+            UPDATE_PLUGIN_URL,
+            plugin_path
+        ):
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Update check failed.")
+                )
+            )
+
             return
 
-        with open(plugin_path, "r", encoding="utf-8") as source_file:
-            remote_source = source_file.read()
+        with open(
+            plugin_path,
+            "r",
+            encoding="utf-8"
+        ) as source_file:
 
-        # Syntax und Version prüfen, aber den fremden Code niemals ausführen.
+            remote_source = (
+                source_file.read()
+            )
+
+        # ============================================================
+        # Remote plugin.py prüfen
+        # ============================================================
+
         import ast
-        ast.parse(remote_source, filename="plugin.py")
-        remote_version = _update_extract_plugin_version(remote_source)
+
+        ast.parse(
+            remote_source,
+            filename="plugin.py"
+        )
+
+        remote_version = (
+            _update_extract_plugin_version(
+                remote_source
+            )
+        )
+
         if not remote_version:
-            _updateQueue.put(("error", _("Update information is incomplete.")))
+
+            print(
+                "[speedy_TheWeather] "
+                "Remote plugin version could not be detected."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Update information is incomplete.")
+                )
+            )
+
             return
 
-        if not _update_is_newer(remote_version):
-            print("[speedy_TheWeather] Plugin is up to date: %s" % remote_version)
+        print(
+            "[speedy_TheWeather] "
+            "Remote plugin version: %s"
+            % remote_version
+        )
 
-            _updateQueue.put(("current", {
-                "version": remote_version
-            }))
+        # ============================================================
+        # Bereits aktuell
+        # ============================================================
+
+        if not _update_is_newer(
+            remote_version
+        ):
+
+            print(
+                "[speedy_TheWeather] "
+                "Plugin is up to date: %s"
+                % remote_version
+            )
+
+            _updateQueue.put(
+                (
+                    "current",
+                    {
+                        "version": remote_version
+                    }
+                )
+            )
 
             return
 
+        # ============================================================
+        # installer.sh herunterladen
+        # ============================================================
 
-        # Changelog stammt aus demselben installer.sh, den der Nutzer später
-        # mit "Ja" ausführt. Die installer-Version wird nur als Zusatzinfo
-        # verwendet, da die eigentliche Plugin-Version aus plugin.py kommt.
         fd, installer_path = tempfile.mkstemp(
             prefix=".speedy_TheWeather_installer_info_",
             suffix=".sh",
             dir="/tmp"
         )
+
         os.close(fd)
 
-        installer_info = {"version": "", "changelog": ""}
-        if _update_download(UPDATE_INSTALLER_URL, installer_path):
+        installer_info = {
+            "version": "",
+            "changelog": ""
+        }
+
+        installer_downloaded = _update_download(
+            UPDATE_INSTALLER_URL,
+            installer_path
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer download result: %s"
+            % installer_downloaded
+        )
+
+        if installer_downloaded:
+
             try:
-                with open(installer_path, "r", encoding="utf-8") as installer_file:
-                    installer_source = installer_file.read()
-                installer_info = _update_extract_installer_info(installer_source)
+
+                with open(
+                    installer_path,
+                    "r",
+                    encoding="utf-8"
+                ) as installer_file:
+
+                    installer_source = (
+                        installer_file.read()
+                    )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Installer source length: %s"
+                    % len(installer_source)
+                )
+
+                installer_info = (
+                    _update_extract_installer_info(
+                        installer_source
+                    )
+                )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Installer info: %s"
+                    % installer_info
+                )
+
             except Exception as e:
-                print("[speedy_TheWeather] Could not read installer changelog:", e)
 
-        changes = installer_info.get("changelog", "")
-        if not changes:
-            changes = _("No changes available.")
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not read installer information:",
+                    e
+                )
 
-        _updateQueue.put(("available", {
+        else:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not download installer.sh."
+            )
+
+        # ============================================================
+        # Changelog
+        # ============================================================
+
+        changes = safeStr(
+            installer_info.get(
+                "changelog",
+                ""
+            )
+        ).strip()
+
+        print(
+            "[speedy_TheWeather] "
+            "Final changelog: %s"
+            % changes
+        )
+
+        # ============================================================
+        # Update payload
+        # ============================================================
+
+        payload = {
             "version": remote_version,
             "changes": changes,
-            "installer_version": installer_info.get("version", "")
-        }))
+            "installer_version": safeStr(
+                installer_info.get(
+                    "version",
+                    ""
+                )
+            ).strip()
+        }
+
+        print(
+            "[speedy_TheWeather] "
+            "Update payload: %s"
+            % payload
+        )
+
+        _updateQueue.put(
+            (
+                "available",
+                payload
+            )
+        )
+
     except Exception as e:
-        print("[speedy_TheWeather] Update check failed:", e)
-        _updateQueue.put(("error", _("Update check failed.")))
+
+        print(
+            "[speedy_TheWeather] "
+            "Update check failed:",
+            e
+        )
+
+        _updateQueue.put(
+            (
+                "error",
+                _("Update check failed.")
+            )
+        )
+
     finally:
-        for path in (plugin_path, installer_path):
-            if path and os.path.exists(path):
+
+        for path in (
+            plugin_path,
+            installer_path
+        ):
+
+            if (
+                path
+                and os.path.exists(path)
+            ):
+
                 try:
-                    os.unlink(path)
+
+                    os.unlink(
+                        path
+                    )
+
                 except Exception:
                     pass
 
