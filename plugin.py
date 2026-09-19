@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.4.5
+# v.1.4.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -163,7 +163,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.4.5"
+__version__ = "1.4.6"
 VERSION = __version__
 
 UPDATE_RAW_BASE = "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master"
@@ -645,6 +645,7 @@ def _update_install_finished():
     )
 
     def restart_gui_callback(answer):
+
         if answer:
             print(
                 "[speedy_TheWeather] "
@@ -653,7 +654,6 @@ def _update_install_finished():
 
             try:
                 from enigma import quitMainloop
-
                 quitMainloop(3)
 
             except Exception as e:
@@ -678,7 +678,13 @@ def _update_install_finished():
                     "The update has been installed successfully.\n\n"
                     "Would you like to restart the Enigma2 GUI now?"
                 ),
-                MessageBox.TYPE_YESNO
+                MessageBox.TYPE_YESNO,
+                default=True
+            )
+        else:
+            print(
+                "[speedy_TheWeather] "
+                "No overlay session available."
             )
 
     except Exception as e:
@@ -707,7 +713,7 @@ def _update_install_error():
         pr# ============================================================================
 # UPDATE
 # ============================================================================
-version = '1.4.5'
+version = '1.4.6'
 
 
 UPDATE_RAW_BASE = (
@@ -1888,81 +1894,26 @@ def _update_install():
 
 def update_finished():
 
-    global _updateInstallInProgress
     global _updateConsole
-
+    global _updateInstallInProgress
+    global _updateRestartTimer
 
     print(
         "[speedy_TheWeather] "
-        "Installer finished."
+        "Update installer finished"
     )
 
+    _updateConsole = None
 
-    # ------------------------------------------------------------------------
-    # CHECK SUCCESS MARKER
-    # ------------------------------------------------------------------------
+    success = os.path.exists(
+        UPDATE_SUCCESS_FILE
+    )
 
-    success = False
-
-
-    try:
-
-        success = os.path.exists(
-            UPDATE_SUCCESS_FILE
-        )
-
-    except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "Could not check update result:",
-            e
-        )
-
-
-    # ------------------------------------------------------------------------
-    # CLOSE CONSOLE
-    # ------------------------------------------------------------------------
-
-    if _updateConsole is not None:
-
-        try:
-
-            _updateConsole.close()
-
-        except Exception as e:
-
-            print(
-                "[speedy_TheWeather] "
-                "Could not close update console:",
-                e
-            )
-
-        _updateConsole = None
-
-
-    # ------------------------------------------------------------------------
-    # REMOVE INSTALLER
-    # ------------------------------------------------------------------------
-
-    try:
-
-        if os.path.exists(
-            UPDATE_INSTALLER_PATH
-        ):
-
-            os.unlink(
-                UPDATE_INSTALLER_PATH
-            )
-
-    except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "Could not remove installer:",
-            e
-        )
-
+    print(
+        "[speedy_TheWeather] "
+        "Update success marker: %s"
+        % success
+    )
 
     # ------------------------------------------------------------------------
     # SUCCESS
@@ -1970,43 +1921,69 @@ def update_finished():
 
     if success:
 
+        _updateInstallInProgress = False
+
+        try:
+            if os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
+                os.unlink(
+                    UPDATE_INSTALLER_PATH
+                )
+        except Exception:
+            pass
+
         print(
             "[speedy_TheWeather] "
             "Installer completed successfully."
         )
 
-
-        # ------------------------------------------------------------
-        # Remove success marker after checking it.
-        # ------------------------------------------------------------
-
+        # MessageBox nicht direkt aus dem
+        # Console-Callback öffnen.
         try:
 
-            if os.path.exists(
-                UPDATE_SUCCESS_FILE
-            ):
+            _updateRestartTimer = eTimer()
 
-                os.unlink(
-                    UPDATE_SUCCESS_FILE
+            def show_restart_message():
+
+                global _updateRestartTimer
+
+                try:
+                    _updateRestartTimer.stop()
+                except Exception:
+                    pass
+
+                _updateRestartTimer = None
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Showing restart question."
                 )
 
-        except Exception:
+                _update_install_finished()
 
-            pass
-
-
-        _updateInstallInProgress = False
-
-
-        _updateQueue.put(
-            (
-                "installed",
-                None
+            _updateRestartTimer.callback.append(
+                show_restart_message
             )
-        )
 
+            _updateRestartTimer.start(
+                200,
+                True
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not start restart timer: %s"
+                % e
+            )
+
+            _update_install_finished()
+
+        # GANZ WICHTIG:
+        # Nach erfolgreicher Installation hier abbrechen.
         return
-
 
     # ------------------------------------------------------------------------
     # FAILURE
@@ -2017,9 +1994,7 @@ def update_finished():
         "Installer did NOT complete successfully."
     )
 
-
     _updateInstallInProgress = False
-
 
     _updateQueue.put(
         (
@@ -2038,15 +2013,70 @@ def _update_install_finished():
     global _updateInstallInProgress
     global _updateInfo
 
-
     _updateInstallInProgress = False
     _updateInfo = None
-
 
     print(
         "[speedy_TheWeather] "
         "Update installation finished successfully."
     )
+
+    def restart_gui_callback(answer):
+
+        if answer:
+
+            print(
+                "[speedy_TheWeather] "
+                "Restarting Enigma2 GUI..."
+            )
+
+            try:
+                quitMainloop(3)
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not restart Enigma2 GUI: %s"
+                    % e
+                )
+
+        else:
+
+            print(
+                "[speedy_TheWeather] "
+                "User chose not to restart Enigma2 GUI."
+            )
+
+    try:
+
+        if _overlaySession is not None:
+
+            _overlaySession.openWithCallback(
+                restart_gui_callback,
+                MessageBox,
+                _(
+                    "The update has been installed successfully.\n\n"
+                    "Would you like to restart the Enigma2 GUI now?"
+                ),
+                MessageBox.TYPE_YESNO,
+                default=True
+            )
+
+        else:
+
+            print(
+                "[speedy_TheWeather] "
+                "No overlay session available."
+            )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not show restart message: %s"
+            % e
+        )
 
 
     # ------------------------------------------------------------------------
