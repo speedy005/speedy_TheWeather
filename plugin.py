@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.0
+# v.1.5.1
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -162,10 +162,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.0"
+__version__ = "1.5.1"
 VERSION = __version__
 
-version = '1.5.0'
+version = '1.5.1'
 
 
 UPDATE_RAW_BASE = (
@@ -2206,9 +2206,9 @@ class sevendays(Screen):
     # Aktuelles Wetter
     # ------------------------------------------------
 
-    COLOR_CITY        = "#00A000"   # Grün – Stadt/Ort
-    COLOR_BIGTEMP     = "#3399FF"   # Blau – Temperatur
-    COLOR_WEATHERTYPE = "#87CEEB"   # Hellblau – Wettertyp
+    COLOR_CITY        = "#0000ff00"   # Grün – Stadt/Ort
+    COLOR_BIGTEMP     = "#000000ff"   # Blau – Temperatur
+    COLOR_WEATHERTYPE = "#0087ceeb"   # Hellblau – Wettertyp
     COLOR_FEELS       = "#00ffff00"   # Gelb
     COLOR_WIND        = "#0000ffff"   # Cyan
 
@@ -2216,10 +2216,10 @@ class sevendays(Screen):
     # 7-Tage-Vorhersage
     # ------------------------------------------------
 
-    COLOR_DAY         = "#0000ff00"   # Weiß
+    COLOR_DAY         = "#0000ff00"   # Grün
     COLOR_MAXTEMP     = "#00ff0000"   # Rot
     COLOR_MINTEMP     = "#00004080"   # Dunkelblau
-    COLOR_DAYTYPE     = "#00ffffff"   # Weiß
+    COLOR_DAYTYPE     = "#00ffff00"   # Gelb
 
     # ------------------------------------------------
     # Sonne
@@ -2231,7 +2231,7 @@ class sevendays(Screen):
     # Stundenübersicht
     # ------------------------------------------------
 
-    COLOR_HOUR        = "#00ff0000"   # Gelb – Uhrzeit / Stunde
+    COLOR_HOUR        = "#00ff0000"   # Rot – Uhrzeit / Stunde
     COLOR_HOURTEMP    = "#004080ff"   # Blau – Temperatur / Grad
     COLOR_RAIN        = "#0000ffff"   # Cyan
     COLOR_SUNPERCENT  = "#00ffff00"   # Gelb
@@ -3252,35 +3252,40 @@ class sevendays(Screen):
                     "608,44",
                     "705,64",
                     48,
-                    "center"
+                    "center",
+                    color=self.COLOR_CITY
                 ),
 
                 temp=self._label_xml(
                     "bigtemp1",
                     "870,122",
                     "353,118",
-                    108
+                    108,
+                    color=self.COLOR_BIGTEMP
                 ),
 
                 type=self._label_xml(
                     "bigweathertype1",
                     "870,298",
                     "480,40",
-                    28
+                    28,
+                    color=self.COLOR_WEATHERTYPE
                 ),
 
                 feel=self._label_xml(
                     "GevoelsTemp1",
                     "870,250",
                     "354,40",
-                    28
+                    28,
+                    color=self.COLOR_FEELS
                 ),
 
                 wind=self._label_xml(
                     "winddir1",
                     "870,346",
                     "330,45",
-                    28
+                    28,
+                    color=self.COLOR_WIND
                 )
             )
 
@@ -3343,37 +3348,43 @@ class sevendays(Screen):
                 "405,37",
                 "470,42",
                 32,
-                "center"
+                "center",
+                color=self.COLOR_CITY
             ),
 
             temp=self._label_xml(
                 "bigtemp1",
                 "565,88",
                 "235,76",
-                72
+                72,
+                color=self.COLOR_BIGTEMP
             ),
 
             type=self._label_xml(
                 "bigweathertype1",
                 "565,208",
                 "320,30",
-                18
+                18,
+                color=self.COLOR_WEATHERTYPE
             ),
 
             feel=self._label_xml(
                 "GevoelsTemp1",
                 "565,176",
                 "236,30",
-                18
+                18,
+                color=self.COLOR_FEELS
             ),
 
             wind=self._label_xml(
                 "winddir1",
                 "565,240",
                 "230,30",
-                18
+                18,
+                color=self.COLOR_WIND
             )
         )
+        
 
     # ================================================================
     # HD SKIN
@@ -4926,7 +4937,7 @@ class fourteen(Screen):
                     <widget name="bigWeerIcon1""" + str(day) + """" position=\"""" + str((130 + (118 * day)) + 28) + """,267" size="72,72" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/iconhd/""" + str(dagenbefore["iconcode"]) + """.png" zPosition="1" alphatest="blend"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/lines/bdot.png" position=\"""" + str(((130 + (118 * day)) + 59)-12) + """,""" + str(((yposlinecold) + lineheightcold)-12-maxlowertempmover) + """\" size="25,25" zPosition="10" transparent="0" alphatest="blend"/>
                     <widget name="wind""" + str(day) + """" position=\"""" + str((126 + (118 * day)) + 40) + """,370" size="56,56" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + icoonpath + """/windhd/""" + str(dagenbefore["winddirection"]) + """.png" zPosition="2" transparent="1" alphatest="blend"/>
-                    <widget render="Label" source="dagvandeweek""" + str(day) + """" position=\"""" + str((134 + (118 * day)) + 0) + """,155" size="118,54" valign="center" halign="center" zPosition="15" font="Regular;45" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget render="Label" source="dagvandeweek""" + str(day) + """" position=\"""" + str((134 + (118 * day)) + 0) + """,155" size="118,54" valign="center" halign="center" zPosition="15" font="Regular;45" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="datumvandeweek""" + str(day) + """" position=\"""" + str((134 + (118 * day)) + 0) + """,195" size="118,54" valign="center" halign="center" zPosition="15" font="Regular;30" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="linetempmax""" + str(day) + """" position=\"""" + str(((130 + (118 * day))-15) + 59) + """,""" + str(((yposline-45) + lineheight)) + """\" size="90,54" zPosition="15" font="Regular;30" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget render="Label" source="linetempmin""" + str(day) + """" position=\"""" + str(((130 + (118 * day))-15) + 59) + """,""" + str((yposlinecold + 15) + lineheightcold-maxlowertempmover) + """\" size="90,54" zPosition="15" font="Regular;30" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
@@ -4934,9 +4945,9 @@ class fourteen(Screen):
             skin = """
                     <screen name="fourteen" flags="wfNoBorder" position="center,center" size="1920,1080" title="fourteen">
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/bgbluhd.png" position="center,center" size="1920,1080" zPosition="0" alphatest="blend"/>
-                    <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                    <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
-                    <widget render="Label" source="city1" position="608,44" size="705,64" zPosition="3" valign="center" halign="center" font="Regular;48" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" />
+                    <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="1" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                    <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#0000ff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
+                    <widget render="Label" source="city1" position="608,44" size="705,64" zPosition="3" valign="center" halign="center" font="Regular;48" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" />
                     """ + dayinfoblok + """
                     </screen>"""
 
@@ -5183,10 +5194,10 @@ class CitySearchKeyBoard(VirtualKeyBoard):
                 <widget name="list" position="15,105" size="1170,420" transparent="1"/>
                 <widget name="locale" position="15,535" size="900,25" font="Regular;18" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
                 <widget name="suggestions" position="15,565" size="1170,180" font="Regular;28" foregroundColor="#00ffff00" backgroundColor="#00202020"/>
-                <widget name="key_red" position="15,750" size="200,30" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
-                <widget name="key_green" position="230,750" size="200,30" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
+                <widget name="key_red" position="15,750" size="200,30" font="Regular;20" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1"/>
+                <widget name="key_green" position="230,750" size="200,30" font="Regular;20" foregroundColor="#0000ff00" backgroundColor="#00202020" transparent="1"/>
                 <widget name="key_yellow" position="445,750" size="200,30" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
-                <widget name="key_blue" position="660,750" size="200,30" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
+                <widget name="key_blue" position="660,750" size="200,30" font="Regular;20" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1"/>
                 </screen>"""
         else:
             self.skin = """
@@ -5262,21 +5273,21 @@ class localcityscreen(Screen):
                     <screen name="startScreen" flags="wfNoBorder" position="center,center" size="1920,1080">
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
-                    <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                    <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
+                    <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                    <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#0000ff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
                     <widget source="session.VideoPicture" render="Pig" position="30,160" size="720,405" backgroundColor="#ff000000" zPosition="1"/>
                     <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
                     <widget name="list" position="840,225" size="975,630" scrollbarMode="showOnDemand" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/list/list97563.png"/>\n
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/green34.png" position="628,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_green" position="678,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_green" position="678,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#0000ff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="1064,1022" size="34,34" alphatest="blend"/>
                     <widget name="key_yellow" position="1114,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue34.png" position="1500,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_blue" position="1550,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="favor" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="helpinfo" position="150,722" size="500,600" valign="top" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_blue" position="1550,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="favor" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="helpinfo" position="150,722" size="500,600" valign="top" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget name="plaatsn" position="840,135" size="375,70" valign="center" halign="left" zPosition="1" font="Regular;63" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     </screen>"""
         else:
@@ -5298,7 +5309,7 @@ class localcityscreen(Screen):
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue26.png" position="970,663" size="26,26" alphatest="blend"/>
                     <widget name="key_blue" position="1010,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget name="favor" position="57,30" size="723,37" valign="center" halign="left" zPosition="1" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="helpinfo" position="100,481" size="335,320" valign="top" halign="left" zPosition="1" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="helpinfo" position="100,481" size="335,320" valign="top" halign="left" zPosition="1" font="Regular;20" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget name="plaatsn" position="630,90" size="250,47" valign="center" halign="left" zPosition="1" font="Regular;42" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     </screen>"""
 
@@ -5575,6 +5586,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         <!-- Gelber Button -->
         <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
         <widget name="key_yellow" position="579,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" />
+<widget source="Version" render="Label" position="676,554" size="420,40" font="Regular;26" halign="center" valign="center" foregrundColor="red" transparent="1" backgroundColor="black" />
     </screen>"""
 
     def __init__(self, session):
@@ -5955,12 +5967,12 @@ class CitySuggestListScreen(Screen):
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
                 <widget source="session.VideoPicture" render="Pig" position="30,160" size="720,405" backgroundColor="#ff000000" zPosition="1"/>
                 <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
                 <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
                 <widget name="list" position="840,225" size="975,630" scrollbarMode="showOnDemand" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/list/list97563.png"/>\n
                 <widget name="title" position="840,135" size="1000,70" valign="center" halign="left" zPosition="1" font="Regular;44" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
         else:
             skin = """
@@ -6046,23 +6058,23 @@ class infoscreen(Screen):
         if sz_w > 1800:
             skin = """
                     <screen name="startScreen" flags="wfNoBorder" position="center,center" size="1920,1080">
-                    <widget name="infos" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="infos" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
-                    <widget source="global.CurrentTime" render="Label" position="1577,18" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                    <widget source="global.CurrentTime" render="Label" position="1352,57" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">""" + date_fmt + """</convert></widget>
+                    <widget source="global.CurrentTime" render="Label" position="1577,18" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00ff0000" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                    <widget source="global.CurrentTime" render="Label" position="1352,57" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#0000ff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">""" + date_fmt + """</convert></widget>
                     <widget source="session.VideoPicture" render="Pig" position="30,160" size="720,405" backgroundColor="#ff000000" zPosition="1"/>
-                    <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
+                    <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/green34.png" position="628,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_green" position="678,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_green" position="678,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#0000ff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="1064,1022" size="34,34" alphatest="blend"/>
                     <widget name="key_yellow" position="1114,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue34.png" position="1500,1022" size="34,34" alphatest="blend"/>
-                    <widget name="key_blue" position="1550,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="helpinfo" position="900,186" size="800,600" valign="top" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="version" position="1290,945" size="600,42" valign="center" halign="right" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="key_blue" position="1550,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="helpinfo" position="900,186" size="800,600" valign="top" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="version" position="1290,945" size="600,42" valign="center" halign="right" zPosition="1" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     </screen>"""
         else:
             skin = """
@@ -6082,7 +6094,7 @@ class infoscreen(Screen):
                     <widget name="key_yellow" position="735,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/blue26.png" position="970,663" size="26,26" alphatest="blend"/>
                     <widget name="key_blue" position="1010,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                    <widget name="helpinfo" position="700,106" size="400,320" valign="top" halign="left" zPosition="1" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                    <widget name="helpinfo" position="700,106" size="400,320" valign="top" halign="left" zPosition="1" font="Regular;20" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <widget name="version" position="860,590" size="400,28" valign="center" halign="right" zPosition="1" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     </screen>"""
 
@@ -6213,8 +6225,8 @@ class CityPickerScreen(Screen):
                 <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
                 <widget name="list" position="840,160" size="975,630" scrollbarMode="showOnDemand" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/list/list97563.png"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" transparent="1" foregroundColor="#00ffff00" backgroundColor="#00202020" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="2elocation" position="840,50" size="900,55" valign="center" halign="left" zPosition="1" font="Regular;44" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" transparent="1" foregroundColor="#00ff0000" backgroundColor="#00202020" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="2elocation" position="840,50" size="900,55" valign="center" halign="left" zPosition="1" font="Regular;44" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
         else:
             skin = """
@@ -6296,35 +6308,35 @@ class twolocations(Screen):
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="958,112" size="3,868" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
+                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00ff0000" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
                 <widget name="loc1name"     position="40,125"   size="880,72"  zPosition="3" font="Regular;58" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="loc1icon"     position="140,215"  size="160,160" zPosition="3" alphatest="blend"/>
-                <widget name="loc1maxtemp"  position="320,215"  size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1mintemp"  position="320,310"  size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1weertype" position="320,400"  size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1feel"     position="320,468"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1wind"     position="320,530"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1rain"     position="320,592"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1sun"      position="320,654"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1alert"    position="320,720"  size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1maxtemp"  position="320,215"  size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#00ff0000" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1mintemp"  position="320,310"  size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1weertype" position="320,400"  size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1feel"     position="320,468"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1wind"     position="320,530"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1rain"     position="320,592"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1sun"      position="320,654"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc1alert"    position="320,720"  size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="loc1alerticon" position="216,724"  size="64,64"   zPosition="4" alphatest="blend" transparent="1"/>
-                <widget name="loc2name"     position="1000,125" size="880,72"  zPosition="3" font="Regular;58" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2name"     position="1000,125" size="880,72"  zPosition="3" font="Regular;58" foregroundColor="#000000ff" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="loc2icon"     position="1100,215" size="160,160" zPosition="3" alphatest="blend"/>
-                <widget name="loc2maxtemp"  position="1280,215" size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2mintemp"  position="1280,310" size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2weertype" position="1280,400" size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2feel"     position="1280,468" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2wind"     position="1280,530" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2rain"     position="1280,592" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2sun"      position="1280,654" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2alert"    position="1280,720" size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2maxtemp"  position="1280,215" size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2mintemp"  position="1280,310" size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2weertype" position="1280,400" size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2feel"     position="1280,468" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2wind"     position="1280,530" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2rain"     position="1280,592" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2sun"      position="1280,654" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="loc2alert"    position="1280,720" size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="loc2alerticon" position="1176,724" size="64,64"  zPosition="4" alphatest="blend" transparent="1"/>
                 <widget name="statusmsg"    position="40,808"   size="1840,56" zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png"    position="192,1022"  size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015"  size="370,48" zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="key_red" position="242,1015"  size="370,48" zPosition="3" font="Regular;40" foregroundColor="#00ff0000" backgroundColor="#00202020" halign="left" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="628,1022"  size="34,34" alphatest="blend"/>
-                <widget name="comp" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="comp" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="key_yellow" position="678,1015"  size="600,48" zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
         else:
@@ -6562,14 +6574,14 @@ class BackgroundPickerScreen(Screen):
                 <screen name="BackgroundPickerScreen" flags="wfNoBorder" position="center,center" size="1920,1080">
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
-                <widget name="preview" position="30,160" size="720,405" zPosition="1" alphatest="blend"/>
+                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#0000ff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
+                <widget name="preview" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" position="30,160" size="720,405" zPosition="1" alphatest="blend"/>
                 <widget name="list" position="840,160" size="975,756" scrollbarMode="showOnDemand" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/list/list97563.png"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png" position="192,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="key_red" position="242,1015" size="370,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/green34.png" position="628,1022" size="34,34" alphatest="blend"/>
-                <widget name="key_green" position="678,1015" size="600,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="key_green" position="678,1015" size="600,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#0000ff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="1200,1022" size="34,34" alphatest="blend"/>
                 <widget name="key_yellow" position="1250,1015" size="600,48" zPosition="1" font="Regular;40" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 <widget name="backgr" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
@@ -7085,7 +7097,7 @@ class RadarScreen(Screen):
                     transparent="1"
                     zPosition="3"
                     font="Regular;36"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#0000ff00"
                     backgroundColor="#00202020"
                     valign="center"
                     halign="right">
@@ -7104,7 +7116,7 @@ class RadarScreen(Screen):
                     transparent="1"
                     zPosition="3"
                     font="Regular;24"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ff0000"
                     backgroundColor="#00202020"
                     valign="center"
                     halign="right">
@@ -7217,7 +7229,7 @@ class RadarScreen(Screen):
                     zPosition="1"
                     font="Regular;40"
                     halign="left"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ff0000"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -7255,7 +7267,7 @@ class RadarScreen(Screen):
                     zPosition="1"
                     font="Regular;40"
                     halign="left"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#000000ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
