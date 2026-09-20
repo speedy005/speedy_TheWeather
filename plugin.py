@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.2
+# v.1.5.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -162,10 +162,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.2"
+__version__ = "1.5.3"
 VERSION = __version__
 
-version = '1.5.2'
+version = '1.5.3'
 
 
 UPDATE_RAW_BASE = (
