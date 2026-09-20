@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.3
+# v.1.5.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -162,10 +162,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.3"
+__version__ = "1.5.4"
 VERSION = __version__
 
-version = '1.5.3'
+version = '1.5.4'
 
 
 UPDATE_RAW_BASE = (
@@ -1497,11 +1497,38 @@ def _update_install_finished():
         "Update installation finished successfully."
     )
 
+    # ------------------------------------------------------------------------
+    # RESTART CALLBACK
+    # ------------------------------------------------------------------------
+
+    def restart_gui_callback(answer):
+
+        if answer:
+            print(
+                "[speedy_TheWeather] "
+                "User chose to restart Enigma2 GUI."
+            )
+            try:
+                from enigma import quitMainloop
+                quitMainloop(3)
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not restart Enigma2 GUI:",
+                    e
+                )
+        else:
+            print(
+                "[speedy_TheWeather] "
+                "User chose NOT to restart Enigma2 GUI."
+            )
+
+    # ------------------------------------------------------------------------
+    # ASK USER ONCE
+    # ------------------------------------------------------------------------
 
     try:
-
         if _overlaySession is not None:
-
             _overlaySession.openWithCallback(
                 restart_gui_callback,
                 MessageBox,
@@ -1512,89 +1539,18 @@ def _update_install_finished():
                 MessageBox.TYPE_YESNO,
                 default=True
             )
-
         else:
-
             print(
                 "[speedy_TheWeather] "
                 "No overlay session available."
             )
-
     except Exception as e:
-
-        print(
-            "[speedy_TheWeather] "
-            "Could not show restart message: %s"
-            % e
-        )
-
-
-    # ------------------------------------------------------------------------
-    # RESTART CALLBACK
-    # ------------------------------------------------------------------------
-
-    def restart_gui_callback(answer):
-
-        if answer:
-
-            print(
-                "[speedy_TheWeather] "
-                "User chose to restart Enigma2 GUI."
-            )
-
-
-            try:
-
-                from enigma import quitMainloop
-
-                quitMainloop(3)
-
-
-            except Exception as e:
-
-                print(
-                    "[speedy_TheWeather] "
-                    "Could not restart Enigma2 GUI:",
-                    e
-                )
-
-
-        else:
-
-            print(
-                "[speedy_TheWeather] "
-                "User chose NOT to restart Enigma2 GUI."
-            )
-
-
-    # ------------------------------------------------------------------------
-    # ASK USER
-    # ------------------------------------------------------------------------
-
-    try:
-
-        if _overlaySession is not None:
-
-            _overlaySession.openWithCallback(
-                restart_gui_callback,
-                MessageBox,
-                _(
-                    "The update has been installed successfully."
-                    "\n\n"
-                    "Would you like to restart the Enigma2 GUI now?"
-                ),
-                MessageBox.TYPE_YESNO,
-                default=True
-            )
-
-
-    except Exception as e:
-
         print(
             "[speedy_TheWeather] "
             "Could not show update restart question:",
             e
         )
+
 
 # ============================================================================
 # UPDATE INSTALL ERROR
@@ -1959,33 +1915,32 @@ def getLocWeer(iscity=None):
     return True
 
 def getLocWeerFor(inputCity):
-    """Legacy API kept for compatibility, but uses the shared HTTP layer."""
+    """Return actual weather data and display name for a saved city."""
     inputCity = stripCoords(inputCity)
+
     try:
-        citynumb = int(inputCity.rsplit("-", 1)[1])
-        data = _http_json(
-            "http://api.buienradar.nl/data/forecast/1.1/all/%s" % citynumb,
-            timeout=HTTP_TIMEOUT
-        )
-        if data is not None:
-            return data, str(inputCity.rsplit("-", 1)[0])
+        parts = inputCity.rsplit("-", 1)
+        if len(parts) == 2:
+            citynumb = int(parts[1])
+            data = _get_weather_by_city_id(citynumb)
+            if data is not None:
+                return data, str(parts[0]).strip()
     except (TypeError, ValueError, IndexError):
         pass
     except Exception as e:
-        print("[speedy_TheWeather] getLocWeerFor error: %s" % e)
+        print("[speedy_TheWeather] getLocWeerFor city-id error: %s" % e)
 
-    # Fallback for old config entries that do not contain a numeric city id.
+    # Fallback for old config entries without a numeric city id.
+    # _search_city() liefert echte Wetterdaten und nicht nur Such-Metadaten.
     try:
-        query = quote_plus(inputCity.replace("_", " "))
-        data = _http_json(
-            "https://location.buienradar.nl/1.1/location/search?query=%s" % query,
-            timeout=HTTP_TIMEOUT
-        )
-        if data:
-            return data, str(inputCity)
+        data, name = _search_city(inputCity)
+        if data is not None and name:
+            return data, name
     except Exception as e:
-        print("[speedy_TheWeather] location fallback error: %s" % e)
+        print("[speedy_TheWeather] getLocWeerFor fallback error: %s" % e)
+
     return None
+
 
 def icontotext(icon):
     text = ""
@@ -5479,16 +5434,25 @@ class localcityscreen(Screen):
         self.session.openWithCallback(self.onCityTyped, CitySearchKeyBoard, title=_("Enter cityname e.g. london"), text="")
 
     def removeLoc(self):
-        if len(SavedLokaleWeer) > 0:
-            index = self["list"].getSelectedIndex()
-            SavedLokaleWeer.remove(SavedLokaleWeer[index])
-            file = open(CFG_DIR + "/speedy_TheWeather.cfg", "w")
-            for x in SavedLokaleWeer:
-                file.write(safeStr(x) + "\n")
-            file.close()
-            self.close()
-            self.close()
-    
+        if not SavedLokaleWeer:
+            return
+
+        index = self["list"].getSelectedIndex()
+        if index < 0 or index >= len(SavedLokaleWeer):
+            return
+
+        del SavedLokaleWeer[index]
+
+        try:
+            with open(CFG_DIR + "/speedy_TheWeather.cfg", "w") as file:
+                for x in SavedLokaleWeer:
+                    file.write(safeStr(x) + "\n")
+        except Exception as e:
+            print("[speedy_TheWeather] Could not save locations after removal: %s" % e)
+            return
+
+        self.close()
+
     def onCityTyped(self, searchterm=None):
         if not searchterm or self._citySearchBusy:
             return
@@ -5581,7 +5545,23 @@ class localcityscreen(Screen):
         )
 
         global SavedLokaleWeer
-        if entry not in SavedLokaleWeer:
+
+        # Die Buienradar-City-ID ist die stabile Kennung der Stadt.
+        # Damit werden Dubletten auch bei abweichender Schreibweise oder
+        # unterschiedlichen Koordinaten verhindert.
+        duplicate = False
+        city_id_text = safeStr(city_id).strip()
+        if city_id_text:
+            for saved in SavedLokaleWeer:
+                saved_parts = stripCoords(safeStr(saved)).rsplit("-", 1)
+                if (
+                    len(saved_parts) == 2
+                    and safeStr(saved_parts[1]).strip() == city_id_text
+                ):
+                    duplicate = True
+                    break
+
+        if not duplicate and entry not in SavedLokaleWeer:
             SavedLokaleWeer.append(entry)
 
         try:
@@ -5635,7 +5615,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         <!-- Gelber Button -->
         <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
         <widget name="key_yellow" position="579,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" />
-<widget source="Version" render="Label" position="676,554" size="420,40" font="Regular;26" halign="center" valign="center" foregrundColor="red" transparent="1" backgroundColor="black" />
+<widget name="Version" position="676,554" size="420,40" font="Regular;26" halign="center" valign="center" foregroundColor="red" transparent="1" backgroundColor="black" />
     </screen>"""
 
     def __init__(self, session):
@@ -5646,6 +5626,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         self["key_green"] = Label(_("Save"))
         self["key_blue"] = Label(_("Show 2 locations"))
         self["key_yellow"] = Label(_("Appearance"))
+        self["version"] = Label("speedy_TheWeather_v.%s" % VERSION)
 
         # Menüpunkt für die Update-Suche
         self.updateEntry = ConfigNothing()
