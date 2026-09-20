@@ -1,5 +1,6 @@
+
 #-----------------------------------------------------------------------------
-# v.1.5.1
+# v.1.5.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -162,10 +163,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.1"
+__version__ = "1.5.2"
 VERSION = __version__
 
-version = '1.5.1'
+version = '1.5.2'
 
 
 UPDATE_RAW_BASE = (
@@ -2205,47 +2206,126 @@ class sevendays(Screen):
     # ------------------------------------------------
     # Aktuelles Wetter
     # ------------------------------------------------
-
     COLOR_CITY        = "#0000ff00"   # Grün – Stadt/Ort
     COLOR_BIGTEMP     = "#000000ff"   # Blau – Temperatur
-    COLOR_WEATHERTYPE = "#0087ceeb"   # Hellblau – Wettertyp
+    COLOR_WEATHERTYPE = "#00ff0000"   # Rot
     COLOR_FEELS       = "#00ffff00"   # Gelb
     COLOR_WIND        = "#0000ffff"   # Cyan
-
     # ------------------------------------------------
     # 7-Tage-Vorhersage
     # ------------------------------------------------
-
     COLOR_DAY         = "#0000ff00"   # Grün
     COLOR_MAXTEMP     = "#00ff0000"   # Rot
     COLOR_MINTEMP     = "#00004080"   # Dunkelblau
     COLOR_DAYTYPE     = "#00ffff00"   # Gelb
-
     # ------------------------------------------------
     # Sonne
     # ------------------------------------------------
-
     COLOR_SUN         = "#00ffff00"   # Gelb
-
     # ------------------------------------------------
     # Stundenübersicht
     # ------------------------------------------------
-
     COLOR_HOUR        = "#00ff0000"   # Rot – Uhrzeit / Stunde
     COLOR_HOURTEMP    = "#004080ff"   # Blau – Temperatur / Grad
-    COLOR_RAIN        = "#0000ffff"   # Cyan
+    COLOR_RAIN        = "#0000ff00"   # Grün
     COLOR_SUNPERCENT  = "#00ffff00"   # Gelb
     COLOR_HUMIDITY    = "#004080ff"   # Blau
     COLOR_WIND_SPEED  = "#0000ffff"   # Cyan
-
     # ------------------------------------------------
     # Uhr / Datum
     # ------------------------------------------------
-
     COLOR_CLOCK       = "#00ff0000"   # Weiß
     COLOR_DATE        = "#0000ff00"   # Weiß
+    # ------------------------------------------------
+    
+    # ------------------------------------------------
+    # colors samples
+    # ------------------------------------------------
+    #COLOR_01 = "#ffff0000"  # Rot
+    #COLOR_02 = "#ff00ff00"  # Grün
+    #COLOR_03 = "#ff0000ff"  # Blau
+    #COLOR_04 = "#ffffff00"  # Gelb
+    #COLOR_05 = "#ff00ffff"  # Cyan
+    #COLOR_06 = "#ffff00ff"  # Magenta
+    #COLOR_07 = "#ffffffff"  # Weiß
+    #COLOR_08 = "#ff000000"  # Schwarz
 
+    #COLOR_09 = "#ffff8000"  # Orange
+    #COLOR_10 = "#ffff4000"  # Dunkelorange
+    #COLOR_11 = "#ffffc000"  # Gold
+    #COLOR_12 = "#ffffd700"  # Goldgelb
+    #COLOR_13 = "#ff808000"  # Oliv
+    #COLOR_14 = "#ff80ff00"  # Limette
+    #COLOR_15 = "#ff00ff80"  # Türkisgrün
+    #COLOR_16 = "#ff008080"  # Petrol
 
+    #COLOR_17 = "#ff0080ff"  # Himmelblau
+    #COLOR_18 = "#ff0040ff"  # Tiefblau
+    #COLOR_19 = "#ff4000ff"  # Violettblau
+    #COLOR_20 = "#ff8000ff"  # Violett
+    #COLOR_21 = "#ffc000ff"  # Pinkviolett
+    #COLOR_22 = "#ffff0080"  # Pink
+    #COLOR_23 = "#ffff4080"  # Hellpink
+    #COLOR_24 = "#ffff80c0"  # Rosa
+
+    #COLOR_25 = "#ffff8080"  # Hellrot
+    #COLOR_26 = "#ffff4040"  # Korallenrot
+    #COLOR_27 = "#ffc00000"  # Dunkelrot
+    #COLOR_28 = "#ff800000"  # Weinrot
+    #COLOR_29 = "#ff804000"  # Braun
+    #COLOR_30 = "#ffc08040"  # Hellbraun
+    #COLOR_31 = "#ffe0c080"  # Beige
+    #COLOR_32 = "#ffffe0c0"  # Creme
+
+    #COLOR_33 = "#ff80ff80"  # Hellgrün
+    #COLOR_34 = "#ff40c040"  # Mittelgrün
+    #COLOR_35 = "#ff008000"  # Dunkelgrün
+    #COLOR_36 = "#ff004000"  # Sehr dunkelgrün
+    #COLOR_37 = "#ffc0ff80"  # Gelbgrün
+    #COLOR_38 = "#ff80c000"  # Grasgrün
+
+    #COLOR_39 = "#ff80ffff"  # Hellcyan
+    #COLOR_40 = "#ff40c0ff"  # Hellblau
+    #COLOR_41 = "#ff80c0ff"  # Pastellblau
+    #COLOR_42 = "#ff004080"  # Dunkelblau
+    #COLOR_43 = "#ff002040"  # Marineblau
+
+    #COLOR_44 = "#ffc080ff"  # Hellviolett
+    #COLOR_45 = "#ff8040c0"  # Mittelviolett
+    #COLOR_46 = "#ff400080"  # Dunkelviolett
+
+    #COLOR_47 = "#ff808080"  # Grau
+    #COLOR_48 = "#ffc0c0c0"  # Hellgrau
+    #COLOR_49 = "#ff404040"  # Dunkelgrau
+    #COLOR_50 = "#ffe0e0e0"  # Sehr hellgrau
+    
+    # ================================================================
+    # COLOR ASSIGNMENT
+    # ================================================================
+
+    # COLOR_CITY        → City name
+    # COLOR_BIGTEMP     → Large current temperature
+    # COLOR_WEATHERTYPE → Weather description
+    # COLOR_FEELS       → Feels-like temperature
+    # COLOR_WIND        → Wind direction
+    #
+    # COLOR_DAY         → Day of the week
+    # COLOR_MAXTEMP     → Maximum temperature
+    # COLOR_MINTEMP     → Minimum temperature
+    # COLOR_DAYTYPE     → Weather description for individual days
+    #
+    # COLOR_SUN         → Sunrise / sunset
+    #
+    # COLOR_HOUR        → Time / hour
+    # COLOR_HOURTEMP    → Temperature in hourly forecast
+    # COLOR_RAIN        → Rain
+    # COLOR_SUNPERCENT  → Sun probability
+    # COLOR_HUMIDITY    → Humidity
+    # COLOR_WIND_SPEED  → Wind speed
+    #
+    # COLOR_CLOCK       → Clock
+    # COLOR_DATE        → Date
+    
     # ================================================================
     # FARBZUORDNUNG
     # ================================================================
