@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: hetweer\n"
+"Project-Id-Version: speedy_TheWeather\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Arabic (Egypt)\n"
-"Language: ar_EG\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,25 +18,25 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "إث"
+msgstr "الإثنين"
 
 msgid "Tu"
-msgstr "ثل"
+msgstr "الثلاثاء"
 
 msgid "We"
-msgstr "أر"
+msgstr "الأربعاء"
 
 msgid "Th"
-msgstr "خم"
+msgstr "الخميس"
 
 msgid "Fr"
-msgstr "جم"
+msgstr "الجمعة"
 
 msgid "Sa"
-msgstr "سب"
+msgstr "السبت"
 
 msgid "Su"
-msgstr "أح"
+msgstr "الأحد"
 
 msgid "Monday"
 msgstr "الإثنين"
@@ -63,16 +63,16 @@ msgid "Belgium"
 msgstr "بلجيكا"
 
 msgid "Changeable and chance of mist"
-msgstr "متقلب، مع احتمال الضباب"
+msgstr "متقلب مع احتمال تشكل الضباب"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "نصيحة!\nاضغط على الزر الأصفر المخفي في القائمة الرئيسية لفتح رادار الأمطار.\n\nاضغط على الزر الأخضر المخفي في القائمة الرئيسية لتغيير الفاصل الزمني بالساعات.\n\nاضغط على الزر الأزرق المخفي في القائمة الرئيسية لمقارنة مدينتين.\n\nاضغط OK هنا لتبديل عرض درجة الحرارة: %s"
+msgstr "نصيحة!\nاضغط على الزر الأصفر المخفي في القائمة الرئيسية لفتح رادار المطر.\n\nاضغط على الزر الأخضر المخفي في القائمة الرئيسية لتغيير الفاصل الزمني للساعات.\n\nاضغط على الزر الأزرق المخفي في القائمة الرئيسية لمقارنة مدينتين.\n\nاضغط على OK هنا لتبديل عرض درجة الحرارة: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "غائم جزئيًا ومتقلب، تساقط ثلوج خفيف"
+msgstr "متقلب وغائم مع تساقط ثلوج خفيفة"
 
 msgid "Clear and chance of mist"
-msgstr "صافي، مع احتمال الضباب"
+msgstr "صافي مع احتمال تشكل الضباب"
 
 msgid "Clear night"
 msgstr "ليلة صافية"
@@ -84,10 +84,10 @@ msgid "Cloudy"
 msgstr "غائم"
 
 msgid "Cloudy and chance of showers"
-msgstr "غائم، مع احتمال زخات المطر"
+msgstr "غائم مع احتمال هطول زخات مطر"
 
 msgid "Download error: Check spelling."
-msgstr "خطأ في التنزيل: تحقق من الإملاء."
+msgstr "خطأ في التنزيل: تحقق من الكتابة."
 
 msgid "Drizzle"
 msgstr "رذاذ"
@@ -105,7 +105,7 @@ msgid "Favorite Locations"
 msgstr "المواقع المفضلة"
 
 msgid "Feels Like: "
-msgstr "المحسوس: "
+msgstr "درجة الحرارة المحسوسة: "
 
 msgid "Feels like: "
 msgstr "المحسوس: "
@@ -117,22 +117,22 @@ msgid "Heavy clouds"
 msgstr "غيوم كثيفة"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "غيوم كثيفة، زخات غزيرة"
+msgstr "غيوم كثيفة وزخات مطر غزيرة"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "غيوم كثيفة، زخات رعدية"
+msgstr "غيوم كثيفة وزخات رعدية"
 
 msgid "Heavy clouds and heavy snowfall"
 msgstr "غيوم كثيفة وتساقط ثلوج غزير"
 
 msgid "Heavy clouds light snowfall"
-msgstr "غيوم كثيفة، تساقط ثلوج خفيف"
+msgstr "غيوم كثيفة وتساقط ثلوج خفيف"
 
 msgid "Heavy clouds showers possible"
-msgstr "غيوم كثيفة، احتمال زخات المطر"
+msgstr "غيوم كثيفة مع احتمال هطول زخات"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "غيوم كثيفة، أمطار شتوية"
+msgstr "غيوم كثيفة مع هطول شتوي"
 
 msgid "Help"
 msgstr "مساعدة"
@@ -141,7 +141,7 @@ msgid "Km/h"
 msgstr "كم/س"
 
 msgid "Light cloudy"
-msgstr "غائم جزئيًا"
+msgstr "غائم جزئياً"
 
 msgid "Local Weather"
 msgstr "الطقس المحلي"
@@ -159,10 +159,10 @@ msgid "Mist radar"
 msgstr "رادار الضباب"
 
 msgid "Mostly clear"
-msgstr "صافي غالبًا"
+msgstr "صافي غالباً"
 
 msgid "Mostly sunny"
-msgstr "مشمس غالبًا"
+msgstr "مشمس غالباً"
 
 msgid "N"
 msgstr "شمال"
@@ -174,7 +174,7 @@ msgid "NW"
 msgstr "شمال غرب"
 
 msgid "Rainfall radar"
-msgstr "رادار هطول الأمطار"
+msgstr "رادار الأمطار"
 
 msgid "WeatherInfo"
 msgstr "معلومات الطقس"
@@ -189,10 +189,10 @@ msgid "SW"
 msgstr "جنوب غرب"
 
 msgid "Satellite"
-msgstr "الأقمار الصناعية"
+msgstr "القمر الصناعي"
 
 msgid "Showers and chance of thunder"
-msgstr "زخات مطر، مع احتمال الرعد"
+msgstr "زخات مطر مع احتمال حدوث عواصف رعدية"
 
 msgid "Snow radar"
 msgstr "رادار الثلوج"
@@ -201,16 +201,16 @@ msgid "Sun radar"
 msgstr "رادار الشمس"
 
 msgid "Sunny / Clear"
-msgstr "مشمس / صافي"
+msgstr "مشمس / صافٍ"
 
 msgid "Sunny and chance of mist"
-msgstr "مشمس، مع احتمال الضباب"
+msgstr "مشمس مع احتمال تشكل الضباب"
 
 msgid "Sunny and chance of showers"
-msgstr "مشمس، مع احتمال زخات المطر"
+msgstr "مشمس مع احتمال هطول زخات"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "مشمس، مع احتمال زخات رعدية"
+msgstr "مشمس مع احتمال هطول زخات رعدية"
 
 msgid "Sunny few clouds"
 msgstr "مشمس مع بعض السحب"
@@ -234,7 +234,7 @@ msgid "W"
 msgstr "غرب"
 
 msgid "Weather forecast-nl"
-msgstr "توقعات الطقس - هولندا"
+msgstr "توقعات الطقس"
 
 msgid "Wind direction: "
 msgstr "اتجاه الرياح: "
@@ -258,7 +258,7 @@ msgid "Choose background:"
 msgstr "اختر الخلفية:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "لم يتم العثور على المدينة. اضغط على الأصفر للتغيير."
+msgstr "لم يتم العثور على المدينة. اضغط على الزر الأصفر للتغيير."
 
 msgid "Compare Locations"
 msgstr "مقارنة المواقع"
@@ -270,7 +270,7 @@ msgid "Download error: No response try again"
 msgstr "خطأ في التنزيل: لا توجد استجابة، حاول مرة أخرى"
 
 msgid "Error fetching data."
-msgstr "خطأ أثناء جلب البيانات."
+msgstr "خطأ في جلب البيانات."
 
 msgid "Error loading"
 msgstr "خطأ أثناء التحميل"
@@ -279,10 +279,10 @@ msgid "Extra Icons "
 msgstr "أيقونات إضافية "
 
 msgid "Extreme cold!"
-msgstr "برد شديد جدًا!"
+msgstr "برد شديد!"
 
 msgid "Extreme heat!"
-msgstr "حرارة شديدة جدًا!"
+msgstr "حرارة شديدة!"
 
 msgid "h"
 msgstr "س"
@@ -297,16 +297,16 @@ msgid "Icon pack changed.\nThe plugin will restart..."
 msgstr "تم تغيير حزمة الأيقونات.\nسيتم إعادة تشغيل الإضافة..."
 
 msgid "Loading background image, please wait..."
-msgstr "جاري تحميل صورة الخلفية، يرجى الانتظار..."
+msgstr "جارٍ تحميل صورة الخلفية، يرجى الانتظار..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "جاري تحميل الأيقونات القياسية، يرجى الانتظار..."
+msgstr "جارٍ تحميل الأيقونات القياسية، يرجى الانتظار..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "جاري تحميل الأيقونات الإضافية، يرجى الانتظار..."
+msgstr "جارٍ تحميل الأيقونات الإضافية، يرجى الانتظار..."
 
 msgid "Loading..."
-msgstr "جاري التحميل..."
+msgstr "جارٍ التحميل..."
 
 msgid "No 2nd location"
 msgstr "لا يوجد موقع ثانٍ"
@@ -315,13 +315,13 @@ msgid "No info"
 msgstr "لا توجد معلومات"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "لم يتم العثور على مدن محفوظة.\nأضف المدن أولًا من خلال شاشة اختيار الموقع."
+msgstr "لم يتم العثور على مدن محفوظة.\nأضف المدن أولاً من شاشة اختيار الموقع."
 
 msgid "Not found"
 msgstr "غير موجود"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "اضغط على الأصفر لاختيار موقع ثانٍ."
+msgstr "اضغط على الزر الأصفر لاختيار موقع ثانٍ."
 
 msgid "Rain: "
 msgstr "المطر: "
@@ -351,13 +351,13 @@ msgid "Sun: "
 msgstr "الشمس: "
 
 msgid "Very heavy rain!"
-msgstr "أمطار غزيرة جدًا!"
+msgstr "أمطار غزيرة جداً!"
 
 msgid "Warm weather!"
 msgstr "طقس دافئ!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "عفوًا!\nاتصال الإنترنت بطيء أو غير متوفر\nيرجى المحاولة مرة أخرى"
+msgstr "عذراً!\nالاتصال بالإنترنت بطيء أو غير متوفر\nيرجى المحاولة مرة أخرى"
 
 msgid "Wind: "
 msgstr "الرياح: "
@@ -378,7 +378,7 @@ msgid "Save"
 msgstr "حفظ"
 
 msgid "Show 2 locations"
-msgstr "عرض موقعين للطقس"
+msgstr "عرض موقعين"
 
 msgid "Radar default zoom:"
 msgstr "مستوى التكبير الافتراضي للرادار:"
@@ -387,7 +387,7 @@ msgid "Date format:"
 msgstr "تنسيق التاريخ:"
 
 msgid "Loading radar..."
-msgstr "جاري تحميل الرادار..."
+msgstr "جارٍ تحميل الرادار..."
 
 msgid "Please wait..."
 msgstr "يرجى الانتظار..."
@@ -402,12 +402,14 @@ msgid "- Press Ok for Weather info"
 msgstr "- اضغط OK لمعلومات الطقس"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- اضغط Menu لرادار الأمطار"
+msgstr "- اضغط Menu لرادار المطر"
 
 msgid "Appearance"
 msgstr "المظهر"
 
+# ============================================================
 # Update
+# ============================================================
 
 msgid "TheWeather update"
 msgstr "تحديث TheWeather"
@@ -420,18 +422,18 @@ msgid ""
 "\n"
 "Version: %s"
 msgstr ""
-"الإضافة محدثة بالفعل إلى أحدث إصدار.\n"
+"الإضافة محدثة بالفعل.\n"
 "\n"
 "الإصدار: %s"
 
 msgid "Update check failed."
-msgstr "فشل التحقق من وجود تحديث."
+msgstr "فشل التحقق من التحديث."
 
 msgid "Changes:"
 msgstr "التغييرات:"
 
 msgid "Installer version: %s"
-msgstr "إصدار المثبّت: %s"
+msgstr "إصدار المثبت: %s"
 
 msgid "Update information is incomplete."
 msgstr "معلومات التحديث غير مكتملة."
@@ -439,35 +441,26 @@ msgstr "معلومات التحديث غير مكتملة."
 msgid "No changes available."
 msgstr "لا توجد تغييرات متاحة."
 
-msgid ""
-"A new version of speedy_TheWeather is available.\n"
-"\n"
-"Installed version: %s\n"
-"New version: %s%s\n"
-"\n"
-"Changes:\n"
-"%s\n"
-"\n"
-"Do you want to install the update?"
-msgstr ""
-"يتوفر إصدار جديد من speedy_TheWeather.\n"
-"\n"
-"الإصدار المثبت: %s\n"
-"الإصدار الجديد: %s%s\n"
-"\n"
-"التغييرات:\n"
-"%s\n"
-"\n"
-"هل تريد تثبيت التحديث؟"
+msgid "A new version of speedy_TheWeather is available."
+msgstr "يتوفر إصدار جديد من speedy_TheWeather."
+
+msgid "Installed version: %s"
+msgstr "الإصدار المثبت: %s"
+
+msgid "New version: %s"
+msgstr "الإصدار الجديد: %s"
+
+msgid "Do you want to install the update?"
+msgstr "هل تريد تثبيت التحديث؟"
 
 msgid ""
 "The update is being installed.\n"
 "\n"
-"Please wait. Enigma2 may restart automatically."
+"Please wait."
 msgstr ""
-"جاري تثبيت التحديث.\n"
+"جارٍ تثبيت التحديث.\n"
 "\n"
-"يرجى الانتظار. قد تتم إعادة تشغيل Enigma2 تلقائيًا."
+"يرجى الانتظار."
 
 msgid ""
 "The update could not be installed.\n"
@@ -479,4 +472,25 @@ msgstr ""
 "يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."
 
 msgid "Updating..."
-msgstr "جاري التحديث..."
+msgstr "جارٍ التحديث..."
+
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Would you like to restart the Enigma2 GUI now?"
+msgstr ""
+"تم تثبيت التحديث بنجاح.\n"
+"\n"
+"هل تريد إعادة تشغيل واجهة Enigma2 الآن؟"
+
+msgid "Hours"
+msgstr "الساعات"
+
+msgid "Radar"
+msgstr "الرادار"
+
+msgid "Locations"
+msgstr "المواقع"
+
+msgid "RainViewer"
+msgstr "رادار المطر"

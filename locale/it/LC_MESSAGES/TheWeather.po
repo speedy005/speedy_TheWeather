@@ -1,12 +1,13 @@
+```po
 msgid ""
 msgstr ""
-"Project-Id-Version: hetweer\n"
+"Project-Id-Version: speedy_TheWeather\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Italian (Italy)\n"
-"Language: it_IT\n"
+"Language-Team: Italian\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,402 +20,276 @@ msgstr ""
 
 msgid "Mo"
 msgstr "Lu"
-
 msgid "Tu"
 msgstr "Ma"
-
 msgid "We"
 msgstr "Me"
-
 msgid "Th"
 msgstr "Gi"
-
 msgid "Fr"
 msgstr "Ve"
-
 msgid "Sa"
 msgstr "Sa"
-
 msgid "Su"
 msgstr "Do"
 
 msgid "Monday"
 msgstr "Lunedì"
-
 msgid "Tuesday"
 msgstr "Martedì"
-
 msgid "Wednesday"
 msgstr "Mercoledì"
-
 msgid "Thursday"
 msgstr "Giovedì"
-
 msgid "Friday"
 msgstr "Venerdì"
-
 msgid "Saturday"
 msgstr "Sabato"
-
 msgid "Sunday"
 msgstr "Domenica"
 
 msgid "Belgium"
 msgstr "Belgio"
-
 msgid "Changeable and chance of mist"
-msgstr "Variabile, possibile nebbia"
-
+msgstr "Variabile con possibilità di nebbia"
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Suggerimento!\nPremi il pulsante GIALLO nascosto nel menu principale per aprire il radar della pioggia.\n\nPremi il pulsante VERDE nascosto nel menu principale per modificare l'intervallo orario.\n\nPremi il pulsante BLU nascosto nel menu principale per confrontare due città.\n\nPremi OK qui per attivare/disattivare la visualizzazione della temperatura: %s"
-
+msgstr "Suggerimento!\nPremi il pulsante GIALLO nascosto nel menu principale per aprire il RainRadar.\n\nPremi il pulsante VERDE nascosto nel menu principale per modificare l'intervallo delle ore.\n\nPremi il pulsante BLU nascosto nel menu principale per confrontare due città.\n\nPremi OK qui per attivare/disattivare la sovrapposizione della temperatura: %s"
 msgid "Changeable cloudy light snowfall"
-msgstr "Nuvolosità variabile, deboli nevicate"
-
+msgstr "Variabile, nuvoloso con deboli nevicate"
 msgid "Clear and chance of mist"
-msgstr "Sereno, possibile nebbia"
-
+msgstr "Sereno con possibilità di nebbia"
 msgid "Clear night"
 msgstr "Notte serena"
-
 msgid "Clouds radar"
-msgstr "Radar delle nuvole"
-
+msgstr "Radar nuvole"
 msgid "Cloudy"
 msgstr "Nuvoloso"
-
 msgid "Cloudy and chance of showers"
-msgstr "Nuvoloso, possibili rovesci"
-
+msgstr "Nuvoloso con possibilità di rovesci"
 msgid "Download error: Check spelling."
-msgstr "Errore di download: controlla l'ortografia."
-
+msgstr "Errore di download: controlla la grafia."
 msgid "Drizzle"
 msgstr "Pioviggine"
-
 msgid "E"
 msgstr "E"
-
 msgid "Europe"
 msgstr "Europa"
-
 msgid "Exit"
 msgstr "Esci"
-
 msgid "Favorite Locations"
 msgstr "Località preferite"
-
 msgid "Feels Like: "
 msgstr "Percepita: "
-
 msgid "Feels like: "
 msgstr "Percepita: "
-
 msgid "Hail radar"
-msgstr "Radar della grandine"
-
+msgstr "Radar grandine"
 msgid "Heavy clouds"
 msgstr "Nuvolosità intensa"
-
 msgid "Heavy clouds  heavy showers"
 msgstr "Nuvolosità intensa, forti rovesci"
-
 msgid "Heavy clouds  thundershowers"
-msgstr "Nuvolosità intensa, rovesci temporaleschi"
-
+msgstr "Nuvolosità intensa, temporali"
 msgid "Heavy clouds and heavy snowfall"
 msgstr "Nuvolosità intensa e forti nevicate"
-
 msgid "Heavy clouds light snowfall"
 msgstr "Nuvolosità intensa, deboli nevicate"
-
 msgid "Heavy clouds showers possible"
 msgstr "Nuvolosità intensa, possibili rovesci"
-
 msgid "Heavy clouds winter rainfall"
-msgstr "Nuvolosità intensa, precipitazioni invernali"
-
+msgstr "Nuvolosità intensa, piogge invernali"
 msgid "Help"
 msgstr "Aiuto"
-
 msgid "Km/h"
-msgstr "km/h"
-
+msgstr "Km/h"
 msgid "Light cloudy"
-msgstr "Parzialmente nuvoloso"
-
+msgstr "Leggermente nuvoloso"
 msgid "Local Weather"
 msgstr "Meteo locale"
-
 msgid "Location +"
 msgstr "Località +"
-
 msgid "Location -"
 msgstr "Località -"
-
 msgid "Location:"
 msgstr "Località:"
-
 msgid "Mist radar"
-msgstr "Radar della nebbia"
-
+msgstr "Radar nebbia"
 msgid "Mostly clear"
 msgstr "Prevalentemente sereno"
-
 msgid "Mostly sunny"
 msgstr "Prevalentemente soleggiato"
-
 msgid "N"
 msgstr "N"
-
 msgid "NE"
 msgstr "NE"
-
 msgid "NW"
 msgstr "NO"
-
 msgid "Rainfall radar"
-msgstr "Radar delle precipitazioni"
-
+msgstr "Radar precipitazioni"
 msgid "WeatherInfo"
 msgstr "Informazioni meteo"
-
 msgid "S"
 msgstr "S"
-
 msgid "SE"
 msgstr "SE"
-
 msgid "SW"
 msgstr "SO"
-
 msgid "Satellite"
 msgstr "Satellite"
-
 msgid "Showers and chance of thunder"
-msgstr "Rovesci, possibile temporale"
-
+msgstr "Rovesci con possibilità di temporali"
 msgid "Snow radar"
-msgstr "Radar della neve"
-
+msgstr "Radar neve"
 msgid "Sun radar"
-msgstr "Radar del sole"
-
+msgstr "Radar sole"
 msgid "Sunny / Clear"
 msgstr "Soleggiato / Sereno"
-
 msgid "Sunny and chance of mist"
-msgstr "Soleggiato, possibile nebbia"
-
+msgstr "Soleggiato con possibilità di nebbia"
 msgid "Sunny and chance of showers"
-msgstr "Soleggiato, possibili rovesci"
-
+msgstr "Soleggiato con possibilità di rovesci"
 msgid "Sunny and chance of thundershowers"
-msgstr "Soleggiato, possibili rovesci temporaleschi"
-
+msgstr "Soleggiato con possibilità di temporali"
 msgid "Sunny few clouds"
 msgstr "Soleggiato con poche nuvole"
-
 msgid "Sunpower-UV"
-msgstr "Indice UV"
-
+msgstr "Potenza solare-UV"
 msgid "Temperature"
 msgstr "Temperatura"
-
 msgid "The Netherlands"
 msgstr "Paesi Bassi"
-
 msgid "TheWeather"
-msgstr "IlMeteo"
-
+msgstr "Il Meteo"
 msgid "Thunder radar"
-msgstr "Radar dei temporali"
-
+msgstr "Radar temporali"
 msgid "W"
 msgstr "O"
-
 msgid "Weather forecast-nl"
-msgstr "Previsioni meteo-NL"
-
+msgstr "Previsioni meteo-nl"
 msgid "Wind direction: "
 msgstr "Direzione del vento: "
 
 msgid "Back"
 msgstr "Indietro"
-
 msgid "Background"
 msgstr "Sfondo"
-
 msgid "Background reset to standard."
-msgstr "Sfondo ripristinato ai valori predefiniti."
-
+msgstr "Sfondo ripristinato allo standard."
 msgid "Choose 2nd location"
 msgstr "Scegli la 2ª località"
-
 msgid "Choose 2nd location:"
 msgstr "Scegli la 2ª località:"
-
 msgid "Choose background:"
-msgstr "Scegli lo sfondo:"
-
+msgstr "Scegli sfondo:"
 msgid "City not found. Press YELLOW to change."
-msgstr "Città non trovata. Premi GIALLO per modificare."
-
+msgstr "Città non trovata. Premi GIALLO per cambiarla."
 msgid "Compare Locations"
 msgstr "Confronta località"
-
 msgid "Data error"
 msgstr "Errore dati"
-
 msgid "Download error: No response try again"
 msgstr "Errore di download: nessuna risposta, riprova"
-
 msgid "Error fetching data."
 msgstr "Errore durante il recupero dei dati."
-
 msgid "Error loading"
-msgstr "Errore durante il caricamento"
-
+msgstr "Errore di caricamento"
 msgid "Extra Icons "
-msgstr "Icone aggiuntive "
-
+msgstr "Icone extra "
 msgid "Extreme cold!"
 msgstr "Freddo estremo!"
-
 msgid "Extreme heat!"
 msgstr "Caldo estremo!"
-
 msgid "h"
 msgstr "h"
-
 msgid "Heavy rain!"
 msgstr "Pioggia intensa!"
-
 msgid "Heavy storm!"
-msgstr "Forte tempesta!"
-
+msgstr "Forte temporale!"
 msgid "Icon pack changed.\nThe plugin will restart..."
 msgstr "Pacchetto di icone modificato.\nIl plugin verrà riavviato..."
-
 msgid "Loading background image, please wait..."
-msgstr "Caricamento dell'immagine di sfondo, attendere..."
-
+msgstr "Caricamento immagine di sfondo, attendere..."
 msgid "Loading standard icons, please wait..."
-msgstr "Caricamento delle icone standard, attendere..."
-
+msgstr "Caricamento icone standard, attendere..."
 msgid "Loading extra icons, please wait..."
-msgstr "Caricamento delle icone aggiuntive, attendere..."
-
+msgstr "Caricamento icone extra, attendere..."
 msgid "Loading..."
 msgstr "Caricamento..."
-
 msgid "No 2nd location"
 msgstr "Nessuna 2ª località"
-
 msgid "No info"
 msgstr "Nessuna informazione"
-
 msgid "No saved cities found.\nFirst add cities via the location screen."
 msgstr "Nessuna città salvata trovata.\nAggiungi prima le città tramite la schermata delle località."
-
 msgid "Not found"
 msgstr "Non trovato"
-
 msgid "Press YELLOW to choose a 2nd location."
 msgstr "Premi GIALLO per scegliere una 2ª località."
-
 msgid "Rain: "
 msgstr "Pioggia: "
-
 msgid "Select"
 msgstr "Seleziona"
-
 msgid "Settings"
 msgstr "Impostazioni"
-
 msgid "Severe cold!"
 msgstr "Freddo intenso!"
-
 msgid "Standard"
 msgstr "Standard"
-
 msgid "Standard (iconpack)"
 msgstr "Standard (pacchetto icone)"
-
 msgid "Standard Icons"
 msgstr "Icone standard"
-
 msgid "Strong wind!"
 msgstr "Vento forte!"
-
 msgid "Sun: "
 msgstr "Sole: "
-
 msgid "Very heavy rain!"
 msgstr "Pioggia molto intensa!"
-
 msgid "Warm weather!"
-msgstr "Clima caldo!"
-
+msgstr "Tempo mite!"
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
 msgstr "Ops!\nConnessione Internet lenta o assente\nRiprova"
-
 msgid "Wind: "
 msgstr "Vento: "
-
 msgid "ON"
-msgstr "ATTIVO"
-
+msgstr "ON"
 msgid "OFF"
-msgstr "DISATTIVO"
-
+msgstr "OFF"
 msgid "Wind speed:"
 msgstr "Velocità del vento:"
-
 msgid "Cancel"
 msgstr "Annulla"
-
 msgid "Save"
 msgstr "Salva"
-
 msgid "Show 2 locations"
-msgstr "Mostra 2 località meteo"
-
+msgstr "Mostra 2 località"
 msgid "Radar default zoom:"
-msgstr "Zoom predefinito del radar:"
-
+msgstr "Zoom radar predefinito:"
 msgid "Date format:"
 msgstr "Formato data:"
-
 msgid "Loading radar..."
 msgstr "Caricamento radar..."
-
 msgid "Please wait..."
 msgstr "Attendere..."
-
 msgid "Map zoom: %s"
 msgstr "Zoom mappa: %s"
-
 msgid "Select city and:"
-msgstr "Seleziona la città e:"
-
+msgstr "Seleziona città e:"
 msgid "- Press Ok for Weather info"
 msgstr "- Premi OK per le informazioni meteo"
-
 msgid "- Press Menu for RainRadar"
-msgstr "- Premi Menu per il radar della pioggia"
-
+msgstr "- Premi MENU per il RainRadar"
 msgid "Appearance"
 msgstr "Aspetto"
 
+# ============================================================
 # Update
+# ============================================================
 
 msgid "TheWeather update"
 msgstr "Aggiornamento TheWeather"
-
 msgid "Search for update"
 msgstr "Cerca aggiornamenti"
-
 msgid ""
 "The plugin is already up to date.\n"
 "\n"
@@ -426,57 +301,57 @@ msgstr ""
 
 msgid "Update check failed."
 msgstr "Controllo aggiornamenti non riuscito."
-
 msgid "Changes:"
 msgstr "Modifiche:"
-
 msgid "Installer version: %s"
-msgstr "Versione dell'installer: %s"
-
+msgstr "Versione installer: %s"
 msgid "Update information is incomplete."
 msgstr "Le informazioni sull'aggiornamento sono incomplete."
-
 msgid "No changes available."
 msgstr "Nessuna modifica disponibile."
-
-msgid ""
-"A new version of speedy_TheWeather is available.\n"
-"\n"
-"Installed version: %s\n"
-"New version: %s%s\n"
-"\n"
-"Changes:\n"
-"%s\n"
-"\n"
-"Do you want to install the update?"
-msgstr ""
-"È disponibile una nuova versione di speedy_TheWeather.\n"
-"\n"
-"Versione installata: %s\n"
-"Nuova versione: %s%s\n"
-"\n"
-"Modifiche:\n"
-"%s\n"
-"\n"
-"Vuoi installare l'aggiornamento?"
-
+msgid "A new version of speedy_TheWeather is available."
+msgstr "È disponibile una nuova versione di speedy_TheWeather."
+msgid "Installed version: %s"
+msgstr "Versione installata: %s"
+msgid "New version: %s"
+msgstr "Nuova versione: %s"
+msgid "Do you want to install the update?"
+msgstr "Vuoi installare l'aggiornamento?"
 msgid ""
 "The update is being installed.\n"
 "\n"
-"Please wait. Enigma2 may restart automatically."
+"Please wait."
 msgstr ""
 "L'aggiornamento è in fase di installazione.\n"
 "\n"
-"Attendere. Enigma2 potrebbe riavviarsi automaticamente."
+"Attendere."
 
 msgid ""
 "The update could not be installed.\n"
 "\n"
 "Please check the Internet connection and try again."
 msgstr ""
-"Impossibile installare l'aggiornamento.\n"
+"L'aggiornamento non può essere installato.\n"
 "\n"
 "Controlla la connessione Internet e riprova."
 
 msgid "Updating..."
 msgstr "Aggiornamento..."
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Would you like to restart the Enigma2 GUI now?"
+msgstr ""
+"L'aggiornamento è stato installato correttamente.\n"
+"\n"
+"Vuoi riavviare ora la GUI di Enigma2?"
+
+msgid "Hours"
+msgstr "Ore"
+msgid "Radar"
+msgstr "Radar"
+msgid "Locations"
+msgstr "Località"
+msgid "RainViewer"
+msgstr "RainViewer"
+```

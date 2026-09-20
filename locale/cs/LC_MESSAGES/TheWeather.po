@@ -1,16 +1,17 @@
+```po
 msgid ""
 msgstr ""
-"Project-Id-Version: hetweer\n"
+"Project-Id-Version: speedy_TheWeather\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Czech (Czech Republic)\n"
-"Language: cs_CZ\n"
+"Language-Team: Czech\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -63,32 +64,16 @@ msgid "Belgium"
 msgstr "Belgie"
 
 msgid "Changeable and chance of mist"
-msgstr "Proměnlivo, možnost mlhy"
+msgstr "Proměnlivé počasí s možností mlhy"
 
-msgid ""
-"Tip!\n"
-"Press the hidden Yellow button in the main menu to open the RainRadar.\n"
-"\n"
-"Press the hidden Green button in the main menu to change the hour interval.\n"
-"\n"
-"Press the hidden Blue button in the main menu to compare two cities.\n"
-"\n"
-"Press OK here to toggle the temperature overlay: %s"
-msgstr ""
-"Tip!\n"
-"Stisknutím skrytého Žlutého tlačítka v hlavním menu otevřete RainRadar.\n"
-"\n"
-"Stisknutím skrytého Zeleného tlačítka v hlavním menu změníte hodinový interval.\n"
-"\n"
-"Stisknutím skrytého Modrého tlačítka v hlavním menu porovnáte dvě města.\n"
-"\n"
-"Stisknutím OK zde zapnete/vypnete zobrazení teploty: %s"
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Tip!\nStiskněte skryté ŽLUTÉ tlačítko v hlavní nabídce pro otevření radaru srážek.\n\nStiskněte skryté ZELENÉ tlačítko v hlavní nabídce pro změnu hodinového intervalu.\n\nStiskněte skryté MODRÉ tlačítko v hlavní nabídce pro porovnání dvou měst.\n\nStisknutím OK zde přepnete zobrazení teploty: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Proměnlivá oblačnost, slabé sněžení"
+msgstr "Proměnlivé, oblačné počasí se slabým sněžením"
 
 msgid "Clear and chance of mist"
-msgstr "Jasno, možnost mlhy"
+msgstr "Jasno s možností mlhy"
 
 msgid "Clear night"
 msgstr "Jasná noc"
@@ -100,7 +85,7 @@ msgid "Cloudy"
 msgstr "Oblačno"
 
 msgid "Cloudy and chance of showers"
-msgstr "Oblačno, možnost přeháněk"
+msgstr "Oblačno s možností přeháněk"
 
 msgid "Download error: Check spelling."
 msgstr "Chyba stahování: Zkontrolujte pravopis."
@@ -127,28 +112,28 @@ msgid "Feels like: "
 msgstr "Pocitová teplota: "
 
 msgid "Hail radar"
-msgstr "Radar krupobití"
+msgstr "Radar krup"
 
 msgid "Heavy clouds"
-msgstr "Hustá oblačnost"
+msgstr "Silná oblačnost"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Hustá oblačnost, silné přeháňky"
+msgstr "Silná oblačnost, silné přeháňky"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Hustá oblačnost, bouřkové přeháňky"
+msgstr "Silná oblačnost, bouřkové přeháňky"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Hustá oblačnost a silné sněžení"
+msgstr "Silná oblačnost a vydatné sněžení"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Hustá oblačnost, slabé sněžení"
+msgstr "Silná oblačnost a slabé sněžení"
 
 msgid "Heavy clouds showers possible"
-msgstr "Hustá oblačnost, možnost přeháněk"
+msgstr "Silná oblačnost, možné přeháňky"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Hustá oblačnost, zimní srážky"
+msgstr "Silná oblačnost, zimní srážky"
 
 msgid "Help"
 msgstr "Nápověda"
@@ -157,19 +142,19 @@ msgid "Km/h"
 msgstr "km/h"
 
 msgid "Light cloudy"
-msgstr "Malá oblačnost"
+msgstr "Polooblačno"
 
 msgid "Local Weather"
 msgstr "Místní počasí"
 
 msgid "Location +"
-msgstr "Místo +"
+msgstr "Poloha +"
 
 msgid "Location -"
-msgstr "Místo -"
+msgstr "Poloha -"
 
 msgid "Location:"
-msgstr "Místo:"
+msgstr "Poloha:"
 
 msgid "Mist radar"
 msgstr "Radar mlhy"
@@ -208,31 +193,31 @@ msgid "Satellite"
 msgstr "Satelit"
 
 msgid "Showers and chance of thunder"
-msgstr "Přeháňky, možnost bouřek"
+msgstr "Přeháňky s možností bouřek"
 
 msgid "Snow radar"
 msgstr "Radar sněžení"
 
 msgid "Sun radar"
-msgstr "Radar slunce"
+msgstr "Radar slunečního záření"
 
 msgid "Sunny / Clear"
-msgstr "Slunečno / Jasno"
+msgstr "Slunečno / jasno"
 
 msgid "Sunny and chance of mist"
-msgstr "Slunečno, možnost mlhy"
+msgstr "Slunečno s možností mlhy"
 
 msgid "Sunny and chance of showers"
-msgstr "Slunečno, možnost přeháněk"
+msgstr "Slunečno s možností přeháněk"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Slunečno, možnost bouřkových přeháněk"
+msgstr "Slunečno s možností bouřkových přeháněk"
 
 msgid "Sunny few clouds"
-msgstr "Slunečno, pár oblaků"
+msgstr "Slunečno s několika mraky"
 
 msgid "Sunpower-UV"
-msgstr "UV záření"
+msgstr "UV index"
 
 msgid "Temperature"
 msgstr "Teplota"
@@ -241,7 +226,7 @@ msgid "The Netherlands"
 msgstr "Nizozemsko"
 
 msgid "TheWeather"
-msgstr "TheWeather"
+msgstr "Počasí"
 
 msgid "Thunder radar"
 msgstr "Radar bouřek"
@@ -250,7 +235,7 @@ msgid "W"
 msgstr "Z"
 
 msgid "Weather forecast-nl"
-msgstr "Předpověď počasí-nl"
+msgstr "Předpověď počasí"
 
 msgid "Wind direction: "
 msgstr "Směr větru: "
@@ -262,13 +247,13 @@ msgid "Background"
 msgstr "Pozadí"
 
 msgid "Background reset to standard."
-msgstr "Pozadí bylo obnoveno na standardní."
+msgstr "Pozadí bylo obnoveno na výchozí."
 
 msgid "Choose 2nd location"
-msgstr "Vybrat 2. místo"
+msgstr "Vyberte druhé místo"
 
 msgid "Choose 2nd location:"
-msgstr "Vyberte 2. místo:"
+msgstr "Vyberte druhé místo:"
 
 msgid "Choose background:"
 msgstr "Vyberte pozadí:"
@@ -277,7 +262,7 @@ msgid "City not found. Press YELLOW to change."
 msgstr "Město nebylo nalezeno. Stiskněte ŽLUTÉ tlačítko pro změnu."
 
 msgid "Compare Locations"
-msgstr "Porovnat místa"
+msgstr "Porovnání míst"
 
 msgid "Data error"
 msgstr "Chyba dat"
@@ -289,7 +274,7 @@ msgid "Error fetching data."
 msgstr "Chyba při načítání dat."
 
 msgid "Error loading"
-msgstr "Chyba načítání"
+msgstr "Chyba při načítání"
 
 msgid "Extra Icons "
 msgstr "Extra ikony "
@@ -309,12 +294,8 @@ msgstr "Silný déšť!"
 msgid "Heavy storm!"
 msgstr "Silná bouře!"
 
-msgid ""
-"Icon pack changed.\n"
-"The plugin will restart..."
-msgstr ""
-"Balíček ikon byl změněn.\n"
-"Plugin se restartuje..."
+msgid "Icon pack changed.\nThe plugin will restart..."
+msgstr "Balíček ikon byl změněn.\nPlugin se restartuje..."
 
 msgid "Loading background image, please wait..."
 msgstr "Načítání obrázku pozadí, čekejte prosím..."
@@ -329,23 +310,19 @@ msgid "Loading..."
 msgstr "Načítání..."
 
 msgid "No 2nd location"
-msgstr "Žádné 2. místo"
+msgstr "Žádné druhé místo"
 
 msgid "No info"
 msgstr "Žádné informace"
 
-msgid ""
-"No saved cities found.\n"
-"First add cities via the location screen."
-msgstr ""
-"Žádná uložená města nebyla nalezena.\n"
-"Nejprve přidejte města přes obrazovku míst."
+msgid "No saved cities found.\nFirst add cities via the location screen."
+msgstr "Nebyly nalezeny žádné uložené města.\nNejprve přidejte města přes obrazovku výběru místa."
 
 msgid "Not found"
 msgstr "Nenalezeno"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Stiskněte ŽLUTÉ tlačítko pro výběr 2. místa."
+msgstr "Stiskněte ŽLUTÉ tlačítko pro výběr druhého místa."
 
 msgid "Rain: "
 msgstr "Déšť: "
@@ -380,14 +357,8 @@ msgstr "Velmi silný déšť!"
 msgid "Warm weather!"
 msgstr "Teplé počasí!"
 
-msgid ""
-"Whoops!\n"
-"Slow or no Internet connection\n"
-"Please try again"
-msgstr ""
-"Jejda!\n"
-"Pomalé nebo žádné připojení k internetu\n"
-"Zkuste to prosím znovu"
+msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
+msgstr "Jejda!\nPřipojení k internetu je pomalé nebo není dostupné.\nZkuste to prosím znovu."
 
 msgid "Wind: "
 msgstr "Vítr: "
@@ -432,18 +403,20 @@ msgid "- Press Ok for Weather info"
 msgstr "- Stiskněte OK pro informace o počasí"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Stiskněte Menu pro RainRadar"
+msgstr "- Stiskněte Menu pro radar srážek"
 
 msgid "Appearance"
 msgstr "Vzhled"
 
-# Update comment
+# ============================================================
+# Update
+# ============================================================
 
 msgid "TheWeather update"
 msgstr "Aktualizace TheWeather"
 
 msgid "Search for update"
-msgstr "Hledat aktualizaci"
+msgstr "Vyhledat aktualizaci"
 
 msgid ""
 "The plugin is already up to date.\n"
@@ -455,7 +428,7 @@ msgstr ""
 "Verze: %s"
 
 msgid "Update check failed."
-msgstr "Kontrola aktualizací se nezdařila."
+msgstr "Kontrola aktualizace selhala."
 
 msgid "Changes:"
 msgstr "Změny:"
@@ -464,40 +437,31 @@ msgid "Installer version: %s"
 msgstr "Verze instalátoru: %s"
 
 msgid "Update information is incomplete."
-msgstr "Informace o aktualizaci nejsou úplné."
+msgstr "Informace o aktualizaci jsou neúplné."
 
 msgid "No changes available."
 msgstr "Nejsou k dispozici žádné změny."
 
-msgid ""
-"A new version of speedy_TheWeather is available.\n"
-"\n"
-"Installed version: %s\n"
-"New version: %s%s\n"
-"\n"
-"Changes:\n"
-"%s\n"
-"\n"
-"Do you want to install the update?"
-msgstr ""
-"Je k dispozici nová verze speedy_TheWeather.\n"
-"\n"
-"Nainstalovaná verze: %s\n"
-"Nová verze: %s%s\n"
-"\n"
-"Změny:\n"
-"%s\n"
-"\n"
-"Chcete nainstalovat aktualizaci?"
+msgid "A new version of speedy_TheWeather is available."
+msgstr "Je k dispozici nová verze speedy_TheWeather."
+
+msgid "Installed version: %s"
+msgstr "Nainstalovaná verze: %s"
+
+msgid "New version: %s"
+msgstr "Nová verze: %s"
+
+msgid "Do you want to install the update?"
+msgstr "Chcete nainstalovat aktualizaci?"
 
 msgid ""
 "The update is being installed.\n"
 "\n"
-"Please wait. Enigma2 may restart automatically."
+"Please wait."
 msgstr ""
 "Aktualizace se instaluje.\n"
 "\n"
-"Čekejte prosím. Enigma2 se může automaticky restartovat."
+"Čekejte prosím."
 
 msgid ""
 "The update could not be installed.\n"
@@ -506,7 +470,29 @@ msgid ""
 msgstr ""
 "Aktualizaci se nepodařilo nainstalovat.\n"
 "\n"
-"Zkontrolujte připojení k internetu a zkuste to znovu."
+"Zkontrolujte prosím připojení k internetu a zkuste to znovu."
 
 msgid "Updating..."
 msgstr "Probíhá aktualizace..."
+
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Would you like to restart the Enigma2 GUI now?"
+msgstr ""
+"Aktualizace byla úspěšně nainstalována.\n"
+"\n"
+"Chcete nyní restartovat grafické rozhraní Enigma2?"
+
+msgid "Hours"
+msgstr "Hodiny"
+
+msgid "Radar"
+msgstr "Radar"
+
+msgid "Locations"
+msgstr "Místa"
+
+msgid "RainViewer"
+msgstr "Radar srážek"
+```
