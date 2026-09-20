@@ -36,9 +36,7 @@ Das Projekt basiert auf der ursprünglichen Arbeit von **Caught** und wurde von 
 Die Installation bzw. Aktualisierung kann direkt per **SSH / Telnet** auf dem Enigma2-Receiver erfolgen.
 
 ```bash
-wget https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh -O installer.sh
-chmod +x installer.sh
-sh installer.sh
+wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh
 ```
 
 > **Hinweis:** Der Installer übernimmt die Installation bzw. Aktualisierung des Plugins.
@@ -810,9 +808,7 @@ The plugin is based on the original work by **Caught** and has been further deve
 Run the following commands via SSH/Telnet:
 
 ```bash
-wget https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh -O installer.sh
-chmod +x installer.sh
-sh installer.sh
+wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh
 ```
 
 ---
