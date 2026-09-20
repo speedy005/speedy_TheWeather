@@ -1,4 +1,3 @@
-
 #-----------------------------------------------------------------------------
 # v.1.5.2
 # Original work by Caught
@@ -264,7 +263,6 @@ def _version_tuple(value):
 
         return (0,)
 
-
 def _update_is_newer(remote_version):
 
     return (
@@ -272,7 +270,6 @@ def _update_is_newer(remote_version):
         >
         _version_tuple(version)
     )
-
 
 # ============================================================================
 # UPDATE DOWNLOAD
@@ -364,7 +361,6 @@ def _update_download(
 
                 pass
 
-
 # ============================================================================
 # EXTRACT PLUGIN VERSION
 # ============================================================================
@@ -451,7 +447,6 @@ def _update_extract_plugin_version(source):
 
     return ""
 
-
 # ============================================================================
 # EXTRACT INSTALLER INFORMATION
 # ============================================================================
@@ -506,7 +501,6 @@ def _update_extract_installer_info(source):
 
     return result
 
-
 # ============================================================================
 # CHANGELOG TEXT
 # ============================================================================
@@ -544,7 +538,6 @@ def _update_changes_text(changes):
     return _(
         "No changes available."
     )
-
 
 # ============================================================================
 # UPDATE CHECK WORKER
@@ -805,7 +798,6 @@ def _update_check_worker():
 
                     pass
 
-
 # ============================================================================
 # UPDATE POLL
 # ============================================================================
@@ -919,7 +911,6 @@ def _update_poll():
 
         pass
 
-
 # ============================================================================
 # START UPDATE WORKER
 # ============================================================================
@@ -977,7 +968,6 @@ def _update_begin_worker():
         "GitHub update check started."
     )
 
-
 # ============================================================================
 # START UPDATE CHECK
 # ============================================================================
@@ -1026,7 +1016,6 @@ def _update_start_check():
             "Could not start update timer:",
             e
         )
-
 
 # ============================================================================
 # UPDATE AVAILABLE MESSAGE
@@ -1148,7 +1137,6 @@ def _update_show_message(info):
             % e
         )
 
-
 # ============================================================================
 # UPDATE INSTALL CONFIRMATION
 # ============================================================================
@@ -1158,7 +1146,6 @@ def _update_install_callback(answer):
     if answer:
 
         _update_install()
-
 
 # ============================================================================
 # UPDATE INSTALLING MESSAGE
@@ -1188,7 +1175,6 @@ def _update_show_installing():
             "Could not show install message:",
             e
         )
-
 
 # ============================================================================
 # UPDATE INSTALL
@@ -1379,7 +1365,6 @@ def _update_install():
             )
         )
 
-
 # ============================================================================
 # INSTALLER FINISHED
 # ============================================================================
@@ -1494,7 +1479,6 @@ def update_finished():
             None
         )
     )
-
 
 # ============================================================================
 # SUCCESSFUL UPDATE
@@ -1611,7 +1595,6 @@ def _update_install_finished():
             "Could not show update restart question:",
             e
         )
-
 
 # ============================================================================
 # UPDATE INSTALL ERROR
@@ -2187,7 +2170,6 @@ def localWeatherAlert(dayData):
     _prio, kleur, tekst = kandidaten[0]
     return kleur, tekst
 
-
 def checkInternet():
     try:
         data = _http_json('https://location.buienradar.nl/1.1/location/search?query=Amsterdam', timeout=5)
@@ -2195,7 +2177,6 @@ def checkInternet():
     except Exception as e:
         print('[speedy_TheWeather] connectivity check failed:', e)
         return False
-
 
 class sevendays(Screen):
 
@@ -3222,8 +3203,6 @@ class sevendays(Screen):
 
         return xml
 
-
-
     # ================================================================
     # CLOCK
     # ================================================================
@@ -3254,8 +3233,6 @@ class sevendays(Screen):
             fmt,
             color
         )
-
-
 
     # ================================================================
     # HAUPTBEREICH
@@ -3470,7 +3447,6 @@ class sevendays(Screen):
     # HD SKIN
     # ================================================================
 
-    
     # ================================================================
     # HD SKIN
     # ================================================================
@@ -4902,10 +4878,6 @@ class sevendays(Screen):
     def cancel(self):
         ClosePlugin()
 
-
-
-
-
 class fourteen(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -5636,9 +5608,6 @@ class localcityscreen(Screen):
 
     def cancel(self):
         self.close()
-
-
-
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
 
