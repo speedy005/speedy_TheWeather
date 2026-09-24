@@ -1,0 +1,498 @@
+```po
+msgid ""
+msgstr ""
+"Project-Id-Version: speedy_TheWeather\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 13:57+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
+"X-Poedit-Basepath: ../ me/..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Mo"
+msgstr "Hé"
+
+msgid "Tu"
+msgstr "Ke"
+
+msgid "We"
+msgstr "Sze"
+
+msgid "Th"
+msgstr "Cs"
+
+msgid "Fr"
+msgstr "Pé"
+
+msgid "Sa"
+msgstr "Szo"
+
+msgid "Su"
+msgstr "V"
+
+msgid "Monday"
+msgstr "Hétfő"
+
+msgid "Tuesday"
+msgstr "Kedd"
+
+msgid "Wednesday"
+msgstr "Szerda"
+
+msgid "Thursday"
+msgstr "Csütörtök"
+
+msgid "Friday"
+msgstr "Péntek"
+
+msgid "Saturday"
+msgstr "Szombat"
+
+msgid "Sunday"
+msgstr "Vasárnap"
+
+msgid "Belgium"
+msgstr "Belgium"
+
+msgid "Changeable and chance of mist"
+msgstr "Változékony, köd kialakulásának lehetőségével"
+
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Tipp!\nNyomja meg a főmenüben található rejtett SÁRGA gombot az esőradar megnyitásához.\n\nNyomja meg a főmenüben található rejtett ZÖLD gombot az óraintervallum módosításához.\n\nNyomja meg a főmenüben található rejtett KÉK gombot két város összehasonlításához.\n\nNyomja meg itt az OK gombot a hőmérséklet megjelenítésének be- vagy kikapcsolásához: %s"
+
+msgid "Changeable cloudy light snowfall"
+msgstr "Változékony, felhős idő gyenge havazással"
+
+msgid "Clear and chance of mist"
+msgstr "Derült, köd kialakulásának lehetőségével"
+
+msgid "Clear night"
+msgstr "Derült éjszaka"
+
+msgid "Clouds radar"
+msgstr "Felhőradar"
+
+msgid "Cloudy"
+msgstr "Felhős"
+
+msgid "Cloudy and chance of showers"
+msgstr "Felhős, záporok kialakulásának lehetőségével"
+
+msgid "Download error: Check spelling."
+msgstr "Letöltési hiba: Ellenőrizze a helyesírást."
+
+msgid "Drizzle"
+msgstr "Szitálás"
+
+msgid "E"
+msgstr "K"
+
+msgid "Europe"
+msgstr "Európa"
+
+msgid "Exit"
+msgstr "Kilépés"
+
+msgid "Favorite Locations"
+msgstr "Kedvenc helyek"
+
+msgid "Feels Like: "
+msgstr "Hőérzet: "
+
+msgid "Feels like: "
+msgstr "Hőérzet: "
+
+msgid "Hail radar"
+msgstr "Jégesőradar"
+
+msgid "Heavy clouds"
+msgstr "Erős felhőzet"
+
+msgid "Heavy clouds  heavy showers"
+msgstr "Erős felhőzet, heves záporok"
+
+msgid "Heavy clouds  thundershowers"
+msgstr "Erős felhőzet, zivataros záporok"
+
+msgid "Heavy clouds and heavy snowfall"
+msgstr "Erős felhőzet és intenzív havazás"
+
+msgid "Heavy clouds light snowfall"
+msgstr "Erős felhőzet, gyenge havazás"
+
+msgid "Heavy clouds showers possible"
+msgstr "Erős felhőzet, záporok lehetségesek"
+
+msgid "Heavy clouds winter rainfall"
+msgstr "Erős felhőzet, téli csapadék"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "Km/h"
+msgstr "km/h"
+
+msgid "Light cloudy"
+msgstr "Gyengén felhős"
+
+msgid "Local Weather"
+msgstr "Helyi időjárás"
+
+msgid "Location +"
+msgstr "Hely +"
+
+msgid "Location -"
+msgstr "Hely -"
+
+msgid "Location:"
+msgstr "Hely:"
+
+msgid "Mist radar"
+msgstr "Ködradar"
+
+msgid "Mostly clear"
+msgstr "Többnyire derült"
+
+msgid "Mostly sunny"
+msgstr "Többnyire napos"
+
+msgid "N"
+msgstr "É"
+
+msgid "NE"
+msgstr "ÉK"
+
+msgid "NW"
+msgstr "ÉNy"
+
+msgid "Rainfall radar"
+msgstr "Csapadékradar"
+
+msgid "WeatherInfo"
+msgstr "Időjárási információk"
+
+msgid "S"
+msgstr "D"
+
+msgid "SE"
+msgstr "DK"
+
+msgid "SW"
+msgstr "DNy"
+
+msgid "Satellite"
+msgstr "Műhold"
+
+msgid "Showers and chance of thunder"
+msgstr "Záporok, zivatar kialakulásának lehetőségével"
+
+msgid "Snow radar"
+msgstr "Hóradar"
+
+msgid "Sun radar"
+msgstr "Napradar"
+
+msgid "Sunny / Clear"
+msgstr "Napos / Derült"
+
+msgid "Sunny and chance of mist"
+msgstr "Napos, köd kialakulásának lehetőségével"
+
+msgid "Sunny and chance of showers"
+msgstr "Napos, záporok kialakulásának lehetőségével"
+
+msgid "Sunny and chance of thundershowers"
+msgstr "Napos, zivataros záporok kialakulásának lehetőségével"
+
+msgid "Sunny few clouds"
+msgstr "Napos, kevés felhővel"
+
+msgid "Sunpower-UV"
+msgstr "UV-sugárzás"
+
+msgid "Temperature"
+msgstr "Hőmérséklet"
+
+msgid "The Netherlands"
+msgstr "Hollandia"
+
+msgid "TheWeather"
+msgstr "Időjárás"
+
+msgid "Thunder radar"
+msgstr "Zivatarradar"
+
+msgid "W"
+msgstr "Ny"
+
+msgid "Weather forecast-nl"
+msgstr "Időjárás-előrejelzés"
+
+msgid "Wind direction: "
+msgstr "Szélirány: "
+
+msgid "Back"
+msgstr "Vissza"
+
+msgid "Background"
+msgstr "Háttér"
+
+msgid "Background reset to standard."
+msgstr "A háttér visszaállítva az alapértelmezettre."
+
+msgid "Choose 2nd location"
+msgstr "Válassza ki a 2. helyet"
+
+msgid "Choose 2nd location:"
+msgstr "Válassza ki a 2. helyet:"
+
+msgid "Choose background:"
+msgstr "Válassza ki a hátteret:"
+
+msgid "City not found. Press YELLOW to change."
+msgstr "A város nem található. A módosításhoz nyomja meg a SÁRGA gombot."
+
+msgid "Compare Locations"
+msgstr "Helyek összehasonlítása"
+
+msgid "Data error"
+msgstr "Adathiba"
+
+msgid "Download error: No response try again"
+msgstr "Letöltési hiba: Nincs válasz, próbálja újra"
+
+msgid "Error fetching data."
+msgstr "Hiba az adatok lekérésekor."
+
+msgid "Error loading"
+msgstr "Betöltési hiba"
+
+msgid "Extra Icons "
+msgstr "Extra ikonok "
+
+msgid "Extreme cold!"
+msgstr "Extrém hideg!"
+
+msgid "Extreme heat!"
+msgstr "Extrém hőség!"
+
+msgid "h"
+msgstr "ó"
+
+msgid "Heavy rain!"
+msgstr "Heves esőzés!"
+
+msgid "Heavy storm!"
+msgstr "Erős vihar!"
+
+msgid "Icon pack changed.\nThe plugin will restart..."
+msgstr "Az ikoncsomag megváltozott.\nA plugin újraindul..."
+
+msgid "Loading background image, please wait..."
+msgstr "Háttérkép betöltése, kérjük, várjon..."
+
+msgid "Loading standard icons, please wait..."
+msgstr "Standard ikonok betöltése, kérjük, várjon..."
+
+msgid "Loading extra icons, please wait..."
+msgstr "Extra ikonok betöltése, kérjük, várjon..."
+
+msgid "Loading..."
+msgstr "Betöltés..."
+
+msgid "No 2nd location"
+msgstr "Nincs 2. hely"
+
+msgid "No info"
+msgstr "Nincs információ"
+
+msgid "No saved cities found.\nFirst add cities via the location screen."
+msgstr "Nem találhatók mentett városok.\nElőször adjon hozzá városokat a helyválasztó képernyőn."
+
+msgid "Not found"
+msgstr "Nem található"
+
+msgid "Press YELLOW to choose a 2nd location."
+msgstr "A 2. hely kiválasztásához nyomja meg a SÁRGA gombot."
+
+msgid "Rain: "
+msgstr "Eső: "
+
+msgid "Select"
+msgstr "Kiválasztás"
+
+msgid "Settings"
+msgstr "Beállítások"
+
+msgid "Severe cold!"
+msgstr "Erős hideg!"
+
+msgid "Standard"
+msgstr "Alapértelmezett"
+
+msgid "Standard (iconpack)"
+msgstr "Alapértelmezett (ikoncsomag)"
+
+msgid "Standard Icons"
+msgstr "Standard ikonok"
+
+msgid "Strong wind!"
+msgstr "Erős szél!"
+
+msgid "Sun: "
+msgstr "Nap: "
+
+msgid "Very heavy rain!"
+msgstr "Nagyon heves esőzés!"
+
+msgid "Warm weather!"
+msgstr "Meleg idő!"
+
+msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
+msgstr "Hoppá!\nAz internetkapcsolat lassú vagy nem érhető el.\nKérjük, próbálja újra."
+
+msgid "Wind: "
+msgstr "Szél: "
+
+msgid "ON"
+msgstr "BE"
+
+msgid "OFF"
+msgstr "KI"
+
+msgid "Wind speed:"
+msgstr "Szélsebesség:"
+
+msgid "Cancel"
+msgstr "Mégse"
+
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Show 2 locations"
+msgstr "2 hely megjelenítése"
+
+msgid "Radar default zoom:"
+msgstr "Radar alapértelmezett nagyítása:"
+
+msgid "Date format:"
+msgstr "Dátumformátum:"
+
+msgid "Loading radar..."
+msgstr "Radar betöltése..."
+
+msgid "Please wait..."
+msgstr "Kérjük, várjon..."
+
+msgid "Map zoom: %s"
+msgstr "Térkép nagyítása: %s"
+
+msgid "Select city and:"
+msgstr "Válassza ki a várost, majd:"
+
+msgid "- Press Ok for Weather info"
+msgstr "- Nyomja meg az OK gombot az időjárási információkhoz"
+
+msgid "- Press Menu for RainRadar"
+msgstr "- Nyomja meg a Menü gombot az esőradarhoz"
+
+msgid "Appearance"
+msgstr "Megjelenés"
+
+# ============================================================
+# Update
+# ============================================================
+
+msgid "TheWeather update"
+msgstr "TheWeather frissítés"
+
+msgid "Search for update"
+msgstr "Frissítés keresése"
+
+msgid ""
+"The plugin is already up to date.\n"
+"\n"
+"Version: %s"
+msgstr ""
+"A plugin már naprakész.\n"
+"\n"
+"Verzió: %s"
+
+msgid "Update check failed."
+msgstr "A frissítés ellenőrzése sikertelen."
+
+msgid "Changes:"
+msgstr "Változások:"
+
+msgid "Installer version: %s"
+msgstr "Telepítő verziója: %s"
+
+msgid "Update information is incomplete."
+msgstr "A frissítési információk hiányosak."
+
+msgid "No changes available."
+msgstr "Nincsenek elérhető változások."
+
+msgid "A new version of speedy_TheWeather is available."
+msgstr "A speedy_TheWeather új verziója érhető el."
+
+msgid "Installed version: %s"
+msgstr "Telepített verzió: %s"
+
+msgid "New version: %s"
+msgstr "Új verzió: %s"
+
+msgid "Do you want to install the update?"
+msgstr "Szeretné telepíteni a frissítést?"
+
+msgid ""
+"The update is being installed.\n"
+"\n"
+"Please wait."
+msgstr ""
+"A frissítés telepítése folyamatban van.\n"
+"\n"
+"Kérjük, várjon."
+
+msgid ""
+"The update could not be installed.\n"
+"\n"
+"Please check the Internet connection and try again."
+msgstr ""
+"A frissítést nem sikerült telepíteni.\n"
+"\n"
+"Ellenőrizze az internetkapcsolatot, majd próbálja újra."
+
+msgid "Updating..."
+msgstr "Frissítés..."
+
+msgid ""
+"The update has been installed successfully.\n"
+"\n"
+"Would you like to restart the Enigma2 GUI now?"
+msgstr ""
+"A frissítés sikeresen telepítve.\n"
+"\n"
+"Szeretné most újraindítani az Enigma2 grafikus felületét?"
+
+msgid "Hours"
+msgstr "Órák"
+
+msgid "Radar"
+msgstr "Radar"
+
+msgid "Locations"
+msgstr "Helyek"
+
+msgid "RainViewer"
+msgstr "Esőradar"
+```
