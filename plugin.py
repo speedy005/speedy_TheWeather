@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.1
+# v.1.6.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -27,14 +27,39 @@
 #  Syntax check: OK
 #  Python compilation check: OK
 # -----------------------------------------------------------------------------
-# v.1.6.1 Low-End performance improvements:
-#  - Reduced radar worker concurrency on low/mid hardware.
-#  - Adaptive radar frame count (fewer frames on low-end receivers).
-#  - Adaptive incremental PNG decode pacing to keep the Enigma2 UI responsive.
-#  - Reduced radar polling/timer wakeups while keeping async operation.
-#  - Avoided unnecessary radar animation work while decoding is active.
-#  - Added an optional performance profile (Auto / Low / Normal).
-#  - Low profile keeps the existing UI/layout and disables no core feature.
+# v.1.7.0 Changelog (English):
+#  - Added low-end performance optimizations for weak Enigma2 receivers.
+#  - Reduced radar worker concurrency and radar timer wakeups.
+#  - Added adaptive radar frame count for low-end receivers.
+#  - Improved incremental PNG decoding to keep the GUI responsive.
+#  - Prevented unnecessary radar animation work while frames are decoding.
+#  - Added Performance mode: Auto / Low-End / Normal.
+#  - Kept the existing radar UI and core features intact.
+#  - Fixed weather icon handling and improved radar screen stability.
+#  - Fixed date display in the Seven Day Weather screen.
+#  - Improved detached GUI restart handling.
+#  - Added customizable color settings.
+#  - Added update-function support for version and changelog information.
+#  - Fixed malformed locale language-file handling and improved PO/MO naming.
+#
+# v.1.7.0 Changelog (Deutsch):
+#  - Low-End-Optimierungen für schwache Enigma2-Receiver hinzugefügt.
+#  - Radar-Worker und unnötige Timer-Aufrufe reduziert.
+#  - Adaptive Anzahl der Radar-Frames für schwache Receiver hinzugefügt.
+#  - Inkrementelles PNG-Decoding verbessert, damit die GUI flüssig bleibt.
+#  - Unnötige Radar-Animation während des Decodings verhindert.
+#  - Performance-Modus hinzugefügt: Auto / Low-End / Normal.
+#  - Vorhandene Radar-Oberfläche und Kernfunktionen beibehalten.
+#  - Wetter-Icons korrigiert und die Stabilität des Radar-Bildschirms verbessert.
+#  - Datumsanzeige im Sieben-Tage-Wetter korrigiert.
+#  - Neustart der getrennten GUI verbessert.
+#  - Individuell einstellbare Farben hinzugefügt.
+#  - Update-Funktion für Versions- und Changelog-Informationen hinzugefügt.
+#  - Fehlerhafte Locale-Sprachdatei behoben und PO/MO-Namen korrigiert.
+#
+# Support the project: Buy me a coffee if you like this plugin!
+# Unterstützung für das Projekt: Wenn dir das Plugin gefällt, spendiere mir
+# gerne einen Kaffee!
 # -----------------------------------------------------------------------------
 import os
 import time
@@ -180,6 +205,10 @@ def stripCoords(value):
     return safeStr(value).split("|", 1)[0]
 
 
+# Manual regression-test location. This is intentionally not auto-added to
+# SavedLokaleWeer; it can be used as a saved entry for display testing.
+TEST_MCMURDO_ENTRY = "McMurdo Station-6696480|-77.84632|166.66824"
+
 def getCoordsFromEntry(value):
     parts = safeStr(value).split("|")
     if len(parts) == 3:
@@ -189,11 +218,32 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.1"
+__version__ = "1.6.2"
 VERSION = __version__
 
-version = '1.6.1'
+version = '1.6.2'
 
+# Installer/update changelog text. Keep both languages available so the
+# update screen can display a localized release description.
+CHANGELOG_EN = (
+    "Low-end performance optimizations for weak Enigma2 receivers. "
+    "Reduced radar workers and timer wakeups. Adaptive radar frame count "
+    "and incremental PNG decoding. Added Performance mode (Auto / Low-End / Normal). "
+    "Fixed weather icons, Seven Day Weather date display, radar screen stability, "
+    "detached GUI restart handling, malformed locale language files and PO/MO names. "
+    "Added customizable color settings and update-function support. "
+    "Buy me a coffee if you like this plugin."
+)
+
+CHANGELOG_DE = (
+    "Low-End-Optimierungen für schwache Enigma2-Receiver. "
+    "Radar-Worker und Timer-Aufrufe reduziert. Adaptive Radar-Frame-Anzahl "
+    "und inkrementelles PNG-Decoding. Performance-Modus (Auto / Low-End / Normal) hinzugefügt. "
+    "Wetter-Icons, Datumsanzeige im Sieben-Tage-Wetter, Radar-Bildschirm, "
+    "GUI-Neustart sowie fehlerhafte Locale-Sprachdateien und PO/MO-Namen korrigiert. "
+    "Individuelle Farbeinstellungen und Update-Funktion hinzugefügt. "
+    "Wenn dir das Plugin gefällt, spendiere mir gerne einen Kaffee."
+)
 
 UPDATE_RAW_BASE = (
     "https://raw.githubusercontent.com/"
@@ -2623,13 +2673,13 @@ class sevendays(Screen):
                 "maxpos": "{},571".format(
                     130 + 248 * day
                 ),
-                "maxsize": "90,54",
+                "maxsize": "110,54",
                 "maxfont": 48,
 
                 "minpos": "{},587".format(
-                    240 + 248 * day
+                    245 + 248 * day
                 ),
-                "minsize": "90,36",
+                "minsize": "110,36",
                 "minfont": 28,
   
                 "typepos": "{},617".format(
@@ -2673,13 +2723,13 @@ class sevendays(Screen):
                 "maxpos": "{},376".format(
                     92 + 165 * day
                 ),
-                "maxsize": "60,36",
+                "maxsize": "82,36",
                 "maxfont": 32,
 
                 "minpos": "{},389".format(
-                    160 + 165 * day
+                    174 + 165 * day
                 ),
-                "minsize": "32,22",
+                "minsize": "78,24",
                 "minfont": 18,
 
                 "typepos": "{},410".format(
@@ -3876,15 +3926,17 @@ class sevendays(Screen):
 
         if mintemp is not None:
 
-            info2 = "{:>3}\xb0".format(
-                "%.0f" % mintemp
-            )
+            try:
+                info2 = "{:.0f}\xb0".format(float(mintemp))
+            except (TypeError, ValueError):
+                info2 = safeStr(mintemp) + "\xb0"
 
         if maxtemp is not None:
 
-            info3 = "{:>3}\xb0".format(
-                "%.0f" % maxtemp
-            )
+            try:
+                info3 = "{:.0f}\xb0".format(float(maxtemp))
+            except (TypeError, ValueError):
+                info3 = safeStr(maxtemp) + "\xb0"
 
         # ------------------------------------------------------------
         # ANZEIGEN
@@ -6065,7 +6117,7 @@ class CitySuggestListScreen(Screen):
                 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
                 <widget source="session.VideoPicture" render="Pig" position="30,160" size="720,405" backgroundColor="#ff000000" zPosition="1"/>
                 <widget source="session.CurrentService" render="Label" position="30,125" size="720,36" zPosition="1" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" font="Regular;28" noWrap="1" valign="center" halign="center"><convert type="ServiceName">Name</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
+                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;34" foregroundColor="#00ffff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
                 <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
                 <widget name="list" position="840,225" size="975,630" scrollbarMode="showOnDemand" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/list/list97563.png"/>\n
                 <widget name="title" position="840,135" size="1000,70" valign="center" halign="left" zPosition="1" font="Regular;44" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
@@ -6487,7 +6539,7 @@ class twolocations(Screen):
         self["ColorActions"] = HelpableActionMap(self, "ColorActions", {"red": self.exit, "yellow": self.changeCompareCity, "blue": self.exit}, -1)
         self["key_red"] = Label(_("Exit"))
         self["key_yellow"] = Label(_("Choose 2nd location"))
-        self["comp"] = Label(_("Compare Two Locations"))
+        self["comp"] = Label(_("Compare Locations"))
 
         self.fillLoc1()
         if self.compareCity:
@@ -7048,14 +7100,17 @@ def main(session, **kwargs):
 
 class TempOverlay(Screen):
     def __init__(self, session):
-        ov_w, ov_h = 70, 40
+        # Negative temperatures (e.g. -32.0°C at McMurdo Station) need
+        # more horizontal space than the old 70px overlay provided.
         cur_w = getDesktop(0).size().width()
+        ov_w = 125 if cur_w > 1800 else 105
+        ov_h = 50 if cur_w > 1800 else 44
         print("[speedy_TheWeather] DEBUG __init__ cur_w=%s" % cur_w)
         if not cur_w:
             cur_w = sz_w or 1920
         skin = """
                 <screen name="TempOverlay" position=\"""" + str(cur_w - ov_w - 15) + """,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" flags="wfNoBorder" backgroundColor="transparent">
-                <widget name="overlay_temp" position="0,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" valign="center" halign="center" zPosition="1" font="Regular;36" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <widget name="overlay_temp" position="0,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" valign="center" halign="center" zPosition="1" font="Regular;34" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
         Screen.__init__(self, session)
         self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
