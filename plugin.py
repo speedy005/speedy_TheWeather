@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.2
+# v.1.6.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -218,10 +218,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.2"
+__version__ = "1.6.3"
 VERSION = __version__
 
-version = '1.6.2'
+version = '1.6.3'
 
 # Installer/update changelog text. Keep both languages available so the
 # update screen can display a localized release description.
@@ -1753,7 +1753,7 @@ def _overlayCheckVisibility():
         if _overlayScreen.instance:
             if cur_w != _overlay_last_width:
                 try:
-                    _overlayScreen.instance.move(ePoint(cur_w - 70, 0))
+                    _overlayScreen.instance.move(ePoint(cur_w - 125, 0))
                     _overlay_last_width = cur_w
                 except Exception:
                     pass
@@ -3276,7 +3276,7 @@ class sevendays(Screen):
     def _clock_xml(
         self,
         pos,
-        size,
+       size,
         font,
         fmt,
         color="#00ffffff"
@@ -3287,12 +3287,13 @@ class sevendays(Screen):
                 zPosition="1" font="Regular;{2}"
                 foregroundColor="{4}"
                 backgroundColor="#00202020"
-                valign="center" halign="right">
+                valign="center" halign="left"
+                noWrap="1">
                 <convert type="ClockToText">
                     Format:{3}
                 </convert>
             </widget>
-        """.format(
+         """.format(
             pos,
             size,
             font,
@@ -3616,7 +3617,7 @@ class sevendays(Screen):
             # ------------------------------------------------
 
             clock=self._clock_xml(
-                "1460,35",
+                "1760,35",
                 "400,45",
                 30,
                 "%H:%M:%S",
@@ -3628,7 +3629,7 @@ class sevendays(Screen):
             # ------------------------------------------------
 
             date=self._clock_xml(
-                "1409,72",
+                "1760,72",
                 "450,35",
                 30,
                 "%d.%m.%y",
