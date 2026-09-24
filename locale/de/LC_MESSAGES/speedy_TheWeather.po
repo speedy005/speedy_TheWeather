@@ -489,7 +489,7 @@ msgid "Hours"
 msgstr "Stunden"
 
 msgid "Radar"
-msgstr "Radar"
+msgstr "Regen-Radar"
 
 msgid "Locations"
 msgstr "Orte"
