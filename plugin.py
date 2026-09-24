@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.0
+# v.1.6.1
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -26,6 +26,15 @@
 #  Python 2/3 compatibility has been taken into account.
 #  Syntax check: OK
 #  Python compilation check: OK
+# -----------------------------------------------------------------------------
+# v.1.6.1 Low-End performance improvements:
+#  - Reduced radar worker concurrency on low/mid hardware.
+#  - Adaptive radar frame count (fewer frames on low-end receivers).
+#  - Adaptive incremental PNG decode pacing to keep the Enigma2 UI responsive.
+#  - Reduced radar polling/timer wakeups while keeping async operation.
+#  - Avoided unnecessary radar animation work while decoding is active.
+#  - Added an optional performance profile (Auto / Low / Normal).
+#  - Low profile keeps the existing UI/layout and disables no core feature.
 # -----------------------------------------------------------------------------
 import os
 import time
@@ -117,6 +126,15 @@ config.plugins.speedy_TheWeather.dateformat = ConfigSelection(
     default="slash", 
     choices=[("slash", _("DD/MM/YYYY")), ("dot", _("DD.MM.YYYY"))]
 )
+config.plugins.speedy_TheWeather.performance = ConfigSelection(
+    default="auto",
+    choices=[
+        ("auto", _("Auto")),
+        ("low", _("Low-End")),
+        ("normal", _("Normal"))
+    ]
+)
+
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
     default="7", 
     choices=[
@@ -171,10 +189,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.0"
+__version__ = "1.6.1"
 VERSION = __version__
 
-version = '1.6.0'
+version = '1.6.1'
 
 
 UPDATE_RAW_BASE = (
@@ -1787,7 +1805,18 @@ _ICON_CACHE_MAX = 96
 _TILE_CACHE_TTL = 30 * 60
 _TILE_CACHE_LOCK = threading.RLock()
 _TILE_CACHE_DIR = "/tmp/speedy_TheWeather/cache"
-_RADAR_MAX_WORKERS = 4
+# Low-End defaults are intentionally conservative. The actual worker count,
+# frame count and decode pacing are selected per receiver in RadarScreen.
+_RADAR_MAX_WORKERS = 2
+_RADAR_LOW_WORKERS = 1
+_RADAR_NORMAL_WORKERS = 2
+_RADAR_LOW_FRAME_COUNT = 4
+_RADAR_NORMAL_FRAME_COUNT = 5
+_RADAR_LOW_DECODE_DELAY_MS = 65
+_RADAR_NORMAL_DECODE_DELAY_MS = 35
+_RADAR_LOW_ANIM_MS = 1900
+_RADAR_NORMAL_ANIM_MS = 1500
+_RADAR_POLL_INTERVAL_MS = 300
 
 def _cache_file_for_url(url):
     import hashlib
@@ -5686,6 +5715,13 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        self.list.append(
+            getConfigListEntry(
+                _("Performance:"),
+                config.plugins.speedy_TheWeather.performance
+            )
+        )
+
         # Update-Suche
         self.list.append(
             getConfigListEntry(
@@ -6451,7 +6487,7 @@ class twolocations(Screen):
         self["ColorActions"] = HelpableActionMap(self, "ColorActions", {"red": self.exit, "yellow": self.changeCompareCity, "blue": self.exit}, -1)
         self["key_red"] = Label(_("Exit"))
         self["key_yellow"] = Label(_("Choose 2nd location"))
-        self["comp"] = Label(_("Compare Locations"))
+        self["comp"] = Label(_("Compare Two Locations"))
 
         self.fillLoc1()
         if self.compareCity:
@@ -7053,14 +7089,71 @@ class TempOverlay(Screen):
 # RADAR SCREEN
 # ================================================================
 
+def _get_radar_performance_profile():
+    """Return conservative settings for older Enigma2 receivers."""
+    try:
+        mode = config.plugins.speedy_TheWeather.performance.value
+    except Exception:
+        mode = "auto"
+
+    if mode == "low":
+        return {
+            "workers": _RADAR_LOW_WORKERS,
+            "frames": _RADAR_LOW_FRAME_COUNT,
+            "decode_delay": _RADAR_LOW_DECODE_DELAY_MS,
+            "anim": _RADAR_LOW_ANIM_MS,
+        }
+
+    if mode == "normal":
+        return {
+            "workers": _RADAR_NORMAL_WORKERS,
+            "frames": _RADAR_NORMAL_FRAME_COUNT,
+            "decode_delay": _RADAR_NORMAL_DECODE_DELAY_MS,
+            "anim": _RADAR_NORMAL_ANIM_MS,
+        }
+
+    # Auto: 1280px and below is treated as low-end. This is only a
+    # heuristic; users can explicitly select Normal if desired.
+    try:
+        width = int(getDesktop(0).size().width())
+    except Exception:
+        width = 1920
+
+    # RAM is a better low-end signal than CPU model names, which vary
+    # considerably between Enigma2 images. Keep this probe tiny and local.
+    low_memory = False
+    try:
+        with open("/proc/meminfo", "r") as memfile:
+            for line in memfile:
+                if line.startswith("MemTotal:"):
+                    kb = int(line.split()[1])
+                    low_memory = kb <= (256 * 1024)
+                    break
+    except Exception:
+        pass
+
+    if width <= 1280 or low_memory:
+        return {
+            "workers": _RADAR_LOW_WORKERS,
+            "frames": _RADAR_LOW_FRAME_COUNT,
+            "decode_delay": _RADAR_LOW_DECODE_DELAY_MS,
+            "anim": _RADAR_LOW_ANIM_MS,
+        }
+
+    return {
+        "workers": _RADAR_NORMAL_WORKERS,
+        "frames": _RADAR_NORMAL_FRAME_COUNT,
+        "decode_delay": _RADAR_NORMAL_DECODE_DELAY_MS,
+        "anim": _RADAR_NORMAL_ANIM_MS,
+    }
+
 class RadarScreen(Screen):
     GRID = 3
     CELL_HD = 250
     CELL_SD = 165
     BASE_ZOOM_OVERRIDE = None
     RADAR_ZOOM_MAX = 7
-    # 5 Frames statt 6: deutlich weniger PNG-Decoding/RAM, praktisch gleiche Animation.
-    RADAR_FRAME_COUNT = 5
+    RADAR_FRAME_COUNT = _RADAR_NORMAL_FRAME_COUNT
 
     def __init__(
         self,
@@ -7100,16 +7193,32 @@ class RadarScreen(Screen):
         self._radarPollTimer = None
         self._fetchRequestId = 0
 
+        # Receiver-aware performance profile.
+        self._performance = _get_radar_performance_profile()
+        self._radarFrameCount = self._performance["frames"]
+        self._decodeDelayMs = self._performance["decode_delay"]
+        self._animationIntervalMs = self._performance["anim"]
+
         # Persistenter Download-Pool: kein ThreadPool-Aufbau/Shutdown pro Batch.
         if ThreadPoolExecutor is not None:
             try:
                 self._radarDownloadPool = ThreadPoolExecutor(
-                    max_workers=_RADAR_MAX_WORKERS
+                    max_workers=self._performance["workers"]
                 )
             except Exception:
                 self._radarDownloadPool = None
         else:
             self._radarDownloadPool = None
+
+        print(
+            "[speedy_TheWeather] Radar performance: workers=%s frames=%s decode=%sms anim=%sms"
+            % (
+                self._performance["workers"],
+                self._performance["frames"],
+                self._decodeDelayMs,
+                self._animationIntervalMs
+            )
+        )
 
         # =========================================================
         # Incremental decoder
@@ -8356,7 +8465,7 @@ class RadarScreen(Screen):
         self._radarThread.start()
 
         self._radarPollTimer.start(
-            200,
+            _RADAR_POLL_INTERVAL_MS,
             False
         )
 
@@ -8446,7 +8555,7 @@ class RadarScreen(Screen):
                 )
 
             frames = past[
-                -self.RADAR_FRAME_COUNT:
+                -self._radarFrameCount:
             ]
 
             host = (
@@ -8704,7 +8813,7 @@ class RadarScreen(Screen):
             ):
 
                 self._radarPollTimer.start(
-                    200,
+                    _RADAR_POLL_INTERVAL_MS,
                     False
                 )
 
@@ -8930,7 +9039,7 @@ class RadarScreen(Screen):
         if self._decodeQueue:
 
             self._decodeTimer.start(
-                15,
+                self._decodeDelayMs,
                 True
             )
 
@@ -9389,12 +9498,17 @@ class RadarScreen(Screen):
         if self.animTimerStarted:
             return
 
+        # Never animate while PNG decoding is still feeding the frame cache.
+        # This avoids extra show/hide work on weak receivers.
+        if self._decodeActive:
+            return
+
         self.animTimerStarted = True
 
         try:
 
             self.animTimer.start(
-                1600,
+                self._animationIntervalMs,
                 False
             )
 
