@@ -8,59 +8,7 @@
 # This software is based on the original work of Caught.
 # Original author and modification credits must remain in the source code.
 # -----------------------------------------------------------------------------
-# Centralized all weather-related HTTP requests.
-# Added proper timeouts and response cleanup.
-#  Added a 5-minute cache for weather data.
-#  Improved city/ID search robustness.
-#  Added proper handling of special characters in city names.
-#  Added Internet connectivity checks via Buienradar.
-#  Cleaned up bare except: statements.
-#  Removed blocking 1-second delays.
-#  Added validation for invalid hour values.
-#  Corrected Sunrise/Sunset handling.
-#  Moved radar network requests to a background thread.
-#  Radar results are subsequently processed in a controlled manner on the Enigma2 main thread.
-#  Radar refresh continues to be handled via eTimer.
-#  Radar timers are properly stopped and cleaned up when closing.
-#  Existing functionality and screens remain essentially unchanged.
-#  Python 2/3 compatibility has been taken into account.
-#  Syntax check: OK
-#  Python compilation check: OK
-# -----------------------------------------------------------------------------
-# v.1.7.0 Changelog (English):
-#  - Added low-end performance optimizations for weak Enigma2 receivers.
-#  - Reduced radar worker concurrency and radar timer wakeups.
-#  - Added adaptive radar frame count for low-end receivers.
-#  - Improved incremental PNG decoding to keep the GUI responsive.
-#  - Prevented unnecessary radar animation work while frames are decoding.
-#  - Added Performance mode: Auto / Low-End / Normal.
-#  - Kept the existing radar UI and core features intact.
-#  - Fixed weather icon handling and improved radar screen stability.
-#  - Fixed date display in the Seven Day Weather screen.
-#  - Improved detached GUI restart handling.
-#  - Added customizable color settings.
-#  - Added update-function support for version and changelog information.
-#  - Fixed malformed locale language-file handling and improved PO/MO naming.
-#
-# v.1.7.0 Changelog (Deutsch):
-#  - Low-End-Optimierungen für schwache Enigma2-Receiver hinzugefügt.
-#  - Radar-Worker und unnötige Timer-Aufrufe reduziert.
-#  - Adaptive Anzahl der Radar-Frames für schwache Receiver hinzugefügt.
-#  - Inkrementelles PNG-Decoding verbessert, damit die GUI flüssig bleibt.
-#  - Unnötige Radar-Animation während des Decodings verhindert.
-#  - Performance-Modus hinzugefügt: Auto / Low-End / Normal.
-#  - Vorhandene Radar-Oberfläche und Kernfunktionen beibehalten.
-#  - Wetter-Icons korrigiert und die Stabilität des Radar-Bildschirms verbessert.
-#  - Datumsanzeige im Sieben-Tage-Wetter korrigiert.
-#  - Neustart der getrennten GUI verbessert.
-#  - Individuell einstellbare Farben hinzugefügt.
-#  - Update-Funktion für Versions- und Changelog-Informationen hinzugefügt.
-#  - Fehlerhafte Locale-Sprachdatei behoben und PO/MO-Namen korrigiert.
-#
-# Support the project: Buy me a coffee if you like this plugin!
-# Unterstützung für das Projekt: Wenn dir das Plugin gefällt, spendiere mir
-# gerne einen Kaffee!
-# -----------------------------------------------------------------------------
+
 import os
 import time
 import json
