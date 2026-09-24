@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.9
+# v.1.6.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -171,10 +171,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.9"
+__version__ = "1.6.0"
 VERSION = __version__
 
-version = '1.5.9'
+version = '1.6.0'
 
 
 UPDATE_RAW_BASE = (
@@ -2512,19 +2512,18 @@ class sevendays(Screen):
         if hd:
 
             buttons = [
-                ("key_red", "27,1040", "310,45", "red", "20,1050", "8,25", 38),
-                ("key_green", "342,1040", "310,45", "green", "335,1050", "8,25", 38),
+                ("key_red",    "27,1040",  "310,45", "red",    "20,1050",  "8,25", 38),
+                ("key_green",  "342,1040", "310,45", "green",  "335,1050", "8,25", 38),
                 ("key_yellow", "657,1040", "310,45", "yellow", "650,1050", "8,25", 38),
-                ("key_blue", "972,1040", "310,45", "blue", "965,1050", "8,25", 38)
+                ("key_blue",   "972,1040", "510,45", "blue",   "965,1050", "8,25", 34)
             ]
 
         else:
-
             buttons = [
                 ("key_red", "20,684", "300,28", "red", "13,691", "6,14", 25),
                 ("key_green", "325,684", "300,28", "green", "318,691", "6,14", 25),
                 ("key_yellow", "630,684", "300,28", "yellow", "623,691", "6,14", 25),
-                ("key_blue", "935,684", "300,28", "blue", "928,691", "6,14", 25)
+                ("key_blue", "935,684", "500,28", "blue", "928,691", "6,14", 22)
             ]
 
         xml = ""
@@ -4074,7 +4073,7 @@ class sevendays(Screen):
         self["key_red"] = StaticText(_("Back"))
         self["key_green"] = StaticText(_("Hours"))
         self["key_yellow"] = StaticText(_("Radar"))
-        self["key_blue"] = StaticText(_("Locations"))
+        self["key_blue"] = StaticText(_("Compare Two Locations"))
         # ------------------------------------------------------------
         # ACTIONMAP
         # ------------------------------------------------------------
