@@ -4,7 +4,7 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.5.7'
+version='1.5.8'
 
 changelog='Fixed malformed locale language file. Fix language po and mo name.Added an update function. Fixed Rain Radar Screen. Fixed the date display in the Seven Day Weather Screen. Fixed weather icons. Fixed detached GUI restart. Added customizable color settings. Buy me a coffee if you like this plugin.'
 
