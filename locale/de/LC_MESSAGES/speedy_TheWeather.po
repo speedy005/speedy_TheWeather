@@ -260,8 +260,8 @@ msgstr "Hintergrund auswählen:"
 msgid "City not found. Press YELLOW to change."
 msgstr "Stadt nicht gefunden. Drücken Sie GELB zum Ändern."
 
-msgid "Compare Locations"
-msgstr "Orte vergleichen"
+msgid "Compare Two Locations"
+msgstr "2 Orte vergleichen"
 
 msgid "Data error"
 msgstr "Datenfehler"
