@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.3
+# v.1.6.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -166,10 +166,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.3"
+__version__ = "1.6.4"
 VERSION = __version__
 
-version = '1.6.3'
+version = '1.6.4'
 
 # Installer/update changelog text. Keep both languages available so the
 # update screen can display a localized release description.
@@ -4898,6 +4898,7 @@ class sevendays(Screen):
 class fourteen(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
+        screen_title = _("7-Tage-Wetter")
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
         global weatherData
@@ -5012,7 +5013,8 @@ class fourteen(Screen):
                     <widget render="Label" source="linetempmin""" + str(day) + """" position=\"""" + str(((130 + (118 * day))-15) + 59) + """,""" + str((yposlinecold + 15) + lineheightcold-maxlowertempmover) + """\" size="90,54" zPosition="15" font="Regular;30" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     """
             skin = """
-                    <screen name="fourteen" flags="wfNoBorder" position="center,center" size="1920,1080" title="fourteen">
+                    <screen name="fourteen" flags="wfNoBorder" position="center,center" size="1920,1080" title=\"""" + screen_title + """">
+                    <widget source="Title" foregroundColor="blue" render="Label" position="36,32" size="890,52" font="Regular;32" noWrap="1" transparent="1" valign="center" halign="left" zPosition="1" />
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/bgbluhd.png" position="center,center" size="1920,1080" zPosition="0" alphatest="blend"/>
                     <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="1" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
                     <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#0000ff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
@@ -5180,7 +5182,8 @@ class fourteen(Screen):
                     <widget render="Label" source="linetempmin""" + str(day) + """" position=\"""" + str(((106 + (79 * day))-10) + 26) + """,""" + str((yposlinecold + 10) + lineheightcold-maxlowertempmover) + """\" size="60,36" zPosition="15" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     """
             skin = """
-                    <screen name="fourteen" flags="wfNoBorder" position="center,center" size="1280,720" title="fourteen">
+                    <screen name="fourteen" flags="wfNoBorder" position="center,center" size="1920,1080" title=\"""" + screen_title + """">
+                    <widget source="Title" foregroundColor="blue" render="Label" position="36,32" size="890,52" font="Regular;32" noWrap="1" transparent="1" valign="center" halign="left" zPosition="1" />
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/bgbluhd.png" position="center,center" size="1280,720" scale="1" zPosition="0" alphatest="blend"/>
                     <widget source="global.CurrentTime" render="Label" position="1091,12" size="150,55" transparent="1" zPosition="1" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
                     <widget source="global.CurrentTime" render="Label" position="941,32" size="300,55" transparent="1" zPosition="1" font="Regular;16" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
