@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.7
+# v.1.5.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -37,6 +37,7 @@ import datetime
 import threading
 import tempfile
 import subprocess
+from collections import deque
 try:
     from concurrent.futures import ThreadPoolExecutor, as_completed
 except ImportError:
@@ -162,10 +163,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.7"
+__version__ = "1.5.8"
 VERSION = __version__
 
-version = '1.5.7'
+version = '1.5.8'
 
 
 UPDATE_RAW_BASE = (
@@ -6958,7 +6959,8 @@ class RadarScreen(Screen):
     CELL_SD = 165
     BASE_ZOOM_OVERRIDE = None
     RADAR_ZOOM_MAX = 7
-    RADAR_FRAME_COUNT = 6
+    # 5 Frames statt 6: deutlich weniger PNG-Decoding/RAM, praktisch gleiche Animation.
+    RADAR_FRAME_COUNT = 5
 
     def __init__(
         self,
@@ -6998,6 +7000,17 @@ class RadarScreen(Screen):
         self._radarPollTimer = None
         self._fetchRequestId = 0
 
+        # Persistenter Download-Pool: kein ThreadPool-Aufbau/Shutdown pro Batch.
+        if ThreadPoolExecutor is not None:
+            try:
+                self._radarDownloadPool = ThreadPoolExecutor(
+                    max_workers=_RADAR_MAX_WORKERS
+                )
+            except Exception:
+                self._radarDownloadPool = None
+        else:
+            self._radarDownloadPool = None
+
         # =========================================================
         # Incremental decoder
         # =========================================================
@@ -7008,7 +7021,8 @@ class RadarScreen(Screen):
             self._decodeNextTile
         )
 
-        self._decodeQueue = []
+        # deque verhindert O(n)-Kosten durch pop(0) bei vielen Tiles.
+        self._decodeQueue = deque()
         self._decodeActive = False
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -7901,7 +7915,7 @@ class RadarScreen(Screen):
     def cleanupAll(self):
 
         self._decodeActive = False
-        self._decodeQueue = []
+        self._decodeQueue = deque()
 
         try:
             self._decodeTimer.stop()
@@ -7930,6 +7944,13 @@ class RadarScreen(Screen):
 
         except Exception:
             pass
+
+        if self._radarDownloadPool is not None:
+            try:
+                self._radarDownloadPool.shutdown(wait=False)
+            except Exception:
+                pass
+            self._radarDownloadPool = None
 
         self._clear_pixmaps()
 
@@ -7999,14 +8020,9 @@ class RadarScreen(Screen):
                     <= _TILE_CACHE_TTL
                 ):
 
-                    if cache_path != path:
-
-                        shutil.copyfile(
-                            cache_path,
-                            path
-                        )
-
-                    return path
+                    # Cache direkt dekodieren statt Cache -> Temp-Datei zu kopieren.
+                    # Das spart Flash-I/O und einen kompletten Dateikopiervorgang.
+                    return cache_path
 
             except OSError:
                 pass
@@ -8158,45 +8174,34 @@ class RadarScreen(Screen):
 
             return results
 
-        pool = ThreadPoolExecutor(
-            max_workers=_RADAR_MAX_WORKERS
-        )
-
-        try:
-
-            futures = [
-                pool.submit(
-                    one,
-                    job
-                )
-                for job in jobs
-            ]
-
-            for future in futures:
-
-                key, value = future.result()
-
-                if isinstance(
-                    value,
-                    Exception
-                ):
+        pool = self._radarDownloadPool
+        if pool is None:
+            for job in jobs:
+                key, value = one(job)
+                if isinstance(value, Exception):
                     raise value
-
                 results[key] = value
+            return results
 
-                if (
-                    self._closed
-                    or
-                    req_id != self._fetchRequestId
-                ):
+        futures = [
+            pool.submit(one, job)
+            for job in jobs
+        ]
 
-                    return {}
+        for future in futures:
+            key, value = future.result()
 
-        finally:
+            if isinstance(value, Exception):
+                raise value
 
-            pool.shutdown(
-                wait=True
-            )
+            results[key] = value
+
+            if (
+                self._closed
+                or
+                req_id != self._fetchRequestId
+            ):
+                return {}
 
         return results
 
@@ -8710,7 +8715,7 @@ class RadarScreen(Screen):
 
         self._decodeActive = True
 
-        self._decodeQueue = []
+        self._decodeQueue = deque()
 
         self._decodeBaseFiles = dict(
             result.get(
@@ -8826,7 +8831,7 @@ class RadarScreen(Screen):
         if self._decodeQueue:
 
             self._decodeTimer.start(
-                20,
+                15,
                 True
             )
 
@@ -8851,9 +8856,7 @@ class RadarScreen(Screen):
             self._finishDecode()
             return
 
-        item = self._decodeQueue.pop(
-            0
-        )
+        item = self._decodeQueue.popleft()
 
         try:
 
@@ -9064,7 +9067,7 @@ class RadarScreen(Screen):
             return
 
         self._decodeActive = False
-        self._decodeQueue = []
+        self._decodeQueue = deque()
 
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -9418,7 +9421,7 @@ class RadarScreen(Screen):
         self._fetchRequestId += 1
 
         self._decodeActive = False
-        self._decodeQueue = []
+        self._decodeQueue = deque()
 
         try:
             self.refreshTimer.stop()
@@ -9449,6 +9452,13 @@ class RadarScreen(Screen):
             pass
 
         self.animTimerStarted = False
+
+        if self._radarDownloadPool is not None:
+            try:
+                self._radarDownloadPool.shutdown(wait=False)
+            except Exception:
+                pass
+            self._radarDownloadPool = None
 
         try:
 
