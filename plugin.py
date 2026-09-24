@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.8
+# v.1.5.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -37,7 +37,7 @@ import datetime
 import threading
 import tempfile
 import subprocess
-from collections import deque
+from collections import deque, OrderedDict
 try:
     from concurrent.futures import ThreadPoolExecutor, as_completed
 except ImportError:
@@ -81,20 +81,28 @@ def localeInit():
 localeInit()
 language.addCallback(localeInit)
 
+_translation_cache = {}
+_translation_cache_lang = None
+
 def _(txt):
+    """Fast translation helper; cache the gettext catalog per language."""
+    global _translation_cache_lang
     if not txt:
         return ""
     try:
         lang = language.getLanguage()[:2]
-        translation = gettext.translation(
-            PluginLanguageDomain,
-            PluginLanguagePath,
-            languages=[lang],
-            fallback=True
-        )
+        translation = _translation_cache.get(lang)
+        if translation is None:
+            translation = gettext.translation(
+                PluginLanguageDomain,
+                PluginLanguagePath,
+                languages=[lang],
+                fallback=True
+            )
+            _translation_cache[lang] = translation
+        _translation_cache_lang = lang
         return translation.gettext(txt)
-    except Exception as e:
-        print("[speedy_TheWeather] gettext error: %s" % e)
+    except Exception:
         return txt
 
 OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
@@ -163,10 +171,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.8"
+__version__ = "1.5.9"
 VERSION = __version__
 
-version = '1.5.8'
+version = '1.5.9'
 
 
 UPDATE_RAW_BASE = (
@@ -1652,6 +1660,11 @@ _overlayInfoscreenOpen = False
 _overlaySession = None
 OVERLAY_CFG = CFG_DIR + "/speedy_TheWeather_overlay.cfg"
 
+# Asynchroner Plugin-Start: kein Wetter-HTTP im Enigma2-Hauptthread.
+_startupWeatherQueue = queue.Queue()
+_startupWeatherTimer = None
+_startupWeatherRunning = False
+
 def _readOverlayConfig():
     try:
         with open(OVERLAY_CFG) as f:
@@ -1659,21 +1672,29 @@ def _readOverlayConfig():
     except Exception:
         return False
 
+_overlay_last_width = None
+_overlay_z_set = False
+
 def _overlayCheckVisibility():
     global _overlayScreen, _overlayEnabled, _overlaySession
+    global _overlay_last_width, _overlay_z_set
     if _overlayScreen is None:
         return
     try:
         cur_w = _detectCanvasWidth()
         if _overlayScreen.instance:
-            try:
-                _overlayScreen.instance.move(ePoint(cur_w - 70 - 0, 0))
-            except Exception as e:
-                print("[speedy_TheWeather] reposition fout:", e)
-            try:
-                _overlayScreen.instance.setZPosition(1000)
-            except Exception as e:
-                print("[speedy_TheWeather] setZPosition fout:", e)
+            if cur_w != _overlay_last_width:
+                try:
+                    _overlayScreen.instance.move(ePoint(cur_w - 70, 0))
+                    _overlay_last_width = cur_w
+                except Exception:
+                    pass
+            if not _overlay_z_set:
+                try:
+                    _overlayScreen.instance.setZPosition(1000)
+                    _overlay_z_set = True
+                except Exception:
+                    pass
         liveTv = False
         try:
             liveTv = InfoBar.instance is not None
@@ -1687,13 +1708,11 @@ def _overlayCheckVisibility():
         try:
             if _overlaySession is not None:
                 cd = _overlaySession.current_dialog
-                print("[speedy_TheWeather] current_dialog =", cd, " InfoBar.instance =", InfoBar.instance)
                 if cd is not None and cd is not InfoBar.instance:
                     systemMenuOpen = True
         except Exception as e:
             print("[speedy_TheWeather] systemMenuOpen check fout:", e)   
 
-        print("[speedy_TheWeather] DEBUG liveTv=%s topIsInfoscreen=%s anyPluginScreenOpen=%s systemMenuOpen=%s enabled=%s" % (liveTv, topIsInfoscreen, anyPluginScreenOpen, systemMenuOpen, _overlayEnabled))
         if _overlayEnabled and (topIsInfoscreen or (liveTv and not anyPluginScreenOpen and not systemMenuOpen)):
             _overlayScreen.show()
         else:
@@ -1759,10 +1778,11 @@ HTTP_HEADERS = {
 _weatherCache = {}
 _weatherCacheLock = threading.RLock()
 _WEATHER_CACHE_TTL = 5 * 60
+_WEATHER_CACHE_MAX = 12
 
 # Shared, bounded caches. They are deliberately small because Enigma2 receivers
 # often have limited RAM/flash compared with a desktop system.
-_ICON_CACHE = {}
+_ICON_CACHE = OrderedDict()
 _ICON_CACHE_MAX = 96
 _TILE_CACHE_TTL = 30 * 60
 _TILE_CACHE_LOCK = threading.RLock()
@@ -1796,11 +1816,18 @@ def _load_icon_cached(path):
     try:
         cached = _ICON_CACHE.get(path)
         if cached is not None:
+            try:
+                _ICON_CACHE.move_to_end(path)
+            except AttributeError:
+                pass
             return cached
         pix = loadPNG(path)
         if pix is not None:
             if len(_ICON_CACHE) >= _ICON_CACHE_MAX:
-                _ICON_CACHE.pop(next(iter(_ICON_CACHE)))
+                try:
+                    _ICON_CACHE.popitem(last=False)
+                except TypeError:
+                    _ICON_CACHE.pop(next(iter(_ICON_CACHE)))
             _ICON_CACHE[path] = pix
         return pix
     except Exception:
@@ -1847,6 +1874,9 @@ def _weather_cache_get(key):
 def _weather_cache_put(key, data):
     with _weatherCacheLock:
         _weatherCache[key] = (time.time(), data)
+        if len(_weatherCache) > _WEATHER_CACHE_MAX:
+            oldest = min(_weatherCache.items(), key=lambda item: item[1][0])[0]
+            _weatherCache.pop(oldest, None)
 
 def _get_weather_by_city_id(city_id):
     try:
@@ -1890,7 +1920,7 @@ def _search_city(query):
     name = '%s  %s' % (selected.get('name', city), selected.get('countrycode', ''))
     return data, name.strip()
 
-def getLocWeer(iscity=None):
+def getLocWeer(iscity=None, update_overlay=True):
     global weatherData, lockaaleStad, citynamedisplay
     lockaaleStad = iscity
     if not iscity:
@@ -1903,7 +1933,8 @@ def getLocWeer(iscity=None):
             if data is not None:
                 weatherData = data
                 citynamedisplay = safeStr(parts[0])
-                _updateOverlayFromWeatherData()
+                if update_overlay:
+                    _updateOverlayFromWeatherData()
                 return True
     except Exception as e:
         print('[speedy_TheWeather] city-id lookup failed:', e)
@@ -1912,7 +1943,8 @@ def getLocWeer(iscity=None):
         return False
     weatherData = data
     citynamedisplay = safeStr(name)
-    _updateOverlayFromWeatherData()
+    if update_overlay:
+        _updateOverlayFromWeatherData()
     return True
 
 def getLocWeerFor(inputCity):
@@ -6859,56 +6891,125 @@ def safeTimerCallback(timer, func):
     return safeSignalConnect(timer.timeout, func)
 
 
+def _startup_weather_worker(session, location):
+    """Load the last weather location off the Enigma2 main thread."""
+    try:
+        ok = getLocWeer(location, update_overlay=False)
+        _startupWeatherQueue.put(("ok" if ok else "fail", session))
+    except Exception as e:
+        print("[speedy_TheWeather] startup weather failed: %s" % e)
+        _startupWeatherQueue.put(("fail", session))
+
+
+def _poll_startup_weather():
+    global _startupWeatherTimer, _startupWeatherRunning
+    try:
+        result, session = _startupWeatherQueue.get_nowait()
+    except queue.Empty:
+        if _startupWeatherTimer is not None:
+            try:
+                _startupWeatherTimer.start(100, True)
+            except Exception:
+                pass
+        return
+
+    _startupWeatherRunning = False
+    if result == "ok":
+        _updateOverlayFromWeatherData()
+        try:
+            session.open(sevendays)
+        except Exception:
+            pass
+    else:
+        try:
+            session.open(localcityscreen)
+        except Exception:
+            pass
+
+
 def main(session, **kwargs):
-    # Updateprüfung erst starten, wenn der Benutzer das Plugin öffnet.
-    # Enigma2-Start/Boot bleibt dadurch vollständig frei vom GitHub-Check.
+    # Updateprüfung bleibt im Hintergrund.
     _update_start_check()
+
+    global icoonpath, backgroundpath, _restartInProgress
+    global SavedLokaleWeer, _startupWeatherTimer, _startupWeatherRunning
+    _restartInProgress = False
 
     try:
         if not os.path.exists(CFG_DIR):
             os.makedirs(CFG_DIR)
-            print("[speedy_TheWeather] Folder created successfully: %s" % CFG_DIR)
-    except OSError as e:
-        print("[speedy_TheWeather] Failed to create folder: %s" % str(e))
+    except OSError:
+        pass
 
-    global icoonpath, backgroundpath, _restartInProgress
-    _restartInProgress = False
-    
-    if checkInternet():
-        global SavedLokaleWeer
-        SavedLokaleWeer = []
-        locdirsave = CFG_DIR + "/speedy_TheWeather.cfg"
-        if os.path.exists(locdirsave):
-            for line in open(locdirsave):
-                location = line.rstrip()
-                SavedLokaleWeer.append(location)
-
-        locdirsave = CFG_DIR + "/iconpack.cfg"
-        if os.path.exists(locdirsave):
-            for line in open(locdirsave):
-                icoonpath = line.rstrip()
-
-        locdirsave = CFG_DIR + "/speedy_TheWeather_bg.cfg"
-        if os.path.exists(locdirsave):
+    # Konfiguration lesen: lokale Dateioperationen sind sehr kurz und blockieren
+    # den UI-Thread nicht nennenswert. Der eigentliche Wetter-HTTP-Aufruf läuft
+    # dagegen immer im Worker.
+    SavedLokaleWeer = []
+    locdirsave = CFG_DIR + "/speedy_TheWeather.cfg"
+    if os.path.exists(locdirsave):
+        try:
             with open(locdirsave) as f:
-                val = f.read().strip()
-                if val and os.path.exists(val):
-                    backgroundpath = val
+                SavedLokaleWeer = [line.rstrip() for line in f if line.rstrip()]
+        except OSError:
+            pass
 
-        location = None
-        locdirsave = CFG_DIR + "/speedy_TheWeather_last.cfg"
-        if os.path.exists(locdirsave):
-            for line in open(locdirsave):
-                location = line.rstrip()
+    locdirsave = CFG_DIR + "/iconpack.cfg"
+    if os.path.exists(locdirsave):
+        try:
+            with open(locdirsave) as f:
+                value = f.read().strip()
+                if value:
+                    icoonpath = value
+        except OSError:
+            pass
 
-        if location and getLocWeer(location):
-            # non-blocking: removed 1s UI delay
-            session.open(sevendays)
-        else:
-            session.open(localcityscreen)
+    locdirsave = CFG_DIR + "/speedy_TheWeather_bg.cfg"
+    if os.path.exists(locdirsave):
+        try:
+            with open(locdirsave) as f:
+                value = f.read().strip()
+                if value and os.path.exists(value):
+                    backgroundpath = value
+        except OSError:
+            pass
 
-    else:
-        session.open(MessageBox, _("Whoops!\nSlow or no Internet connection\nPlease try again"), MessageBox.TYPE_INFO)
+    location = None
+    locdirsave = CFG_DIR + "/speedy_TheWeather_last.cfg"
+    if os.path.exists(locdirsave):
+        try:
+            with open(locdirsave) as f:
+                for line in f:
+                    value = line.rstrip()
+                    if value:
+                        location = value
+        except OSError:
+            pass
+
+    if not location:
+        session.open(localcityscreen)
+        return
+
+    if _startupWeatherRunning:
+        return
+
+    _startupWeatherRunning = True
+
+    if _startupWeatherTimer is None:
+        _startupWeatherTimer = eTimer()
+        safeTimerCallback(_startupWeatherTimer, _poll_startup_weather)
+
+    try:
+        _startupWeatherTimer.start(100, True)
+    except Exception:
+        pass
+
+    thread = threading.Thread(
+        target=_startup_weather_worker,
+        args=(session, location),
+        name="speedy_TheWeather_StartupWeather"
+    )
+    thread.daemon = True
+    thread.start()
 
 class TempOverlay(Screen):
     def __init__(self, session):
@@ -6929,7 +7030,7 @@ class TempOverlay(Screen):
         self.refresh()
         self.visTimer = eTimer()
         self._visTimerConn = safeTimerCallback(self.visTimer, _overlayCheckVisibility)
-        self.visTimer.start(1000, False)
+        self.visTimer.start(3000, False)
 
     def refresh(self):
         global lockaaleStad
@@ -8302,6 +8403,9 @@ class RadarScreen(Screen):
                 radarZoom
             )
 
+            baseMapSize = 1 << zoom
+            radarMapSize = 1 << radarZoom
+
             # -----------------------------------------------------
             # RainViewer Metadata
             # -----------------------------------------------------
@@ -8366,14 +8470,12 @@ class RadarScreen(Screen):
                         baseX
                         + col
                         - 1
-                    ) % int(
-                        2 ** zoom
-                    )
+                    ) % baseMapSize
 
                     y = max(
                         0,
                         min(
-                            int(2 ** zoom) - 1,
+                            baseMapSize - 1,
                             baseY
                             + row
                             - 1
@@ -8475,14 +8577,12 @@ class RadarScreen(Screen):
                             radarX
                             + col
                             - 1
-                        ) % int(
-                            2 ** radarZoom
-                        )
+                        ) % radarMapSize
 
                         y = max(
                             0,
                             min(
-                                int(2 ** radarZoom) - 1,
+                                radarMapSize - 1,
                                 radarY
                                 + row
                                 - 1
@@ -9008,7 +9108,7 @@ class RadarScreen(Screen):
             try:
 
                 self._decodeTimer.start(
-                    20,
+                    15,
                     True
                 )
 
