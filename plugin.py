@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.5.4
+# v.1.5.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -69,7 +69,7 @@ from Components.ActionMap import ActionMap, HelpableActionMap
 from Tools.Directories import resolveFilename, SCOPE_CONFIG, SCOPE_PLUGINS, SCOPE_LANGUAGE
 from enigma import eListboxPythonMultiContent, loadPNG, gFont, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER
 from Components.ConfigList import ConfigListScreen
-PluginLanguageDomain = "TheWeather"
+PluginLanguageDomain = "speedy_TheWeather"
 PluginLanguagePath = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions", "speedy_TheWeather", "locale")
 
 def localeInit():
@@ -162,10 +162,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.5.4"
+__version__ = "1.5.5"
 VERSION = __version__
 
-version = '1.5.4'
+version = '1.5.5'
 
 
 UPDATE_RAW_BASE = (
