@@ -979,6 +979,7 @@ remove_repository_only_files()
             -o -name "installer.sh" \
             -o -name "version.txt" \
             -o -name "*.svg" \
+			-o -name "*backgrounds_auto.zip" \
         \) \
         -print \
         -delete
