@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.5
+# v.1.6.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -109,6 +109,99 @@ config.plugins.speedy_TheWeather.performance = ConfigSelection(
     ]
 )
 
+# ---------------------------------------------------------------------------
+# SevenDay Farbpalette
+# ---------------------------------------------------------------------------
+# Enigma2 nutzt hier 8-stellige ARGB-Werte. Die Palette ist bewusst als
+# ConfigSelection aufgebaut: kein externer ColorPicker, keine Zusatz-Plugins
+# und damit auch auf schwachen Boxen sehr leichtgewichtig.
+SEVENDAY_COLOR_CHOICES = [
+    ("#00ff0000", _("Rot")),
+    ("#0000ff00", _("Grün")),
+    ("#000000ff", _("Blau")),
+    ("#00ffff00", _("Gelb")),
+    ("#0000ffff", _("Cyan")),
+    ("#00ff00ff", _("Magenta")),
+    ("#00ffffff", _("Weiß")),
+    ("#00000000", _("Schwarz")),
+    ("#00ff8000", _("Orange")),
+    ("#00ff4000", _("Dunkelorange")),
+    ("#00ffc000", _("Gold")),
+    ("#00ffd700", _("Goldgelb")),
+    ("#00808000", _("Oliv")),
+    ("#0080ff00", _("Limette")),
+    ("#0000ff80", _("Türkisgrün")),
+    ("#00008080", _("Petrol")),
+    ("#004080ff", _("Mittelblau")),
+    ("#000080ff", _("Himmelblau")),
+    ("#000040ff", _("Tiefblau")),
+    ("#004000ff", _("Violettblau")),
+    ("#008000ff", _("Violett")),
+    ("#00c000ff", _("Pinkviolett")),
+    ("#00ff0080", _("Pink")),
+    ("#00ff4080", _("Hellpink")),
+    ("#00ff80c0", _("Rosa")),
+    ("#00ff8080", _("Hellrot")),
+    ("#00ff4040", _("Korallenrot")),
+    ("#00c00000", _("Dunkelrot")),
+    ("#00800000", _("Weinrot")),
+    ("#00804000", _("Braun")),
+    ("#00c08040", _("Hellbraun")),
+    ("#00e0c080", _("Beige")),
+    ("#00ffe0c0", _("Creme")),
+    ("#0080ff80", _("Hellgrün")),
+    ("#0040c040", _("Mittelgrün")),
+    ("#00008000", _("Dunkelgrün")),
+    ("#00004000", _("Sehr dunkelgrün")),
+    ("#00c0ff80", _("Gelbgrün")),
+    ("#0080c000", _("Grasgrün")),
+    ("#0080ffff", _("Hellcyan")),
+    ("#0040c0ff", _("Hellblau")),
+    ("#0080c0ff", _("Pastellblau")),
+    ("#00004080", _("Dunkelblau")),
+    ("#00002040", _("Marineblau")),
+    ("#00c080ff", _("Hellviolett")),
+    ("#008040c0", _("Mittelviolett")),
+    ("#00400080", _("Dunkelviolett")),
+    ("#00808080", _("Grau")),
+    ("#00c0c0c0", _("Hellgrau")),
+    ("#00404040", _("Dunkelgrau")),
+    ("#00e0e0e0", _("Sehr hellgrau")),
+]
+
+_SEVENDAY_COLOR_DEFAULTS = {
+    "city": "#0000ff00",
+    "bigtemp": "#000000ff",
+    "weathertype": "#00ff0000",
+    "feels": "#00ffff00",
+    "wind": "#0000ffff",
+    "day": "#0000ff00",
+    "maxtemp": "#00ff0000",
+    "mintemp": "#00004080",
+    "daytype": "#00ffff00",
+    "sun": "#00ffff00",
+    "hour": "#00ff0000",
+    "hourtemp": "#004080ff",
+    "rain": "#0000ff00",
+    "sunpercent": "#00ffff00",
+    "humidity": "#004080ff",
+    "windspeed": "#0000ffff",
+    "clock": "#00ff0000",
+    "date": "#0000ff00",
+    "alert": "#00ffff00",
+}
+
+for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
+    setattr(
+        config.plugins.speedy_TheWeather,
+        "sevenday_color_" + _sd_color_name,
+        ConfigSelection(
+            default=_sd_color_default,
+            choices=SEVENDAY_COLOR_CHOICES
+        )
+    )
+del _sd_color_name, _sd_color_default
+
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
     default="7", 
     choices=[
@@ -167,35 +260,32 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.5"
+__version__ = "1.6.6"
 VERSION = __version__
 
-version = '1.6.5'
+version = '1.6.6'
 
 # Installer/update changelog text. Keep both languages available so the
 # update screen can display a localized release description.
 CHANGELOG_EN = (
-    "Major low-end performance refactor: persistent radar widgets, atomic tile cache, "
-    "prioritized first-frame decoding and reduced GUI work while keeping all existing features. "
-    "Low-end performance optimizations for weak Enigma2 receivers. "
-    "Reduced radar workers and timer wakeups. Adaptive radar frame count "
-    "and incremental PNG decoding. Added Performance mode (Auto / Low-End / Normal). "
-    "Fixed weather icons, Seven Day Weather date display, radar screen stability, "
-    "detached GUI restart handling, malformed locale language files and PO/MO names. "
-    "Added customizable color settings and update-function support. "
+    "Fixed malformed locale language files. Fixed language PO and MO file names. "
+    "Added an update function. Fixed the Rain Radar screen. Fixed the date display "
+    "in the Seven Day Weather screen. Fixed weather icons. Fixed detached GUI restart. "
+    "Added customizable color settings. Improved performance for low-end Enigma2 "
+    "receivers with adaptive radar loading, reduced decoding load and optimized "
+    "animation handling. Added Auto, Low-End and Normal performance modes. "
     "Buy me a coffee if you like this plugin."
 )
 
 CHANGELOG_DE = (
-    "Großer Low-End-Performance-Refactor: persistente Radar-Widgets, atomarer Tile-Cache, "
-    "priorisiertes Decoding des ersten Frames und weniger GUI-Arbeit bei vollständig erhaltenen Funktionen. "
-    "Low-End-Optimierungen für schwache Enigma2-Receiver. "
-    "Radar-Worker und Timer-Aufrufe reduziert. Adaptive Radar-Frame-Anzahl "
-    "und inkrementelles PNG-Decoding. Performance-Modus (Auto / Low-End / Normal) hinzugefügt. "
-    "Wetter-Icons, Datumsanzeige im Sieben-Tage-Wetter, Radar-Bildschirm, "
-    "GUI-Neustart sowie fehlerhafte Locale-Sprachdateien und PO/MO-Namen korrigiert. "
-    "Individuelle Farbeinstellungen und Update-Funktion hinzugefügt. "
-    "Wenn dir das Plugin gefällt, spendiere mir gerne einen Kaffee."
+    "Fehlerhafte Sprachdateien korrigiert. PO- und MO-Dateinamen der Sprachdateien "
+    "korrigiert. Update-Funktion hinzugefügt. Rain-Radar-Bildschirm korrigiert. "
+    "Datumsanzeige im Sieben-Tage-Wetter korrigiert. Wetter-Icons korrigiert. "
+    "Neustart der getrennten GUI korrigiert. Anpassbare Farbeinstellungen hinzugefügt. "
+    "Performance für schwache Enigma2-Receiver verbessert durch adaptives Radar-Laden, "
+    "reduzierte Decodierlast und optimierte Animationen. Performance-Modi Auto, Low-End "
+    "und Normal hinzugefügt. Wenn dir dieses Plugin gefällt, kannst du mich gerne "
+    "auf einen Kaffee einladen."
 )
 
 UPDATE_RAW_BASE = (
@@ -3325,7 +3415,7 @@ class sevendays(Screen):
                     valign="center"
                     halign="left"
                     font="Regular;48"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="{alert_color}"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -3376,7 +3466,9 @@ class sevendays(Screen):
                     "330,45",
                     28,
                     color=self.COLOR_WIND
-                )
+                ),
+
+                alert_color=self.COLOR_ALERT
             )
 
         return """
@@ -3421,7 +3513,7 @@ class sevendays(Screen):
                 valign="center"
                 halign="left"
                 font="Regular;32"
-                foregroundColor="#00ffff00"
+                foregroundColor="{alert_color}"
                 backgroundColor="#00202020"
                 transparent="1"
                 shadowColor="black"
@@ -3472,7 +3564,9 @@ class sevendays(Screen):
                 "230,30",
                 18,
                 color=self.COLOR_WIND
-            )
+            ),
+
+            alert_color=self.COLOR_ALERT
         )
         
 
@@ -3971,6 +4065,49 @@ class sevendays(Screen):
         # ------------------------------------------------------------
 
         tempicon = self._temp_picture(data)
+
+        # ------------------------------------------------------------
+        # SEVENDAY FARBEN AUS DEN EINSTELLUNGEN
+        # ------------------------------------------------------------
+        # Die bestehenden COLOR_* Namen bleiben erhalten. Dadurch müssen
+        # die eigentlichen Skin-Bausteine nicht schwerer oder langsamer
+        # werden: die Config wird nur einmal beim Öffnen des Screens gelesen.
+        for _color_name, _config_name in (
+            ("COLOR_CITY", "city"),
+            ("COLOR_BIGTEMP", "bigtemp"),
+            ("COLOR_WEATHERTYPE", "weathertype"),
+            ("COLOR_FEELS", "feels"),
+            ("COLOR_WIND", "wind"),
+            ("COLOR_DAY", "day"),
+            ("COLOR_MAXTEMP", "maxtemp"),
+            ("COLOR_MINTEMP", "mintemp"),
+            ("COLOR_DAYTYPE", "daytype"),
+            ("COLOR_SUN", "sun"),
+            ("COLOR_HOUR", "hour"),
+            ("COLOR_HOURTEMP", "hourtemp"),
+            ("COLOR_RAIN", "rain"),
+            ("COLOR_SUNPERCENT", "sunpercent"),
+            ("COLOR_HUMIDITY", "humidity"),
+            ("COLOR_WIND_SPEED", "windspeed"),
+            ("COLOR_CLOCK", "clock"),
+            ("COLOR_DATE", "date"),
+            ("COLOR_ALERT", "alert"),
+        ):
+            try:
+                setattr(
+                    self,
+                    _color_name,
+                    getattr(
+                        config.plugins.speedy_TheWeather,
+                        "sevenday_color_" + _config_name
+                    ).value
+                )
+            except Exception:
+                setattr(
+                    self,
+                    _color_name,
+                    _SEVENDAY_COLOR_DEFAULTS[_config_name]
+                )
 
         # ------------------------------------------------------------
         # SKIN
@@ -5714,6 +5851,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # Menüpunkt für die Update-Suche
         self.updateEntry = ConfigNothing()
 
+        # Separates, leichtgewichtiges Farbmenü für den SevenDay-Screen.
+        self.sevenDayColorEntry = ConfigNothing()
+
         self.list = []
 
         self.list.append(
@@ -5744,6 +5884,13 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        self.list.append(
+            getConfigListEntry(
+                _("SevenDay Farben einstellen:"),
+                self.sevenDayColorEntry
+            )
+        )
+
         # Update-Suche
         self.list.append(
             getConfigListEntry(
@@ -5768,13 +5915,25 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "blue": self.openTwoLocations,
                 "yellow": self.openAppearance,
 
-                # OK auf "Search for update"
-                "ok": self.checkUpdate,
+                # OK auf die beiden Aktionspunkte
+                "ok": self.handleOk,
             },
             -2
         )
 
  
+    def handleOk(self):
+        current = self["config"].getCurrent()
+        if not current:
+            return
+
+        if current[1] == self.sevenDayColorEntry:
+            self.session.open(sevendayColorSetup)
+            return
+
+        if current[1] == self.updateEntry:
+            self.checkUpdate()
+
     def checkUpdate(self):
         """
         Startet die Update-Prüfung nur dann,
@@ -6072,6 +6231,110 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             x[1].cancel()
 
         self.close()
+
+class sevendayColorSetup(ConfigListScreen, Screen):
+    """
+    Separates Farbmenü für den SevenDay-Screen.
+
+    Alle Farben sind ConfigSelection-Werte. Damit gibt es keine schweren
+    Zusatzkomponenten und die Einstellungen funktionieren auch auf älteren
+    Enigma2-Boxen.
+    """
+
+    skin = """
+    <screen name="sevendayColorSetup" position="center,center" size="1100,700" title="SevenDay Farben">
+        <widget name="config" position="4,4" size="1070,600" scrollbarMode="showOnDemand" itemHeight="39" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular;23" />
+        <ePixmap pixmap="skin_default/buttons/red.png" position="11,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_red" position="36,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <ePixmap pixmap="skin_default/buttons/green.png" position="282,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_green" position="308,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_yellow" position="579,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <ePixmap pixmap="skin_default/buttons/blue.png" position="825,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_blue" position="851,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+    </screen>"""
+
+    _ENTRIES = (
+        ("Stadt / Ort", "city"),
+        ("Aktuelle Temperatur", "bigtemp"),
+        ("Wetterbeschreibung", "weathertype"),
+        ("Gefühlte Temperatur", "feels"),
+        ("Windrichtung", "wind"),
+        ("Wochentag", "day"),
+        ("Höchsttemperatur", "maxtemp"),
+        ("Tiefsttemperatur", "mintemp"),
+        ("Tages-Wettertext", "daytype"),
+        ("Sonnenaufgang / Sonnenuntergang", "sun"),
+        ("Stunde / Uhrzeit", "hour"),
+        ("Stundentemperatur", "hourtemp"),
+        ("Regen", "rain"),
+        ("Sonnenwahrscheinlichkeit", "sunpercent"),
+        ("Luftfeuchtigkeit", "humidity"),
+        ("Windgeschwindigkeit", "windspeed"),
+        ("Uhr", "clock"),
+        ("Datum", "date"),
+        ("Wetterwarnung", "alert"),
+    )
+
+    def __init__(self, session):
+        Screen.__init__(self, session)
+        self.session = session
+        self["key_red"] = Label(_("Cancel"))
+        self["key_green"] = Label(_("Save"))
+        self["key_yellow"] = Label(_("Default colors"))
+        self["key_blue"] = Label(_("Save & exit"))
+
+        self.list = []
+        for label, name in self._ENTRIES:
+            self.list.append(
+                getConfigListEntry(
+                    _(label) + ":",
+                    getattr(
+                        config.plugins.speedy_TheWeather,
+                        "sevenday_color_" + name
+                    )
+                )
+            )
+
+        ConfigListScreen.__init__(self, self.list, session=session)
+        self["actions"] = ActionMap(
+            ["SetupActions", "ColorActions"],
+            {
+                "green": self.save,
+                "blue": self.save,
+                "red": self.keyCancel,
+                "cancel": self.keyCancel,
+                "save": self.save,
+                "yellow": self.resetDefaults,
+            },
+            -2
+        )
+
+    def resetDefaults(self):
+        for _label, name in self._ENTRIES:
+            try:
+                getattr(
+                    config.plugins.speedy_TheWeather,
+                    "sevenday_color_" + name
+                ).setValue(_SEVENDAY_COLOR_DEFAULTS[name])
+            except Exception:
+                pass
+        try:
+            self["config"].setList(self.list)
+        except Exception:
+            pass
+
+    def save(self):
+        for x in self["config"].list:
+            x[1].save()
+        configfile.save()
+        self.close(True)
+
+    def keyCancel(self):
+        for x in self["config"].list:
+            x[1].cancel()
+        self.close()
+
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
