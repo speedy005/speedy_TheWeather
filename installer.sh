@@ -4,7 +4,7 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.6.5'
+version='1.6.6'
 
 changelog='v1.6.5 EN: Fixed language files and PO/MO names. Added update function. Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart. Added customizable colors. Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling. Added Ultra Low-End, Low-End, Auto and Normal performance modes. Existing features remain available. Buy me a coffee if you like this plugin. | DE: Sprachdateien sowie PO-/MO-Dateinamen korrigiert. Update-Funktion hinzugefügt. Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert. Anpassbare Farben hinzugefügt. Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert. Ultra Low-End, Low-End, Auto und Normal Performance-Modi hinzugefügt. Bestehende Funktionen bleiben erhalten. Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
 
