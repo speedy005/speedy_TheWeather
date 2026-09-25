@@ -294,7 +294,7 @@ msgid "Heavy storm!"
 msgstr "Schwerer Sturm!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Icon-Paket geändert.\nDas Plugin wird neu gestartet..."
+msgstr "Icon-Paket geändert.\nDer Plugin wird neu gestartet..."
 
 msgid "Loading background image, please wait..."
 msgstr "Hintergrundbild wird geladen, bitte warten..."
@@ -408,9 +408,74 @@ msgid "Appearance"
 msgstr "Darstellung"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Stadt / Ort"
+
+msgid "Aktuelle Temperatur"
+msgstr "Aktuelle Temperatur"
+
+msgid "Wetterbeschreibung"
+msgstr "Wetterbeschreibung"
+
+msgid "Gefühlte Temperatur"
+msgstr "Gefühlte Temperatur"
+
+msgid "Windrichtung"
+msgstr "Windrichtung"
+
+msgid "Wochentag"
+msgstr "Wochentag"
+
+msgid "Höchsttemperatur"
+msgstr "Höchsttemperatur"
+
+msgid "Tiefsttemperatur"
+msgstr "Tiefsttemperatur"
+
+msgid "Tages-Wettertext"
+msgstr "Tages-Wettertext"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Sonnenaufgang / Sonnenuntergang"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Stunde / Uhrzeit"
+
+msgid "Stundentemperatur"
+msgstr "Stundentemperatur"
+
+msgid "Regen"
+msgstr "Regen"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Sonnenwahrscheinlichkeit"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Luftfeuchtigkeit"
+
+msgid "Windgeschwindigkeit"
+msgstr "Windgeschwindigkeit"
+
+msgid "Uhr"
+msgstr "Uhr"
+
+msgid "Datum"
+msgstr "Datum"
+
+msgid "Wetterwarnung"
+msgstr "Wetterwarnung"
+
+msgid "Default colors"
+msgstr "Standardfarben"
+
+msgid "Save & exit"
+msgstr "Speichern & Beenden"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
@@ -447,10 +512,10 @@ msgid "A new version of speedy_TheWeather is available."
 msgstr "Eine neue Version von speedy_TheWeather ist verfügbar."
 
 msgid "Installed version: %s"
-msgstr "Installierte Version: %s"
+msgstr "Installierte version: %s"
 
 msgid "New version: %s"
-msgstr "Neue Version: %s"
+msgstr "Neue version: %s"
 
 msgid "Do you want to install the update?"
 msgstr "Möchtest du das Update installieren?"
@@ -496,3 +561,10 @@ msgstr "Orte"
 
 msgid "RainViewer"
 msgstr "Regenradar"
+
+msgid "speedy_TheWeather Settings"
+msgstr "speedy_Wettereinstellungen"
+
+
+msgid "Default colors"
+msgstr "Standardfarben"
