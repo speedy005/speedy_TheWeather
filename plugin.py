@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.6
+# v.1.6.7
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -260,10 +260,10 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.6"
+__version__ = "1.6.7"
 VERSION = __version__
 
-version = '1.6.6'
+version = '1.6.7'
 
 # Installer/update changelog text. Keep both languages available so the
 # update screen can display a localized release description.
@@ -5842,7 +5842,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-
+        self.setTitle(_("speedy_TheWeather Settings"))
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Save"))
         self["key_blue"] = Label(_("Show 2 locations"))
@@ -6431,7 +6431,7 @@ class CitySuggestListScreen(Screen):
 class infoscreen(Screen):
     def __init__(self, session):
         global _overlayScreen, _overlayEnabled
-
+        
         # Dynamisches Datumsformat ermitteln
         try:
             if config.plugins.speedy_TheWeather.dateformat.value == "dot":
@@ -6443,7 +6443,7 @@ class infoscreen(Screen):
 
         if sz_w > 1800:
             skin = """
-                    <screen name="startScreen" flags="wfNoBorder" position="center,center" size="1920,1080">
+                    <screen name="startScreen" title="Infoscreen" flags="wfNoBorder" position="center,center" size="1920,1080">
                     <widget name="infos" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
                     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
@@ -6486,6 +6486,7 @@ class infoscreen(Screen):
 
         self.session = session
         Screen.__init__(self, session)
+        self.setTitle(_("Infoscreen"))
         self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self["infos"] = Label(_("Infoscreen"))
         self["key_red"] = Label(_("Exit"))
