@@ -568,5 +568,8 @@ msgstr "Regenradar"
 msgid "speedy_TheWeather Settings"
 msgstr "speedy_Wettereinstellungen"
 
+msgid "Infoscreen"
+msgstr "Informationen"
+
 
 
