@@ -263,6 +263,9 @@ msgstr "Stadt nicht gefunden. Drücken Sie GELB zum Ändern."
 msgid "Compare Two Locations"
 msgstr "2 Orte vergleichen"
 
+msgid "Compare Locations"
+msgstr "2 Orte vergleichen"
+
 msgid "Data error"
 msgstr "Datenfehler"
 
@@ -566,5 +569,4 @@ msgid "speedy_TheWeather Settings"
 msgstr "speedy_Wettereinstellungen"
 
 
-msgid "Default colors"
-msgstr "Standardfarben"
+
