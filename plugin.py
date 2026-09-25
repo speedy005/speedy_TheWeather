@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.4
+# v.1.6.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -103,6 +103,7 @@ config.plugins.speedy_TheWeather.performance = ConfigSelection(
     default="auto",
     choices=[
         ("auto", _("Auto")),
+        ("ultra", _("Ultra Low-End")),
         ("low", _("Low-End")),
         ("normal", _("Normal"))
     ]
@@ -166,14 +167,16 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.4"
+__version__ = "1.6.5"
 VERSION = __version__
 
-version = '1.6.4'
+version = '1.6.5'
 
 # Installer/update changelog text. Keep both languages available so the
 # update screen can display a localized release description.
 CHANGELOG_EN = (
+    "Major low-end performance refactor: persistent radar widgets, atomic tile cache, "
+    "prioritized first-frame decoding and reduced GUI work while keeping all existing features. "
     "Low-end performance optimizations for weak Enigma2 receivers. "
     "Reduced radar workers and timer wakeups. Adaptive radar frame count "
     "and incremental PNG decoding. Added Performance mode (Auto / Low-End / Normal). "
@@ -184,6 +187,8 @@ CHANGELOG_EN = (
 )
 
 CHANGELOG_DE = (
+    "Großer Low-End-Performance-Refactor: persistente Radar-Widgets, atomarer Tile-Cache, "
+    "priorisiertes Decoding des ersten Frames und weniger GUI-Arbeit bei vollständig erhaltenen Funktionen. "
     "Low-End-Optimierungen für schwache Enigma2-Receiver. "
     "Radar-Worker und Timer-Aufrufe reduziert. Adaptive Radar-Frame-Anzahl "
     "und inkrementelles PNG-Decoding. Performance-Modus (Auto / Low-End / Normal) hinzugefügt. "
@@ -1805,16 +1810,23 @@ _TILE_CACHE_LOCK = threading.RLock()
 _TILE_CACHE_DIR = "/tmp/speedy_TheWeather/cache"
 # Low-End defaults are intentionally conservative. The actual worker count,
 # frame count and decode pacing are selected per receiver in RadarScreen.
+# Performance profile.  The GUI thread is deliberately given a large
+# breathing margin on weak receivers.  One PNG decode at a time is much
+# more important than shaving a few seconds from the initial download.
 _RADAR_MAX_WORKERS = 2
+_RADAR_ULTRA_WORKERS = 1
 _RADAR_LOW_WORKERS = 1
 _RADAR_NORMAL_WORKERS = 2
+_RADAR_ULTRA_FRAME_COUNT = 3
 _RADAR_LOW_FRAME_COUNT = 4
 _RADAR_NORMAL_FRAME_COUNT = 5
-_RADAR_LOW_DECODE_DELAY_MS = 65
-_RADAR_NORMAL_DECODE_DELAY_MS = 35
-_RADAR_LOW_ANIM_MS = 1900
+_RADAR_ULTRA_DECODE_DELAY_MS = 85
+_RADAR_LOW_DECODE_DELAY_MS = 60
+_RADAR_NORMAL_DECODE_DELAY_MS = 30
+_RADAR_ULTRA_ANIM_MS = 2600
+_RADAR_LOW_ANIM_MS = 2100
 _RADAR_NORMAL_ANIM_MS = 1500
-_RADAR_POLL_INTERVAL_MS = 300
+_RADAR_POLL_INTERVAL_MS = 350
 
 def _cache_file_for_url(url):
     import hashlib
@@ -1829,9 +1841,15 @@ def _ensure_cache_dir():
         pass
 
 def _load_cached_png(path):
+    """Load one valid cached PNG. Never decode an expired cache entry."""
+    if not path:
+        return None
     try:
         stat = os.stat(path)
-        if stat.st_size <= 0 or time.time() - stat.st_mtime > _TILE_CACHE_TTL:
+        if (
+            stat.st_size <= 0
+            or time.time() - stat.st_mtime > _TILE_CACHE_TTL
+        ):
             return None
         return loadPNG(path)
     except Exception:
@@ -7097,11 +7115,19 @@ class TempOverlay(Screen):
 # ================================================================
 
 def _get_radar_performance_profile():
-    """Return conservative settings for older Enigma2 receivers."""
+    """Build one small, immutable performance profile per RadarScreen."""
     try:
         mode = config.plugins.speedy_TheWeather.performance.value
     except Exception:
         mode = "auto"
+
+    if mode == "ultra":
+        return {
+            "workers": _RADAR_ULTRA_WORKERS,
+            "frames": _RADAR_ULTRA_FRAME_COUNT,
+            "decode_delay": _RADAR_ULTRA_DECODE_DELAY_MS,
+            "anim": _RADAR_ULTRA_ANIM_MS,
+        }
 
     if mode == "low":
         return {
@@ -7119,27 +7145,31 @@ def _get_radar_performance_profile():
             "anim": _RADAR_NORMAL_ANIM_MS,
         }
 
-    # Auto: 1280px and below is treated as low-end. This is only a
-    # heuristic; users can explicitly select Normal if desired.
+    # Auto deliberately errs on the side of responsiveness.
     try:
         width = int(getDesktop(0).size().width())
     except Exception:
         width = 1920
 
-    # RAM is a better low-end signal than CPU model names, which vary
-    # considerably between Enigma2 images. Keep this probe tiny and local.
-    low_memory = False
+    total_kb = 999999
     try:
         with open("/proc/meminfo", "r") as memfile:
             for line in memfile:
                 if line.startswith("MemTotal:"):
-                    kb = int(line.split()[1])
-                    low_memory = kb <= (256 * 1024)
+                    total_kb = int(line.split()[1])
                     break
     except Exception:
         pass
 
-    if width <= 1280 or low_memory:
+    if total_kb <= 160 * 1024:
+        return {
+            "workers": _RADAR_ULTRA_WORKERS,
+            "frames": _RADAR_ULTRA_FRAME_COUNT,
+            "decode_delay": _RADAR_ULTRA_DECODE_DELAY_MS,
+            "anim": _RADAR_ULTRA_ANIM_MS,
+        }
+
+    if width <= 1280 or total_kb <= 256 * 1024:
         return {
             "workers": _RADAR_LOW_WORKERS,
             "frames": _RADAR_LOW_FRAME_COUNT,
@@ -7813,6 +7843,21 @@ class RadarScreen(Screen):
                     "radarOverlay_%s_%s" % (row, col)
                 ] = Pixmap()
 
+        # Direct widget references: avoid repeated Screen.__getitem__ lookups
+        # during every radar frame.  Keep the Pixmaps permanently visible;
+        # changing a Pixmap is substantially cheaper than hide/show cycles.
+        self._baseWidgets = {}
+        self._overlayWidgets = {}
+        for row in range(self.GRID):
+            for col in range(self.GRID):
+                key = (row, col)
+                self._baseWidgets[key] = self[
+                    "radarBase_%s_%s" % (row, col)
+                ]
+                self._overlayWidgets[key] = self[
+                    "radarOverlay_%s_%s" % (row, col)
+                ]
+
         # =========================================================
         # Labels
         # =========================================================
@@ -8169,6 +8214,8 @@ class RadarScreen(Screen):
             self._radarDownloadPool = None
 
         self._clear_pixmaps()
+        self._baseWidgets = {}
+        self._overlayWidgets = {}
 
         self.cleanupFrames()
 
@@ -8213,33 +8260,18 @@ class RadarScreen(Screen):
         url,
         path
     ):
-
+        """Download directly into the shared tile cache, atomically."""
         _ensure_cache_dir()
-
-        cache_path = _cache_file_for_url(
-            url
-        )
+        cache_path = _cache_file_for_url(url)
 
         with _TILE_CACHE_LOCK:
-
             try:
-
-                stat = os.stat(
-                    cache_path
-                )
-
+                stat = os.stat(cache_path)
                 if (
                     stat.st_size > 0
-                    and
-                    time.time()
-                    - stat.st_mtime
-                    <= _TILE_CACHE_TTL
+                    and time.time() - stat.st_mtime <= _TILE_CACHE_TTL
                 ):
-
-                    # Cache direkt dekodieren statt Cache -> Temp-Datei zu kopieren.
-                    # Das spart Flash-I/O und einen kompletten Dateikopiervorgang.
                     return cache_path
-
             except OSError:
                 pass
 
@@ -8247,89 +8279,41 @@ class RadarScreen(Screen):
             url,
             data=None,
             headers={
-                "User-Agent":
-                    "speedy_TheWeather/4.0",
-                "Accept":
-                    "image/png,image/*,*/*"
+                "User-Agent": "speedy_TheWeather/4.0",
+                "Accept": "image/png,image/*,*/*"
             }
         )
 
         response = None
-
-        tmp_path = (
-            path
-            + ".part.%s"
-            % threading.current_thread().ident
-        )
+        tmp_path = cache_path + ".part.%s" % threading.current_thread().ident
 
         try:
+            response = urlopen(req, timeout=12)
+            with open(tmp_path, "wb") as f:
+                while True:
+                    chunk = response.read(64 * 1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
 
-            response = urlopen(
-                req,
-                timeout=12
-            )
-
-            data = response.read()
-
-            if not data:
-                raise IOError(
-                    "empty response"
-                )
-
-            with open(
-                tmp_path,
-                "wb"
-            ) as f:
-
-                f.write(data)
+            if not os.path.exists(tmp_path) or os.path.getsize(tmp_path) <= 0:
+                raise IOError("empty response")
 
             try:
-
-                os.replace(
-                    tmp_path,
-                    path
-                )
-
+                os.replace(tmp_path, cache_path)
             except AttributeError:
+                os.rename(tmp_path, cache_path)
 
-                os.rename(
-                    tmp_path,
-                    path
-                )
-
-            with _TILE_CACHE_LOCK:
-
-                try:
-
-                    shutil.copyfile(
-                        path,
-                        cache_path
-                    )
-
-                except OSError:
-                    pass
-
-            return path
-
+            return cache_path
         finally:
-
             if response is not None:
-
                 try:
                     response.close()
                 except Exception:
                     pass
-
             try:
-
-                if os.path.exists(
-                    tmp_path
-                ):
-
-                    os.remove(
-                        tmp_path
-                    )
-
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
             except OSError:
                 pass
 
@@ -8919,7 +8903,6 @@ class RadarScreen(Screen):
         self,
         result
     ):
-
         if self._closed:
             return
 
@@ -8929,129 +8912,46 @@ class RadarScreen(Screen):
             pass
 
         self._decodeActive = True
-
         self._decodeQueue = deque()
+        self._decodeBaseFiles = dict(result.get("baseFiles", {}))
+        self._decodeFrameFiles = list(result.get("frameFiles", []))
 
-        self._decodeBaseFiles = dict(
-            result.get(
-                "baseFiles",
-                {}
-            )
-        )
-
-        self._decodeFrameFiles = list(
-            result.get(
-                "frameFiles",
-                []
-            )
-        )
-
-        self.framePixmaps = [
-            {}
-            for _ in self._decodeFrameFiles
-        ]
-
-        self.frameReady = [
-            False
-            for _ in self._decodeFrameFiles
-        ]
-
-        self.frameTimes = list(
-            result.get(
-                "frameTimes",
-                []
-            )
-        )
-
-        self.frameIsForecast = [
-            False
-            for _ in self._decodeFrameFiles
-        ]
-
+        self.framePixmaps = [{} for _ in self._decodeFrameFiles]
+        self.frameReady = [False for _ in self._decodeFrameFiles]
+        self.frameTimes = list(result.get("frameTimes", []))
+        self.frameIsForecast = [False for _ in self._decodeFrameFiles]
         self.currentFrameIndex = 0
+        self._decodeRemaining = [len(files) for files in self._decodeFrameFiles]
 
-        self._decodeRemaining = [
-            len(files)
-            for files in self._decodeFrameFiles
-        ]
-
-        # ---------------------------------------------------------
-        # Base zuerst
-        # ---------------------------------------------------------
-
-        for key, path in (
-            self._decodeBaseFiles.items()
-        ):
-
-            self._decodeQueue.append(
-                (
-                    "base",
-                    key,
-                    path
-                )
-            )
-
-        # ---------------------------------------------------------
-        # Frame 0 direkt danach
-        # ---------------------------------------------------------
+        # Perceived startup speed matters more than finishing the base map
+        # first. Decode the centre base tile, then every tile of frame 0,
+        # then the remaining base tiles and finally the later frames.
+        center = (self.GRID // 2, self.GRID // 2)
+        center_path = self._decodeBaseFiles.get(center)
+        if center_path:
+            self._decodeQueue.append(("base", center, center_path))
 
         if self._decodeFrameFiles:
+            for key, path in self._decodeFrameFiles[0].items():
+                self._decodeQueue.append(("frame", 0, key, path))
 
-            for key, path in (
-                self._decodeFrameFiles[0].items()
-            ):
+        for key, path in self._decodeBaseFiles.items():
+            if key != center:
+                self._decodeQueue.append(("base", key, path))
 
-                self._decodeQueue.append(
-                    (
-                        "frame",
-                        0,
-                        key,
-                        path
-                    )
-                )
-
-        # ---------------------------------------------------------
-        # Restliche Frames
-        # ---------------------------------------------------------
-
-        for frameIndex in range(
-            1,
-            len(
-                self._decodeFrameFiles
-            )
-        ):
-
-            for key, path in (
-                self._decodeFrameFiles[
-                    frameIndex
-                ].items()
-            ):
-
-                self._decodeQueue.append(
-                    (
-                        "frame",
-                        frameIndex,
-                        key,
-                        path
-                    )
-                )
+        for frameIndex in range(1, len(self._decodeFrameFiles)):
+            for key, path in self._decodeFrameFiles[frameIndex].items():
+                self._decodeQueue.append(("frame", frameIndex, key, path))
 
         try:
             self.animTimer.stop()
         except Exception:
             pass
-
         self.animTimerStarted = False
 
         if self._decodeQueue:
-
-            self._decodeTimer.start(
-                self._decodeDelayMs,
-                True
-            )
-
+            self._decodeTimer.start(self._decodeDelayMs, True)
         else:
-
             self._finishDecode()
 
     # =============================================================
@@ -9059,176 +8959,48 @@ class RadarScreen(Screen):
     # =============================================================
 
     def _decodeNextTile(self):
-
-        if self._closed:
-            return
-
-        if not self._decodeActive:
+        if self._closed or not self._decodeActive:
             return
 
         if not self._decodeQueue:
-
             self._finishDecode()
             return
 
         item = self._decodeQueue.popleft()
 
         try:
-
             itemType = item[0]
 
-            # =====================================================
-            # BASE
-            # =====================================================
-
             if itemType == "base":
-
-                key = item[1]
-                path = item[2]
-
-                pix = None
-
-                try:
-
-                    pix = _load_cached_png(
-                        path
-                    )
-
-                except Exception:
-                    pix = None
-
-                if pix is None:
-
-                    try:
-
-                        pix = loadPNG(
-                            path
-                        )
-
-                    except Exception:
-                        pix = None
-
+                key, path = item[1], item[2]
+                pix = _load_cached_png(path)
                 if pix is not None:
+                    self.basePixmaps[key] = pix
+                    widget = self._baseWidgets.get(key)
+                    if widget is not None:
+                        try:
+                            widget.instance.setPixmap(pix)
+                            widget.show()
+                        except Exception:
+                            pass
 
-                    self.basePixmaps[
-                        key
-                    ] = pix
-
-                    try:
-
-                        widget = self[
-                            "radarBase_%s_%s"
-                            % (
-                                key[0],
-                                key[1]
-                            )
-                        ]
-
-                        widget.instance.setPixmap(
-                            pix
-                        )
-
-                        widget.show()
-
-                    except Exception:
-                        pass
-
-            # =====================================================
-            # RADAR FRAME
-            # =====================================================
-
-            elif itemType == "frame":
-
-                frameIndex = item[1]
-                key = item[2]
-                path = item[3]
-
-                pix = None
-
-                try:
-
-                    pix = _load_cached_png(
-                        path
-                    )
-
-                except Exception:
-                    pix = None
-
-                if pix is None:
-
-                    try:
-
-                        if (
-                            path
-                            and
-                            os.path.exists(
-                                path
-                            )
-                        ):
-
-                            pix = loadPNG(
-                                path
-                            )
-
-                    except Exception:
-                        pix = None
-
-                if (
-                    frameIndex
-                    <
-                    len(
-                        self.framePixmaps
-                    )
-                ):
-
+            else:
+                frameIndex, key, path = item[1], item[2], item[3]
+                pix = _load_cached_png(path)
+                if frameIndex < len(self.framePixmaps):
                     if pix is not None:
-
-                        self.framePixmaps[
-                            frameIndex
-                        ][key] = pix
-
-                    self._decodeRemaining[
-                        frameIndex
-                    ] -= 1
-
-                    if (
-                        self._decodeRemaining[
-                            frameIndex
-                        ]
-                        <= 0
-                    ):
-
-                        self._markFrameReady(
-                            frameIndex
-                        )
+                        self.framePixmaps[frameIndex][key] = pix
+                    self._decodeRemaining[frameIndex] -= 1
+                    if self._decodeRemaining[frameIndex] <= 0:
+                        self._markFrameReady(frameIndex)
 
         except Exception as e:
+            print("[speedy_TheWeather] Decode tile error: %s" % e)
 
-            print(
-                "[speedy_TheWeather] "
-                "Decode tile error: %s"
-                % e
-            )
-
-        # ---------------------------------------------------------
-        # Nächsten Tile mit Abstand verarbeiten.
-        # ---------------------------------------------------------
-
-        if (
-            self._decodeActive
-            and
-            not self._closed
-        ):
-
+        if self._decodeActive and not self._closed:
             try:
-
-                self._decodeTimer.start(
-                    15,
-                    True
-                )
-
+                self._decodeTimer.start(self._decodeDelayMs, True)
             except Exception:
-
                 self._decodeNextTile()
 
     # =============================================================
@@ -9371,105 +9143,31 @@ class RadarScreen(Screen):
         self,
         index
     ):
-
         if self._closed:
             return
-
-        if (
-            index < 0
-            or
-            index >= len(
-                self.framePixmaps
-            )
-        ):
+        if index < 0 or index >= len(self.framePixmaps):
             return
-
-        if (
-            self.frameReady
-            and
-            not self.frameReady[index]
-        ):
+        if self.frameReady and not self.frameReady[index]:
             return
 
         self.currentFrameIndex = index
+        cellPix = self.framePixmaps[index]
 
-        # ---------------------------------------------------------
-        # Alte Overlay-Tiles komplett ausblenden.
-        # Verhindert Geisterbilder alter Frames.
-        # ---------------------------------------------------------
-
-        for row in range(
-            self.GRID
-        ):
-
-            for col in range(
-                self.GRID
-            ):
-
-                try:
-
-                    self[
-                        "radarOverlay_%s_%s"
-                        % (
-                            row,
-                            col
-                        )
-                    ].hide()
-
-                except Exception:
-                    pass
-
-        # ---------------------------------------------------------
-        # Neues Frame
-        # ---------------------------------------------------------
-
-        cellPix = self.framePixmaps[
-            index
-        ]
-
-        for (
-            row,
-            col
-        ), pix in cellPix.items():
-
+        # No hide/show pass here.  The nine overlay widgets stay visible
+        # throughout the animation; only their Pixmap content changes.
+        for key, widget in self._overlayWidgets.items():
+            pix = cellPix.get(key)
             if pix is None:
                 continue
-
             try:
-
-                widget = self[
-                    "radarOverlay_%s_%s"
-                    % (
-                        row,
-                        col
-                    )
-                ]
-
-                widget.instance.setPixmap(
-                    pix
-                )
-
-                widget.show()
-
+                widget.instance.setPixmap(pix)
             except Exception:
                 pass
 
-        # ---------------------------------------------------------
-        # Nur hier wird die Radar-Zeit verändert.
-        # ---------------------------------------------------------
-
         try:
-
-            ts = self.frameTimes[
-                index
-            ]
-
+            ts = self.frameTimes[index]
             if ts is not None:
-
-                self._setRadarFrameTime(
-                    ts
-                )
-
+                self._setRadarFrameTime(ts)
         except Exception:
             pass
 
