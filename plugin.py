@@ -4067,47 +4067,11 @@ class sevendays(Screen):
         tempicon = self._temp_picture(data)
 
         # ------------------------------------------------------------
-        # SEVENDAY FARBEN AUS DEN EINSTELLUNGEN
+        # SEVENDAY FARBEN AUS DER AKTUELLEN CONFIG
         # ------------------------------------------------------------
-        # Die bestehenden COLOR_* Namen bleiben erhalten. Dadurch müssen
-        # die eigentlichen Skin-Bausteine nicht schwerer oder langsamer
-        # werden: die Config wird nur einmal beim Öffnen des Screens gelesen.
-        for _color_name, _config_name in (
-            ("COLOR_CITY", "city"),
-            ("COLOR_BIGTEMP", "bigtemp"),
-            ("COLOR_WEATHERTYPE", "weathertype"),
-            ("COLOR_FEELS", "feels"),
-            ("COLOR_WIND", "wind"),
-            ("COLOR_DAY", "day"),
-            ("COLOR_MAXTEMP", "maxtemp"),
-            ("COLOR_MINTEMP", "mintemp"),
-            ("COLOR_DAYTYPE", "daytype"),
-            ("COLOR_SUN", "sun"),
-            ("COLOR_HOUR", "hour"),
-            ("COLOR_HOURTEMP", "hourtemp"),
-            ("COLOR_RAIN", "rain"),
-            ("COLOR_SUNPERCENT", "sunpercent"),
-            ("COLOR_HUMIDITY", "humidity"),
-            ("COLOR_WIND_SPEED", "windspeed"),
-            ("COLOR_CLOCK", "clock"),
-            ("COLOR_DATE", "date"),
-            ("COLOR_ALERT", "alert"),
-        ):
-            try:
-                setattr(
-                    self,
-                    _color_name,
-                    getattr(
-                        config.plugins.speedy_TheWeather,
-                        "sevenday_color_" + _config_name
-                    ).value
-                )
-            except Exception:
-                setattr(
-                    self,
-                    _color_name,
-                    _SEVENDAY_COLOR_DEFAULTS[_config_name]
-                )
+        # Bei jedem neuen Wetterfenster werden die aktuellen Werte aus
+        # ConfigSelection gelesen. Ein GUI-Neustart ist nicht erforderlich.
+        self._loadSevenDayColors()
 
         # ------------------------------------------------------------
         # SKIN
@@ -4304,6 +4268,43 @@ class sevendays(Screen):
             200,
             True
         )
+
+    def _loadSevenDayColors(self):
+        """Lädt bei jedem neuen SevenDay-Screen die aktuellen Farbwerte."""
+        for _color_name, _config_name in (
+            ("COLOR_CITY", "city"),
+            ("COLOR_BIGTEMP", "bigtemp"),
+            ("COLOR_WEATHERTYPE", "weathertype"),
+            ("COLOR_FEELS", "feels"),
+            ("COLOR_WIND", "wind"),
+            ("COLOR_DAY", "day"),
+            ("COLOR_MAXTEMP", "maxtemp"),
+            ("COLOR_MINTEMP", "mintemp"),
+            ("COLOR_DAYTYPE", "daytype"),
+            ("COLOR_SUN", "sun"),
+            ("COLOR_HOUR", "hour"),
+            ("COLOR_HOURTEMP", "hourtemp"),
+            ("COLOR_RAIN", "rain"),
+            ("COLOR_SUNPERCENT", "sunpercent"),
+            ("COLOR_HUMIDITY", "humidity"),
+            ("COLOR_WIND_SPEED", "windspeed"),
+            ("COLOR_CLOCK", "clock"),
+            ("COLOR_DATE", "date"),
+            ("COLOR_ALERT", "alert"),
+        ):
+            try:
+                cfg = getattr(
+                    config.plugins.speedy_TheWeather,
+                    "sevenday_color_" + _config_name
+                )
+                value = cfg.value or _SEVENDAY_COLOR_DEFAULTS[_config_name]
+                setattr(self, _color_name, value)
+            except Exception:
+                setattr(
+                    self,
+                    _color_name,
+                    _SEVENDAY_COLOR_DEFAULTS[_config_name]
+                )
 
     def getSlotHours(self, day):
         global weatherData
@@ -6325,6 +6326,8 @@ class sevendayColorSetup(ConfigListScreen, Screen):
             pass
 
     def save(self):
+        # Werte dauerhaft speichern. Der nächste sevendays-Screen liest
+        # die aktuellen Werte beim Erzeugen erneut ein.
         for x in self["config"].list:
             x[1].save()
         configfile.save()
