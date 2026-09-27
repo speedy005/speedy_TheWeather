@@ -1660,91 +1660,218 @@ def _update_is_newer(remote_version):
 # UPDATE DOWNLOAD
 # ============================================================================
 
+```python
 def _update_download(
     url,
     destination,
     timeout=None
 ):
     """
-    Lädt eine Datei mit HTTP-Timeout und User-Agent herunter.
-    """
+    Lädt eine Datei über wget herunter.
 
-    response = None
+    wget wird verwendet, weil es auf dem Enigma2-Receiver
+    bereits erfolgreich mit raw.githubusercontent.com funktioniert.
+    """
 
     if timeout is None:
 
         timeout = UPDATE_CHECK_TIMEOUT
 
+    print(
+        "[speedy_TheWeather] "
+        "Download started:"
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "URL: %s"
+        % url
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Destination: %s"
+        % destination
+    )
+
     try:
 
-        request = Request(
-            url,
-            headers={
-                "User-Agent":
-                    "speedy_TheWeather-Updater/1.0",
+        # --------------------------------------------------------------------
+        # DESTINATION DIRECTORY
+        # --------------------------------------------------------------------
 
-                "Accept":
-                    "text/plain,"
-                    "application/octet-stream,"
-                    "*/*"
-            }
+        destinationDir = os.path.dirname(
+            destination
         )
 
-        response = urlopen(
-            request,
-            timeout=timeout
+        if destinationDir:
+
+            if not os.path.exists(
+                destinationDir
+            ):
+
+                os.makedirs(
+                    destinationDir
+                )
+
+        # --------------------------------------------------------------------
+        # REMOVE OLD FILE
+        # --------------------------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                destination
+            ):
+
+                os.unlink(
+                    destination
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not remove old file: %s"
+                % e
+            )
+
+        # --------------------------------------------------------------------
+        # BUILD WGET COMMAND
+        # --------------------------------------------------------------------
+        #
+        # -q                  quiet
+        # -O                  output file
+        # --timeout          network timeout
+        # --tries=1           only one attempt
+        # --user-agent        same User-Agent as previous updater
+        #
+        # --no-check-certificate is intentionally used here because
+        # older Enigma2 images can have outdated CA certificates.
+        #
+        # --------------------------------------------------------------------
+
+        command = (
+            "/usr/bin/wget "
+            "-q "
+            "--no-check-certificate "
+            "--timeout=%d "
+            "--tries=1 "
+            "--user-agent=\"speedy_TheWeather-Updater/1.0\" "
+            "-O \"%s\" "
+            "\"%s\""
+            %
+            (
+                int(timeout),
+                destination,
+                url
+            )
         )
 
-        with open(
-            destination,
-            "wb"
-        ) as target:
+        print(
+            "[speedy_TheWeather] "
+            "Executing wget..."
+        )
 
-            while True:
+        print(
+            "[speedy_TheWeather] "
+            "%s"
+            % command
+        )
 
-                chunk = response.read(
-                    64 * 1024
-                )
+        # --------------------------------------------------------------------
+        # EXECUTE WGET
+        # --------------------------------------------------------------------
 
-                if not chunk:
+        result = os.system(
+            command
+        )
 
-                    break
+        print(
+            "[speedy_TheWeather] "
+            "wget result: %s"
+            % result
+        )
 
-                target.write(
-                    chunk
-                )
+        # --------------------------------------------------------------------
+        # CHECK RETURN CODE
+        # --------------------------------------------------------------------
 
-        return (
-            os.path.isfile(
+        if result != 0:
+
+            print(
+                "[speedy_TheWeather] "
+                "wget failed."
+            )
+
+            return False
+
+        # --------------------------------------------------------------------
+        # CHECK FILE EXISTS
+        # --------------------------------------------------------------------
+
+        if not os.path.isfile(
+            destination
+        ):
+
+            print(
+                "[speedy_TheWeather] "
+                "Downloaded file does not exist."
+            )
+
+            return False
+
+        # --------------------------------------------------------------------
+        # CHECK FILE SIZE
+        # --------------------------------------------------------------------
+
+        try:
+
+            fileSize = os.path.getsize(
                 destination
             )
-            and
-            os.path.getsize(
-                destination
-            ) > 0
+
+        except Exception:
+
+            fileSize = 0
+
+        print(
+            "[speedy_TheWeather] "
+            "Downloaded file size: %d bytes"
+            % fileSize
         )
+
+        if fileSize <= 0:
+
+            print(
+                "[speedy_TheWeather] "
+                "Downloaded file is empty."
+            )
+
+            return False
+
+        # --------------------------------------------------------------------
+        # SUCCESS
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Download successful."
+        )
+
+        return True
 
     except Exception as e:
 
         print(
             "[speedy_TheWeather] "
-            "Update download failed:",
-            e
+            "Update download exception: %s"
+            % e
         )
 
         return False
+```
 
-    finally:
-
-        if response is not None:
-
-            try:
-
-                response.close()
-
-            except Exception:
-
-                pass
 
 # ============================================================================
 # EXTRACT PLUGIN VERSION
