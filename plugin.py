@@ -7268,6 +7268,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             valign="center"
             foregroundColor="yellow" />
 
+        <!-- Version -->
         <widget name="Version"
             position="676,554"
             size="420,40"
@@ -7282,51 +7283,66 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     """
 
     def __init__(self, session):
+
         Screen.__init__(self, session)
 
         self.session = session
 
-        self.setTitle(_("speedy_TheWeather Settings"))
+        self.setTitle(
+            _("speedy_TheWeather Settings")
+        )
 
-        # ----------------------------------------------------
-        # Farbige Tasten
-        # ----------------------------------------------------
+        # ====================================================
+        # FARBIGE TASTEN
+        # ====================================================
 
-        self["key_red"] = Label(_("Cancel"))
-        self["key_green"] = Label(_("Save"))
-        self["key_blue"] = Label(_("Show 2 locations"))
-        self["key_yellow"] = Label(_("Appearance"))
+        self["key_red"] = Label(
+            _("Cancel")
+        )
+
+        self["key_green"] = Label(
+            _("Save")
+        )
+
+        self["key_blue"] = Label(
+            _("Show 2 locations")
+        )
+
+        self["key_yellow"] = Label(
+            _("Appearance")
+        )
+
+        # ====================================================
+        # VERSION
+        # ====================================================
 
         self["version"] = Label(
             "speedy_TheWeather_v.%s" % VERSION
         )
 
-        # ----------------------------------------------------
-        # Menüpunkt für die Update-Suche
-        # ----------------------------------------------------
+        # ====================================================
+        # SONDER-EINTRÄGE
+        # ====================================================
 
+        # Update
         self.updateEntry = ConfigNothing()
 
-        # ----------------------------------------------------
-        # Menüpunkt für Download der Auto-Wetter-Hintergründe
-        # ----------------------------------------------------
-
+        # Auto-Wetter-Hintergründe
         self.autoBackgroundDownloadEntry = ConfigNothing()
 
-        # ----------------------------------------------------
-        # Separates, leichtgewichtiges Farbmenü
-        # für den SevenDay-Screen
-        # ----------------------------------------------------
-
+        # SevenDay Farben
         self.sevenDayColorEntry = ConfigNothing()
 
-        # ----------------------------------------------------
-        # Config-Liste
-        # ----------------------------------------------------
+        # ====================================================
+        # CONFIG-LISTE
+        # ====================================================
 
         self.list = []
 
+        # ----------------------------------------------------
         # Windgeschwindigkeit
+        # ----------------------------------------------------
+
         self.list.append(
             getConfigListEntry(
                 _("Wind speed:"),
@@ -7334,7 +7350,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # ----------------------------------------------------
         # Datumsformat
+        # ----------------------------------------------------
+
         self.list.append(
             getConfigListEntry(
                 _("Date format:"),
@@ -7342,7 +7361,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # ----------------------------------------------------
         # Radar Zoom
+        # ----------------------------------------------------
+
         self.list.append(
             getConfigListEntry(
                 _("Radar default zoom:"),
@@ -7350,7 +7372,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # ----------------------------------------------------
         # Performance
+        # ----------------------------------------------------
+
         self.list.append(
             getConfigListEntry(
                 _("Performance:"),
@@ -7358,9 +7383,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
+        # ====================================================
         # AUTO WEATHER BACKGROUNDS
-        # ----------------------------------------------------
+        # ====================================================
 
         self.list.append(
             getConfigListEntry(
@@ -7369,9 +7394,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
+        # ====================================================
         # HOLIDAY BACKGROUNDS
-        # ----------------------------------------------------
+        # ====================================================
 
         self.list.append(
             getConfigListEntry(
@@ -7380,9 +7405,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
+        # ====================================================
         # DOWNLOAD AUTO BACKGROUNDS
-        # ----------------------------------------------------
+        # ====================================================
 
         self.list.append(
             getConfigListEntry(
@@ -7391,9 +7416,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
-        # SevenDay Farben
-        # ----------------------------------------------------
+        # ====================================================
+        # SEVENDAY FARBEN
+        # ====================================================
 
         self.list.append(
             getConfigListEntry(
@@ -7402,9 +7427,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
-        # Update-Suche
-        # ----------------------------------------------------
+        # ====================================================
+        # UPDATE
+        # ====================================================
 
         self.list.append(
             getConfigListEntry(
@@ -7413,9 +7438,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
-        # ----------------------------------------------------
-        # ConfigListScreen
-        # ----------------------------------------------------
+        # ====================================================
+        # CONFIG LIST SCREEN
+        # ====================================================
 
         ConfigListScreen.__init__(
             self,
@@ -7423,26 +7448,302 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             session=session
         )
 
-        # ----------------------------------------------------
-        # ActionMap
-        # ----------------------------------------------------
+        # ====================================================
+        # ACTION MAP
+        # ====================================================
 
         self["actions"] = ActionMap(
-            ["SetupActions", "ColorActions"],
+            [
+                "SetupActions",
+                "ColorActions"
+            ],
             {
+                # ------------------------------------------------
+                # GRÜN = SPEICHERN
+                # ------------------------------------------------
+
                 "green": self.save,
-                "red": self.keyCancel,
-                "cancel": self.keyCancel,
                 "save": self.save,
 
+                # ------------------------------------------------
+                # ROT = ABBRECHEN
+                # ------------------------------------------------
+
+                "red": self.keyCancel,
+                "cancel": self.keyCancel,
+
+                # ------------------------------------------------
+                # BLAU = 2. LOCATION
+                # ------------------------------------------------
+
                 "blue": self.openTwoLocations,
+
+                # ------------------------------------------------
+                # GELB = APPEARANCE
+                # ------------------------------------------------
+
                 "yellow": self.openAppearance,
 
-                # OK auf die Aktionspunkte
+                # ------------------------------------------------
+                # OK
+                # ------------------------------------------------
+
                 "ok": self.handleOk,
             },
             -2
         )
+
+    # ========================================================
+    # OK-TASTE
+    # ========================================================
+
+    def handleOk(self):
+
+        current = self["config"].getCurrent()
+
+        if not current:
+            return
+
+        try:
+            description = current[0]
+            entry = current[1]
+
+        except Exception as e:
+
+            print(
+                "[SETUP] Could not read current entry:"
+            )
+            print(e)
+
+            return
+
+        print(
+            "[SETUP] OK pressed:"
+        )
+        print(
+            "[SETUP] Entry: %s"
+            % description
+        )
+
+        # ====================================================
+        # DOWNLOAD WEATHER BACKGROUNDS
+        # ====================================================
+
+        if entry is self.autoBackgroundDownloadEntry:
+
+            print(
+                "[SETUP] Download weather backgrounds selected."
+            )
+
+            self.downloadWeatherBackgrounds()
+
+            return
+
+        # ====================================================
+        # SEVENDAY FARBEN
+        # ====================================================
+
+        if entry is self.sevenDayColorEntry:
+
+            print(
+                "[SETUP] SevenDay color settings selected."
+            )
+
+            try:
+
+                self.openSevenDayColors()
+
+            except Exception as e:
+
+                print(
+                    "[SETUP] SevenDay color menu error:"
+                )
+                print(e)
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Could not open the SevenDay "
+                        "color settings."
+                    ),
+                    MessageBox.TYPE_ERROR
+                )
+
+            return
+
+        # ====================================================
+        # UPDATE
+        # ====================================================
+
+        if entry is self.updateEntry:
+
+            print(
+                "[SETUP] Search for update selected."
+            )
+
+            self.searchForUpdate()
+
+            return
+
+        # ====================================================
+        # NORMALE CONFIG-EINTRÄGE
+        # ====================================================
+
+        print(
+            "[SETUP] Normal configuration entry."
+        )
+
+        ConfigListScreen.keyOK(self)
+
+    # ========================================================
+    # WEATHER BACKGROUND DOWNLOAD
+    # ========================================================
+
+    def downloadWeatherBackgrounds(self):
+
+        try:
+
+            print(
+                "[SETUP] Starting weather background download..."
+            )
+
+            result = ensureAutoBackgrounds()
+
+            if result:
+
+                print(
+                    "[SETUP] Weather backgrounds installed successfully."
+                )
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Weather backgrounds downloaded "
+                        "and installed successfully."
+                    ),
+                    MessageBox.TYPE_INFO,
+                    timeout=5
+                )
+
+            else:
+
+                print(
+                    "[SETUP] Weather background installation failed."
+                )
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Weather backgrounds could not "
+                        "be downloaded or installed."
+                        "\n\n"
+                        "Please check the console log."
+                    ),
+                    MessageBox.TYPE_ERROR
+                )
+
+        except Exception as e:
+
+            print(
+                "[SETUP] Weather background download error:"
+            )
+            print(e)
+
+            try:
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Error while downloading "
+                        "weather backgrounds:"
+                        "\n\n%s"
+                        % e
+                    ),
+                    MessageBox.TYPE_ERROR
+                )
+
+            except Exception:
+
+                pass
+
+    # ========================================================
+    # UPDATE
+    # ========================================================
+
+    def searchForUpdate(self):
+
+        try:
+
+            print(
+                "=================================================="
+            )
+            print(
+                "[SETUP] Starting plugin update..."
+            )
+            print(
+                "=================================================="
+            )
+
+            result = update_plugin(
+                self.session
+            )
+
+            if result:
+
+                print(
+                    "[SETUP] Update function completed."
+                )
+
+            else:
+
+                print(
+                    "[SETUP] Update function returned FALSE."
+                )
+
+                try:
+
+                    self.session.open(
+                        MessageBox,
+                        _(
+                            "The update could not be completed."
+                            "\n\n"
+                            "Please check:"
+                            "\n"
+                            "/tmp/speedy_TheWeather/"
+                        ),
+                        MessageBox.TYPE_ERROR,
+                        timeout=8
+                    )
+
+                except Exception:
+
+                    pass
+
+        except Exception as e:
+
+            print(
+                "[SETUP] Update error:"
+            )
+            print(e)
+
+            try:
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Error while updating "
+                        "speedy_TheWeather:"
+                        "\n\n%s"
+                        % e
+                    ),
+                    MessageBox.TYPE_ERROR
+                )
+
+            except Exception:
+
+                pass
+
+
 
     # ========================================================
     # AUTO BACKGROUNDS DOWNLOAD
