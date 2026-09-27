@@ -4,7 +4,7 @@
 # speedy_TheWeather Installer
 # =========================================================
 
-version='1.7.0'
+version='1.7.1'
 
 changelog='v1.6.8 EN: Fixed language files and PO/MO names. Added update function. Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart. Added customizable colors. Added automatic weather backgrounds and seasonal backgrounds with automatic download and installation. Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling. Added Ultra Low-End, Low-End, Auto and Normal performance modes. Existing features remain available. Buy me a coffee if you like this plugin. | DE: Sprachdateien sowie PO-/MO-Dateinamen korrigiert. Update-Funktion hinzugefügt. Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert. Anpassbare Farben hinzugefügt. Automatische Wetter-Hintergründe und saisonale Hintergründe mit automatischem Download und Installation hinzugefügt. Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert. Ultra Low-End, Low-End, Auto und Normal Performance-Modi hinzugefügt. Bestehende Funktionen bleiben erhalten. Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
 
@@ -67,6 +67,8 @@ PLUGIN_SOURCE=""
 BACKUP_CREATED=0
 INSTALL_STARTED=0
 
+AUTO_BG_BACKUP_CREATED=0
+
 
 # =========================================================
 # TEMPORARY / BACKUP PATHS
@@ -86,6 +88,9 @@ CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
 
 # Configuration backup.
 BACKUP_DIR="/tmp/speedy_TheWeather_config_backup"
+
+# Automatic weather background backup.
+AUTO_BG_BACKUP="/tmp/speedy_TheWeather_auto_backgrounds_backup"
 
 
 # =========================================================
@@ -115,6 +120,7 @@ error()
 cleanup()
 {
     log "Cleaning up temporary files..."
+
 
     if [ -n "$TMPPATH" ] &&
        [ -d "$TMPPATH" ]; then
@@ -741,6 +747,168 @@ restore_config()
     rm -rf "$BACKUP_DIR"
 
     BACKUP_CREATED=0
+
+    return 0
+}
+
+
+# =========================================================
+# AUTOMATIC WEATHER BACKGROUNDS BACKUP
+# =========================================================
+
+backup_auto_backgrounds()
+{
+    AUTO_BG_BACKUP_CREATED=0
+
+
+    # -----------------------------------------------------
+    # Installed auto background directory
+    # -----------------------------------------------------
+
+    AUTO_BG_DIR="$PLUGINPATH/backgrounds/auto"
+
+
+    if [ ! -d "$AUTO_BG_DIR" ]; then
+
+        log "No automatic weather background directory found."
+        log "Skipping automatic background backup."
+
+        return 0
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Check if directory contains files
+    # -----------------------------------------------------
+
+    if [ -z "$(find "$AUTO_BG_DIR" -type f 2>/dev/null | head -n 1)" ]; then
+
+        log "Automatic weather background directory is empty."
+        log "Skipping automatic background backup."
+
+        return 0
+
+    fi
+
+
+    log "Backing up automatic weather backgrounds..."
+
+
+    # -----------------------------------------------------
+    # Remove old temporary backup
+    # -----------------------------------------------------
+
+    if [ -d "$AUTO_BG_BACKUP" ]; then
+        rm -rf "$AUTO_BG_BACKUP"
+    fi
+
+
+    # -----------------------------------------------------
+    # Create backup directory
+    # -----------------------------------------------------
+
+    if ! mkdir -p "$AUTO_BG_BACKUP"; then
+
+        log "WARNING: Could not create automatic background backup directory."
+
+        return 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Copy all existing automatic backgrounds
+    # -----------------------------------------------------
+
+    if cp -a "$AUTO_BG_DIR"/. "$AUTO_BG_BACKUP"/ 2>/dev/null; then
+
+        AUTO_BG_BACKUP_CREATED=1
+
+        log "Automatic weather backgrounds backup successful."
+
+    else
+
+        log "WARNING: Automatic weather background backup failed."
+
+        rm -rf "$AUTO_BG_BACKUP"
+
+        return 1
+
+    fi
+
+
+    return 0
+}
+
+
+# =========================================================
+# AUTOMATIC WEATHER BACKGROUNDS RESTORE
+# =========================================================
+
+restore_auto_backgrounds()
+{
+    if [ "$AUTO_BG_BACKUP_CREATED" -ne 1 ]; then
+
+        return 0
+
+    fi
+
+
+    if [ ! -d "$AUTO_BG_BACKUP" ]; then
+
+        log "No automatic weather background backup found."
+
+        AUTO_BG_BACKUP_CREATED=0
+
+        return 0
+
+    fi
+
+
+    NEW_AUTO_BG_DIR="$PLUGINPATH/backgrounds/auto"
+
+
+    log "Restoring automatic weather backgrounds..."
+
+
+    # -----------------------------------------------------
+    # Create new auto background directory
+    # -----------------------------------------------------
+
+    if ! mkdir -p "$NEW_AUTO_BG_DIR"; then
+
+        log "WARNING: Could not create automatic background directory."
+
+        return 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Restore old backgrounds
+    # -----------------------------------------------------
+
+    if cp -a "$AUTO_BG_BACKUP"/. "$NEW_AUTO_BG_DIR"/ 2>/dev/null; then
+
+        log "Automatic weather backgrounds restored successfully."
+
+    else
+
+        log "WARNING: Automatic weather background restore failed."
+
+        return 1
+
+    fi
+
+
+    # -----------------------------------------------------
+    # Cleanup backup
+    # -----------------------------------------------------
+
+    rm -rf "$AUTO_BG_BACKUP"
+
+    AUTO_BG_BACKUP_CREATED=0
 
     return 0
 }
@@ -1393,6 +1561,7 @@ show_info()
     echo "BRANCH:          $BRANCH"
     echo "TEMP PATH:       $TMPPATH"
     echo "CONFIG PATH:     $CONFIG_DIR"
+    echo "AUTO BG BACKUP:  $AUTO_BG_BACKUP"
     echo "---------------------------------------------------------"
     echo
 
@@ -1534,6 +1703,13 @@ backup_existing_plugin
 
 
 # =========================================================
+# BACKUP AUTOMATIC WEATHER BACKGROUNDS
+# =========================================================
+
+backup_auto_backgrounds
+
+
+# =========================================================
 # INSTALL
 # =========================================================
 
@@ -1547,6 +1723,17 @@ install_plugin
 if ! restore_config; then
 
     log "WARNING: Configuration restore reported an error."
+
+fi
+
+
+# =========================================================
+# RESTORE AUTOMATIC WEATHER BACKGROUNDS
+# =========================================================
+
+if ! restore_auto_backgrounds; then
+
+    log "WARNING: Automatic weather background restore reported an error."
 
 fi
 
