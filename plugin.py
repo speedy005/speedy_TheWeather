@@ -2402,6 +2402,7 @@ def _update_start_check():
             e
         )
 
+
 # ============================================================================
 # UPDATE AVAILABLE MESSAGE
 # ============================================================================
@@ -2415,14 +2416,12 @@ def _update_show_message(info):
         )
     ).strip()
 
-
     changes = safeStr(
         info.get(
             "changes",
             ""
         )
     ).strip()
-
 
     installer_version = safeStr(
         info.get(
@@ -2431,16 +2430,13 @@ def _update_show_message(info):
         )
     ).strip()
 
-
     if not changes:
 
         changes = _(
             "No changes available."
         )
 
-
     installer_note = ""
-
 
     if installer_version:
 
@@ -2451,7 +2447,6 @@ def _update_show_message(info):
             )
             % installer_version
         )
-
 
     message = (
         _(
@@ -2481,7 +2476,6 @@ def _update_show_message(info):
         )
     )
 
-
     print(
         "[speedy_TheWeather] "
         "Update version: %s"
@@ -2500,7 +2494,6 @@ def _update_show_message(info):
         % changes
     )
 
-
     try:
 
         if _overlaySession is not None:
@@ -2513,7 +2506,6 @@ def _update_show_message(info):
                 default=True
             )
 
-
     except Exception as e:
 
         print(
@@ -2521,6 +2513,7 @@ def _update_show_message(info):
             "Could not show update dialog: %s"
             % e
         )
+
 
 # ============================================================================
 # UPDATE INSTALL CONFIRMATION
@@ -2531,6 +2524,7 @@ def _update_install_callback(answer):
     if answer:
 
         _update_install()
+
 
 # ============================================================================
 # UPDATE INSTALLING MESSAGE
@@ -2552,18 +2546,18 @@ def _update_show_installing():
                 timeout=5
             )
 
-
     except Exception as e:
 
         print(
             "[speedy_TheWeather] "
-            "Could not show install message:",
-            e
+            "Could not show install message: %s"
+            % e
         )
 
-    # ============================================================================
-    # UPDATE INSTALL
-    # ============================================================================
+
+# ============================================================================
+# UPDATE INSTALL
+# ============================================================================
 
 def _update_install():
 
@@ -2575,17 +2569,21 @@ def _update_install():
     # ------------------------------------------------------------------------
 
     if _updateInstallInProgress:
+
         print(
             "[speedy_TheWeather] "
             "Update installation already running."
         )
+
         return
 
     if not _updateInfo:
+
         print(
             "[speedy_TheWeather] "
             "No update information available."
         )
+
         return
 
     _updateInstallInProgress = True
@@ -2758,21 +2756,10 @@ def _update_install():
             )
 
         # --------------------------------------------------------------------
-        # IMPORTANT
+        # SUCCESS MARKER
         #
-        # Console.py does not provide the installer return code directly
-        # through finishedCallback().
-        #
-        # Therefore:
-        #
-        #     installer.sh
-        #         |
-        #         +-- exit 0 --> touch success marker
-        #         |
-        #         +-- exit != 0 --> success marker is NOT created
-        #
-        # The marker is therefore used by update_finished() to determine
-        # whether the installation really succeeded.
+        # installer.sh must finish with exit code 0.
+        # Only then will touch create the success marker.
         # --------------------------------------------------------------------
 
         cmd = (
@@ -2807,8 +2794,7 @@ def _update_install():
             cmdlist=[
                 cmd
             ],
-            finishedCallback=
-                update_finished,
+            finishedCallback=update_finished,
             closeOnSuccess=True
         )
 
@@ -2859,11 +2845,12 @@ def _update_install():
                 "install_error",
                 None
             )
+        )
 
 
-    # ============================================================================
-    # INSTALLER FINISHED
-    # ============================================================================
+# ============================================================================
+# INSTALLER FINISHED
+# ============================================================================
 
 def update_finished():
 
@@ -2876,20 +2863,10 @@ def update_finished():
         "Update installer finished"
     )
 
-    # ------------------------------------------------------------------------
-    # CONSOLE REFERENCE CLEAR
-    # ------------------------------------------------------------------------
-
     _updateConsole = None
 
     # ------------------------------------------------------------------------
     # CHECK SUCCESS MARKER
-    #
-    # The installer command is:
-    #
-    #     /bin/bash installer.sh && touch success_marker
-    #
-    # Therefore the marker only exists when installer.sh returned 0.
     # ------------------------------------------------------------------------
 
     success = os.path.exists(
@@ -2944,9 +2921,6 @@ def update_finished():
 
         # --------------------------------------------------------------------
         # REMOVE SUCCESS MARKER
-        #
-        # Very important:
-        # The marker must not remain for a future update.
         # --------------------------------------------------------------------
 
         try:
@@ -2973,10 +2947,7 @@ def update_finished():
             )
 
         # --------------------------------------------------------------------
-        # SHOW RESTART MESSAGE SAFELY
-        #
-        # Do not open a MessageBox directly from the Console callback.
-        # Use an eTimer so the GUI event loop can handle it safely.
+        # STOP EXISTING RESTART TIMER
         # --------------------------------------------------------------------
 
         try:
@@ -2984,14 +2955,22 @@ def update_finished():
             if _updateRestartTimer is not None:
 
                 try:
+
                     _updateRestartTimer.stop()
+
                 except Exception:
+
                     pass
 
                 _updateRestartTimer = None
 
         except Exception:
+
             pass
+
+        # --------------------------------------------------------------------
+        # CREATE RESTART TIMER
+        # --------------------------------------------------------------------
 
         try:
 
@@ -3009,16 +2988,14 @@ def update_finished():
                 try:
 
                     if _updateRestartTimer is not None:
+
                         _updateRestartTimer.stop()
 
                 except Exception:
+
                     pass
 
                 _updateRestartTimer = None
-
-                # ------------------------------------------------------------
-                # SHOW SUCCESS / RESTART QUESTION
-                # ------------------------------------------------------------
 
                 try:
 
@@ -3028,7 +3005,7 @@ def update_finished():
 
                     print(
                         "[speedy_TheWeather] "
-                        "Could not show restart message: %s"
+                        "Could not finish update: %s"
                         % e
                     )
 
@@ -3067,10 +3044,6 @@ def update_finished():
                     "Could not finish update: %s"
                     % finishError
                 )
-
-        # --------------------------------------------------------------------
-        # IMPORTANT
-        # --------------------------------------------------------------------
 
         return
 
@@ -3127,6 +3100,7 @@ def update_finished():
             )
 
     except Exception:
+
         pass
 
     # ------------------------------------------------------------------------
@@ -3138,6 +3112,7 @@ def update_finished():
             "install_error",
             None
         )
+    )
 
 
 # ============================================================================
@@ -3156,6 +3131,8 @@ def _update_install_finished():
         "[speedy_TheWeather] "
         "Update installation finished successfully."
     )
+
+
 
     # ------------------------------------------------------------------------
     # RESTART CALLBACK
