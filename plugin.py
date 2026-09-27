@@ -310,13 +310,13 @@ UPDATE_RAW_BASE = (
 )
 
 UPDATE_PLUGIN_URL = (
-    UPDATE_RAW_BASE +
-    "/plugin.py"
+    "https://raw.githubusercontent.com/"
+    "speedy005/speedy_TheWeather/master/plugin.py"
 )
 
 UPDATE_INSTALLER_URL = (
-    UPDATE_RAW_BASE +
-    "/installer.sh"
+    "https://raw.githubusercontent.com/"
+    "speedy005/speedy_TheWeather/master/installer.sh"
 )
 
 
@@ -1696,87 +1696,55 @@ def _update_is_newer(remote_version):
 # UPDATE DOWNLOAD
 # ============================================================================
 
-def _update_download(
-    url,
-    destination,
-    timeout=None
-):
-    """
-    Lädt eine Datei über wget herunter.
 
-    wget wird verwendet, weil es auf dem Enigma2-Receiver
-    bereits erfolgreich mit raw.githubusercontent.com funktioniert.
+def _update_download(url, destination, timeout=None):
+    """
+    Download für das Update-System über wget.
+    Gibt True bei Erfolg und False bei Fehler zurück.
     """
 
     if timeout is None:
-
-        timeout = UPDATE_CHECK_TIMEOUT
-
-    print(
-        "[speedy_TheWeather] "
-        "Download started:"
-    )
-
-    print(
-        "[speedy_TheWeather] "
-        "URL: %s"
-        % url
-    )
-
-    print(
-        "[speedy_TheWeather] "
-        "Destination: %s"
-        % destination
-    )
+        timeout = UPDATE_DOWNLOAD_TIMEOUT
 
     try:
+        print("[speedy_TheWeather] UPDATE DOWNLOAD START")
+        print("[speedy_TheWeather] URL: %s" % url)
+        print("[speedy_TheWeather] DEST: %s" % destination)
 
-        # --------------------------------------------------------------------
-        # DESTINATION DIRECTORY
-        # --------------------------------------------------------------------
+        wgetPath = "/usr/bin/wget"
 
-        destinationDir = os.path.dirname(
-            destination
-        )
-
-        if destinationDir:
-
-            if not os.path.exists(
-                destinationDir
-            ):
-
-                os.makedirs(
-                    destinationDir
-                )
-
-        # --------------------------------------------------------------------
-        # REMOVE OLD FILE
-        # --------------------------------------------------------------------
-
-        try:
-
-            if os.path.exists(
-                destination
-            ):
-
-                os.unlink(
-                    destination
-                )
-
-        except Exception as e:
-
+        if not os.path.exists(wgetPath):
             print(
-                "[speedy_TheWeather] "
-                "Could not remove old download: %s"
+                "[speedy_TheWeather] ERROR: wget not found: %s"
+                % wgetPath
+            )
+
+            # Zweite Möglichkeit prüfen
+            if os.path.exists("/bin/wget"):
+                wgetPath = "/bin/wget"
+                print(
+                    "[speedy_TheWeather] Using fallback wget: %s"
+                    % wgetPath
+                )
+            else:
+                print(
+                    "[speedy_TheWeather] ERROR: /bin/wget also not found"
+                )
+                return False
+
+        # Alte Datei entfernen
+        try:
+            if os.path.exists(destination):
+                os.remove(destination)
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] WARNING: "
+                "could not remove old file: %s"
                 % e
             )
 
-        # --------------------------------------------------------------------
-        # WGET
-        # --------------------------------------------------------------------
-
         command = (
-            "/usr/bin/wget "
+            "\"%s\" "
             "-q "
             "--no-check-certificate "
             "--timeout=%d "
@@ -1786,6 +1754,7 @@ def _update_download(
             "\"%s\""
             %
             (
+                wgetPath,
                 int(timeout),
                 destination,
                 url
@@ -1793,108 +1762,84 @@ def _update_download(
         )
 
         print(
-            "[speedy_TheWeather] "
-            "Executing wget:"
-        )
-
-        print(
-            "[speedy_TheWeather] %s"
+            "[speedy_TheWeather] WGET COMMAND: %s"
             % command
         )
 
-        result = os.system(
-            command
-        )
+        result = os.system(command)
 
         print(
-            "[speedy_TheWeather] "
-            "wget return code: %s"
+            "[speedy_TheWeather] WGET RETURN CODE: %s"
             % result
         )
 
-        # --------------------------------------------------------------------
-        # CHECK RESULT
-        # --------------------------------------------------------------------
-
         if result != 0:
-
             print(
-                "[speedy_TheWeather] "
-                "wget download failed."
+                "[speedy_TheWeather] ERROR: wget failed "
+                "with return code %s"
+                % result
             )
+
+            try:
+                if os.path.exists(destination):
+                    os.remove(destination)
+            except Exception:
+                pass
 
             return False
 
-        # --------------------------------------------------------------------
-        # CHECK FILE
-        # --------------------------------------------------------------------
-
-        if not os.path.isfile(
-            destination
-        ):
-
+        if not os.path.exists(destination):
             print(
-                "[speedy_TheWeather] "
-                "Downloaded file does not exist."
+                "[speedy_TheWeather] ERROR: downloaded file "
+                "does not exist"
             )
-
             return False
 
         try:
-
-            fileSize = os.path.getsize(
-                destination
+            fileSize = os.path.getsize(destination)
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] ERROR: cannot read file size: %s"
+                % e
             )
-
-        except Exception:
-
-            fileSize = 0
+            return False
 
         print(
-            "[speedy_TheWeather] "
-            "Downloaded file size: %d bytes"
+            "[speedy_TheWeather] DOWNLOADED SIZE: %d bytes"
             % fileSize
         )
 
         if fileSize <= 0:
-
             print(
-                "[speedy_TheWeather] "
-                "Downloaded file is empty."
+                "[speedy_TheWeather] ERROR: downloaded file is empty"
             )
+
+            try:
+                os.remove(destination)
+            except Exception:
+                pass
 
             return False
 
-        print(
-            "[speedy_TheWeather] "
-            "Download successful."
-        )
+        print("[speedy_TheWeather] UPDATE DOWNLOAD SUCCESS")
 
         return True
 
     except Exception as e:
-
         print(
-            "[speedy_TheWeather] "
-            "Update download exception: %s"
+            "[speedy_TheWeather] UPDATE DOWNLOAD EXCEPTION: %s"
             % e
         )
 
         try:
-
-            if os.path.exists(
-                destination
-            ):
-
-                os.unlink(
-                    destination
-                )
-
+            if os.path.exists(destination):
+                os.remove(destination)
         except Exception:
-
             pass
 
         return False
+
+
 
 
 # ============================================================================
@@ -2091,6 +2036,7 @@ def _update_changes_text(changes):
 # UPDATE CHECK WORKER
 # ============================================================================
 
+
 def _update_check_worker():
 
     global _updateWorkerStarted
@@ -2102,119 +2048,24 @@ def _update_check_worker():
 
         print(
             "[speedy_TheWeather] "
+            "=================================================="
+        )
+
+        print(
+            "[speedy_TheWeather] "
             "Starting GitHub update check."
         )
 
-        # --------------------------------------------------------------------
-        # TEMP PLUGIN FILE
-        # --------------------------------------------------------------------
-
-        fd, plugin_path = tempfile.mkstemp(
-            prefix=".speedy_TheWeather_remote_",
-            suffix=".py",
-            dir="/tmp"
-        )
-
-        os.close(fd)
-
-        # --------------------------------------------------------------------
-        # DOWNLOAD PLUGIN
-        # --------------------------------------------------------------------
-
         print(
             "[speedy_TheWeather] "
-            "Downloading remote plugin.py..."
-        )
-
-        if not _update_download(
-            UPDATE_PLUGIN_URL,
-            plugin_path,
-            timeout=UPDATE_CHECK_TIMEOUT
-        ):
-
-            print(
-                "[speedy_TheWeather] "
-                "Could not download remote plugin.py."
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _(
-                        "Update check failed."
-                    )
-                )
-            )
-
-            return
-
-        # --------------------------------------------------------------------
-        # READ SOURCE
-        # --------------------------------------------------------------------
-
-        with open(
-            plugin_path,
-            "r",
-            encoding="utf-8"
-        ) as source_file:
-
-            remote_source = (
-                source_file.read()
-            )
-
-        print(
-            "[speedy_TheWeather] "
-            "Remote plugin.py downloaded."
-        )
-
-        # --------------------------------------------------------------------
-        # CHECK PYTHON SYNTAX
-        # --------------------------------------------------------------------
-
-        import ast
-
-        ast.parse(
-            remote_source,
-            filename="plugin.py"
+            "UPDATE_PLUGIN_URL: %s"
+            % UPDATE_PLUGIN_URL
         )
 
         print(
             "[speedy_TheWeather] "
-            "Remote plugin.py syntax is valid."
-        )
-
-        # --------------------------------------------------------------------
-        # EXTRACT VERSION
-        # --------------------------------------------------------------------
-
-        remote_version = (
-            _update_extract_plugin_version(
-                remote_source
-            )
-        )
-
-        if not remote_version:
-
-            print(
-                "[speedy_TheWeather] "
-                "Remote version could not be detected."
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _(
-                        "Update information is incomplete."
-                    )
-                )
-            )
-
-            return
-
-        print(
-            "[speedy_TheWeather] "
-            "Remote version: %s"
-            % remote_version
+            "UPDATE_INSTALLER_URL: %s"
+            % UPDATE_INSTALLER_URL
         )
 
         # --------------------------------------------------------------------
@@ -2236,17 +2087,335 @@ def _update_check_worker():
         )
 
         # --------------------------------------------------------------------
-        # VERSION COMPARISON
+        # TEMP PLUGIN FILE
         # --------------------------------------------------------------------
 
-        if not _update_is_newer(
-            remote_version
-        ):
+        fd, plugin_path = tempfile.mkstemp(
+            prefix=".speedy_TheWeather_remote_",
+            suffix=".py",
+            dir="/tmp"
+        )
+
+        os.close(fd)
+
+        print(
+            "[speedy_TheWeather] "
+            "Temporary plugin file: %s"
+            % plugin_path
+        )
+
+        # --------------------------------------------------------------------
+        # DOWNLOAD PLUGIN
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Downloading remote plugin.py..."
+        )
+
+        download_result = _update_download(
+            UPDATE_PLUGIN_URL,
+            plugin_path,
+            timeout=UPDATE_CHECK_TIMEOUT
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "plugin.py download result: %s"
+            % download_result
+        )
+
+        if not download_result:
 
             print(
                 "[speedy_TheWeather] "
-                "Plugin is up to date: %s"
-                % remote_version
+                "ERROR: Could not download remote plugin.py."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Could not download update information."
+                    )
+                )
+            )
+
+            return
+
+        # --------------------------------------------------------------------
+        # VERIFY DOWNLOADED FILE
+        # --------------------------------------------------------------------
+
+        if not os.path.exists(plugin_path):
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR: Downloaded plugin.py does not exist."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Downloaded update file is missing."
+                    )
+                )
+            )
+
+            return
+
+        try:
+
+            plugin_size = os.path.getsize(
+                plugin_path
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR: Could not determine plugin.py size: %s"
+                % e
+            )
+
+            plugin_size = 0
+
+        print(
+            "[speedy_TheWeather] "
+            "Downloaded plugin.py size: %d bytes"
+            % plugin_size
+        )
+
+        if plugin_size <= 0:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR: Downloaded plugin.py is empty."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Downloaded update file is empty."
+                    )
+                )
+            )
+
+            return
+
+        # --------------------------------------------------------------------
+        # READ SOURCE
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Reading remote plugin.py..."
+        )
+
+        try:
+
+            with open(
+                plugin_path,
+                "r",
+                encoding="utf-8"
+            ) as source_file:
+
+                remote_source = (
+                    source_file.read()
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR reading remote plugin.py: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Could not read update information."
+                    )
+                )
+            )
+
+            return
+
+        print(
+            "[speedy_TheWeather] "
+            "Remote plugin.py read successfully."
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Remote plugin.py characters: %d"
+            % len(remote_source)
+        )
+
+        # --------------------------------------------------------------------
+        # CHECK PYTHON SYNTAX
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Checking remote plugin.py syntax..."
+        )
+
+        try:
+
+            import ast
+
+            ast.parse(
+                remote_source,
+                filename="plugin.py"
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR: Remote plugin.py syntax invalid: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Remote plugin.py contains invalid Python syntax."
+                    )
+                )
+            )
+
+            return
+
+        print(
+            "[speedy_TheWeather] "
+            "Remote plugin.py syntax is valid."
+        )
+
+        # --------------------------------------------------------------------
+        # EXTRACT REMOTE VERSION
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Extracting remote version..."
+        )
+
+        try:
+
+            remote_version = (
+                _update_extract_plugin_version(
+                    remote_source
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR extracting remote version: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Could not read remote plugin version."
+                    )
+                )
+            )
+
+            return
+
+        if not remote_version:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR: Remote version could not be detected."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Update information is incomplete."
+                    )
+                )
+            )
+
+            return
+
+        print(
+            "[speedy_TheWeather] "
+            "Remote version: %s"
+            % remote_version
+        )
+
+        # --------------------------------------------------------------------
+        # VERSION COMPARISON
+        # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Comparing versions..."
+        )
+
+        try:
+
+            is_newer = _update_is_newer(
+                remote_version
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ERROR during version comparison: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Could not compare plugin versions."
+                    )
+                )
+            )
+
+            return
+
+        print(
+            "[speedy_TheWeather] "
+            "Version comparison result: %s"
+            % is_newer
+        )
+
+        # --------------------------------------------------------------------
+        # CURRENT VERSION
+        # --------------------------------------------------------------------
+
+        if not is_newer:
+
+            print(
+                "[speedy_TheWeather] "
+                "Plugin is up to date."
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "Installed: %s | Remote: %s"
+                % (
+                    current_version,
+                    remote_version
+                )
             )
 
             _updateQueue.put(
@@ -2267,8 +2436,29 @@ def _update_check_worker():
 
         print(
             "[speedy_TheWeather] "
-            "New update available: %s"
+            "=================================================="
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "NEW UPDATE AVAILABLE"
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installed: %s"
+            % current_version
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Remote: %s"
             % remote_version
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "=================================================="
         )
 
         # --------------------------------------------------------------------
@@ -2283,6 +2473,12 @@ def _update_check_worker():
 
         os.close(fd)
 
+        print(
+            "[speedy_TheWeather] "
+            "Temporary installer file: %s"
+            % installer_path
+        )
+
         installer_info = {
             "version": "",
             "changelog": ""
@@ -2292,11 +2488,24 @@ def _update_check_worker():
         # DOWNLOAD INSTALLER
         # --------------------------------------------------------------------
 
-        if _update_download(
+        print(
+            "[speedy_TheWeather] "
+            "Downloading installer.sh..."
+        )
+
+        installer_download_result = _update_download(
             UPDATE_INSTALLER_URL,
             installer_path,
             timeout=UPDATE_CHECK_TIMEOUT
-        ):
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "installer.sh download result: %s"
+            % installer_download_result
+        )
+
+        if installer_download_result:
 
             try:
 
@@ -2310,9 +2519,40 @@ def _update_check_worker():
                         installer_file.read()
                     )
 
+                print(
+                    "[speedy_TheWeather] "
+                    "installer.sh read successfully."
+                )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "installer.sh characters: %d"
+                    % len(installer_source)
+                )
+
                 installer_info = (
                     _update_extract_installer_info(
                         installer_source
+                    )
+                )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Installer version: %s"
+                    % installer_info.get(
+                        "version",
+                        ""
+                    )
+                )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Changelog detected: %s"
+                    % bool(
+                        installer_info.get(
+                            "changelog",
+                            ""
+                        )
                     )
                 )
 
@@ -2320,7 +2560,7 @@ def _update_check_worker():
 
                 print(
                     "[speedy_TheWeather] "
-                    "Could not read installer changelog: %s"
+                    "Could not read installer information: %s"
                     % e
                 )
 
@@ -2329,6 +2569,11 @@ def _update_check_worker():
             print(
                 "[speedy_TheWeather] "
                 "Installer information could not be downloaded."
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "Update can still continue without installer information."
             )
 
         # --------------------------------------------------------------------
@@ -2349,8 +2594,13 @@ def _update_check_worker():
             )
 
         # --------------------------------------------------------------------
-        # SEND RESULT
+        # SEND RESULT TO GUI
         # --------------------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "Sending update information to GUI."
+        )
 
         _updateQueue.put(
             (
@@ -2373,15 +2623,40 @@ def _update_check_worker():
 
         print(
             "[speedy_TheWeather] "
-            "Update information sent to GUI."
+            "Update information successfully sent to GUI."
         )
 
     except Exception as e:
 
         print(
             "[speedy_TheWeather] "
-            "Update check failed: %s"
+            "=================================================="
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "UPDATE CHECK EXCEPTION:"
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "%s"
             % e
+        )
+
+        import traceback
+
+        try:
+
+            traceback.print_exc()
+
+        except Exception:
+
+            pass
+
+        print(
+            "[speedy_TheWeather] "
+            "=================================================="
         )
 
         _updateQueue.put(
@@ -2418,9 +2693,22 @@ def _update_check_worker():
                         path
                     )
 
-                except Exception:
+                    print(
+                        "[speedy_TheWeather] "
+                        "Removed temporary file: %s"
+                        % path
+                    )
 
-                    pass
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "Could not remove temporary file %s: %s"
+                        % (
+                            path,
+                            e
+                        )
+                    )
 
         # --------------------------------------------------------------------
         # ALLOW NEXT UPDATE CHECK
@@ -2432,6 +2720,13 @@ def _update_check_worker():
             "[speedy_TheWeather] "
             "GitHub update worker finished."
         )
+
+        print(
+            "[speedy_TheWeather] "
+            "=================================================="
+        )
+
+
 
 
 # ============================================================================
