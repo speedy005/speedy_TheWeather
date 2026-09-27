@@ -1660,7 +1660,7 @@ def _update_is_newer(remote_version):
 # UPDATE DOWNLOAD
 # ============================================================================
 
-```python
+
 def _update_download(
     url,
     destination,
@@ -1870,7 +1870,7 @@ def _update_download(
         )
 
         return False
-```
+
 
 
 # ============================================================================
