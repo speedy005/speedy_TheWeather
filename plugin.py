@@ -35,7 +35,14 @@ from enigma import ePoint
 from Screens.Screen import Screen
 from Components.Label import Label
 from time import strftime, localtime
-from Components.config import config, ConfigSelection, configfile, ConfigSubsection, getConfigListEntry
+from Components.config import (
+    config,
+    ConfigSelection,
+    ConfigYesNo,
+    configfile,
+    ConfigSubsection,
+    getConfigListEntry
+)
 from Screens.ChoiceBox import ChoiceBox
 from enigma import ePicLoad, getDesktop
 from Components.MenuList import MenuList
@@ -109,6 +116,13 @@ config.plugins.speedy_TheWeather.performance = ConfigSelection(
     ]
 )
 
+config.plugins.speedy_TheWeather.autoBackgrounds = ConfigYesNo(
+    default=True
+)
+
+config.plugins.speedy_TheWeather.holidayBackgrounds = ConfigYesNo(
+    default=True
+)
 # ---------------------------------------------------------------------------
 # SevenDay Farbpalette
 # ---------------------------------------------------------------------------
@@ -218,6 +232,7 @@ config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
 
 # add speedy005
 PY3 = False
+
 import sys
 if sys.version_info[0] >= 3:
     PY3 = True
@@ -246,7 +261,6 @@ def safeStr(value):
 def stripCoords(value):
     return safeStr(value).split("|", 1)[0]
 
-
 # Manual regression-test location. This is intentionally not auto-added to
 # SavedLokaleWeer; it can be used as a saved entry for display testing.
 TEST_MCMURDO_ENTRY = "McMurdo Station-6696480|-77.84632|166.66824"
@@ -263,30 +277,32 @@ def getCoordsFromEntry(value):
 __version__ = "1.6.7"
 VERSION = __version__
 
+def iconToBgCategory(icon):
+    icon = (icon or "").strip().lower()
+    base = icon[0] if icon else ""
+    mapping = {
+        "a": "sunny", "j": "sunny",
+        "b": "cloudy", "c": "cloudy", "r": "cloudy",
+        "d": "mist", "n": "mist",
+        "f": "rain", "m": "rain", "q": "rain", "w": "rain",
+        "g": "thunder", "s": "thunder",
+        "t": "snow", "u": "snow", "v": "snow",
+    }
+    return mapping.get(base, "")
+
 version = '1.6.7'
 
-# Installer/update changelog text. Keep both languages available so the
-# update screen can display a localized release description.
-CHANGELOG_EN = (
-    "Fixed malformed locale language files. Fixed language PO and MO file names. "
-    "Added an update function. Fixed the Rain Radar screen. Fixed the date display "
-    "in the Seven Day Weather screen. Fixed weather icons. Fixed detached GUI restart. "
-    "Added customizable color settings. Improved performance for low-end Enigma2 "
-    "receivers with adaptive radar loading, reduced decoding load and optimized "
-    "animation handling. Added Auto, Low-End and Normal performance modes. "
-    "Buy me a coffee if you like this plugin."
-)
+# ============================================================
+# AUTO WEATHER BACKGROUNDS
+# ============================================================
 
-CHANGELOG_DE = (
-    "Fehlerhafte Sprachdateien korrigiert. PO- und MO-Dateinamen der Sprachdateien "
-    "korrigiert. Update-Funktion hinzugefügt. Rain-Radar-Bildschirm korrigiert. "
-    "Datumsanzeige im Sieben-Tage-Wetter korrigiert. Wetter-Icons korrigiert. "
-    "Neustart der getrennten GUI korrigiert. Anpassbare Farbeinstellungen hinzugefügt. "
-    "Performance für schwache Enigma2-Receiver verbessert durch adaptives Radar-Laden, "
-    "reduzierte Decodierlast und optimierte Animationen. Performance-Modi Auto, Low-End "
-    "und Normal hinzugefügt. Wenn dir dieses Plugin gefällt, kannst du mich gerne "
-    "auf einen Kaffee einladen."
-)
+backgroundAutoWeather = True
+holidayBackgroundsEnabled = True
+
+
+# ============================================================
+# GITHUB UPDATE / DOWNLOAD
+# ============================================================
 
 UPDATE_RAW_BASE = (
     "https://raw.githubusercontent.com/"
@@ -303,6 +319,71 @@ UPDATE_INSTALLER_URL = (
     "/installer.sh"
 )
 
+
+# ============================================================
+# AUTO WEATHER BACKGROUNDS - DOWNLOAD
+# ============================================================
+
+AUTO_BG_ZIP_URL = (
+    UPDATE_RAW_BASE +
+    "/backgrounds_auto.zip"
+)
+
+AUTO_BG_ZIP_FILE = (
+    "/tmp/backgrounds_auto.zip"
+)
+
+
+# ============================================================
+# AUTO WEATHER BACKGROUNDS - PATHS
+# ============================================================
+
+AUTO_BG_EXTENSIONS = (
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".bmp"
+)
+
+BACKGROUND_ROOT = (
+    "/usr/lib/enigma2/python/Plugins/Extensions/"
+    "speedy_TheWeather/backgrounds/"
+)
+
+AUTO_BG_DIR = os.path.join(
+    BACKGROUND_ROOT,
+    "auto"
+)
+
+AUTO_BG_MARKER = os.path.join(
+    AUTO_BG_DIR,
+    ".installed"
+)
+
+
+# ============================================================
+# HOLIDAY BACKGROUNDS
+# ============================================================
+
+HOLIDAY_BACKGROUNDS = [
+
+    # Halloween
+    (10, 25, 10, 31, "halloween"),
+
+    # Weihnachten
+    (12, 20, 12, 26, "christmas"),
+
+    # Silvester / Neujahr
+    (12, 28, 1, 2, "newyear"),
+
+    # Ostern
+    (3, 26, 3, 29, "easter"),
+]
+
+# ============================================================
+# UPDATE SETTINGS
+# ============================================================
+
 UPDATE_CHECK_DELAY_MS = 8000
 UPDATE_CHECK_TIMEOUT = 15
 
@@ -314,6 +395,9 @@ UPDATE_SUCCESS_FILE = (
     "/tmp/speedy_TheWeather_update_success"
 )
 
+# ============================================================
+# UPDATE STATE
+# ============================================================
 
 _updateStartTimer = None
 _updatePollTimer = None
@@ -325,8 +409,1189 @@ _updateWorkerStarted = False
 _updateInstallInProgress = False
 
 _updateInfo = None
-
 _updateConsole = None
+
+# ============================================================
+# AUTO WEATHER BACKGROUND FUNCTIONS
+# ============================================================
+
+# AUTO_BG_MARKER wird bereits oben definiert.
+# Hier NICHT noch einmal definieren.
+
+
+
+import os
+import time
+import zipfile
+import subprocess
+
+def ensureAutoBackgrounds():
+    """
+    Lädt backgrounds_auto.zip von GitHub.
+
+    ZIP:
+        auto/*.jpg
+        extra/*.jpg
+
+    Installation:
+        auto/*  -> backgrounds/auto/
+        extra/* -> backgrounds/
+
+    Python 2 + Python 3 kompatibel.
+    """
+
+    if not backgroundAutoWeather:
+        print("[speedy_TheWeather] Auto backgrounds deaktiviert")
+        return False
+
+    print("==================================================")
+    print("[speedy_TheWeather] AUTO BG CHECK")
+    print("==================================================")
+
+    zipFile = AUTO_BG_ZIP_FILE
+
+    try:
+        # ====================================================
+        # Verzeichnisse erstellen
+        # ====================================================
+
+        if not os.path.isdir(BACKGROUND_ROOT):
+            os.makedirs(BACKGROUND_ROOT)
+
+        if not os.path.isdir(AUTO_BG_DIR):
+            os.makedirs(AUTO_BG_DIR)
+
+        print(
+            "[speedy_TheWeather] Background Root:"
+        )
+        print(BACKGROUND_ROOT)
+
+        print(
+            "[speedy_TheWeather] Auto Directory:"
+        )
+        print(AUTO_BG_DIR)
+
+        # ====================================================
+        # Benötigte AUTO-Dateien
+        # ====================================================
+
+        requiredAutoBackgrounds = (
+            "sunny.jpg",
+            "cloudy.jpg",
+            "mist.jpg",
+            "rain.jpg",
+            "thunder.jpg",
+            "snow.jpg",
+            "halloween.jpg",
+            "kerst.jpg",
+            "newyear.jpg",
+        )
+
+        # ====================================================
+        # Prüfen ob AUTO bereits installiert
+        # ====================================================
+
+        allInstalled = True
+
+        for filename in requiredAutoBackgrounds:
+
+            target = os.path.join(
+                AUTO_BG_DIR,
+                filename
+            )
+
+            if not os.path.isfile(target):
+                allInstalled = False
+                break
+
+            try:
+                if os.path.getsize(target) <= 0:
+                    allInstalled = False
+                    break
+            except Exception:
+                allInstalled = False
+                break
+
+        if allInstalled:
+
+            print(
+                "[speedy_TheWeather] "
+                "Alle Auto-BGs bereits vorhanden."
+            )
+
+            try:
+                with open(AUTO_BG_MARKER, "w") as f:
+                    f.write("installed\n")
+                    f.write(
+                        "timestamp=%s\n"
+                        % int(time.time())
+                    )
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "Marker Fehler: %s"
+                    % e
+                )
+
+            return True
+
+        # ====================================================
+        # Alte ZIP löschen
+        # ====================================================
+
+        try:
+            if os.path.exists(zipFile):
+                os.remove(zipFile)
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "Alte ZIP konnte nicht gelöscht werden: %s"
+                % e
+            )
+
+        # ====================================================
+        # DOWNLOAD
+        # ====================================================
+
+        print(
+            "[speedy_TheWeather] Download startet..."
+        )
+
+        command = (
+            "wget -O '%s' "
+            "--timeout=15 "
+            "--tries=2 "
+            "'%s'"
+        ) % (
+            zipFile,
+            AUTO_BG_ZIP_URL
+        )
+
+        print(
+            "[speedy_TheWeather] CMD:"
+        )
+        print(command)
+
+        result = os.system(command)
+
+        print(
+            "[speedy_TheWeather] wget return: %s"
+            % result
+        )
+
+        if result != 0:
+            print(
+                "[speedy_TheWeather] "
+                "DOWNLOAD FEHLGESCHLAGEN"
+            )
+            return False
+
+        # ====================================================
+        # ZIP vorhanden?
+        # ====================================================
+
+        if not os.path.isfile(zipFile):
+            print(
+                "[speedy_TheWeather] "
+                "ZIP wurde nicht erstellt."
+            )
+            return False
+
+        try:
+            zipSize = os.path.getsize(zipFile)
+        except Exception:
+            zipSize = 0
+
+        print(
+            "[speedy_TheWeather] "
+            "ZIP Größe: %s Bytes"
+            % zipSize
+        )
+
+        if zipSize <= 0:
+            print(
+                "[speedy_TheWeather] "
+                "ZIP ist leer."
+            )
+            return False
+
+        # ====================================================
+        # ZIP prüfen
+        # ====================================================
+
+        if not zipfile.is_zipfile(zipFile):
+
+            print(
+                "[speedy_TheWeather] "
+                "FEHLER: Keine gültige ZIP!"
+            )
+
+            return False
+
+        print(
+            "[speedy_TheWeather] "
+            "ZIP ist gültig."
+        )
+
+        # ====================================================
+        # ZIP öffnen
+        # ====================================================
+
+        zf = zipfile.ZipFile(
+            zipFile,
+            "r"
+        )
+
+        try:
+
+            members = zf.namelist()
+
+            print(
+                "[speedy_TheWeather] "
+                "ZIP Dateien: %s"
+                % len(members)
+            )
+
+            # =================================================
+            # AUTO/
+            # =================================================
+
+            autoInstalled = 0
+
+            for filename in requiredAutoBackgrounds:
+
+                sourceName = (
+                    "auto/" +
+                    filename
+                )
+
+                targetPath = os.path.join(
+                    AUTO_BG_DIR,
+                    filename
+                )
+
+                if sourceName not in members:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "AUTO fehlt in ZIP: %s"
+                        % sourceName
+                    )
+
+                    continue
+
+                try:
+
+                    data = zf.read(
+                        sourceName
+                    )
+
+                    if not data:
+                        print(
+                            "[speedy_TheWeather] "
+                            "AUTO Datei leer: %s"
+                            % sourceName
+                        )
+                        continue
+
+                    tempPath = (
+                        targetPath +
+                        ".tmp"
+                    )
+
+                    with open(
+                        tempPath,
+                        "wb"
+                    ) as f:
+                        f.write(data)
+
+                    if os.path.exists(
+                        targetPath
+                    ):
+                        os.remove(
+                            targetPath
+                        )
+
+                    os.rename(
+                        tempPath,
+                        targetPath
+                    )
+
+                    autoInstalled += 1
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "AUTO installiert: %s"
+                        % filename
+                    )
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "AUTO Fehler %s: %s"
+                        % (
+                            filename,
+                            e
+                        )
+                    )
+
+                    try:
+                        if os.path.exists(
+                            tempPath
+                        ):
+                            os.remove(
+                                tempPath
+                            )
+                    except Exception:
+                        pass
+
+            # =================================================
+            # EXTRA/
+            # =================================================
+
+            extraInstalled = 0
+
+            for member in members:
+
+                if not member.startswith(
+                    "extra/"
+                ):
+                    continue
+
+                if member.endswith(
+                    "/"
+                ):
+                    continue
+
+                filename = os.path.basename(
+                    member
+                )
+
+                if not filename:
+                    continue
+
+                targetPath = os.path.join(
+                    BACKGROUND_ROOT,
+                    filename
+                )
+
+                tempPath = (
+                    targetPath +
+                    ".tmp"
+                )
+
+                try:
+
+                    data = zf.read(
+                        member
+                    )
+
+                    if not data:
+                        print(
+                            "[speedy_TheWeather] "
+                            "EXTRA Datei leer: %s"
+                            % member
+                        )
+                        continue
+
+                    with open(
+                        tempPath,
+                        "wb"
+                    ) as f:
+                        f.write(data)
+
+                    if os.path.exists(
+                        targetPath
+                    ):
+                        os.remove(
+                            targetPath
+                        )
+
+                    os.rename(
+                        tempPath,
+                        targetPath
+                    )
+
+                    extraInstalled += 1
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "EXTRA installiert: %s"
+                        % filename
+                    )
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "EXTRA Fehler %s: %s"
+                        % (
+                            member,
+                            e
+                        )
+                    )
+
+                    try:
+                        if os.path.exists(
+                            tempPath
+                        ):
+                            os.remove(
+                                tempPath
+                            )
+                    except Exception:
+                        pass
+
+            print(
+                "[speedy_TheWeather] "
+                "AUTO installiert: %s"
+                % autoInstalled
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "EXTRA installiert: %s"
+                % extraInstalled
+            )
+
+        finally:
+
+            zf.close()
+
+        # ====================================================
+        # AUTO-NACHKONTROLLE
+        # ====================================================
+
+        missing = []
+
+        for filename in requiredAutoBackgrounds:
+
+            target = os.path.join(
+                AUTO_BG_DIR,
+                filename
+            )
+
+            if not os.path.isfile(
+                target
+            ):
+                missing.append(
+                    filename
+                )
+                continue
+
+            try:
+                if os.path.getsize(
+                    target
+                ) <= 0:
+                    missing.append(
+                        filename
+                    )
+            except Exception:
+                missing.append(
+                    filename
+                )
+
+        if missing:
+
+            print(
+                "[speedy_TheWeather] "
+                "FEHLER - AUTO Dateien fehlen:"
+            )
+
+            for filename in missing:
+                print(
+                    "  - %s"
+                    % filename
+                )
+
+            return False
+
+        # ====================================================
+        # MARKER
+        # ====================================================
+
+        try:
+
+            with open(
+                AUTO_BG_MARKER,
+                "w"
+            ) as f:
+
+                f.write(
+                    "installed\n"
+                )
+
+                f.write(
+                    "timestamp=%s\n"
+                    % int(time.time())
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Marker Fehler: %s"
+                % e
+            )
+
+        # ====================================================
+        # ZIP löschen
+        # ====================================================
+
+        try:
+
+            if os.path.exists(
+                zipFile
+            ):
+                os.remove(
+                    zipFile
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "ZIP konnte nicht gelöscht werden: %s"
+                % e
+            )
+
+        print(
+            "=================================================="
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO BACKGROUNDS ERFOLGREICH INSTALLIERT"
+        )
+
+        print(
+            "=================================================="
+        )
+
+        return True
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "ensureAutoBackgrounds FEHLER: %s"
+            % e
+        )
+
+        return False
+
+
+
+def findAutoBgFile(category):
+    """
+    Sucht den passenden automatischen Hintergrund
+    direkt in AUTO_BG_DIR.
+    """
+
+    if not category:
+        print(
+            "[speedy_TheWeather] "
+            "findAutoBgFile: keine Kategorie"
+        )
+        return None
+
+    # -------------------------------------------------
+    # Kategorie normalisieren
+    # -------------------------------------------------
+
+    try:
+        category = str(category).strip().lower()
+    except Exception:
+        return None
+
+    # -------------------------------------------------
+    # Kategorie -> mögliche Dateinamen
+    # -------------------------------------------------
+
+    aliases = {
+
+        "clear": (
+            "sunny",
+            "clear",
+            "sun",
+        ),
+
+        "cloudy": (
+            "cloudy",
+            "cloud",
+        ),
+
+        "mist": (
+            "mist",
+            "fog",
+            "haze",
+        ),
+
+        "rain": (
+            "rain",
+            "rainy",
+            "shower",
+            "drizzle",
+        ),
+
+        "storm": (
+            "thunder",
+            "storm",
+            "thunderstorm",
+        ),
+
+        "snow": (
+            "snow",
+            "snowy",
+            "winter",
+        ),
+
+        "halloween": (
+            "halloween",
+        ),
+
+        "christmas": (
+            "christmas",
+            "kerst",
+            "weihnachten",
+            "xmas",
+        ),
+
+        "newyear": (
+            "newyear",
+            "new_year",
+            "neujahr",
+            "silvester",
+        ),
+
+        "easter": (
+            "easter",
+            "ostern",
+        ),
+    }
+
+    names = aliases.get(
+        category,
+        (category,)
+    )
+
+    # -------------------------------------------------
+    # Unterstützte Bildformate
+    # -------------------------------------------------
+
+    extensions = (
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+    )
+
+    # -------------------------------------------------
+    # AUTO_BG_DIR prüfen
+    # -------------------------------------------------
+
+    if not os.path.isdir(
+        AUTO_BG_DIR
+    ):
+
+        print(
+            "[speedy_TheWeather] "
+            "findAutoBgFile: Ordner nicht vorhanden: %s"
+            % AUTO_BG_DIR
+        )
+
+        return None
+
+    # -------------------------------------------------
+    # Datei suchen
+    # -------------------------------------------------
+
+    for name in names:
+
+        for ext in extensions:
+
+            path = os.path.join(
+                AUTO_BG_DIR,
+                name + ext
+            )
+
+            if os.path.isfile(path):
+
+                try:
+                    if os.path.getsize(path) <= 0:
+                        continue
+                except Exception:
+                    continue
+
+                print(
+                    "[speedy_TheWeather] "
+                    "findAutoBgFile: %s -> %s"
+                    % (
+                        category,
+                        path
+                    )
+                )
+
+                return path
+
+    # -------------------------------------------------
+    # Nichts gefunden
+    # -------------------------------------------------
+
+    print(
+        "[speedy_TheWeather] "
+        "findAutoBgFile: kein Bild fuer '%s' in %s"
+        % (
+            category,
+            AUTO_BG_DIR
+        )
+    )
+
+    return None
+
+def getHolidayBgCategory():
+    """
+    Ermittelt die aktuelle Feiertags-Kategorie.
+
+    Gibt z.B. zurück:
+        halloween
+        christmas
+        newyear
+        easter
+
+    oder None, wenn aktuell kein Feiertagszeitraum aktiv ist.
+    """
+
+    global holidayBackgroundsEnabled
+
+    if not holidayBackgroundsEnabled:
+        return None
+
+    now = time.localtime()
+
+    month = now.tm_mon
+    day = now.tm_mday
+
+    for sm, sd, em, ed, cat in HOLIDAY_BACKGROUNDS:
+
+        # ----------------------------------------------------
+        # Zeitraum innerhalb desselben Monats
+        # ----------------------------------------------------
+
+        if sm == em:
+
+            if (
+                month == sm
+                and sd <= day <= ed
+            ):
+                return cat
+
+        # ----------------------------------------------------
+        # Zeitraum über den Jahreswechsel
+        #
+        # Beispiel:
+        # 20.12. - 05.01.
+        # ----------------------------------------------------
+
+        elif sm > em:
+
+            if (
+                (month == sm and day >= sd)
+                or
+                (month == em and day <= ed)
+                or
+                (month > sm)
+                or
+                (month < em)
+            ):
+                return cat
+
+        # ----------------------------------------------------
+        # Normaler Zeitraum über mehrere Monate
+        #
+        # Beispiel:
+        # 01.03. - 31.03.
+        # oder
+        # 15.03. - 15.04.
+        # ----------------------------------------------------
+
+        else:
+
+            if (
+                (month == sm and day >= sd)
+                or
+                (month == em and day <= ed)
+                or
+                (sm < month < em)
+            ):
+                return cat
+
+    return None
+
+def getAutoWeatherBackground():
+    global weatherData
+
+    defaultBg = (
+        "/usr/lib/enigma2/python/Plugins/Extensions/"
+        "speedy_TheWeather/"
+        + SHARED_PACK +
+        "/backgroundhd_2.png"
+    )
+
+    # -------------------------------------------------
+    # FEIERTAG
+    # -------------------------------------------------
+
+    try:
+        holidayCat = getHolidayBgCategory()
+    except Exception as e:
+        holidayCat = None
+        print(
+            "[speedy_TheWeather] AUTO: "
+            "holiday check error: %s"
+            % str(e)
+        )
+
+    if holidayCat:
+
+        try:
+            holidayBg = findAutoBgFile(
+                holidayCat
+            )
+        except Exception as e:
+            holidayBg = None
+            print(
+                "[speedy_TheWeather] AUTO: "
+                "holiday background error: %s"
+                % str(e)
+            )
+
+        if (
+            holidayBg
+            and os.path.isfile(holidayBg)
+        ):
+            print(
+                "[speedy_TheWeather] "
+                "AUTO holiday: %s -> %s"
+                % (
+                    holidayCat,
+                    holidayBg
+                )
+            )
+
+            return holidayBg
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO holiday: kein Bild fuer %s"
+            % holidayCat
+        )
+
+    # -------------------------------------------------
+    # WETTERDATEN
+    # -------------------------------------------------
+
+    try:
+
+        if not isinstance(
+            weatherData,
+            dict
+        ):
+            print(
+                "[speedy_TheWeather] "
+                "AUTO: weatherData ist kein dict"
+            )
+
+            return defaultBg
+
+        days = weatherData.get(
+            "days",
+            []
+        )
+
+        if not days:
+
+            print(
+                "[speedy_TheWeather] "
+                "AUTO: keine Wettertage vorhanden"
+            )
+
+            return defaultBg
+
+        day = days[0]
+
+        if not isinstance(
+            day,
+            dict
+        ):
+            print(
+                "[speedy_TheWeather] "
+                "AUTO: Wettertag ist ungueltig"
+            )
+
+            return defaultBg
+
+        hours = day.get(
+            "hours",
+            []
+        )
+
+        if not isinstance(
+            hours,
+            list
+        ):
+            hours = []
+
+        icon = None
+
+        # -------------------------------------------------
+        # AKTUELLE STUNDE
+        # -------------------------------------------------
+
+        now_hour = time.localtime().tm_hour
+
+        for hour in hours:
+
+            if not isinstance(
+                hour,
+                dict
+            ):
+                continue
+
+            try:
+
+                h = hour.get(
+                    "hour"
+                )
+
+                if h is None:
+                    h = hour.get(
+                        "time"
+                    )
+
+                if isinstance(
+                    h,
+                    str
+                ):
+
+                    h = h.strip()
+
+                    if ":" in h:
+                        h = h.split(
+                            ":",
+                            1
+                        )[0]
+
+                    elif "T" in h:
+                        h = h.split(
+                            "T",
+                            1
+                        )[-1]
+
+                        if ":" in h:
+                            h = h.split(
+                                ":",
+                                1
+                            )[0]
+
+                if h is not None:
+
+                    if int(h) == now_hour:
+
+                        icon = (
+                            hour.get(
+                                "iconcode"
+                            )
+                        )
+
+                        if icon is None:
+                            icon = (
+                                hour.get(
+                                    "icon"
+                                )
+                            )
+
+                        print(
+                            "[speedy_TheWeather] "
+                            "AUTO: aktuelles Stunden-Icon=%r"
+                            % icon
+                        )
+
+                        if icon:
+                            break
+
+            except Exception:
+                continue
+
+        # -------------------------------------------------
+        # FALLBACK TAGES-ICON
+        # -------------------------------------------------
+
+        if not icon:
+
+            icon = day.get(
+                "iconcode"
+            )
+
+            if icon is None:
+                icon = day.get(
+                    "icon"
+                )
+
+            print(
+                "[speedy_TheWeather] "
+                "AUTO: Tages-Icon=%r"
+                % icon
+            )
+
+        # -------------------------------------------------
+        # FALLBACK ERSTE STUNDE
+        # -------------------------------------------------
+
+        if not icon and hours:
+
+            firstHour = hours[0]
+
+            if isinstance(
+                firstHour,
+                dict
+            ):
+
+                icon = firstHour.get(
+                    "iconcode"
+                )
+
+                if icon is None:
+                    icon = firstHour.get(
+                        "icon"
+                    )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "AUTO: erstes Stunden-Icon=%r"
+                    % icon
+                )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: Wetterdaten nicht lesbar: %s"
+            % str(e)
+        )
+
+        return defaultBg
+
+    # -------------------------------------------------
+    # KEIN ICON
+    # -------------------------------------------------
+
+    if icon is None:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: kein Icon gefunden"
+        )
+
+        return defaultBg
+
+    # -------------------------------------------------
+    # ICON -> KATEGORIE
+    # -------------------------------------------------
+
+    try:
+
+        category = iconToBgCategory(
+            icon
+        )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: iconToBgCategory Fehler: %s"
+            % str(e)
+        )
+
+        return defaultBg
+
+    print(
+        "[speedy_TheWeather] "
+        "AUTO: icon=%r category=%r"
+        % (
+            icon,
+            category
+        )
+    )
+
+    # -------------------------------------------------
+    # KEINE KATEGORIE
+    # -------------------------------------------------
+
+    if not category:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: keine Wetterkategorie fuer Icon %r"
+            % icon
+        )
+
+        return defaultBg
+
+    # -------------------------------------------------
+    # KATEGORIE -> BILD
+    # -------------------------------------------------
+
+    try:
+
+        bgfile = findAutoBgFile(
+            category
+        )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: findAutoBgFile Fehler: %s"
+            % str(e)
+        )
+
+        return defaultBg
+
+    if (
+        bgfile
+        and os.path.isfile(bgfile)
+    ):
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO weather: %s -> %s"
+            % (
+                category,
+                bgfile
+            )
+        )
+
+        return bgfile
+
+    # -------------------------------------------------
+    # KEIN BILD GEFUNDEN
+    # -------------------------------------------------
+
+    print(
+        "[speedy_TheWeather] "
+        "AUTO: kein Bild fuer Kategorie %s"
+        % category
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "AUTO: fallback -> %s"
+        % defaultBg
+    )
+
+    return defaultBg
+
 
 
 # ============================================================================
@@ -2474,16 +3739,10 @@ class sevendays(Screen):
 
     def _wind(self, day):
         try:
-            wind = str(day.get("winddirection") or "na")
-
-            if wind == "na" and day.get("hours"):
-                wind = str(
-                    day["hours"][0].get("winddirection") or "na"
-                )
-
-            return wind
-
-        except Exception:
+            return str(
+                day["hours"][0].get("winddirection") or "na"
+            )
+        except (KeyError, IndexError, TypeError):
             return "na"
 
     def _icon(self, day):
@@ -4944,35 +6203,139 @@ class sevendays(Screen):
 
     def loadBackground(self):
         global backgroundpath
+        global backgroundAutoWeather
+
         if not hasattr(self, 'picload') or self.picload is None:
             return
 
-        bg_folder = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/backgrounds"
-        default_bg = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/backgroundhd_2.png"
+        bg_folder = (
+            "/usr/lib/enigma2/python/Plugins/Extensions/"
+            "speedy_TheWeather/backgrounds"
+        )
+
+        default_bg = (
+            "/usr/lib/enigma2/python/Plugins/Extensions/"
+            "speedy_TheWeather/"
+            + SHARED_PACK +
+            "/backgroundhd_2.png"
+        )
+
+        # -------------------------------------------------
+        # AUTOMATISCHES WETTERBILD
+        # -------------------------------------------------
+        try:
+            backgroundAutoWeather = bool(
+                config.plugins.speedy_TheWeather.autoBackgrounds.value
+            )
+        except Exception:
+            pass
 
         bgfile = None
-        if backgroundpath and os.path.isabs(backgroundpath) and os.path.exists(backgroundpath):
-            bgfile = backgroundpath
-        elif backgroundpath and os.path.exists(os.path.join(bg_folder, backgroundpath)):
-            bgfile = os.path.join(bg_folder, backgroundpath)
-        elif os.path.exists(default_bg):
-            bgfile = default_bg
 
+        if backgroundAutoWeather:
+            try:
+                auto_bg = getAutoWeatherBackground()
+
+                if auto_bg and os.path.isfile(auto_bg):
+                    bgfile = auto_bg
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "AUTO Hintergrund: %s"
+                        % bgfile
+                    )
+
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "AUTO Hintergrund Fehler: %s"
+                    % e
+                )
+
+        # -------------------------------------------------
+        # MANUELLER HINTERGRUND / FALLBACK
+        # -------------------------------------------------
+        if not bgfile:
+
+            if (
+                backgroundpath
+                and os.path.isabs(backgroundpath)
+                and os.path.isfile(backgroundpath)
+            ):
+                bgfile = backgroundpath
+
+            elif (
+                backgroundpath
+                and os.path.isfile(
+                    os.path.join(
+                        bg_folder,
+                        backgroundpath
+                    )
+                )
+            ):
+                bgfile = os.path.join(
+                    bg_folder,
+                    backgroundpath
+                )
+
+            elif os.path.isfile(default_bg):
+                bgfile = default_bg
+
+        # -------------------------------------------------
+        # KEIN BILD GEFUNDEN
+        # -------------------------------------------------
         if not bgfile or not os.path.isfile(bgfile):
+            print(
+                "[speedy_TheWeather] "
+                "Kein gültiger Hintergrund: %s"
+                % bgfile
+            )
             return
 
+        print(
+            "[speedy_TheWeather] "
+            "Hintergrund wird geladen: %s"
+            % bgfile
+        )
+
+        # -------------------------------------------------
+        # BILD DEKODIEREN
+        # -------------------------------------------------
         try:
-            # Stoppt laufende Dekodierungen (verhindert C++ Null-Pointer Crash)
-            self.picload.startDecode("") 
-            
+
             if sz_w > 1800:
-                self.picload.setPara([1920, 1080, 1, 1, False, 1, "#ff000000"])
+                self.picload.setPara(
+                    [
+                        1920,
+                        1080,
+                        1,
+                        1,
+                        False,
+                        1,
+                        "#ff000000"
+                    ]
+                )
             else:
-                self.picload.setPara([1280, 720, 1, 1, False, 1, "#ff000000"])
+                self.picload.setPara(
+                    [
+                        1280,
+                        720,
+                        1,
+                        1,
+                        False,
+                        1,
+                        "#ff000000"
+                    ]
+                )
 
             self.picload.startDecode(bgfile)
+
         except Exception as e:
-            print("[speedy_TheWeather] loadBackground Fehler:", e)
+            print(
+                "[speedy_TheWeather] "
+                "loadBackground Fehler: %s"
+                % e
+            )
 
     def bgPictureLoaded(self, picInfo=None):
         if not hasattr(self, 'picload') or self.picload is None:
@@ -5816,47 +7179,154 @@ from Components.Label import Label
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
+
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
+
     skin = """
-    <screen name="speedy_TheWeatherSetup" position="410,220" size="1100,640" title="speedy_TheWeather Settings">
-        <widget name="config" position="4,4" size="1070,550" scrollbarMode="showOnDemand" itemHeight="45" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular; 25" />
+    <screen name="speedy_TheWeatherSetup"
+        position="410,220"
+        size="1100,640"
+        title="speedy_TheWeather Settings">
+
+        <widget name="config"
+            position="4,4"
+            size="1070,550"
+            scrollbarMode="showOnDemand"
+            itemHeight="45"
+            itemTextSelectedColor="#ffffff"
+            itemTextUnselectedColor="#ffffff"
+            font="Regular; 25" />
 
         <!-- Roter Button -->
-        <ePixmap pixmap="skin_default/buttons/red.png" position="11,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_red" position="36,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <ePixmap
+            pixmap="skin_default/buttons/red.png"
+            position="11,593"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_red"
+            position="36,593"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;20"
+            halign="center"
+            valign="center" />
 
         <!-- Grüner Button -->
-        <ePixmap pixmap="skin_default/buttons/green.png" position="282,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_green" position="308,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="green" />
+        <ePixmap
+            pixmap="skin_default/buttons/green.png"
+            position="282,593"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_green"
+            position="308,593"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;20"
+            halign="center"
+            valign="center"
+            foregroundColor="green" />
 
         <!-- Blauer Button -->
-        <ePixmap pixmap="skin_default/buttons/blue.png" position="825,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_blue" position="851,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="blue" />
+        <ePixmap
+            pixmap="skin_default/buttons/blue.png"
+            position="825,593"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_blue"
+            position="851,593"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;20"
+            halign="center"
+            valign="center"
+            foregroundColor="blue" />
 
         <!-- Gelber Button -->
-        <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,593" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_yellow" position="579,593" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" />
-<widget name="Version" position="676,554" size="420,40" font="Regular;26" halign="center" valign="center" foregroundColor="red" transparent="1" backgroundColor="black" />
-    </screen>"""
+        <ePixmap
+            pixmap="skin_default/buttons/yellow.png"
+            position="554,593"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_yellow"
+            position="579,593"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;20"
+            halign="center"
+            valign="center"
+            foregroundColor="yellow" />
+
+        <widget name="Version"
+            position="676,554"
+            size="420,40"
+            font="Regular;26"
+            halign="center"
+            valign="center"
+            foregroundColor="red"
+            transparent="1"
+            backgroundColor="black" />
+
+    </screen>
+    """
 
     def __init__(self, session):
         Screen.__init__(self, session)
+
         self.session = session
+
         self.setTitle(_("speedy_TheWeather Settings"))
+
+        # ----------------------------------------------------
+        # Farbige Tasten
+        # ----------------------------------------------------
+
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Save"))
         self["key_blue"] = Label(_("Show 2 locations"))
         self["key_yellow"] = Label(_("Appearance"))
-        self["version"] = Label("speedy_TheWeather_v.%s" % VERSION)
 
+        self["version"] = Label(
+            "speedy_TheWeather_v.%s" % VERSION
+        )
+
+        # ----------------------------------------------------
         # Menüpunkt für die Update-Suche
+        # ----------------------------------------------------
+
         self.updateEntry = ConfigNothing()
 
-        # Separates, leichtgewichtiges Farbmenü für den SevenDay-Screen.
+        # ----------------------------------------------------
+        # Menüpunkt für Download der Auto-Wetter-Hintergründe
+        # ----------------------------------------------------
+
+        self.autoBackgroundDownloadEntry = ConfigNothing()
+
+        # ----------------------------------------------------
+        # Separates, leichtgewichtiges Farbmenü
+        # für den SevenDay-Screen
+        # ----------------------------------------------------
+
         self.sevenDayColorEntry = ConfigNothing()
+
+        # ----------------------------------------------------
+        # Config-Liste
+        # ----------------------------------------------------
 
         self.list = []
 
+        # Windgeschwindigkeit
         self.list.append(
             getConfigListEntry(
                 _("Wind speed:"),
@@ -5864,6 +7334,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # Datumsformat
         self.list.append(
             getConfigListEntry(
                 _("Date format:"),
@@ -5871,6 +7342,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # Radar Zoom
         self.list.append(
             getConfigListEntry(
                 _("Radar default zoom:"),
@@ -5878,12 +7350,50 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # Performance
         self.list.append(
             getConfigListEntry(
                 _("Performance:"),
                 config.plugins.speedy_TheWeather.performance
             )
         )
+
+        # ----------------------------------------------------
+        # AUTO WEATHER BACKGROUNDS
+        # ----------------------------------------------------
+
+        self.list.append(
+            getConfigListEntry(
+                _("Auto weather backgrounds:"),
+                config.plugins.speedy_TheWeather.autoBackgrounds
+            )
+        )
+
+        # ----------------------------------------------------
+        # HOLIDAY BACKGROUNDS
+        # ----------------------------------------------------
+
+        self.list.append(
+            getConfigListEntry(
+                _("Holiday backgrounds:"),
+                config.plugins.speedy_TheWeather.holidayBackgrounds
+            )
+        )
+
+        # ----------------------------------------------------
+        # DOWNLOAD AUTO BACKGROUNDS
+        # ----------------------------------------------------
+
+        self.list.append(
+            getConfigListEntry(
+                _("Download weather backgrounds"),
+                self.autoBackgroundDownloadEntry
+            )
+        )
+
+        # ----------------------------------------------------
+        # SevenDay Farben
+        # ----------------------------------------------------
 
         self.list.append(
             getConfigListEntry(
@@ -5892,7 +7402,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # ----------------------------------------------------
         # Update-Suche
+        # ----------------------------------------------------
+
         self.list.append(
             getConfigListEntry(
                 _("Search for update"),
@@ -5900,11 +7413,19 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        # ----------------------------------------------------
+        # ConfigListScreen
+        # ----------------------------------------------------
+
         ConfigListScreen.__init__(
             self,
             self.list,
             session=session
         )
+
+        # ----------------------------------------------------
+        # ActionMap
+        # ----------------------------------------------------
 
         self["actions"] = ActionMap(
             ["SetupActions", "ColorActions"],
@@ -5913,18 +7434,65 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "red": self.keyCancel,
                 "cancel": self.keyCancel,
                 "save": self.save,
+
                 "blue": self.openTwoLocations,
                 "yellow": self.openAppearance,
 
-                # OK auf die beiden Aktionspunkte
+                # OK auf die Aktionspunkte
                 "ok": self.handleOk,
             },
             -2
         )
 
+    # ========================================================
+    # AUTO BACKGROUNDS DOWNLOAD
+    # ========================================================
+
+    def downloadAutoBackgrounds(self):
+
+        self.session.openWithCallback(
+            self.downloadAutoBackgroundsConfirmed,
+            MessageBox,
+            _(
+                "Do you want to download the "
+                "weather backgrounds now?"
+            ),
+            MessageBox.TYPE_YESNO
+        )
+
+    def downloadAutoBackgroundsConfirmed(self, answer):
+
+        if not answer:
+            return
+
+        if ensureAutoBackgrounds():
+
+            self.session.open(
+                MessageBox,
+                _(
+                    "The weather backgrounds "
+                    "were downloaded successfully."
+                ),
+                MessageBox.TYPE_INFO
+            )
+
+        else:
+
+            self.session.open(
+                MessageBox,
+                _(
+                    "The weather backgrounds "
+                    "could not be downloaded."
+                ),
+                MessageBox.TYPE_ERROR
+            )
+
+
+
  
     def handleOk(self):
         current = self["config"].getCurrent()
+
         if not current:
             return
 
@@ -5932,8 +7500,15 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             self.session.open(sevendayColorSetup)
             return
 
-        if current[1] == self.updateEntry:
-            self.checkUpdate()
+            if current[1] == self.updateEntry:
+                self.checkUpdate()
+                return
+
+        if current[1] == self.autoBackgroundDownloadEntry:
+            self.downloadAutoBackgrounds()
+            return
+
+        ConfigListScreen.keyOK(self)
 
     def checkUpdate(self):
         """
