@@ -571,5 +571,23 @@ msgstr "speedy_Wettereinstellungen"
 msgid "Infoscreen"
 msgstr "Informationen"
 
+msgid "Auto weather backgrounds:"
+msgstr "Automatische Wetter-Hintergründe:"
+
+msgid "Holiday backgrounds:"
+msgstr "Feiertags-Hintergründe:"
+
+msgid "Download weather backgrounds"
+msgstr "Wetter-Hintergründe herunterladen"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Möchtest du die Wetter-Hintergründe jetzt herunterladen?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Die Wetter-Hintergründe wurden erfolgreich heruntergeladen."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Die Wetter-Hintergründe konnten nicht heruntergeladen werden."
+
 
 
