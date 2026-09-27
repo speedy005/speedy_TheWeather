@@ -7431,8 +7431,6 @@ from Components.Label import Label
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
-
-```python
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
     skin = """
@@ -8302,8 +8300,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         except Exception:
 
             pass
-```
-
 
 class sevendayColorSetup(ConfigListScreen, Screen):
     """
