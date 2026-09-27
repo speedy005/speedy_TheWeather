@@ -395,7 +395,6 @@ UPDATE_SUCCESS_FILE = (
     "/tmp/speedy_TheWeather_update_success"
 )
 
-
 # ============================================================
 # UPDATE STATE
 # ============================================================
@@ -408,6 +407,9 @@ _updatePollTimer = None
 # Gemeinsame Update-Queue
 _updateQueue = queue.Queue()
 
+# Verhindert mehrfaches automatisches Starten der Update-Prüfung
+_updateCheckStarted = False
+
 # Verhindert parallele Update-Worker
 _updateWorkerStarted = False
 
@@ -419,6 +421,8 @@ _updateInfo = None
 
 # Enigma2 Console-Referenz während der Installation
 _updateConsole = None
+
+
 
 
 import os
