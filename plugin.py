@@ -1705,6 +1705,7 @@ def _update_is_newer(remote_version):
 # ============================================================================
 
 
+
 def _update_download(url, destination, timeout=None):
     """
     Download für das Update-System über wget.
@@ -1715,48 +1716,90 @@ def _update_download(url, destination, timeout=None):
         timeout = UPDATE_DOWNLOAD_TIMEOUT
 
     try:
-        print("[speedy_TheWeather] UPDATE DOWNLOAD START")
-        print("[speedy_TheWeather] URL: %s" % url)
-        print("[speedy_TheWeather] DEST: %s" % destination)
+
+        print(
+            "[speedy_TheWeather] "
+            "UPDATE DOWNLOAD START"
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "URL: %s"
+            % url
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "DEST: %s"
+            % destination
+        )
+
+        # --------------------------------------------------------
+        # WGET SUCHEN
+        # --------------------------------------------------------
 
         wgetPath = "/usr/bin/wget"
 
         if not os.path.exists(wgetPath):
+
             print(
-                "[speedy_TheWeather] ERROR: wget not found: %s"
+                "[speedy_TheWeather] "
+                "ERROR: wget not found: %s"
                 % wgetPath
             )
 
-            # Zweite Möglichkeit prüfen
             if os.path.exists("/bin/wget"):
+
                 wgetPath = "/bin/wget"
+
                 print(
-                    "[speedy_TheWeather] Using fallback wget: %s"
+                    "[speedy_TheWeather] "
+                    "Using fallback wget: %s"
                     % wgetPath
                 )
+
             else:
+
                 print(
-                    "[speedy_TheWeather] ERROR: /bin/wget also not found"
+                    "[speedy_TheWeather] "
+                    "ERROR: /bin/wget also not found"
                 )
+
                 return False
 
-        # Alte Datei entfernen
+        # --------------------------------------------------------
+        # ALTE DATEI ENTFERNEN
+        # --------------------------------------------------------
+
         try:
+
             if os.path.exists(destination):
+
                 os.remove(destination)
+
         except Exception as e:
+
             print(
-                "[speedy_TheWeather] WARNING: "
-                "could not remove old file: %s"
+                "[speedy_TheWeather] "
+                "WARNING: could not remove old file: %s"
                 % e
             )
 
+        # --------------------------------------------------------
+        # WGET COMMAND
+        #
+        # WICHTIG:
+        # KEIN -q!
+        #
+        # Dadurch sehen wir bei einem Fehler die tatsächliche
+        # wget-Meldung im Enigma2-Log.
+        # --------------------------------------------------------
+
         command = (
             "\"%s\" "
-            "-q "
             "--no-check-certificate "
             "--timeout=%d "
-            "--tries=1 "
+            "--tries=2 "
             "--user-agent=\"speedy_TheWeather-Updater/1.0\" "
             "-O \"%s\" "
             "\"%s\""
@@ -1770,82 +1813,142 @@ def _update_download(url, destination, timeout=None):
         )
 
         print(
-            "[speedy_TheWeather] WGET COMMAND: %s"
+            "[speedy_TheWeather] "
+            "WGET COMMAND: %s"
             % command
         )
 
-        result = os.system(command)
+        # --------------------------------------------------------
+        # DOWNLOAD
+        # --------------------------------------------------------
+
+        result = os.system(
+            command
+        )
 
         print(
-            "[speedy_TheWeather] WGET RETURN CODE: %s"
+            "[speedy_TheWeather] "
+            "WGET RETURN CODE: %s"
             % result
         )
 
+        # --------------------------------------------------------
+        # DOWNLOAD FEHLER
+        # --------------------------------------------------------
+
         if result != 0:
+
             print(
-                "[speedy_TheWeather] ERROR: wget failed "
+                "[speedy_TheWeather] "
+                "ERROR: wget failed "
                 "with return code %s"
                 % result
             )
 
             try:
+
                 if os.path.exists(destination):
+
                     os.remove(destination)
+
             except Exception:
                 pass
 
             return False
 
-        if not os.path.exists(destination):
+        # --------------------------------------------------------
+        # DATEI EXISTIERT?
+        # --------------------------------------------------------
+
+        if not os.path.exists(
+            destination
+        ):
+
             print(
-                "[speedy_TheWeather] ERROR: downloaded file "
+                "[speedy_TheWeather] "
+                "ERROR: downloaded file "
                 "does not exist"
             )
+
             return False
 
+        # --------------------------------------------------------
+        # DATEIGRÖSSE
+        # --------------------------------------------------------
+
         try:
-            fileSize = os.path.getsize(destination)
+
+            fileSize = os.path.getsize(
+                destination
+            )
+
         except Exception as e:
+
             print(
-                "[speedy_TheWeather] ERROR: cannot read file size: %s"
+                "[speedy_TheWeather] "
+                "ERROR: cannot read file size: %s"
                 % e
             )
+
             return False
 
         print(
-            "[speedy_TheWeather] DOWNLOADED SIZE: %d bytes"
+            "[speedy_TheWeather] "
+            "DOWNLOADED SIZE: %d bytes"
             % fileSize
         )
 
+        # --------------------------------------------------------
+        # LEERE DATEI
+        # --------------------------------------------------------
+
         if fileSize <= 0:
+
             print(
-                "[speedy_TheWeather] ERROR: downloaded file is empty"
+                "[speedy_TheWeather] "
+                "ERROR: downloaded file is empty"
             )
 
             try:
+
                 os.remove(destination)
+
             except Exception:
                 pass
 
             return False
 
-        print("[speedy_TheWeather] UPDATE DOWNLOAD SUCCESS")
+        # --------------------------------------------------------
+        # ERFOLG
+        # --------------------------------------------------------
+
+        print(
+            "[speedy_TheWeather] "
+            "UPDATE DOWNLOAD SUCCESS"
+        )
 
         return True
 
     except Exception as e:
+
         print(
-            "[speedy_TheWeather] UPDATE DOWNLOAD EXCEPTION: %s"
+            "[speedy_TheWeather] "
+            "UPDATE DOWNLOAD EXCEPTION: %s"
             % e
         )
 
         try:
+
             if os.path.exists(destination):
+
                 os.remove(destination)
+
         except Exception:
             pass
 
         return False
+
+
 
 
 
