@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.7
+# v.1.6.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -274,7 +274,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.7"
+__version__ = "1.6.8"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -290,7 +290,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.6.7'
+version = '1.6.8'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
