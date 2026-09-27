@@ -3266,9 +3266,22 @@ def _update_start_check():
     global _updateStartTimer
     global _updateCheckStarted
 
+    # ----------------------------------------------------
+    # Bereits geplant?
+    # ----------------------------------------------------
+
     if _updateCheckStarted:
 
+        print(
+            "[speedy_TheWeather] "
+            "Update check already scheduled."
+        )
+
         return
+
+    # ----------------------------------------------------
+    # Automatischen Update-Check verzögert starten
+    # ----------------------------------------------------
 
     try:
 
@@ -3295,6 +3308,7 @@ def _update_start_check():
     except Exception as e:
 
         _updateStartTimer = None
+
         _updateCheckStarted = False
 
         print(
@@ -3302,6 +3316,8 @@ def _update_start_check():
             "Could not start update timer: %s"
             % e
         )
+
+
 
 
 # ============================================================================
