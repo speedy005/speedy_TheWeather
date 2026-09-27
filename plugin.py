@@ -2570,17 +2570,26 @@ def _update_install():
     global _updateInstallInProgress
     global _updateConsole
 
-    if (
-        _updateInstallInProgress
-        or
-        not _updateInfo
-    ):
+    # ------------------------------------------------------------------------
+    # ALREADY INSTALLING / NO UPDATE INFORMATION
+    # ------------------------------------------------------------------------
 
+    if _updateInstallInProgress:
+        print(
+            "[speedy_TheWeather] "
+            "Update installation already running."
+        )
         return
 
+    if not _updateInfo:
+        print(
+            "[speedy_TheWeather] "
+            "No update information available."
+        )
+        return
 
     _updateInstallInProgress = True
-
+    _updateConsole = None
 
     _updateQueue.put(
         (
@@ -2589,14 +2598,12 @@ def _update_install():
         )
     )
 
-
     try:
 
         print(
             "[speedy_TheWeather] "
             "Downloading installer..."
         )
-
 
         # --------------------------------------------------------------------
         # REMOVE OLD SUCCESS MARKER
@@ -2612,14 +2619,40 @@ def _update_install():
                     UPDATE_SUCCESS_FILE
                 )
 
+                print(
+                    "[speedy_TheWeather] "
+                    "Old success marker removed."
+                )
+
         except Exception as e:
 
             print(
                 "[speedy_TheWeather] "
-                "Could not remove old success marker:",
-                e
+                "Could not remove old success marker: %s"
+                % e
             )
 
+        # --------------------------------------------------------------------
+        # REMOVE OLD INSTALLER
+        # --------------------------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
+
+                os.unlink(
+                    UPDATE_INSTALLER_PATH
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not remove old installer: %s"
+                % e
+            )
 
         # --------------------------------------------------------------------
         # DOWNLOAD INSTALLER
@@ -2635,13 +2668,45 @@ def _update_install():
                 "installer download failed"
             )
 
-
         print(
             "[speedy_TheWeather] "
             "Installer downloaded to: %s"
             % UPDATE_INSTALLER_PATH
         )
 
+        # --------------------------------------------------------------------
+        # VERIFY DOWNLOADED FILE
+        # --------------------------------------------------------------------
+
+        if not os.path.isfile(
+            UPDATE_INSTALLER_PATH
+        ):
+
+            raise IOError(
+                "installer file does not exist"
+            )
+
+        try:
+
+            installerSize = os.path.getsize(
+                UPDATE_INSTALLER_PATH
+            )
+
+        except Exception:
+
+            installerSize = 0
+
+        if installerSize <= 0:
+
+            raise IOError(
+                "installer file is empty"
+            )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer size: %d bytes"
+            % installerSize
+        )
 
         # --------------------------------------------------------------------
         # MAKE INSTALLER EXECUTABLE
@@ -2656,32 +2721,35 @@ def _update_install():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            raise IOError(
                 "chmod failed: %s"
                 % e
             )
 
-
         # --------------------------------------------------------------------
-        # VERIFY INSTALLER
+        # VERIFY BASH
         # --------------------------------------------------------------------
 
-        if not os.path.exists(
-            UPDATE_INSTALLER_PATH
+        if not os.path.isfile(
+            "/bin/bash"
         ):
 
             raise IOError(
-                "installer file does not exist"
+                "/bin/bash not found"
             )
 
+        if not os.access(
+            "/bin/bash",
+            os.X_OK
+        ):
+
+            raise IOError(
+                "/bin/bash is not executable"
+            )
 
         # --------------------------------------------------------------------
-        # START CONSOLE
+        # VERIFY ACTIVE SESSION
         # --------------------------------------------------------------------
-
-        from Screens.Console import Console
-
 
         if _overlaySession is None:
 
@@ -2689,15 +2757,22 @@ def _update_install():
                 "No active Enigma2 session available for update"
             )
 
-
         # --------------------------------------------------------------------
         # IMPORTANT
         #
-        # Console.py does not pass the installer return code to
-        # finishedCallback().
+        # Console.py does not provide the installer return code directly
+        # through finishedCallback().
         #
-        # Therefore the shell command creates a success marker ONLY
-        # when installer.sh exits with code 0.
+        # Therefore:
+        #
+        #     installer.sh
+        #         |
+        #         +-- exit 0 --> touch success marker
+        #         |
+        #         +-- exit != 0 --> success marker is NOT created
+        #
+        # The marker is therefore used by update_finished() to determine
+        # whether the installation really succeeded.
         # --------------------------------------------------------------------
 
         cmd = (
@@ -2711,44 +2786,80 @@ def _update_install():
             )
         )
 
-
         print(
             "[speedy_TheWeather] "
             "Starting installer in Console..."
         )
 
-
-        _updateConsole = (
-            _overlaySession.open(
-                Console,
-                _("Updating..."),
-                cmdlist=[
-                    cmd
-                ],
-                finishedCallback=
-                    update_finished,
-                closeOnSuccess=True
-            )
+        print(
+            "[speedy_TheWeather] "
+            "Installer command: %s"
+            % cmd
         )
 
+        # --------------------------------------------------------------------
+        # START ENIGMA2 CONSOLE
+        # --------------------------------------------------------------------
+
+        _updateConsole = _overlaySession.open(
+            Console,
+            _("Updating..."),
+            cmdlist=[
+                cmd
+            ],
+            finishedCallback=
+                update_finished,
+            closeOnSuccess=True
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer Console started."
+        )
 
     except Exception as e:
 
         _updateInstallInProgress = False
+        _updateConsole = None
 
         print(
             "[speedy_TheWeather] "
-            "Update installation failed:",
-            e
+            "Update installation failed: %s"
+            % e
         )
 
+        # --------------------------------------------------------------------
+        # CLEAN INSTALLER AFTER FAILURE
+        # --------------------------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
+
+                os.unlink(
+                    UPDATE_INSTALLER_PATH
+                )
+
+        except Exception as cleanupError:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not remove failed installer: %s"
+                % cleanupError
+            )
+
+        # --------------------------------------------------------------------
+        # INFORM UPDATE QUEUE
+        # --------------------------------------------------------------------
 
         _updateQueue.put(
             (
                 "install_error",
                 None
             )
-        )
+
 
 # ============================================================================
 # INSTALLER FINISHED
@@ -2765,7 +2876,21 @@ def update_finished():
         "Update installer finished"
     )
 
+    # ------------------------------------------------------------------------
+    # CONSOLE REFERENCE CLEAR
+    # ------------------------------------------------------------------------
+
     _updateConsole = None
+
+    # ------------------------------------------------------------------------
+    # CHECK SUCCESS MARKER
+    #
+    # The installer command is:
+    #
+    #     /bin/bash installer.sh && touch success_marker
+    #
+    # Therefore the marker only exists when installer.sh returned 0.
+    # ------------------------------------------------------------------------
 
     success = os.path.exists(
         UPDATE_SUCCESS_FILE
@@ -2785,30 +2910,78 @@ def update_finished():
 
         _updateInstallInProgress = False
 
-        try:
-            if os.path.exists(
-                UPDATE_INSTALLER_PATH
-            ):
-                os.unlink(
-                    UPDATE_INSTALLER_PATH
-                )
-        except Exception:
-            pass
-
         print(
             "[speedy_TheWeather] "
             "Installer completed successfully."
         )
 
-        # MessageBox nicht direkt aus dem
-        # Console-Callback öffnen.
+        # --------------------------------------------------------------------
+        # REMOVE INSTALLER
+        # --------------------------------------------------------------------
+
         try:
 
-            _updateRestartTimer = eTimer()
+            if os.path.exists(
+                UPDATE_INSTALLER_PATH
+            ):
 
-            def show_restart_message():
+                os.unlink(
+                    UPDATE_INSTALLER_PATH
+                )
 
-                global _updateRestartTimer
+                print(
+                    "[speedy_TheWeather] "
+                    "Temporary installer removed."
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not remove installer: %s"
+                % e
+            )
+
+        # --------------------------------------------------------------------
+        # REMOVE SUCCESS MARKER
+        #
+        # Very important:
+        # The marker must not remain for a future update.
+        # --------------------------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                UPDATE_SUCCESS_FILE
+            ):
+
+                os.unlink(
+                    UPDATE_SUCCESS_FILE
+                )
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Success marker removed."
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not remove success marker: %s"
+                % e
+            )
+
+        # --------------------------------------------------------------------
+        # SHOW RESTART MESSAGE SAFELY
+        #
+        # Do not open a MessageBox directly from the Console callback.
+        # Use an eTimer so the GUI event loop can handle it safely.
+        # --------------------------------------------------------------------
+
+        try:
+
+            if _updateRestartTimer is not None:
 
                 try:
                     _updateRestartTimer.stop()
@@ -2817,12 +2990,47 @@ def update_finished():
 
                 _updateRestartTimer = None
 
+        except Exception:
+            pass
+
+        try:
+
+            _updateRestartTimer = eTimer()
+
+            def show_restart_message():
+
+                global _updateRestartTimer
+
                 print(
                     "[speedy_TheWeather] "
                     "Showing restart question."
                 )
 
-                _update_install_finished()
+                try:
+
+                    if _updateRestartTimer is not None:
+                        _updateRestartTimer.stop()
+
+                except Exception:
+                    pass
+
+                _updateRestartTimer = None
+
+                # ------------------------------------------------------------
+                # SHOW SUCCESS / RESTART QUESTION
+                # ------------------------------------------------------------
+
+                try:
+
+                    _update_install_finished()
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "Could not show restart message: %s"
+                        % e
+                    )
 
             _updateRestartTimer.callback.append(
                 show_restart_message
@@ -2833,6 +3041,11 @@ def update_finished():
                 True
             )
 
+            print(
+                "[speedy_TheWeather] "
+                "Restart message timer started."
+            )
+
         except Exception as e:
 
             print(
@@ -2841,10 +3054,24 @@ def update_finished():
                 % e
             )
 
-            _update_install_finished()
+            _updateRestartTimer = None
 
-        # GANZ WICHTIG:
-        # Nach erfolgreicher Installation hier abbrechen.
+            try:
+
+                _update_install_finished()
+
+            except Exception as finishError:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not finish update: %s"
+                    % finishError
+                )
+
+        # --------------------------------------------------------------------
+        # IMPORTANT
+        # --------------------------------------------------------------------
+
         return
 
     # ------------------------------------------------------------------------
@@ -2858,12 +3085,60 @@ def update_finished():
 
     _updateInstallInProgress = False
 
+    # ------------------------------------------------------------------------
+    # REMOVE FAILED INSTALLER
+    # ------------------------------------------------------------------------
+
+    try:
+
+        if os.path.exists(
+            UPDATE_INSTALLER_PATH
+        ):
+
+            os.unlink(
+                UPDATE_INSTALLER_PATH
+            )
+
+            print(
+                "[speedy_TheWeather] "
+                "Failed installer removed."
+            )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not remove failed installer: %s"
+            % e
+        )
+
+    # ------------------------------------------------------------------------
+    # REMOVE POSSIBLE SUCCESS MARKER
+    # ------------------------------------------------------------------------
+
+    try:
+
+        if os.path.exists(
+            UPDATE_SUCCESS_FILE
+        ):
+
+            os.unlink(
+                UPDATE_SUCCESS_FILE
+            )
+
+    except Exception:
+        pass
+
+    # ------------------------------------------------------------------------
+    # REPORT FAILURE
+    # ------------------------------------------------------------------------
+
     _updateQueue.put(
         (
             "install_error",
             None
         )
-    )
+
 
 # ============================================================================
 # SUCCESSFUL UPDATE
@@ -7180,6 +7455,7 @@ from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
 
+```python
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
     skin = """
@@ -7282,11 +7558,20 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     </screen>
     """
 
+    # ========================================================
+    # INIT
+    # ========================================================
+
     def __init__(self, session):
 
-        Screen.__init__(self, session)
+        Screen.__init__(
+            self,
+            session
+        )
 
         self.session = session
+
+        self._updateCheckTimer = None
 
         self.setTitle(
             _("speedy_TheWeather Settings")
@@ -7316,7 +7601,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # VERSION
         # ====================================================
 
-        self["version"] = Label(
+        self["Version"] = Label(
             "speedy_TheWeather_v.%s" % VERSION
         )
 
@@ -7324,13 +7609,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # SONDER-EINTRÄGE
         # ====================================================
 
-        # Update
         self.updateEntry = ConfigNothing()
 
-        # Auto-Wetter-Hintergründe
         self.autoBackgroundDownloadEntry = ConfigNothing()
 
-        # SevenDay Farben
         self.sevenDayColorEntry = ConfigNothing()
 
         # ====================================================
@@ -7458,35 +7740,15 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "ColorActions"
             ],
             {
-                # ------------------------------------------------
-                # GRÜN = SPEICHERN
-                # ------------------------------------------------
-
                 "green": self.save,
                 "save": self.save,
-
-                # ------------------------------------------------
-                # ROT = ABBRECHEN
-                # ------------------------------------------------
 
                 "red": self.keyCancel,
                 "cancel": self.keyCancel,
 
-                # ------------------------------------------------
-                # BLAU = 2. LOCATION
-                # ------------------------------------------------
-
                 "blue": self.openTwoLocations,
 
-                # ------------------------------------------------
-                # GELB = APPEARANCE
-                # ------------------------------------------------
-
                 "yellow": self.openAppearance,
-
-                # ------------------------------------------------
-                # OK
-                # ------------------------------------------------
 
                 "ok": self.handleOk,
             },
@@ -7505,37 +7767,31 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             return
 
         try:
-            description = current[0]
+
             entry = current[1]
 
         except Exception as e:
 
             print(
-                "[SETUP] Could not read current entry:"
+                "[speedy_TheWeather] "
+                "Could not read current entry: %s"
+                % e
             )
-            print(e)
 
             return
 
-        print(
-            "[SETUP] OK pressed:"
-        )
-        print(
-            "[SETUP] Entry: %s"
-            % description
-        )
-
         # ====================================================
-        # DOWNLOAD WEATHER BACKGROUNDS
+        # AUTO BACKGROUNDS
         # ====================================================
 
         if entry is self.autoBackgroundDownloadEntry:
 
             print(
-                "[SETUP] Download weather backgrounds selected."
+                "[speedy_TheWeather] "
+                "Weather background download selected."
             )
 
-            self.downloadWeatherBackgrounds()
+            self.downloadAutoBackgrounds()
 
             return
 
@@ -7546,19 +7802,23 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         if entry is self.sevenDayColorEntry:
 
             print(
-                "[SETUP] SevenDay color settings selected."
+                "[speedy_TheWeather] "
+                "SevenDay color settings selected."
             )
 
             try:
 
-                self.openSevenDayColors()
+                self.session.open(
+                    sevendayColorSetup
+                )
 
             except Exception as e:
 
                 print(
-                    "[SETUP] SevenDay color menu error:"
+                    "[speedy_TheWeather] "
+                    "Could not open SevenDay colors: %s"
+                    % e
                 )
-                print(e)
 
                 self.session.open(
                     MessageBox,
@@ -7578,10 +7838,11 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         if entry is self.updateEntry:
 
             print(
-                "[SETUP] Search for update selected."
+                "[speedy_TheWeather] "
+                "Manual update check selected."
             )
 
-            self.searchForUpdate()
+            self.checkUpdate()
 
             return
 
@@ -7589,167 +7850,20 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # NORMALE CONFIG-EINTRÄGE
         # ====================================================
 
-        print(
-            "[SETUP] Normal configuration entry."
+        ConfigListScreen.keyOK(
+            self
         )
 
-        ConfigListScreen.keyOK(self)
-
     # ========================================================
-    # WEATHER BACKGROUND DOWNLOAD
-    # ========================================================
-
-    def downloadWeatherBackgrounds(self):
-
-        try:
-
-            print(
-                "[SETUP] Starting weather background download..."
-            )
-
-            result = ensureAutoBackgrounds()
-
-            if result:
-
-                print(
-                    "[SETUP] Weather backgrounds installed successfully."
-                )
-
-                self.session.open(
-                    MessageBox,
-                    _(
-                        "Weather backgrounds downloaded "
-                        "and installed successfully."
-                    ),
-                    MessageBox.TYPE_INFO,
-                    timeout=5
-                )
-
-            else:
-
-                print(
-                    "[SETUP] Weather background installation failed."
-                )
-
-                self.session.open(
-                    MessageBox,
-                    _(
-                        "Weather backgrounds could not "
-                        "be downloaded or installed."
-                        "\n\n"
-                        "Please check the console log."
-                    ),
-                    MessageBox.TYPE_ERROR
-                )
-
-        except Exception as e:
-
-            print(
-                "[SETUP] Weather background download error:"
-            )
-            print(e)
-
-            try:
-
-                self.session.open(
-                    MessageBox,
-                    _(
-                        "Error while downloading "
-                        "weather backgrounds:"
-                        "\n\n%s"
-                        % e
-                    ),
-                    MessageBox.TYPE_ERROR
-                )
-
-            except Exception:
-
-                pass
-
-    # ========================================================
-    # UPDATE
-    # ========================================================
-
-    def searchForUpdate(self):
-
-        try:
-
-            print(
-                "=================================================="
-            )
-            print(
-                "[SETUP] Starting plugin update..."
-            )
-            print(
-                "=================================================="
-            )
-
-            result = update_plugin(
-                self.session
-            )
-
-            if result:
-
-                print(
-                    "[SETUP] Update function completed."
-                )
-
-            else:
-
-                print(
-                    "[SETUP] Update function returned FALSE."
-                )
-
-                try:
-
-                    self.session.open(
-                        MessageBox,
-                        _(
-                            "The update could not be completed."
-                            "\n\n"
-                            "Please check:"
-                            "\n"
-                            "/tmp/speedy_TheWeather/"
-                        ),
-                        MessageBox.TYPE_ERROR,
-                        timeout=8
-                    )
-
-                except Exception:
-
-                    pass
-
-        except Exception as e:
-
-            print(
-                "[SETUP] Update error:"
-            )
-            print(e)
-
-            try:
-
-                self.session.open(
-                    MessageBox,
-                    _(
-                        "Error while updating "
-                        "speedy_TheWeather:"
-                        "\n\n%s"
-                        % e
-                    ),
-                    MessageBox.TYPE_ERROR
-                )
-
-            except Exception:
-
-                pass
-
-
-
-    # ========================================================
-    # AUTO BACKGROUNDS DOWNLOAD
+    # DOWNLOAD AUTO BACKGROUNDS
     # ========================================================
 
     def downloadAutoBackgrounds(self):
+
+        print(
+            "[speedy_TheWeather] "
+            "Opening background download confirmation."
+        )
 
         self.session.openWithCallback(
             self.downloadAutoBackgroundsConfirmed,
@@ -7758,15 +7872,48 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 "Do you want to download the "
                 "weather backgrounds now?"
             ),
-            MessageBox.TYPE_YESNO
+            MessageBox.TYPE_YESNO,
+            default=True
         )
 
-    def downloadAutoBackgroundsConfirmed(self, answer):
+    # ========================================================
+    # DOWNLOAD AUTO BACKGROUNDS CONFIRMED
+    # ========================================================
+
+    def downloadAutoBackgroundsConfirmed(
+        self,
+        answer
+    ):
 
         if not answer:
+
+            print(
+                "[speedy_TheWeather] "
+                "Background download cancelled."
+            )
+
             return
 
-        if ensureAutoBackgrounds():
+        print(
+            "[speedy_TheWeather] "
+            "Starting background download."
+        )
+
+        try:
+
+            result = ensureAutoBackgrounds()
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Background download exception: %s"
+                % e
+            )
+
+            result = False
+
+        if result:
 
             self.session.open(
                 MessageBox,
@@ -7774,7 +7921,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                     "The weather backgrounds "
                     "were downloaded successfully."
                 ),
-                MessageBox.TYPE_INFO
+                MessageBox.TYPE_INFO,
+                timeout=5
             )
 
         else:
@@ -7788,88 +7936,117 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 MessageBox.TYPE_ERROR
             )
 
-
-
- 
-    def handleOk(self):
-        current = self["config"].getCurrent()
-
-        if not current:
-            return
-
-        if current[1] == self.sevenDayColorEntry:
-            self.session.open(sevendayColorSetup)
-            return
-
-            if current[1] == self.updateEntry:
-                self.checkUpdate()
-                return
-
-        if current[1] == self.autoBackgroundDownloadEntry:
-            self.downloadAutoBackgrounds()
-            return
-
-        ConfigListScreen.keyOK(self)
+    # ========================================================
+    # MANUAL UPDATE CHECK
+    # ========================================================
 
     def checkUpdate(self):
-        """
-        Startet die Update-Prüfung nur dann,
-        wenn der Menüpunkt "Search for update" ausgewählt ist.
 
-        Die Prüfung läuft threadbasiert; die Rückgabe wird ausschließlich
-        über eTimer im Enigma2-Mainthread verarbeitet.
-        """
+        global _overlaySession
+        global _updatePollTimer
+
+        # ----------------------------------------------------
+        # Sicherheit: wirklich Update-Menüpunkt ausgewählt?
+        # ----------------------------------------------------
 
         current = self["config"].getCurrent()
 
         if not current:
+
             return
 
-        if current[1] != self.updateEntry:
+        if current[1] is not self.updateEntry:
+
             return
 
-        global _overlaySession, _updatePollTimer
+        # ----------------------------------------------------
+        # Aktuelle Session für Update-System setzen
+        # ----------------------------------------------------
+
         _overlaySession = self.session
 
-        # Die globale Poll-Abfrage darf während des manuellen Checks nicht
-        # dieselbe Queue parallel leeren.
+        print(
+            "[speedy_TheWeather] "
+            "Starting manual update check..."
+        )
+
+        # ----------------------------------------------------
+        # Alten globalen Poll-Timer stoppen
+        # ----------------------------------------------------
+
         try:
+
             if _updatePollTimer is not None:
+
                 _updatePollTimer.stop()
+
         except Exception:
+
             pass
 
-        print("[speedy_TheWeather] Starting update check...")
+        # ----------------------------------------------------
+        # Alten lokalen Timer stoppen
+        # ----------------------------------------------------
 
-        # Alten Timer sauber entfernen
         try:
-            if hasattr(self, "_updateCheckTimer"):
+
+            if self._updateCheckTimer is not None:
+
                 self._updateCheckTimer.stop()
+
         except Exception:
+
             pass
 
-        # Hintergrundprüfung starten
+        # ----------------------------------------------------
+        # Update Worker starten
+        #
+        # NICHT _update_begin_worker() verwenden!
+        #
+        # Der kann durch _updateWorkerStarted bereits
+        # gesperrt sein.
+        # ----------------------------------------------------
+
         try:
-            threading.Thread(
+
+            thread = threading.Thread(
                 target=_update_check_worker,
                 name="speedy_TheWeather_ConfigUpdateCheck"
-            ).start()
-        except Exception as e:
+            )
+
+            thread.daemon = True
+
+            thread.start()
+
             print(
                 "[speedy_TheWeather] "
-                "Could not start update thread: %s"
+                "Manual update worker started."
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not start update worker: %s"
                 % e
             )
 
             self.session.open(
                 MessageBox,
-                _("Update check failed."),
+                _(
+                    "Update check failed."
+                ),
                 MessageBox.TYPE_ERROR
             )
+
             return
 
-        # eTimer für Queue-Abfrage erzeugen
+        # ----------------------------------------------------
+        # Timer für Queue-Abfrage
+        # ----------------------------------------------------
+
         try:
+
             self._updateCheckTimer = eTimer()
 
             safeTimerCallback(
@@ -7877,7 +8054,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 self.checkUpdateQueue
             )
 
-            # Nach 100 ms erstmals prüfen
             self._updateCheckTimer.start(
                 100,
                 True
@@ -7885,7 +8061,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             print(
                 "[speedy_TheWeather] "
-                "Update result timer started."
+                "Manual update queue timer started."
             )
 
         except Exception as e:
@@ -7900,43 +8076,42 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             self.session.open(
                 MessageBox,
-                _("Update check failed."),
+                _(
+                    "Update check failed."
+                ),
                 MessageBox.TYPE_ERROR
             )
 
+    # ========================================================
+    # UPDATE QUEUE
+    # ========================================================
 
     def checkUpdateQueue(self):
-        """
-        Prüft die Update-Queue.
 
-        Diese Funktion läuft immer im Enigma2-Mainthread
-        über eTimer.
-        """
+        # ----------------------------------------------------
+        # Queue prüfen
+        # ----------------------------------------------------
 
         try:
+
             result = _updateQueue.get_nowait()
 
         except queue.Empty:
 
-            # Noch kein Ergebnis vorhanden.
-            # eTimer erneut in 100 ms starten.
+            # Noch kein Ergebnis.
+            # Timer erneut starten.
 
             try:
-                if hasattr(self, "_updateCheckTimer") and \
-                   self._updateCheckTimer is not None:
+
+                if self._updateCheckTimer is not None:
 
                     self._updateCheckTimer.start(
                         100,
                         True
                     )
 
-            except Exception as e:
-
-                print(
-                    "[speedy_TheWeather] "
-                    "Could not restart update timer: %s"
-                    % e
-                )
+            except Exception:
+                pass
 
             return
 
@@ -7948,92 +8123,100 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 % e
             )
 
-            try:
-                if hasattr(self, "_updateCheckTimer") and \
-                   self._updateCheckTimer is not None:
-
-                    self._updateCheckTimer.stop()
-
-            except Exception:
-                pass
-
-            self.session.open(
-                MessageBox,
-                _("Update check failed."),
-                MessageBox.TYPE_ERROR
-            )
-
             return
 
-
-        # -------------------------------------------------
+        # ----------------------------------------------------
         # Ergebnis vorhanden
-        # -------------------------------------------------
+        # ----------------------------------------------------
 
         try:
-            if hasattr(self, "_updateCheckTimer") and \
-               self._updateCheckTimer is not None:
+
+            if self._updateCheckTimer is not None:
 
                 self._updateCheckTimer.stop()
 
         except Exception:
+
             pass
 
+        result_type = result[0]
+        data = result[1]
 
-        result_type, data = result
-
-
-        # -------------------------------------------------
-        # FEHLER
-        # -------------------------------------------------
+        # ====================================================
+        # ERROR
+        # ====================================================
 
         if result_type == "error":
 
             self.session.open(
                 MessageBox,
-                data,
+                safeStr(data),
                 MessageBox.TYPE_ERROR
             )
 
             return
 
-
-        # -------------------------------------------------
-        # KEIN UPDATE
-        # -------------------------------------------------
+        # ====================================================
+        # CURRENT
+        # ====================================================
 
         if result_type == "current":
 
-            remote_version = data.get("version", "")
+            remote_version = ""
+
+            try:
+
+                remote_version = data.get(
+                    "version",
+                    ""
+                )
+
+            except Exception:
+
+                pass
 
             self.session.open(
                 MessageBox,
                 _(
-                    "The plugin is already up to date.\n\n"
+                    "The plugin is already up to date."
+                    "\n\n"
                     "Version: %s"
                 ) % remote_version,
-                MessageBox.TYPE_INFO
+                MessageBox.TYPE_INFO,
+                timeout=6
             )
 
             return
 
-
-        # -------------------------------------------------
-        # UPDATE VERFÜGBAR
-        # -------------------------------------------------
+        # ====================================================
+        # AVAILABLE
+        # ====================================================
 
         if result_type == "available":
 
-            # Einheitliche Anzeige für automatischen und manuellen Check.
-            # Dadurch stimmt der msgid exakt mit der PO-Datei überein.
-            globals()["_updateInfo"] = data
-            _update_show_message(data)
+            global _updateInfo
+
+            _updateInfo = data
+
+            print(
+                "[speedy_TheWeather] "
+                "Update available: %s"
+                % data.get(
+                    "version",
+                    ""
+                )
+            )
+
+            # Bestehenden Update-Dialog verwenden.
+            _update_show_message(
+                data
+            )
+
             return
 
-
-        # -------------------------------------------------
-        # INSTALLATION
-        # -------------------------------------------------
+        # ====================================================
+        # INSTALLING
+        # ====================================================
 
         if result_type == "installing":
 
@@ -8041,10 +8224,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             return
 
-
-        # -------------------------------------------------
-        # INSTALLIERT
-        # -------------------------------------------------
+        # ====================================================
+        # INSTALLED
+        # ====================================================
 
         if result_type == "installed":
 
@@ -8052,10 +8234,9 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             return
 
-
-        # -------------------------------------------------
-        # INSTALLATIONSFEHLER
-        # -------------------------------------------------
+        # ====================================================
+        # INSTALL ERROR
+        # ====================================================
 
         if result_type == "install_error":
 
@@ -8063,51 +8244,89 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             return
 
-
         print(
             "[speedy_TheWeather] "
             "Unknown update result: %s"
             % result_type
         )
 
+    # ========================================================
+    # TWO LOCATIONS
+    # ========================================================
+
+    def openTwoLocations(self):
+
+        self.session.open(
+            twolocations
+        )
+
+    # ========================================================
+    # APPEARANCE
+    # ========================================================
+
+    def openAppearance(self):
+
+        self.session.open(
+            infoscreen
+        )
+
+    # ========================================================
+    # SAVE
+    # ========================================================
+
+    def save(self):
+
+        for item in self["config"].list:
+
+            try:
+
+                item[1].save()
+
+            except Exception:
+
+                pass
+
+        configfile.save()
+
+        self.close(
+            True
+        )
+
+    # ========================================================
+    # CANCEL
+    # ========================================================
+
+    def keyCancel(self):
+
+        for item in self["config"].list:
+
+            try:
+
+                item[1].cancel()
+
+            except Exception:
+
+                pass
+
+        self.close()
+
+    # ========================================================
+    # CLEANUP
+    # ========================================================
 
     def __del__(self):
-        """
-        Timer beim Zerstören des Config-Screens stoppen.
-        """
 
         try:
-            if hasattr(self, "_updateCheckTimer") and \
-               self._updateCheckTimer is not None:
+
+            if self._updateCheckTimer is not None:
 
                 self._updateCheckTimer.stop()
 
         except Exception:
+
             pass
+```
 
-        try:
-            ConfigListScreen.__del__(self)
-        except Exception:
-            pass
-
-    def openTwoLocations(self):
-        self.session.open(twolocations)
-
-    def openAppearance(self):
-        self.session.open(infoscreen)
-
-    def save(self):
-        for x in self["config"].list:
-            x[1].save()
-
-        configfile.save()
-        self.close(True)
-
-    def keyCancel(self):
-        for x in self["config"].list:
-            x[1].cancel()
-
-        self.close()
 
 class sevendayColorSetup(ConfigListScreen, Screen):
     """
