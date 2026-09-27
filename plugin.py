@@ -4033,7 +4033,7 @@ def update_finished():
             )
 
         # --------------------------------------------------------
-        # RESTART TIMER
+        # RESTART TIMER ZURÜCKSETZEN
         # --------------------------------------------------------
 
         try:
@@ -4053,6 +4053,10 @@ def update_finished():
         except Exception:
 
             pass
+
+        # --------------------------------------------------------
+        # RESTART TIMER ERSTELLEN
+        # --------------------------------------------------------
 
         try:
 
@@ -4096,6 +4100,10 @@ def update_finished():
                 True
             )
 
+            installLogWrite(
+                "Restart message timer started."
+            )
+
         except Exception as e:
 
             installLogWrite(
@@ -4109,9 +4117,12 @@ def update_finished():
 
                 _update_install_finished()
 
-            except Exception:
+            except Exception as e:
 
-                pass
+                installLogWrite(
+                    "Could not show restart message: %s"
+                    % e
+                )
 
         return
 
@@ -4126,9 +4137,10 @@ def update_finished():
     _updateInstallInProgress = False
 
     # ------------------------------------------------------------
-    # INSTALLER NICHT sofort löschen!
+    # INSTALLER NICHT SOFORT LÖSCHEN
     #
-    # Wir wollen ihn zur Fehlersuche noch untersuchen können.
+    # Der Installer bleibt erhalten, damit wir ihn bei einem
+    # fehlgeschlagenen Update untersuchen können.
     # ------------------------------------------------------------
 
     installLogWrite(
@@ -4153,12 +4165,19 @@ def update_finished():
                 UPDATE_SUCCESS_FILE
             )
 
-    except Exception:
+            installLogWrite(
+                "Failure success marker removed."
+            )
 
-        pass
+    except Exception as e:
+
+        installLogWrite(
+            "Could not remove failure success marker: %s"
+            % e
+        )
 
     # ------------------------------------------------------------
-    # FEHLER AN QUEUE
+    # FEHLER AN QUEUE SENDEN
     # ------------------------------------------------------------
 
     try:
@@ -4170,11 +4189,17 @@ def update_finished():
             )
         )
 
+        installLogWrite(
+            "Install error queued."
+        )
+
     except Exception as e:
 
         installLogWrite(
             "Could not queue install error: %s"
             % e
+        )
+
 
 
 
