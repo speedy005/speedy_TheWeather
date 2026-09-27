@@ -2083,6 +2083,7 @@ def _update_debug(message):
 
         pass
 
+
 def _update_check_worker():
 
     global _updateWorkerStarted
@@ -2091,793 +2092,6 @@ def _update_check_worker():
     installer_path = None
 
     debug_log = "/tmp/speedy_update_debug.log"
-
-    def updateLogWrite(message):
-
-        try:
-
-            with open(
-                debug_log,
-                "a"
-            ) as logFile:
-
-                logFile.write(
-                    "%s\n"
-                    % message
-                )
-
-        except Exception:
-
-            pass
-
-        try:
-
-            print(
-                "[speedy_TheWeather] %s"
-                % message
-            )
-
-        except Exception:
-
-            pass
-
-    try:
-
-        # --------------------------------------------------------
-        # START
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "=================================================="
-        )
-
-        updateLogWrite(
-            "UPDATE CHECK START"
-        )
-
-        updateLogWrite(
-            "Plugin URL: %s"
-            % UPDATE_PLUGIN_URL
-        )
-
-        updateLogWrite(
-            "Installer URL: %s"
-            % UPDATE_INSTALLER_URL
-        )
-
-        try:
-
-            currentVersion = VERSION
-
-        except Exception:
-
-            try:
-
-                currentVersion = __version__
-
-            except Exception:
-
-                currentVersion = "0.0.0"
-
-        updateLogWrite(
-            "Installed VERSION: %s"
-            % currentVersion
-        )
-
-        # --------------------------------------------------------
-        # TEMP PLUGIN FILE
-        # --------------------------------------------------------
-
-        try:
-
-            fd, plugin_path = tempfile.mkstemp(
-                prefix=".speedy_TheWeather_remote_",
-                suffix=".py"
-            )
-
-            os.close(fd)
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Could not create temporary plugin file: %s"
-                % e
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Could not create temporary update file.")
-                )
-            )
-
-            return
-
-        updateLogWrite(
-            "Temporary plugin file: %s"
-            % plugin_path
-        )
-
-        # --------------------------------------------------------
-        # DOWNLOAD REMOTE PLUGIN
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "Downloading remote plugin.py..."
-        )
-
-        downloadResult = _update_download(
-            UPDATE_PLUGIN_URL,
-            plugin_path,
-            timeout=30
-        )
-
-        updateLogWrite(
-            "plugin.py download result: %s"
-            % downloadResult
-        )
-
-        if not downloadResult:
-
-            updateLogWrite(
-                "ERROR: Could not download remote plugin.py"
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Could not download the latest plugin version.")
-                )
-            )
-
-            return
-
-        # --------------------------------------------------------
-        # CHECK FILE
-        # --------------------------------------------------------
-
-        if not os.path.exists(plugin_path):
-
-            updateLogWrite(
-                "ERROR: Downloaded plugin.py does not exist."
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Downloaded plugin file does not exist.")
-                )
-            )
-
-            return
-
-        try:
-
-            pluginSize = os.path.getsize(
-                plugin_path
-            )
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Could not determine plugin.py size: %s"
-                % e
-            )
-
-            pluginSize = 0
-
-        updateLogWrite(
-            "Downloaded plugin.py size: %d bytes"
-            % pluginSize
-        )
-
-        if pluginSize <= 0:
-
-            updateLogWrite(
-                "ERROR: Downloaded plugin.py is empty."
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Downloaded plugin.py is empty.")
-                )
-            )
-
-            return
-
-        # --------------------------------------------------------
-        # READ REMOTE PLUGIN
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "Reading remote plugin.py..."
-        )
-
-        try:
-
-            with open(
-                plugin_path,
-                "r"
-            ) as pluginFile:
-
-                pluginSource = pluginFile.read()
-
-            updateLogWrite(
-                "Remote plugin.py read successfully."
-            )
-
-            updateLogWrite(
-                "Remote plugin.py characters: %d"
-                % len(pluginSource)
-            )
-
-        except Exception as e:
-
-            updateLogWrite(
-                "ERROR reading remote plugin.py: %s"
-                % e
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Could not read the remote plugin.py.")
-                )
-            )
-
-            return
-
-        # --------------------------------------------------------
-        # PYTHON SYNTAX CHECK
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "Checking remote plugin.py syntax..."
-        )
-
-        try:
-
-            ast.parse(
-                pluginSource
-            )
-
-            updateLogWrite(
-                "Remote plugin.py syntax is valid."
-            )
-
-        except SyntaxError as e:
-
-            updateLogWrite(
-                "=================================================="
-            )
-
-            updateLogWrite(
-                "REMOTE PLUGIN PYTHON SYNTAX ERROR"
-            )
-
-            updateLogWrite(
-                "SyntaxError: %s"
-                % safeStr(e)
-            )
-
-            updateLogWrite(
-                "Line: %s"
-                % getattr(
-                    e,
-                    "lineno",
-                    "?"
-                )
-            )
-
-            updateLogWrite(
-                "Column: %s"
-                % getattr(
-                    e,
-                    "offset",
-                    "?"
-                )
-            )
-
-            updateLogWrite(
-                "End line: %s"
-                % getattr(
-                    e,
-                    "end_lineno",
-                    "?"
-                )
-            )
-
-            updateLogWrite(
-                "End column: %s"
-                % getattr(
-                    e,
-                    "end_offset",
-                    "?"
-                )
-            )
-
-            syntaxText = safeStr(
-                getattr(
-                    e,
-                    "text",
-                    ""
-                )
-            )
-
-            updateLogWrite(
-                "Source line:"
-            )
-
-            updateLogWrite(
-                syntaxText.rstrip()
-            )
-
-            updateLogWrite(
-                "=================================================="
-            )
-
-            try:
-
-                errorMessage = (
-                    "Remote plugin.py contains invalid Python syntax.\n\n"
-                    "Line: %s\n"
-                    "Column: %s\n\n"
-                    "%s"
-                    % (
-                        getattr(
-                            e,
-                            "lineno",
-                            "?"
-                        ),
-                        getattr(
-                            e,
-                            "offset",
-                            "?"
-                        ),
-                        safeStr(e)
-                    )
-                )
-
-                _updateQueue.put(
-                    (
-                        "error",
-                        errorMessage
-                    )
-                )
-
-            except Exception as queueError:
-
-                updateLogWrite(
-                    "Could not queue syntax error: %s"
-                    % queueError
-                )
-
-            return
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Remote plugin.py syntax validation failed:"
-            )
-
-            updateLogWrite(
-                "%s"
-                % e
-            )
-
-            try:
-
-                _updateQueue.put(
-                    (
-                        "error",
-                        _("Could not validate remote plugin.py.")
-                    )
-                )
-
-            except Exception as queueError:
-
-                updateLogWrite(
-                    "Could not queue syntax validation error: %s"
-                    % queueError
-                )
-
-            return
-
-        # --------------------------------------------------------
-        # EXTRACT REMOTE VERSION
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "Extracting remote version..."
-        )
-
-        try:
-
-            remoteVersion = _update_extract_plugin_version(
-                pluginSource
-            )
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Could not extract remote version: %s"
-                % e
-            )
-
-            remoteVersion = None
-
-        if not remoteVersion:
-
-            updateLogWrite(
-                "ERROR: Remote plugin version could not be detected."
-            )
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Could not determine the latest plugin version.")
-                )
-            )
-
-            return
-
-        updateLogWrite(
-            "Remote VERSION: %s"
-            % remoteVersion
-        )
-
-        # --------------------------------------------------------
-        # VERSION COMPARISON
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "Comparing versions..."
-        )
-
-        try:
-
-            newer = _update_is_newer(
-                remoteVersion
-            )
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Version comparison failed: %s"
-                % e
-            )
-
-            newer = False
-
-        updateLogWrite(
-            "VERSION CHECK: installed=%s remote=%s newer=%s"
-            % (
-                currentVersion,
-                remoteVersion,
-                newer
-            )
-        )
-
-        if not newer:
-
-            updateLogWrite(
-                "=================================================="
-            )
-
-            updateLogWrite(
-                "NO UPDATE AVAILABLE"
-            )
-
-            updateLogWrite(
-                "Installed version: %s"
-                % currentVersion
-            )
-
-            updateLogWrite(
-                "Remote version: %s"
-                % remoteVersion
-            )
-
-            updateLogWrite(
-                "=================================================="
-            )
-
-            try:
-
-                _updateQueue.put(
-                    (
-                        "current",
-                        {
-                            "version": currentVersion
-                        }
-                    )
-                )
-
-            except Exception as e:
-
-                updateLogWrite(
-                    "Could not queue current-version result: %s"
-                    % e
-                )
-
-            return
-
-        # --------------------------------------------------------
-        # UPDATE AVAILABLE
-        # --------------------------------------------------------
-
-        updateLogWrite(
-            "=================================================="
-        )
-
-        updateLogWrite(
-            "NEW UPDATE AVAILABLE"
-        )
-
-        updateLogWrite(
-            "Installed: %s"
-            % currentVersion
-        )
-
-        updateLogWrite(
-            "Remote: %s"
-            % remoteVersion
-        )
-
-        updateLogWrite(
-            "=================================================="
-        )
-
-        # --------------------------------------------------------
-        # DOWNLOAD INSTALLER FOR VERSION / CHANGELOG INFO
-        # --------------------------------------------------------
-
-        try:
-
-            fd, installer_path = tempfile.mkstemp(
-                prefix=".speedy_TheWeather_installer_info_",
-                suffix=".sh"
-            )
-
-            os.close(fd)
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Could not create temporary installer info file: %s"
-                % e
-            )
-
-            installer_path = None
-
-        installerVersion = ""
-        changes = ""
-
-        if installer_path:
-
-            updateLogWrite(
-                "Temporary installer file: %s"
-                % installer_path
-            )
-
-            updateLogWrite(
-                "Downloading installer.sh..."
-            )
-
-            installerDownloadResult = _update_download(
-                UPDATE_INSTALLER_URL,
-                installer_path,
-                timeout=30
-            )
-
-            updateLogWrite(
-                "installer.sh download result: %s"
-                % installerDownloadResult
-            )
-
-            if installerDownloadResult:
-
-                try:
-
-                    with open(
-                        installer_path,
-                        "r"
-                    ) as installerFile:
-
-                        installerSource = installerFile.read()
-
-                    updateLogWrite(
-                        "installer.sh read successfully."
-                    )
-
-                    updateLogWrite(
-                        "installer.sh characters: %d"
-                        % len(installerSource)
-                    )
-
-                    installerVersion, changes = (
-                        _update_extract_installer_info(
-                            installerSource
-                        )
-                    )
-
-                    updateLogWrite(
-                        "Installer version: %s"
-                        % installerVersion
-                    )
-
-                    updateLogWrite(
-                        "Changelog detected: %s"
-                        % bool(changes)
-                    )
-
-                except Exception as e:
-
-                    updateLogWrite(
-                        "Could not parse installer.sh: %s"
-                        % e
-                    )
-
-            else:
-
-                updateLogWrite(
-                    "WARNING: Could not download installer.sh for update information."
-                )
-
-        # --------------------------------------------------------
-        # SEND UPDATE INFORMATION TO GUI
-        # --------------------------------------------------------
-
-        try:
-
-            _updateQueue.put(
-                (
-                    "available",
-                    {
-                        "version": remoteVersion,
-                        "changes": changes,
-                        "installer_version": installerVersion
-                    }
-                )
-            )
-
-            updateLogWrite(
-                "QUEUE PUT: available / %s"
-                % remoteVersion
-            )
-
-            updateLogWrite(
-                "Update information successfully sent to GUI queue."
-            )
-
-        except Exception as e:
-
-            updateLogWrite(
-                "Could not put update information into queue: %s"
-                % e
-            )
-
-        # --------------------------------------------------------
-        # CLEANUP TEMP FILES
-        # --------------------------------------------------------
-
-    except Exception as e:
-
-        updateLogWrite(
-            "=================================================="
-        )
-
-        updateLogWrite(
-            "UPDATE CHECK WORKER EXCEPTION"
-        )
-
-        updateLogWrite(
-            "Exception: %s"
-            % e
-        )
-
-        try:
-
-            import traceback
-
-            updateLogWrite(
-                traceback.format_exc()
-            )
-
-        except Exception:
-
-            pass
-
-        try:
-
-            _updateQueue.put(
-                (
-                    "error",
-                    _("Update check failed.")
-                )
-            )
-
-        except Exception as queueError:
-
-            updateLogWrite(
-                "Could not queue worker error: %s"
-                % queueError
-            )
-
-    finally:
-
-        # --------------------------------------------------------
-        # REMOVE TEMP PLUGIN
-        # --------------------------------------------------------
-
-        if plugin_path:
-
-            try:
-
-                if os.path.exists(
-                    plugin_path
-                ):
-
-                    os.unlink(
-                        plugin_path
-                    )
-
-                    updateLogWrite(
-                        "Removed temporary file: %s"
-                        % plugin_path
-                    )
-
-            except Exception as e:
-
-                updateLogWrite(
-                    "Could not remove temporary plugin file: %s"
-                    % e
-                )
-
-        # --------------------------------------------------------
-        # REMOVE TEMP INSTALLER INFO
-        # --------------------------------------------------------
-
-        if installer_path:
-
-            try:
-
-                if os.path.exists(
-                    installer_path
-                ):
-
-                    os.unlink(
-                        installer_path
-                    )
-
-                    updateLogWrite(
-                        "Removed temporary file: %s"
-                        % installer_path
-                    )
-
-            except Exception as e:
-
-                updateLogWrite(
-                    "Could not remove temporary installer file: %s"
-                    % e
-                )
-
-        # --------------------------------------------------------
-        # WORKER STATUS
-        # --------------------------------------------------------
-
-        _updateWorkerStarted = False
-
-        updateLogWrite(
-            "UPDATE CHECK FINISHED"
-        )
-
-        updateLogWrite(
-            "=================================================="
-        )
-
-
 
     def debug(message):
 
@@ -2910,9 +2124,9 @@ def _update_check_worker():
 
     try:
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # START
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         try:
 
@@ -2947,9 +2161,9 @@ def _update_check_worker():
             % UPDATE_INSTALLER_URL
         )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # CURRENT VERSION
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         try:
 
@@ -2970,26 +2184,46 @@ def _update_check_worker():
             % current_version
         )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # TEMP PLUGIN FILE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
-        fd, plugin_path = tempfile.mkstemp(
-            prefix=".speedy_TheWeather_remote_",
-            suffix=".py",
-            dir="/tmp"
-        )
+        try:
 
-        os.close(fd)
+            fd, plugin_path = tempfile.mkstemp(
+                prefix=".speedy_TheWeather_remote_",
+                suffix=".py",
+                dir="/tmp"
+            )
+
+            os.close(fd)
+
+        except Exception as e:
+
+            debug(
+                "ERROR creating temporary plugin file: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Could not create temporary update file."
+                    )
+                )
+            )
+
+            return
 
         debug(
             "Temporary plugin file: %s"
             % plugin_path
         )
 
-        # --------------------------------------------------------------------
-        # DOWNLOAD PLUGIN
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
+        # DOWNLOAD REMOTE PLUGIN
+        # ------------------------------------------------------------
 
         debug(
             "Downloading remote plugin.py..."
@@ -3023,9 +2257,9 @@ def _update_check_worker():
 
             return
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # VERIFY FILE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         if not os.path.exists(
             plugin_path
@@ -3083,9 +2317,9 @@ def _update_check_worker():
 
             return
 
-        # --------------------------------------------------------------------
-        # READ SOURCE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
+        # READ REMOTE SOURCE
+        # ------------------------------------------------------------
 
         debug(
             "Reading remote plugin.py..."
@@ -3130,9 +2364,9 @@ def _update_check_worker():
             % len(remote_source)
         )
 
-        # --------------------------------------------------------------------
-        # PYTHON SYNTAX
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
+        # PYTHON SYNTAX CHECK
+        # ------------------------------------------------------------
 
         debug(
             "Checking remote plugin.py syntax..."
@@ -3140,28 +2374,166 @@ def _update_check_worker():
 
         try:
 
-            import ast
-
             ast.parse(
                 remote_source,
                 filename="plugin.py"
             )
 
+        except SyntaxError as e:
+
+            debug(
+                "=================================================="
+            )
+
+            debug(
+                "REMOTE PLUGIN PYTHON SYNTAX ERROR"
+            )
+
+            debug(
+                "Message: %s"
+                % getattr(
+                    e,
+                    "msg",
+                    str(e)
+                )
+            )
+
+            debug(
+                "Line: %s"
+                % getattr(
+                    e,
+                    "lineno",
+                    "?"
+                )
+            )
+
+            debug(
+                "Column: %s"
+                % getattr(
+                    e,
+                    "offset",
+                    "?"
+                )
+            )
+
+            debug(
+                "End line: %s"
+                % getattr(
+                    e,
+                    "end_lineno",
+                    "?"
+                )
+            )
+
+            debug(
+                "End column: %s"
+                % getattr(
+                    e,
+                    "end_offset",
+                    "?"
+                )
+            )
+
+            debug(
+                "Source line: %s"
+                % safeStr(
+                    getattr(
+                        e,
+                        "text",
+                        ""
+                    )
+                ).rstrip()
+            )
+
+            debug(
+                "Full SyntaxError: %s"
+                % safeStr(e)
+            )
+
+            debug(
+                "=================================================="
+            )
+
+            try:
+
+                error_message = (
+                    "Remote plugin.py contains invalid Python syntax.\n\n"
+                    "Line: %s\n"
+                    "Column: %s\n\n"
+                    "%s"
+                    % (
+                        getattr(
+                            e,
+                            "lineno",
+                            "?"
+                        ),
+                        getattr(
+                            e,
+                            "offset",
+                            "?"
+                        ),
+                        safeStr(e)
+                    )
+                )
+
+                _updateQueue.put(
+                    (
+                        "error",
+                        error_message
+                    )
+                )
+
+            except Exception as queue_error:
+
+                debug(
+                    "Could not queue syntax error: %s"
+                    % queue_error
+                )
+
+            return
+
         except Exception as e:
 
             debug(
-                "ERROR: Remote plugin.py syntax invalid: %s"
-                % e
+                "REMOTE PLUGIN VALIDATION EXCEPTION"
             )
 
-            _updateQueue.put(
-                (
-                    "error",
-                    _(
-                        "Remote plugin.py contains invalid Python syntax."
+            debug(
+                "Exception type: %s"
+                % type(e).__name__
+            )
+
+            debug(
+                "Exception: %s"
+                % safeStr(e)
+            )
+
+            try:
+
+                import traceback
+
+                debug(
+                    traceback.format_exc()
+                )
+
+            except Exception:
+
+                pass
+
+            try:
+
+                _updateQueue.put(
+                    (
+                        "error",
+                        _(
+                            "Could not validate remote plugin.py."
+                        )
                     )
                 )
-            )
+
+            except Exception:
+
+                pass
 
             return
 
@@ -3169,9 +2541,9 @@ def _update_check_worker():
             "Remote plugin.py syntax is valid."
         )
 
-        # --------------------------------------------------------------------
-        # REMOTE VERSION
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
+        # EXTRACT REMOTE VERSION
+        # ------------------------------------------------------------
 
         debug(
             "Extracting remote version..."
@@ -3225,9 +2597,9 @@ def _update_check_worker():
             % remote_version
         )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # VERSION COMPARISON
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         debug(
             "Comparing versions..."
@@ -3266,31 +2638,30 @@ def _update_check_worker():
             )
         )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # NO UPDATE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         if not is_newer:
 
             debug(
-                "Plugin is up to date."
+                "Plugin is already up to date."
             )
 
             _updateQueue.put(
                 (
                     "current",
                     {
-                        "version":
-                            remote_version
+                        "version": remote_version
                     }
                 )
             )
 
             return
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # UPDATE AVAILABLE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         debug(
             "=================================================="
@@ -3314,134 +2685,155 @@ def _update_check_worker():
             "=================================================="
         )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # TEMP INSTALLER FILE
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
-        fd, installer_path = tempfile.mkstemp(
-            prefix=".speedy_TheWeather_installer_info_",
-            suffix=".sh",
-            dir="/tmp"
-        )
+        try:
 
-        os.close(fd)
+            fd, installer_path = tempfile.mkstemp(
+                prefix=".speedy_TheWeather_installer_info_",
+                suffix=".sh",
+                dir="/tmp"
+            )
 
-        debug(
-            "Temporary installer file: %s"
-            % installer_path
-        )
+            os.close(fd)
+
+        except Exception as e:
+
+            debug(
+                "ERROR creating temporary installer file: %s"
+                % e
+            )
+
+            installer_path = None
 
         installer_info = {
             "version": "",
             "changelog": ""
         }
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # DOWNLOAD INSTALLER
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
-        debug(
-            "Downloading installer.sh..."
-        )
+        if installer_path:
 
-        installer_download_result = _update_download(
-            UPDATE_INSTALLER_URL,
-            installer_path,
-            timeout=UPDATE_CHECK_TIMEOUT
-        )
+            debug(
+                "Temporary installer file: %s"
+                % installer_path
+            )
 
-        debug(
-            "installer.sh download result: %s"
-            % installer_download_result
-        )
+            debug(
+                "Downloading installer.sh..."
+            )
 
-        if installer_download_result:
+            installer_download_result = _update_download(
+                UPDATE_INSTALLER_URL,
+                installer_path,
+                timeout=UPDATE_CHECK_TIMEOUT
+            )
 
-            try:
+            debug(
+                "installer.sh download result: %s"
+                % installer_download_result
+            )
 
-                with open(
-                    installer_path,
-                    "r",
-                    encoding="utf-8"
-                ) as installer_file:
-
-                    installer_source = (
-                        installer_file.read()
-                    )
-
-                debug(
-                    "installer.sh read successfully."
-                )
-
-                debug(
-                    "installer.sh characters: %d"
-                    % len(installer_source)
-                )
+            if installer_download_result:
 
                 try:
 
-                    installer_info = (
-                        _update_extract_installer_info(
-                            installer_source
+                    with open(
+                        installer_path,
+                        "r",
+                        encoding="utf-8"
+                    ) as installer_file:
+
+                        installer_source = (
+                            installer_file.read()
+                        )
+
+                    debug(
+                        "installer.sh read successfully."
+                    )
+
+                    debug(
+                        "installer.sh characters: %d"
+                        % len(installer_source)
+                    )
+
+                    try:
+
+                        installer_info = (
+                            _update_extract_installer_info(
+                                installer_source
+                            )
+                        )
+
+                    except Exception as e:
+
+                        debug(
+                            "ERROR extracting installer information: %s"
+                            % e
+                        )
+
+                        installer_info = {
+                            "version": "",
+                            "changelog": ""
+                        }
+
+                    debug(
+                        "Installer version: %s"
+                        % installer_info.get(
+                            "version",
+                            ""
+                        )
+                    )
+
+                    debug(
+                        "Changelog detected: %s"
+                        % bool(
+                            installer_info.get(
+                                "changelog",
+                                ""
+                            )
                         )
                     )
 
                 except Exception as e:
 
                     debug(
-                        "ERROR extracting installer information: %s"
+                        "Could not read installer information: %s"
                         % e
                     )
 
-                    installer_info = {
-                        "version": "",
-                        "changelog": ""
-                    }
+            else:
 
                 debug(
-                    "Installer version: %s"
-                    % installer_info.get(
-                        "version",
-                        ""
-                    )
+                    "WARNING: Could not download installer.sh."
                 )
 
                 debug(
-                    "Changelog detected: %s"
-                    % bool(
-                        installer_info.get(
-                            "changelog",
-                            ""
-                        )
-                    )
-                )
-
-            except Exception as e:
-
-                debug(
-                    "Could not read installer information: %s"
-                    % e
+                    "Continuing without installer information."
                 )
 
         else:
 
             debug(
-                "Installer information could not be downloaded."
+                "WARNING: Could not create installer info file."
             )
 
             debug(
                 "Continuing without installer information."
             )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # CHANGELOG
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
-        changes = (
-            installer_info.get(
-                "changelog",
-                ""
-            )
+        changes = installer_info.get(
+            "changelog",
+            ""
         )
 
         if not changes:
@@ -3450,37 +2842,46 @@ def _update_check_worker():
                 "No changes available."
             )
 
-        # --------------------------------------------------------------------
-        # QUEUE RESULT
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
+        # QUEUE UPDATE INFORMATION
+        # ------------------------------------------------------------
 
         debug(
             "QUEUE PUT: available / %s"
             % remote_version
         )
 
-        _updateQueue.put(
-            (
-                "available",
-                {
-                    "version":
-                        remote_version,
+        try:
 
-                    "changes":
-                        changes,
+            _updateQueue.put(
+                (
+                    "available",
+                    {
+                        "version":
+                            remote_version,
 
-                    "installer_version":
-                        installer_info.get(
-                            "version",
-                            ""
-                        )
-                }
+                        "changes":
+                            changes,
+
+                        "installer_version":
+                            installer_info.get(
+                                "version",
+                                ""
+                            )
+                    }
+                )
             )
-        )
 
-        debug(
-            "Update information successfully sent to GUI queue."
-        )
+            debug(
+                "Update information successfully sent to GUI queue."
+            )
+
+        except Exception as e:
+
+            debug(
+                "Could not put update information into queue: %s"
+                % e
+            )
 
     except Exception as e:
 
@@ -3489,20 +2890,25 @@ def _update_check_worker():
         )
 
         debug(
-            "UPDATE CHECK EXCEPTION: %s"
-            % e
+            "UPDATE CHECK WORKER EXCEPTION"
+        )
+
+        debug(
+            "Exception type: %s"
+            % type(e).__name__
+        )
+
+        debug(
+            "Exception: %s"
+            % safeStr(e)
         )
 
         try:
 
             import traceback
 
-            error_text = (
-                traceback.format_exc()
-            )
-
             debug(
-                error_text
+                traceback.format_exc()
             )
 
         except Exception:
@@ -3530,9 +2936,9 @@ def _update_check_worker():
 
     finally:
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # CLEAN TEMP FILES
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         for path in (
             plugin_path,
@@ -3568,9 +2974,9 @@ def _update_check_worker():
                         )
                     )
 
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
         # ALLOW NEXT UPDATE CHECK
-        # --------------------------------------------------------------------
+        # ------------------------------------------------------------
 
         _updateWorkerStarted = False
 
@@ -3581,6 +2987,8 @@ def _update_check_worker():
         debug(
             "=================================================="
         )
+
+
 
 
 
