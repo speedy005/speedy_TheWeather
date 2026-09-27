@@ -395,29 +395,30 @@ UPDATE_SUCCESS_FILE = (
     "/tmp/speedy_TheWeather_update_success"
 )
 
+
 # ============================================================
 # UPDATE STATE
 # ============================================================
 
 _updateStartTimer = None
+
+# Einziger Timer für die Queue-Verarbeitung
 _updatePollTimer = None
 
+# Gemeinsame Update-Queue
 _updateQueue = queue.Queue()
 
-_updateCheckStarted = False
+# Verhindert parallele Update-Worker
 _updateWorkerStarted = False
+
+# Verhindert parallele Installationen
 _updateInstallInProgress = False
 
+# Enthält die aktuell gefundenen Update-Informationen
 _updateInfo = None
+
+# Enigma2 Console-Referenz während der Installation
 _updateConsole = None
-
-# ============================================================
-# AUTO WEATHER BACKGROUND FUNCTIONS
-# ============================================================
-
-# AUTO_BG_MARKER wird bereits oben definiert.
-# Hier NICHT noch einmal definieren.
-
 
 
 import os
