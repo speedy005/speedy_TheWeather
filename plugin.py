@@ -19,6 +19,7 @@ import datetime
 import threading
 import tempfile
 import subprocess
+import ast
 from collections import deque, OrderedDict
 try:
     from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -1852,16 +1853,15 @@ def _update_download(url, destination, timeout=None):
 # EXTRACT PLUGIN VERSION
 # ============================================================================
 
+
 def _update_extract_plugin_version(source):
 
     """
-    Liest __version__ oder version aus plugin.py,
+    Liest __version__, version oder VERSION aus plugin.py,
     ohne den Remote-Code auszuführen.
     """
 
     try:
-
-        import ast
 
         tree = ast.parse(
             source,
@@ -1896,7 +1896,10 @@ def _update_extract_plugin_version(source):
 
                 value = node.value
 
+                # ------------------------------------------------
                 # Python 3
+                # ------------------------------------------------
+
                 if (
                     isinstance(
                         value,
@@ -1911,7 +1914,10 @@ def _update_extract_plugin_version(source):
 
                     return value.value.strip()
 
+                # ------------------------------------------------
                 # Older Python / Enigma2
+                # ------------------------------------------------
+
                 if (
                     hasattr(
                         ast,
@@ -1935,6 +1941,8 @@ def _update_extract_plugin_version(source):
         )
 
     return ""
+
+
 
 
 # ============================================================================
