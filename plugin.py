@@ -3517,81 +3517,174 @@ def _update_install():
     _updateInstallInProgress = True
     _updateConsole = None
 
-    _updateQueue.put(
-        (
-            "installing",
-            None
-        )
-    )
+    installLog = "/tmp/speedy_update_install.log"
+
+    # ------------------------------------------------------------
+    # INSTALL LOG NEU STARTEN
+    # ------------------------------------------------------------
 
     try:
 
-        print(
-            "[speedy_TheWeather] "
-            "Downloading installer..."
-        )
+        with open(
+            installLog,
+            "w"
+        ) as logFile:
 
-        # --------------------------------------------------------------------
-        # REMOVE OLD SUCCESS MARKER
-        # --------------------------------------------------------------------
+            logFile.write(
+                "speedy_TheWeather UPDATE INSTALL DEBUG\n"
+            )
+
+            logFile.write(
+                "========================================\n"
+            )
+
+    except Exception:
+
+        pass
+
+    def installLogWrite(message):
 
         try:
 
-            if os.path.exists(
-                UPDATE_SUCCESS_FILE
-            ):
+            with open(
+                installLog,
+                "a"
+            ) as logFile:
+
+                logFile.write(
+                    "%s\n"
+                    % message
+                )
+
+        except Exception:
+
+            pass
+
+        try:
+
+            print(
+                "[speedy_TheWeather] %s"
+                % message
+            )
+
+        except Exception:
+
+            pass
+
+    installLogWrite(
+        "UPDATE INSTALL START"
+    )
+
+    installLogWrite(
+        "Installer URL: %s"
+        % UPDATE_INSTALLER_URL
+    )
+
+    installLogWrite(
+        "Installer path: %s"
+        % UPDATE_INSTALLER_PATH
+    )
+
+    # ------------------------------------------------------------
+    # QUEUE INSTALLING
+    # ------------------------------------------------------------
+
+    try:
+
+        _updateQueue.put(
+            (
+                "installing",
+                None
+            )
+        )
+
+    except Exception as e:
+
+        installLogWrite(
+            "Could not queue installing message: %s"
+            % e
+        )
+
+    try:
+
+        # --------------------------------------------------------
+        # SUCCESS MARKER ENTFERNEN
+        # --------------------------------------------------------
+
+        if os.path.exists(
+            UPDATE_SUCCESS_FILE
+        ):
+
+            try:
 
                 os.unlink(
                     UPDATE_SUCCESS_FILE
                 )
 
-        except Exception as e:
+                installLogWrite(
+                    "Old success marker removed."
+                )
 
-            print(
-                "[speedy_TheWeather] "
-                "Could not remove old success marker: %s"
-                % e
-            )
+            except Exception as e:
 
-        # --------------------------------------------------------------------
-        # REMOVE OLD INSTALLER
-        # --------------------------------------------------------------------
+                installLogWrite(
+                    "Could not remove old success marker: %s"
+                    % e
+                )
 
-        try:
+        # --------------------------------------------------------
+        # ALTEN INSTALLER ENTFERNEN
+        # --------------------------------------------------------
 
-            if os.path.exists(
-                UPDATE_INSTALLER_PATH
-            ):
+        if os.path.exists(
+            UPDATE_INSTALLER_PATH
+        ):
+
+            try:
 
                 os.unlink(
                     UPDATE_INSTALLER_PATH
                 )
 
-        except Exception as e:
+                installLogWrite(
+                    "Old installer removed."
+                )
 
-            print(
-                "[speedy_TheWeather] "
-                "Could not remove old installer: %s"
-                % e
-            )
+            except Exception as e:
 
-        # --------------------------------------------------------------------
-        # DOWNLOAD INSTALLER
-        # --------------------------------------------------------------------
+                installLogWrite(
+                    "Could not remove old installer: %s"
+                    % e
+                )
 
-        if not _update_download(
+        # --------------------------------------------------------
+        # INSTALLER HERUNTERLADEN
+        # --------------------------------------------------------
+
+        installLogWrite(
+            "Downloading installer..."
+        )
+
+        downloadResult = _update_download(
             UPDATE_INSTALLER_URL,
             UPDATE_INSTALLER_PATH,
             timeout=30
-        ):
+        )
+
+        installLogWrite(
+            "Installer download result: %s"
+            % downloadResult
+        )
+
+        if not downloadResult:
 
             raise IOError(
                 "installer download failed"
             )
 
-        # --------------------------------------------------------------------
-        # VERIFY INSTALLER
-        # --------------------------------------------------------------------
+        # --------------------------------------------------------
+        # INSTALLER PRÜFEN
+        # --------------------------------------------------------
 
         if not os.path.isfile(
             UPDATE_INSTALLER_PATH
@@ -3601,15 +3694,25 @@ def _update_install():
                 "installer file does not exist"
             )
 
+        installerSize = 0
+
         try:
 
             installerSize = os.path.getsize(
                 UPDATE_INSTALLER_PATH
             )
 
-        except Exception:
+        except Exception as e:
 
-            installerSize = 0
+            installLogWrite(
+                "Could not read installer size: %s"
+                % e
+            )
+
+        installLogWrite(
+            "Installer size: %d bytes"
+            % installerSize
+        )
 
         if installerSize <= 0:
 
@@ -3617,21 +3720,62 @@ def _update_install():
                 "installer file is empty"
             )
 
-        print(
-            "[speedy_TheWeather] "
-            "Installer size: %d bytes"
-            % installerSize
-        )
+        # --------------------------------------------------------
+        # INSTALLER LESBARKEIT PRÜFEN
+        # --------------------------------------------------------
 
-        # --------------------------------------------------------------------
+        try:
+
+            with open(
+                UPDATE_INSTALLER_PATH,
+                "r"
+            ) as installerFile:
+
+                firstLines = []
+
+                for index in range(10):
+
+                    line = installerFile.readline()
+
+                    if not line:
+
+                        break
+
+                    firstLines.append(
+                        line.rstrip()
+                    )
+
+            installLogWrite(
+                "Installer read test: OK"
+            )
+
+            for line in firstLines:
+
+                installLogWrite(
+                    "INSTALLER: %s"
+                    % line
+                )
+
+        except Exception as e:
+
+            raise IOError(
+                "could not read installer: %s"
+                % e
+            )
+
+        # --------------------------------------------------------
         # CHMOD
-        # --------------------------------------------------------------------
+        # --------------------------------------------------------
 
         try:
 
             os.chmod(
                 UPDATE_INSTALLER_PATH,
                 0o755
+            )
+
+            installLogWrite(
+                "chmod 0755: OK"
             )
 
         except Exception as e:
@@ -3641,9 +3785,9 @@ def _update_install():
                 % e
             )
 
-        # --------------------------------------------------------------------
-        # VERIFY BASH
-        # --------------------------------------------------------------------
+        # --------------------------------------------------------
+        # BASH PRÜFEN
+        # --------------------------------------------------------
 
         if not os.path.isfile(
             "/bin/bash"
@@ -3662,9 +3806,13 @@ def _update_install():
                 "/bin/bash is not executable"
             )
 
-        # --------------------------------------------------------------------
-        # VERIFY SESSION
-        # --------------------------------------------------------------------
+        installLogWrite(
+            "/bin/bash: OK"
+        )
+
+        # --------------------------------------------------------
+        # SESSION PRÜFEN
+        # --------------------------------------------------------
 
         if _overlaySession is None:
 
@@ -3672,30 +3820,51 @@ def _update_install():
                 "No active Enigma2 session available"
             )
 
-        # --------------------------------------------------------------------
+        installLogWrite(
+            "Enigma2 session: OK"
+        )
+
+        # --------------------------------------------------------
         # INSTALL COMMAND
-        # --------------------------------------------------------------------
+        # --------------------------------------------------------
+        #
+        # Der Installer läuft komplett unter bash.
+        #
+        # stdout/stderr werden zusätzlich in eine Logdatei
+        # geschrieben.
+        #
+        # touch wird NUR ausgeführt, wenn bash erfolgreich
+        # beendet wurde.
+        #
+        # --------------------------------------------------------
 
         cmd = (
-            "/bin/bash \"%s\""
-            " && "
+            "/bin/bash \"%s\" "
+            ">> \"%s\" 2>&1 "
+            "&& "
             "/bin/touch \"%s\""
-            %
-            (
+            % (
                 UPDATE_INSTALLER_PATH,
+                installLog,
                 UPDATE_SUCCESS_FILE
             )
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "Installer command: %s"
-            % cmd
+        installLogWrite(
+            "Installer command:"
         )
 
-        # --------------------------------------------------------------------
-        # START CONSOLE
-        # --------------------------------------------------------------------
+        installLogWrite(
+            cmd
+        )
+
+        installLogWrite(
+            "Starting Enigma2 Console..."
+        )
+
+        # --------------------------------------------------------
+        # CONSOLE ÖFFNEN
+        # --------------------------------------------------------
 
         _updateConsole = _overlaySession.open(
             Console,
@@ -3707,26 +3876,27 @@ def _update_install():
             closeOnSuccess=True
         )
 
+        installLogWrite(
+            "Enigma2 Console opened successfully."
+        )
+
     except Exception as e:
 
         _updateInstallInProgress = False
         _updateConsole = None
 
-        print(
-            "[speedy_TheWeather] "
-            "Update installation failed: %s"
+        installLogWrite(
+            "INSTALL EXCEPTION: %s"
             % e
         )
 
         try:
 
-            if os.path.exists(
-                UPDATE_INSTALLER_PATH
-            ):
+            import traceback
 
-                os.unlink(
-                    UPDATE_INSTALLER_PATH
-                )
+            installLogWrite(
+                traceback.format_exc()
+            )
 
         except Exception:
 
@@ -3740,40 +3910,81 @@ def _update_install():
         )
 
 
-# ============================================================================
-# INSTALLER FINISHED
-# ============================================================================
-
 def update_finished():
 
     global _updateConsole
     global _updateInstallInProgress
     global _updateRestartTimer
 
-    print(
-        "[speedy_TheWeather] "
-        "Update installer finished."
+    installLog = "/tmp/speedy_update_install.log"
+
+    def installLogWrite(message):
+
+        try:
+
+            with open(
+                installLog,
+                "a"
+            ) as logFile:
+
+                logFile.write(
+                    "%s\n"
+                    % message
+                )
+
+        except Exception:
+
+            pass
+
+        try:
+
+            print(
+                "[speedy_TheWeather] %s"
+                % message
+            )
+
+        except Exception:
+
+            pass
+
+    installLogWrite(
+        "========================================"
+    )
+
+    installLogWrite(
+        "UPDATE INSTALLER FINISHED CALLBACK"
     )
 
     _updateConsole = None
+
+    # ------------------------------------------------------------
+    # SUCCESS MARKER PRÜFEN
+    # ------------------------------------------------------------
 
     success = os.path.exists(
         UPDATE_SUCCESS_FILE
     )
 
-    print(
-        "[speedy_TheWeather] "
+    installLogWrite(
         "Update success marker: %s"
         % success
     )
 
-    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------
     # SUCCESS
-    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------
 
     if success:
 
+        installLogWrite(
+            "UPDATE INSTALLATION SUCCESS"
+        )
+
         _updateInstallInProgress = False
+
+        # --------------------------------------------------------
+        # INSTALLER LÖSCHEN
+        # --------------------------------------------------------
 
         try:
 
@@ -3785,13 +3996,20 @@ def update_finished():
                     UPDATE_INSTALLER_PATH
                 )
 
+                installLogWrite(
+                    "Installer removed."
+                )
+
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            installLogWrite(
                 "Could not remove installer: %s"
                 % e
             )
+
+        # --------------------------------------------------------
+        # SUCCESS MARKER LÖSCHEN
+        # --------------------------------------------------------
 
         try:
 
@@ -3803,17 +4021,20 @@ def update_finished():
                     UPDATE_SUCCESS_FILE
                 )
 
+                installLogWrite(
+                    "Success marker removed."
+                )
+
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            installLogWrite(
                 "Could not remove success marker: %s"
                 % e
             )
 
-        # --------------------------------------------------------------------
-        # DELAY RESTART MESSAGE
-        # --------------------------------------------------------------------
+        # --------------------------------------------------------
+        # RESTART TIMER
+        # --------------------------------------------------------
 
         try:
 
@@ -3877,8 +4098,7 @@ def update_finished():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            installLogWrite(
                 "Could not start restart timer: %s"
                 % e
             )
@@ -3895,25 +4115,33 @@ def update_finished():
 
         return
 
-    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------
     # FAILURE
-    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------
+
+    installLogWrite(
+        "UPDATE INSTALLATION FAILED"
+    )
 
     _updateInstallInProgress = False
 
-    try:
+    # ------------------------------------------------------------
+    # INSTALLER NICHT sofort löschen!
+    #
+    # Wir wollen ihn zur Fehlersuche noch untersuchen können.
+    # ------------------------------------------------------------
 
-        if os.path.exists(
-            UPDATE_INSTALLER_PATH
-        ):
+    installLogWrite(
+        "Installer retained for diagnostic purposes:"
+    )
 
-            os.unlink(
-                UPDATE_INSTALLER_PATH
-            )
+    installLogWrite(
+        UPDATE_INSTALLER_PATH
+    )
 
-    except Exception:
-
-        pass
+    # ------------------------------------------------------------
+    # SUCCESS MARKER AUFRÄUMEN
+    # ------------------------------------------------------------
 
     try:
 
@@ -3929,12 +4157,25 @@ def update_finished():
 
         pass
 
-    _updateQueue.put(
-        (
-            "install_error",
-            None
+    # ------------------------------------------------------------
+    # FEHLER AN QUEUE
+    # ------------------------------------------------------------
+
+    try:
+
+        _updateQueue.put(
+            (
+                "install_error",
+                None
+            )
         )
-    )
+
+    except Exception as e:
+
+        installLogWrite(
+            "Could not queue install error: %s"
+            % e
+
 
 
 # ============================================================================
