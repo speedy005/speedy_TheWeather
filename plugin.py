@@ -321,6 +321,7 @@ UPDATE_INSTALLER_URL = (
     "speedy005/speedy_TheWeather/master/installer.sh"
 )
 
+UPDATE_DOWNLOAD_TIMEOUT = 30
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS - DOWNLOAD
