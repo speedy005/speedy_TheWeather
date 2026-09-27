@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.7
+# v.1.6.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -26,9 +26,9 @@ except ImportError:
     ThreadPoolExecutor = None
     as_completed = None
 try:
-    import 1.6.8 as 1.6.8
+    import Queue as queue
 except ImportError:
-    import 1.6.8
+    import queue
 from enigma import gRGB
 from Screens.Console import Console
 from enigma import eTimer
@@ -275,7 +275,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.7"
+__version__ = "1.6.8"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -291,7 +291,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.6.7'
+version = '1.6.8'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -402,11 +402,11 @@ UPDATE_SUCCESS_FILE = (
 
 _updateStartTimer = None
 
-# Einziger Timer für die 1.6.8-Verarbeitung
+# Einziger Timer für die Queue-Verarbeitung
 _updatePollTimer = None
 
-# Gemeinsame Update-1.6.8
-_update1.6.8 = 1.6.8.1.6.8()
+# Gemeinsame Update-Queue
+_updateQueue = queue.Queue()
 
 # Verhindert mehrfaches automatisches Starten der Update-Prüfung
 _updateCheckStarted = False
@@ -2084,6 +2084,793 @@ def _update_check_worker():
 
     debug_log = "/tmp/speedy_update_debug.log"
 
+    def updateLogWrite(message):
+
+        try:
+
+            with open(
+                debug_log,
+                "a"
+            ) as logFile:
+
+                logFile.write(
+                    "%s\n"
+                    % message
+                )
+
+        except Exception:
+
+            pass
+
+        try:
+
+            print(
+                "[speedy_TheWeather] %s"
+                % message
+            )
+
+        except Exception:
+
+            pass
+
+    try:
+
+        # --------------------------------------------------------
+        # START
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "=================================================="
+        )
+
+        updateLogWrite(
+            "UPDATE CHECK START"
+        )
+
+        updateLogWrite(
+            "Plugin URL: %s"
+            % UPDATE_PLUGIN_URL
+        )
+
+        updateLogWrite(
+            "Installer URL: %s"
+            % UPDATE_INSTALLER_URL
+        )
+
+        try:
+
+            currentVersion = VERSION
+
+        except Exception:
+
+            try:
+
+                currentVersion = __version__
+
+            except Exception:
+
+                currentVersion = "0.0.0"
+
+        updateLogWrite(
+            "Installed VERSION: %s"
+            % currentVersion
+        )
+
+        # --------------------------------------------------------
+        # TEMP PLUGIN FILE
+        # --------------------------------------------------------
+
+        try:
+
+            fd, plugin_path = tempfile.mkstemp(
+                prefix=".speedy_TheWeather_remote_",
+                suffix=".py"
+            )
+
+            os.close(fd)
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Could not create temporary plugin file: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Could not create temporary update file.")
+                )
+            )
+
+            return
+
+        updateLogWrite(
+            "Temporary plugin file: %s"
+            % plugin_path
+        )
+
+        # --------------------------------------------------------
+        # DOWNLOAD REMOTE PLUGIN
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "Downloading remote plugin.py..."
+        )
+
+        downloadResult = _update_download(
+            UPDATE_PLUGIN_URL,
+            plugin_path,
+            timeout=30
+        )
+
+        updateLogWrite(
+            "plugin.py download result: %s"
+            % downloadResult
+        )
+
+        if not downloadResult:
+
+            updateLogWrite(
+                "ERROR: Could not download remote plugin.py"
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Could not download the latest plugin version.")
+                )
+            )
+
+            return
+
+        # --------------------------------------------------------
+        # CHECK FILE
+        # --------------------------------------------------------
+
+        if not os.path.exists(plugin_path):
+
+            updateLogWrite(
+                "ERROR: Downloaded plugin.py does not exist."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Downloaded plugin file does not exist.")
+                )
+            )
+
+            return
+
+        try:
+
+            pluginSize = os.path.getsize(
+                plugin_path
+            )
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Could not determine plugin.py size: %s"
+                % e
+            )
+
+            pluginSize = 0
+
+        updateLogWrite(
+            "Downloaded plugin.py size: %d bytes"
+            % pluginSize
+        )
+
+        if pluginSize <= 0:
+
+            updateLogWrite(
+                "ERROR: Downloaded plugin.py is empty."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Downloaded plugin.py is empty.")
+                )
+            )
+
+            return
+
+        # --------------------------------------------------------
+        # READ REMOTE PLUGIN
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "Reading remote plugin.py..."
+        )
+
+        try:
+
+            with open(
+                plugin_path,
+                "r"
+            ) as pluginFile:
+
+                pluginSource = pluginFile.read()
+
+            updateLogWrite(
+                "Remote plugin.py read successfully."
+            )
+
+            updateLogWrite(
+                "Remote plugin.py characters: %d"
+                % len(pluginSource)
+            )
+
+        except Exception as e:
+
+            updateLogWrite(
+                "ERROR reading remote plugin.py: %s"
+                % e
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Could not read the remote plugin.py.")
+                )
+            )
+
+            return
+
+        # --------------------------------------------------------
+        # PYTHON SYNTAX CHECK
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "Checking remote plugin.py syntax..."
+        )
+
+        try:
+
+            ast.parse(
+                pluginSource
+            )
+
+            updateLogWrite(
+                "Remote plugin.py syntax is valid."
+            )
+
+        except SyntaxError as e:
+
+            updateLogWrite(
+                "=================================================="
+            )
+
+            updateLogWrite(
+                "REMOTE PLUGIN PYTHON SYNTAX ERROR"
+            )
+
+            updateLogWrite(
+                "SyntaxError: %s"
+                % safeStr(e)
+            )
+
+            updateLogWrite(
+                "Line: %s"
+                % getattr(
+                    e,
+                    "lineno",
+                    "?"
+                )
+            )
+
+            updateLogWrite(
+                "Column: %s"
+                % getattr(
+                    e,
+                    "offset",
+                    "?"
+                )
+            )
+
+            updateLogWrite(
+                "End line: %s"
+                % getattr(
+                    e,
+                    "end_lineno",
+                    "?"
+                )
+            )
+
+            updateLogWrite(
+                "End column: %s"
+                % getattr(
+                    e,
+                    "end_offset",
+                    "?"
+                )
+            )
+
+            syntaxText = safeStr(
+                getattr(
+                    e,
+                    "text",
+                    ""
+                )
+            )
+
+            updateLogWrite(
+                "Source line:"
+            )
+
+            updateLogWrite(
+                syntaxText.rstrip()
+            )
+
+            updateLogWrite(
+                "=================================================="
+            )
+
+            try:
+
+                errorMessage = (
+                    "Remote plugin.py contains invalid Python syntax.\n\n"
+                    "Line: %s\n"
+                    "Column: %s\n\n"
+                    "%s"
+                    % (
+                        getattr(
+                            e,
+                            "lineno",
+                            "?"
+                        ),
+                        getattr(
+                            e,
+                            "offset",
+                            "?"
+                        ),
+                        safeStr(e)
+                    )
+                )
+
+                _updateQueue.put(
+                    (
+                        "error",
+                        errorMessage
+                    )
+                )
+
+            except Exception as queueError:
+
+                updateLogWrite(
+                    "Could not queue syntax error: %s"
+                    % queueError
+                )
+
+            return
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Remote plugin.py syntax validation failed:"
+            )
+
+            updateLogWrite(
+                "%s"
+                % e
+            )
+
+            try:
+
+                _updateQueue.put(
+                    (
+                        "error",
+                        _("Could not validate remote plugin.py.")
+                    )
+                )
+
+            except Exception as queueError:
+
+                updateLogWrite(
+                    "Could not queue syntax validation error: %s"
+                    % queueError
+                )
+
+            return
+
+        # --------------------------------------------------------
+        # EXTRACT REMOTE VERSION
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "Extracting remote version..."
+        )
+
+        try:
+
+            remoteVersion = _update_extract_plugin_version(
+                pluginSource
+            )
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Could not extract remote version: %s"
+                % e
+            )
+
+            remoteVersion = None
+
+        if not remoteVersion:
+
+            updateLogWrite(
+                "ERROR: Remote plugin version could not be detected."
+            )
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Could not determine the latest plugin version.")
+                )
+            )
+
+            return
+
+        updateLogWrite(
+            "Remote VERSION: %s"
+            % remoteVersion
+        )
+
+        # --------------------------------------------------------
+        # VERSION COMPARISON
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "Comparing versions..."
+        )
+
+        try:
+
+            newer = _update_is_newer(
+                remoteVersion
+            )
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Version comparison failed: %s"
+                % e
+            )
+
+            newer = False
+
+        updateLogWrite(
+            "VERSION CHECK: installed=%s remote=%s newer=%s"
+            % (
+                currentVersion,
+                remoteVersion,
+                newer
+            )
+        )
+
+        if not newer:
+
+            updateLogWrite(
+                "=================================================="
+            )
+
+            updateLogWrite(
+                "NO UPDATE AVAILABLE"
+            )
+
+            updateLogWrite(
+                "Installed version: %s"
+                % currentVersion
+            )
+
+            updateLogWrite(
+                "Remote version: %s"
+                % remoteVersion
+            )
+
+            updateLogWrite(
+                "=================================================="
+            )
+
+            try:
+
+                _updateQueue.put(
+                    (
+                        "current",
+                        {
+                            "version": currentVersion
+                        }
+                    )
+                )
+
+            except Exception as e:
+
+                updateLogWrite(
+                    "Could not queue current-version result: %s"
+                    % e
+                )
+
+            return
+
+        # --------------------------------------------------------
+        # UPDATE AVAILABLE
+        # --------------------------------------------------------
+
+        updateLogWrite(
+            "=================================================="
+        )
+
+        updateLogWrite(
+            "NEW UPDATE AVAILABLE"
+        )
+
+        updateLogWrite(
+            "Installed: %s"
+            % currentVersion
+        )
+
+        updateLogWrite(
+            "Remote: %s"
+            % remoteVersion
+        )
+
+        updateLogWrite(
+            "=================================================="
+        )
+
+        # --------------------------------------------------------
+        # DOWNLOAD INSTALLER FOR VERSION / CHANGELOG INFO
+        # --------------------------------------------------------
+
+        try:
+
+            fd, installer_path = tempfile.mkstemp(
+                prefix=".speedy_TheWeather_installer_info_",
+                suffix=".sh"
+            )
+
+            os.close(fd)
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Could not create temporary installer info file: %s"
+                % e
+            )
+
+            installer_path = None
+
+        installerVersion = ""
+        changes = ""
+
+        if installer_path:
+
+            updateLogWrite(
+                "Temporary installer file: %s"
+                % installer_path
+            )
+
+            updateLogWrite(
+                "Downloading installer.sh..."
+            )
+
+            installerDownloadResult = _update_download(
+                UPDATE_INSTALLER_URL,
+                installer_path,
+                timeout=30
+            )
+
+            updateLogWrite(
+                "installer.sh download result: %s"
+                % installerDownloadResult
+            )
+
+            if installerDownloadResult:
+
+                try:
+
+                    with open(
+                        installer_path,
+                        "r"
+                    ) as installerFile:
+
+                        installerSource = installerFile.read()
+
+                    updateLogWrite(
+                        "installer.sh read successfully."
+                    )
+
+                    updateLogWrite(
+                        "installer.sh characters: %d"
+                        % len(installerSource)
+                    )
+
+                    installerVersion, changes = (
+                        _update_extract_installer_info(
+                            installerSource
+                        )
+                    )
+
+                    updateLogWrite(
+                        "Installer version: %s"
+                        % installerVersion
+                    )
+
+                    updateLogWrite(
+                        "Changelog detected: %s"
+                        % bool(changes)
+                    )
+
+                except Exception as e:
+
+                    updateLogWrite(
+                        "Could not parse installer.sh: %s"
+                        % e
+                    )
+
+            else:
+
+                updateLogWrite(
+                    "WARNING: Could not download installer.sh for update information."
+                )
+
+        # --------------------------------------------------------
+        # SEND UPDATE INFORMATION TO GUI
+        # --------------------------------------------------------
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "available",
+                    {
+                        "version": remoteVersion,
+                        "changes": changes,
+                        "installer_version": installerVersion
+                    }
+                )
+            )
+
+            updateLogWrite(
+                "QUEUE PUT: available / %s"
+                % remoteVersion
+            )
+
+            updateLogWrite(
+                "Update information successfully sent to GUI queue."
+            )
+
+        except Exception as e:
+
+            updateLogWrite(
+                "Could not put update information into queue: %s"
+                % e
+            )
+
+        # --------------------------------------------------------
+        # CLEANUP TEMP FILES
+        # --------------------------------------------------------
+
+    except Exception as e:
+
+        updateLogWrite(
+            "=================================================="
+        )
+
+        updateLogWrite(
+            "UPDATE CHECK WORKER EXCEPTION"
+        )
+
+        updateLogWrite(
+            "Exception: %s"
+            % e
+        )
+
+        try:
+
+            import traceback
+
+            updateLogWrite(
+                traceback.format_exc()
+            )
+
+        except Exception:
+
+            pass
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _("Update check failed.")
+                )
+            )
+
+        except Exception as queueError:
+
+            updateLogWrite(
+                "Could not queue worker error: %s"
+                % queueError
+            )
+
+    finally:
+
+        # --------------------------------------------------------
+        # REMOVE TEMP PLUGIN
+        # --------------------------------------------------------
+
+        if plugin_path:
+
+            try:
+
+                if os.path.exists(
+                    plugin_path
+                ):
+
+                    os.unlink(
+                        plugin_path
+                    )
+
+                    updateLogWrite(
+                        "Removed temporary file: %s"
+                        % plugin_path
+                    )
+
+            except Exception as e:
+
+                updateLogWrite(
+                    "Could not remove temporary plugin file: %s"
+                    % e
+                )
+
+        # --------------------------------------------------------
+        # REMOVE TEMP INSTALLER INFO
+        # --------------------------------------------------------
+
+        if installer_path:
+
+            try:
+
+                if os.path.exists(
+                    installer_path
+                ):
+
+                    os.unlink(
+                        installer_path
+                    )
+
+                    updateLogWrite(
+                        "Removed temporary file: %s"
+                        % installer_path
+                    )
+
+            except Exception as e:
+
+                updateLogWrite(
+                    "Could not remove temporary installer file: %s"
+                    % e
+                )
+
+        # --------------------------------------------------------
+        # WORKER STATUS
+        # --------------------------------------------------------
+
+        _updateWorkerStarted = False
+
+        updateLogWrite(
+            "UPDATE CHECK FINISHED"
+        )
+
+        updateLogWrite(
+            "=================================================="
+        )
+
+
+
     def debug(message):
 
         try:
@@ -2217,7 +3004,7 @@ def _update_check_worker():
                 "ERROR: Could not download remote plugin.py."
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2240,7 +3027,7 @@ def _update_check_worker():
                 "ERROR: Downloaded plugin.py does not exist."
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2277,7 +3064,7 @@ def _update_check_worker():
                 "ERROR: Downloaded plugin.py is empty."
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2315,7 +3102,7 @@ def _update_check_worker():
                 % e
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2359,7 +3146,7 @@ def _update_check_worker():
                 % e
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2397,7 +3184,7 @@ def _update_check_worker():
                 % e
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2414,7 +3201,7 @@ def _update_check_worker():
                 "ERROR: Remote version could not be detected."
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2451,7 +3238,7 @@ def _update_check_worker():
                 % e
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2481,7 +3268,7 @@ def _update_check_worker():
                 "Plugin is up to date."
             )
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "current",
                     {
@@ -2656,15 +3443,15 @@ def _update_check_worker():
             )
 
         # --------------------------------------------------------------------
-        # 1.6.8 RESULT
+        # QUEUE RESULT
         # --------------------------------------------------------------------
 
         debug(
-            "1.6.8 PUT: available / %s"
+            "QUEUE PUT: available / %s"
             % remote_version
         )
 
-        _update1.6.8.put(
+        _updateQueue.put(
             (
                 "available",
                 {
@@ -2684,7 +3471,7 @@ def _update_check_worker():
         )
 
         debug(
-            "Update information successfully sent to GUI 1.6.8."
+            "Update information successfully sent to GUI queue."
         )
 
     except Exception as e:
@@ -2720,7 +3507,7 @@ def _update_check_worker():
 
         try:
 
-            _update1.6.8.put(
+            _updateQueue.put(
                 (
                     "error",
                     _(
@@ -2809,7 +3596,7 @@ def _update_poll():
 
             try:
 
-                result = _update1.6.8.get_nowait()
+                result = _updateQueue.get_nowait()
 
             except Exception:
 
@@ -2823,7 +3610,7 @@ def _update_poll():
 
                 print(
                     "[speedy_TheWeather] "
-                    "UPDATE 1.6.8: invalid result: %s"
+                    "UPDATE QUEUE: invalid result: %s"
                     % str(result)
                 )
 
@@ -2831,7 +3618,7 @@ def _update_poll():
 
             print(
                 "[speedy_TheWeather] "
-                "UPDATE 1.6.8 RESULT: %s"
+                "UPDATE QUEUE RESULT: %s"
                 % str(resultType)
             )
 
@@ -2850,7 +3637,7 @@ def _update_poll():
 
                         print(
                             "[speedy_TheWeather] "
-                            "UPDATE 1.6.8: invalid available payload"
+                            "UPDATE QUEUE: invalid available payload"
                         )
 
                         continue
@@ -3122,14 +3909,14 @@ def _update_poll():
                     )
 
             # --------------------------------------------------
-            # UNKNOWN 1.6.8 MESSAGE
+            # UNKNOWN QUEUE MESSAGE
             # --------------------------------------------------
 
             else:
 
                 print(
                     "[speedy_TheWeather] "
-                    "UPDATE 1.6.8: unknown message type: %s"
+                    "UPDATE QUEUE: unknown message type: %s"
                     % str(resultType)
                 )
 
@@ -3587,12 +4374,12 @@ def _update_install():
     )
 
     # ------------------------------------------------------------
-    # 1.6.8 INSTALLING
+    # QUEUE INSTALLING
     # ------------------------------------------------------------
 
     try:
 
-        _update1.6.8.put(
+        _updateQueue.put(
             (
                 "installing",
                 None
@@ -3602,7 +4389,7 @@ def _update_install():
     except Exception as e:
 
         installLogWrite(
-            "Could not 1.6.8 installing message: %s"
+            "Could not queue installing message: %s"
             % e
         )
 
@@ -3903,7 +4690,7 @@ def _update_install():
 
             pass
 
-        _update1.6.8.put(
+        _updateQueue.put(
             (
                 "install_error",
                 None
@@ -4178,12 +4965,12 @@ def update_finished():
         )
 
     # ------------------------------------------------------------
-    # FEHLER AN 1.6.8 SENDEN
+    # FEHLER AN QUEUE SENDEN
     # ------------------------------------------------------------
 
     try:
 
-        _update1.6.8.put(
+        _updateQueue.put(
             (
                 "install_error",
                 None
@@ -4191,13 +4978,13 @@ def update_finished():
         )
 
         installLogWrite(
-            "Install error 1.6.8d."
+            "Install error queued."
         )
 
     except Exception as e:
 
         installLogWrite(
-            "Could not 1.6.8 install error: %s"
+            "Could not queue install error: %s"
             % e
         )
 
@@ -4394,7 +5181,7 @@ _overlaySession = None
 OVERLAY_CFG = CFG_DIR + "/speedy_TheWeather_overlay.cfg"
 
 # Asynchroner Plugin-Start: kein Wetter-HTTP im Enigma2-Hauptthread.
-_startupWeather1.6.8 = 1.6.8.1.6.8()
+_startupWeatherQueue = queue.Queue()
 _startupWeatherTimer = None
 _startupWeatherRunning = False
 
@@ -9099,7 +9886,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             return
 
         # ----------------------------------------------------
-        # Alte 1.6.8-Einträge entfernen
+        # Alte Queue-Einträge entfernen
         #
         # Dadurch verarbeitet die neue Suche keine alten
         # Update-Ergebnisse.
@@ -9109,7 +9896,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             while True:
 
-                _update1.6.8.get_nowait()
+                _updateQueue.get_nowait()
 
         except Exception:
 
@@ -9119,8 +9906,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # Globalen Poll-Timer sicherstellen
         #
         # WICHTIG:
-        # NUR _update_poll() liest die 1.6.8.
-        # Es gibt KEINEN lokalen checkUpdate1.6.8()-Timer mehr.
+        # NUR _update_poll() liest die Queue.
+        # Es gibt KEINEN lokalen checkUpdateQueue()-Timer mehr.
         # ----------------------------------------------------
 
         try:
@@ -9209,7 +9996,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             try:
 
-                _update1.6.8.put(
+                _updateQueue.put(
                     (
                         "error",
                         _(
@@ -10292,17 +11079,17 @@ def _startup_weather_worker(session, location):
     """Load the last weather location off the Enigma2 main thread."""
     try:
         ok = getLocWeer(location, update_overlay=False)
-        _startupWeather1.6.8.put(("ok" if ok else "fail", session))
+        _startupWeatherQueue.put(("ok" if ok else "fail", session))
     except Exception as e:
         print("[speedy_TheWeather] startup weather failed: %s" % e)
-        _startupWeather1.6.8.put(("fail", session))
+        _startupWeatherQueue.put(("fail", session))
 
 
 def _poll_startup_weather():
     global _startupWeatherTimer, _startupWeatherRunning
     try:
-        result, session = _startupWeather1.6.8.get_nowait()
-    except 1.6.8.Empty:
+        result, session = _startupWeatherQueue.get_nowait()
+    except queue.Empty:
         if _startupWeatherTimer is not None:
             try:
                 _startupWeatherTimer.start(100, True)
@@ -10608,7 +11395,7 @@ class RadarScreen(Screen):
         )
 
         # deque verhindert O(n)-Kosten durch pop(0) bei vielen Tiles.
-        self._decode1.6.8 = deque()
+        self._decodeQueue = deque()
         self._decodeActive = False
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -11516,7 +12303,7 @@ class RadarScreen(Screen):
     def cleanupAll(self):
 
         self._decodeActive = False
-        self._decode1.6.8 = deque()
+        self._decodeQueue = deque()
 
         try:
             self._decodeTimer.stop()
@@ -12252,7 +13039,7 @@ class RadarScreen(Screen):
             pass
 
         self._decodeActive = True
-        self._decode1.6.8 = deque()
+        self._decodeQueue = deque()
         self._decodeBaseFiles = dict(result.get("baseFiles", {}))
         self._decodeFrameFiles = list(result.get("frameFiles", []))
 
@@ -12269,19 +13056,19 @@ class RadarScreen(Screen):
         center = (self.GRID // 2, self.GRID // 2)
         center_path = self._decodeBaseFiles.get(center)
         if center_path:
-            self._decode1.6.8.append(("base", center, center_path))
+            self._decodeQueue.append(("base", center, center_path))
 
         if self._decodeFrameFiles:
             for key, path in self._decodeFrameFiles[0].items():
-                self._decode1.6.8.append(("frame", 0, key, path))
+                self._decodeQueue.append(("frame", 0, key, path))
 
         for key, path in self._decodeBaseFiles.items():
             if key != center:
-                self._decode1.6.8.append(("base", key, path))
+                self._decodeQueue.append(("base", key, path))
 
         for frameIndex in range(1, len(self._decodeFrameFiles)):
             for key, path in self._decodeFrameFiles[frameIndex].items():
-                self._decode1.6.8.append(("frame", frameIndex, key, path))
+                self._decodeQueue.append(("frame", frameIndex, key, path))
 
         try:
             self.animTimer.stop()
@@ -12289,7 +13076,7 @@ class RadarScreen(Screen):
             pass
         self.animTimerStarted = False
 
-        if self._decode1.6.8:
+        if self._decodeQueue:
             self._decodeTimer.start(self._decodeDelayMs, True)
         else:
             self._finishDecode()
@@ -12302,11 +13089,11 @@ class RadarScreen(Screen):
         if self._closed or not self._decodeActive:
             return
 
-        if not self._decode1.6.8:
+        if not self._decodeQueue:
             self._finishDecode()
             return
 
-        item = self._decode1.6.8.popleft()
+        item = self._decodeQueue.popleft()
 
         try:
             itemType = item[0]
@@ -12394,7 +13181,7 @@ class RadarScreen(Screen):
             return
 
         self._decodeActive = False
-        self._decode1.6.8 = deque()
+        self._decodeQueue = deque()
 
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -12679,7 +13466,7 @@ class RadarScreen(Screen):
         self._fetchRequestId += 1
 
         self._decodeActive = False
-        self._decode1.6.8 = deque()
+        self._decodeQueue = deque()
 
         try:
             self.refreshTimer.stop()
