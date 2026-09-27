@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.8
+# v.1.6.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -276,7 +276,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.8"
+__version__ = "1.6.9"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -292,7 +292,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.6.8'
+version = '1.6.9'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -3695,6 +3695,7 @@ def _update_show_installing():
 # UPDATE INSTALL
 # ============================================================================
 
+
 def _update_install():
 
     global _updateInstallInProgress
@@ -3742,9 +3743,438 @@ def _update_install():
                 "========================================\n"
             )
 
+            logFile.write(
+                "UPDATE INSTALL START\n"
+            )
+
     except Exception:
 
         pass
+
+    # ------------------------------------------------------------
+    # INSTALLER URL
+    # ------------------------------------------------------------
+
+    installerUrl = UPDATE_INSTALLER_URL
+
+    print(
+        "[speedy_TheWeather] "
+        "UPDATE INSTALL START"
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer URL: %s"
+        % installerUrl
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer path: %s"
+        % UPDATE_INSTALLER_PATH
+    )
+
+    # ------------------------------------------------------------
+    # INSTALLER HERUNTERLADEN
+    # ------------------------------------------------------------
+
+    print(
+        "[speedy_TheWeather] "
+        "Downloading installer..."
+    )
+
+    downloadOk = _update_download(
+        installerUrl,
+        UPDATE_INSTALLER_PATH,
+        UPDATE_DOWNLOAD_TIMEOUT
+    )
+
+    if not downloadOk:
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer download failed."
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    # ------------------------------------------------------------
+    # INSTALLER PRÜFEN
+    # ------------------------------------------------------------
+
+    try:
+
+        installerSize = os.path.getsize(
+            UPDATE_INSTALLER_PATH
+        )
+
+    except Exception:
+
+        installerSize = 0
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer size: %d bytes"
+        % installerSize
+    )
+
+    if installerSize <= 0:
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer file is empty."
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    # ------------------------------------------------------------
+    # INSTALLER LESEN / DEBUG
+    # ------------------------------------------------------------
+
+    try:
+
+        with open(
+            UPDATE_INSTALLER_PATH,
+            "r"
+        ) as installerFile:
+
+            installerContent = installerFile.read()
+
+        print(
+            "[speedy_TheWeather] "
+            "Installer read test: OK"
+        )
+
+        try:
+
+            firstLines = installerContent.splitlines()
+
+            for line in firstLines[:10]:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "INSTALLER: %s"
+                    % line
+                )
+
+        except Exception:
+            pass
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not read installer: %s"
+            % e
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    # ------------------------------------------------------------
+    # CHMOD
+    # ------------------------------------------------------------
+
+    try:
+
+        os.chmod(
+            UPDATE_INSTALLER_PATH,
+            0o755
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "chmod 0755: OK"
+        )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "chmod failed: %s"
+            % e
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    # ------------------------------------------------------------
+    # BASH PRÜFEN
+    # ------------------------------------------------------------
+
+    bashPath = "/bin/bash"
+
+    if not os.path.exists(
+        bashPath
+    ):
+
+        print(
+            "[speedy_TheWeather] "
+            "/bin/bash not found."
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    print(
+        "[speedy_TheWeather] "
+        "/bin/bash: OK"
+    )
+
+    # ------------------------------------------------------------
+    # ENIGMA2 SESSION PRÜFEN
+    # ------------------------------------------------------------
+
+    if _overlaySession is None:
+
+        print(
+            "[speedy_TheWeather] "
+            "No Enigma2 session available."
+        )
+
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+        return
+
+    print(
+        "[speedy_TheWeather] "
+        "Enigma2 session: OK"
+    )
+
+    # ------------------------------------------------------------
+    # TEE PRÜFEN
+    # ------------------------------------------------------------
+
+    teePath = "/usr/bin/tee"
+
+    if not os.path.exists(
+        teePath
+    ):
+
+        if os.path.exists(
+            "/bin/tee"
+        ):
+
+            teePath = "/bin/tee"
+
+        else:
+
+            print(
+                "[speedy_TheWeather] "
+                "tee not found."
+            )
+
+            _updateInstallInProgress = False
+
+            try:
+
+                _updateQueue.put(
+                    (
+                        "install_error",
+                        None
+                    )
+                )
+
+            except Exception:
+                pass
+
+            return
+
+    print(
+        "[speedy_TheWeather] "
+        "tee: %s"
+        % teePath
+    )
+
+    # ------------------------------------------------------------
+    # INSTALLER COMMAND
+    #
+    # WICHTIG:
+    #
+    # 1. Installer-Ausgabe wird live in der Enigma2 Console
+    #    angezeigt.
+    #
+    # 2. Gleichzeitig wird alles nach installLog geschrieben.
+    #
+    # 3. PIPESTATUS[0] enthält den Exit-Code des Installers
+    #    und NICHT den Exit-Code von tee.
+    #
+    # 4. Success-Marker wird nur bei erfolgreichem Installer
+    #    erzeugt.
+    # ------------------------------------------------------------
+
+    cmd = (
+        "/bin/bash -c "
+        "'/bin/bash \"%s\" 2>&1 | \"%s\" -a \"%s\"; "
+        "status=${PIPESTATUS[0]}; "
+        "if [ \"$status\" -eq 0 ]; then "
+        "/bin/touch \"%s\"; "
+        "fi; "
+        "exit \"$status\"'"
+        % (
+            UPDATE_INSTALLER_PATH,
+            teePath,
+            installLog,
+            UPDATE_SUCCESS_FILE
+        )
+    )
+
+    print(
+        "[speedy_TheWeather] "
+        "Installer command:"
+    )
+
+    print(
+        "%s"
+        % cmd
+    )
+
+    # ------------------------------------------------------------
+    # INSTALLIERUNG ALS STARTET MELDEN
+    # ------------------------------------------------------------
+
+    try:
+
+        _updateQueue.put(
+            (
+                "installing",
+                None
+            )
+        )
+
+    except Exception:
+
+        pass
+
+    # ------------------------------------------------------------
+    # ENIGMA2 CONSOLE ÖFFNEN
+    # ------------------------------------------------------------
+
+    try:
+
+        print(
+            "[speedy_TheWeather] "
+            "Starting Enigma2 Console..."
+        )
+
+        _updateConsole = _overlaySession.open(
+            Console,
+            _("Updating..."),
+            cmdlist=[
+                cmd
+            ],
+            finishedCallback=update_finished,
+            closeOnSuccess=True
+        )
+
+        print(
+            "[speedy_TheWeather] "
+            "Enigma2 Console opened successfully."
+        )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "Could not open Enigma2 Console: %s"
+            % e
+        )
+
+        _updateConsole = None
+        _updateInstallInProgress = False
+
+        try:
+
+            _updateQueue.put(
+                (
+                    "install_error",
+                    None
+                )
+            )
+
+        except Exception:
+            pass
+
+
 
     def installLogWrite(message):
 
