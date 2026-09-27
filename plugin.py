@@ -2037,6 +2037,38 @@ def _update_changes_text(changes):
 # ============================================================================
 
 
+UPDATE_DEBUG_LOG = "/tmp/speedy_update_debug.log"
+
+
+def _update_debug(message):
+
+    try:
+
+        with open(
+            UPDATE_DEBUG_LOG,
+            "a"
+        ) as debug_file:
+
+            debug_file.write(
+                "%s\n"
+                % message
+            )
+
+    except Exception:
+
+        pass
+
+    try:
+
+        print(
+            "[speedy_TheWeather] %s"
+            % message
+        )
+
+    except Exception:
+
+        pass
+
 def _update_check_worker():
 
     global _updateWorkerStarted
@@ -2044,27 +2076,73 @@ def _update_check_worker():
     plugin_path = None
     installer_path = None
 
+    debug_log = "/tmp/speedy_update_debug.log"
+
+    def debug(message):
+
+        try:
+
+            with open(
+                debug_log,
+                "a"
+            ) as debug_file:
+
+                debug_file.write(
+                    "%s\n"
+                    % message
+                )
+
+        except Exception:
+
+            pass
+
+        try:
+
+            print(
+                "[speedy_TheWeather] %s"
+                % message
+            )
+
+        except Exception:
+
+            pass
+
     try:
 
-        print(
-            "[speedy_TheWeather] "
+        # --------------------------------------------------------------------
+        # START
+        # --------------------------------------------------------------------
+
+        try:
+
+            with open(
+                debug_log,
+                "w"
+            ) as debug_file:
+
+                debug_file.write(
+                    "speedy_TheWeather UPDATE DEBUG\n"
+                )
+
+        except Exception:
+
+            pass
+
+        debug(
             "=================================================="
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "Starting GitHub update check."
+        debug(
+            "UPDATE CHECK START"
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "UPDATE_PLUGIN_URL: %s"
+        debug(
+            "Plugin URL: %s"
             % UPDATE_PLUGIN_URL
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "UPDATE_INSTALLER_URL: %s"
+        debug(
+            "Installer URL: %s"
             % UPDATE_INSTALLER_URL
         )
 
@@ -2078,11 +2156,16 @@ def _update_check_worker():
 
         except Exception:
 
-            current_version = __version__
+            try:
 
-        print(
-            "[speedy_TheWeather] "
-            "Installed version: %s"
+                current_version = __version__
+
+            except Exception:
+
+                current_version = "0.0.0"
+
+        debug(
+            "Installed VERSION: %s"
             % current_version
         )
 
@@ -2098,8 +2181,7 @@ def _update_check_worker():
 
         os.close(fd)
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Temporary plugin file: %s"
             % plugin_path
         )
@@ -2108,8 +2190,7 @@ def _update_check_worker():
         # DOWNLOAD PLUGIN
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Downloading remote plugin.py..."
         )
 
@@ -2119,16 +2200,14 @@ def _update_check_worker():
             timeout=UPDATE_CHECK_TIMEOUT
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "plugin.py download result: %s"
             % download_result
         )
 
         if not download_result:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR: Could not download remote plugin.py."
             )
 
@@ -2144,13 +2223,14 @@ def _update_check_worker():
             return
 
         # --------------------------------------------------------------------
-        # VERIFY DOWNLOADED FILE
+        # VERIFY FILE
         # --------------------------------------------------------------------
 
-        if not os.path.exists(plugin_path):
+        if not os.path.exists(
+            plugin_path
+        ):
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR: Downloaded plugin.py does not exist."
             )
 
@@ -2173,24 +2253,21 @@ def _update_check_worker():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
-                "ERROR: Could not determine plugin.py size: %s"
+            plugin_size = 0
+
+            debug(
+                "ERROR: Could not get plugin.py size: %s"
                 % e
             )
 
-            plugin_size = 0
-
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Downloaded plugin.py size: %d bytes"
             % plugin_size
         )
 
         if plugin_size <= 0:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR: Downloaded plugin.py is empty."
             )
 
@@ -2209,8 +2286,7 @@ def _update_check_worker():
         # READ SOURCE
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Reading remote plugin.py..."
         )
 
@@ -2228,8 +2304,7 @@ def _update_check_worker():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR reading remote plugin.py: %s"
                 % e
             )
@@ -2245,23 +2320,20 @@ def _update_check_worker():
 
             return
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Remote plugin.py read successfully."
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Remote plugin.py characters: %d"
             % len(remote_source)
         )
 
         # --------------------------------------------------------------------
-        # CHECK PYTHON SYNTAX
+        # PYTHON SYNTAX
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Checking remote plugin.py syntax..."
         )
 
@@ -2276,8 +2348,7 @@ def _update_check_worker():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR: Remote plugin.py syntax invalid: %s"
                 % e
             )
@@ -2293,17 +2364,15 @@ def _update_check_worker():
 
             return
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Remote plugin.py syntax is valid."
         )
 
         # --------------------------------------------------------------------
-        # EXTRACT REMOTE VERSION
+        # REMOTE VERSION
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Extracting remote version..."
         )
 
@@ -2317,8 +2386,7 @@ def _update_check_worker():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR extracting remote version: %s"
                 % e
             )
@@ -2336,8 +2404,7 @@ def _update_check_worker():
 
         if not remote_version:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR: Remote version could not be detected."
             )
 
@@ -2352,9 +2419,8 @@ def _update_check_worker():
 
             return
 
-        print(
-            "[speedy_TheWeather] "
-            "Remote version: %s"
+        debug(
+            "Remote VERSION: %s"
             % remote_version
         )
 
@@ -2362,8 +2428,7 @@ def _update_check_worker():
         # VERSION COMPARISON
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Comparing versions..."
         )
 
@@ -2375,8 +2440,7 @@ def _update_check_worker():
 
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "ERROR during version comparison: %s"
                 % e
             )
@@ -2392,30 +2456,23 @@ def _update_check_worker():
 
             return
 
-        print(
-            "[speedy_TheWeather] "
-            "Version comparison result: %s"
-            % is_newer
+        debug(
+            "VERSION CHECK: installed=%s remote=%s newer=%s"
+            % (
+                current_version,
+                remote_version,
+                is_newer
+            )
         )
 
         # --------------------------------------------------------------------
-        # CURRENT VERSION
+        # NO UPDATE
         # --------------------------------------------------------------------
 
         if not is_newer:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "Plugin is up to date."
-            )
-
-            print(
-                "[speedy_TheWeather] "
-                "Installed: %s | Remote: %s"
-                % (
-                    current_version,
-                    remote_version
-                )
             )
 
             _updateQueue.put(
@@ -2434,30 +2491,25 @@ def _update_check_worker():
         # UPDATE AVAILABLE
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "=================================================="
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "NEW UPDATE AVAILABLE"
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Installed: %s"
             % current_version
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Remote: %s"
             % remote_version
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "=================================================="
         )
 
@@ -2473,8 +2525,7 @@ def _update_check_worker():
 
         os.close(fd)
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Temporary installer file: %s"
             % installer_path
         )
@@ -2488,8 +2539,7 @@ def _update_check_worker():
         # DOWNLOAD INSTALLER
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "Downloading installer.sh..."
         )
 
@@ -2499,8 +2549,7 @@ def _update_check_worker():
             timeout=UPDATE_CHECK_TIMEOUT
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "installer.sh download result: %s"
             % installer_download_result
         )
@@ -2519,25 +2568,36 @@ def _update_check_worker():
                         installer_file.read()
                     )
 
-                print(
-                    "[speedy_TheWeather] "
+                debug(
                     "installer.sh read successfully."
                 )
 
-                print(
-                    "[speedy_TheWeather] "
+                debug(
                     "installer.sh characters: %d"
                     % len(installer_source)
                 )
 
-                installer_info = (
-                    _update_extract_installer_info(
-                        installer_source
-                    )
-                )
+                try:
 
-                print(
-                    "[speedy_TheWeather] "
+                    installer_info = (
+                        _update_extract_installer_info(
+                            installer_source
+                        )
+                    )
+
+                except Exception as e:
+
+                    debug(
+                        "ERROR extracting installer information: %s"
+                        % e
+                    )
+
+                    installer_info = {
+                        "version": "",
+                        "changelog": ""
+                    }
+
+                debug(
                     "Installer version: %s"
                     % installer_info.get(
                         "version",
@@ -2545,8 +2605,7 @@ def _update_check_worker():
                     )
                 )
 
-                print(
-                    "[speedy_TheWeather] "
+                debug(
                     "Changelog detected: %s"
                     % bool(
                         installer_info.get(
@@ -2558,22 +2617,19 @@ def _update_check_worker():
 
             except Exception as e:
 
-                print(
-                    "[speedy_TheWeather] "
+                debug(
                     "Could not read installer information: %s"
                     % e
                 )
 
         else:
 
-            print(
-                "[speedy_TheWeather] "
+            debug(
                 "Installer information could not be downloaded."
             )
 
-            print(
-                "[speedy_TheWeather] "
-                "Update can still continue without installer information."
+            debug(
+                "Continuing without installer information."
             )
 
         # --------------------------------------------------------------------
@@ -2594,12 +2650,12 @@ def _update_check_worker():
             )
 
         # --------------------------------------------------------------------
-        # SEND RESULT TO GUI
+        # QUEUE RESULT
         # --------------------------------------------------------------------
 
-        print(
-            "[speedy_TheWeather] "
-            "Sending update information to GUI."
+        debug(
+            "QUEUE PUT: available / %s"
+            % remote_version
         )
 
         _updateQueue.put(
@@ -2621,52 +2677,55 @@ def _update_check_worker():
             )
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "Update information successfully sent to GUI."
+        debug(
+            "Update information successfully sent to GUI queue."
         )
 
     except Exception as e:
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "=================================================="
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "UPDATE CHECK EXCEPTION:"
-        )
-
-        print(
-            "[speedy_TheWeather] "
-            "%s"
+        debug(
+            "UPDATE CHECK EXCEPTION: %s"
             % e
         )
 
-        import traceback
-
         try:
 
-            traceback.print_exc()
+            import traceback
+
+            error_text = (
+                traceback.format_exc()
+            )
+
+            debug(
+                error_text
+            )
 
         except Exception:
 
             pass
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "=================================================="
         )
 
-        _updateQueue.put(
-            (
-                "error",
-                _(
-                    "Update check failed."
+        try:
+
+            _updateQueue.put(
+                (
+                    "error",
+                    _(
+                        "Update check failed."
+                    )
                 )
             )
-        )
+
+        except Exception:
+
+            pass
 
     finally:
 
@@ -2693,16 +2752,14 @@ def _update_check_worker():
                         path
                     )
 
-                    print(
-                        "[speedy_TheWeather] "
+                    debug(
                         "Removed temporary file: %s"
                         % path
                     )
 
                 except Exception as e:
 
-                    print(
-                        "[speedy_TheWeather] "
+                    debug(
                         "Could not remove temporary file %s: %s"
                         % (
                             path,
@@ -2716,15 +2773,15 @@ def _update_check_worker():
 
         _updateWorkerStarted = False
 
-        print(
-            "[speedy_TheWeather] "
-            "GitHub update worker finished."
+        debug(
+            "UPDATE CHECK FINISHED"
         )
 
-        print(
-            "[speedy_TheWeather] "
+        debug(
             "=================================================="
         )
+
+
 
 
 
