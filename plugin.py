@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.1
+# v.1.7.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -276,7 +276,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.7.1"
+__version__ = "1.7.2"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -292,7 +292,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.1'
+version = '1.7.2'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -3104,6 +3104,7 @@ def _update_check_worker():
 # ============================================================================
 
 
+
 def _update_poll():
 
     global _updatePollTimer
@@ -3121,6 +3122,10 @@ def _update_poll():
             except Exception:
 
                 break
+
+            # --------------------------------------------------------------
+            # QUEUE RESULT AUSPACKEN
+            # --------------------------------------------------------------
 
             try:
 
@@ -3142,9 +3147,9 @@ def _update_poll():
                 % str(resultType)
             )
 
-            # --------------------------------------------------
+            # ==============================================================
             # UPDATE AVAILABLE
-            # --------------------------------------------------
+            # ==============================================================
 
             if resultType == "available":
 
@@ -3162,21 +3167,21 @@ def _update_poll():
 
                         continue
 
-                    remoteVersion = (
+                    remoteVersion = safeStr(
                         payload.get(
                             "version",
                             ""
                         )
                     )
 
-                    changes = (
+                    changes = safeStr(
                         payload.get(
                             "changes",
                             ""
                         )
                     )
 
-                    installerVersion = (
+                    installerVersion = safeStr(
                         payload.get(
                             "installer_version",
                             ""
@@ -3200,16 +3205,25 @@ def _update_poll():
                             installerVersion
                     }
 
-                    # --------------------------------------------------
-                    # Nur anzeigen, wenn kein anderer Installations-
-                    # vorgang läuft.
-                    # --------------------------------------------------
+                    # ------------------------------------------------------
+                    # UPDATE NUR ANZEIGEN, WENN KEINE INSTALLATION LÄUFT
+                    # ------------------------------------------------------
 
                     if not _updateInstallInProgress:
 
-                        _update_show_message(
-                            _updateInfo
-                        )
+                        try:
+
+                            _update_show_message(
+                                _updateInfo
+                            )
+
+                        except Exception as e:
+
+                            print(
+                                "[speedy_TheWeather] "
+                                "Could not show update message: %s"
+                                % e
+                            )
 
                     else:
 
@@ -3239,9 +3253,9 @@ def _update_poll():
 
                         pass
 
-            # --------------------------------------------------
+            # ==============================================================
             # CURRENT / NO UPDATE
-            # --------------------------------------------------
+            # ==============================================================
 
             elif resultType == "current":
 
@@ -3252,7 +3266,7 @@ def _update_poll():
                         dict
                     ):
 
-                        currentVersion = (
+                        currentVersion = safeStr(
                             payload.get(
                                 "version",
                                 ""
@@ -3261,19 +3275,22 @@ def _update_poll():
 
                     else:
 
-                        currentVersion = (
-                            safeStr(payload)
+                        currentVersion = safeStr(
+                            payload
                         )
 
                     print(
                         "[speedy_TheWeather] "
-                        "UPDATE CHECK: already current "
-                        "(%s)"
+                        "UPDATE CHECK: already current (%s)"
                         % currentVersion
                     )
 
-                    # Bei manueller Suche dem Benutzer mitteilen,
-                    # dass bereits die aktuelle Version installiert ist.
+                    # ------------------------------------------------------
+                    # Nur bei manueller Prüfung anzeigen.
+                    #
+                    # Automatische Prüfungen sollen den Benutzer nicht
+                    # ständig mit einer "bereits aktuell"-Meldung stören.
+                    # ------------------------------------------------------
 
                     if (
                         currentVersion
@@ -3286,10 +3303,9 @@ def _update_poll():
                             _overlaySession.open(
                                 MessageBox,
                                 _(
-                                    "You are already using the latest version "
-                                    "(%s)."
-                                    % currentVersion
-                                ),
+                                    "You are already using the latest "
+                                    "version (%s)."
+                                ) % currentVersion,
                                 MessageBox.TYPE_INFO
                             )
 
@@ -3297,7 +3313,8 @@ def _update_poll():
 
                             print(
                                 "[speedy_TheWeather] "
-                                "Could not show current-version message: %s"
+                                "Could not show current-version "
+                                "message: %s"
                                 % e
                             )
 
@@ -3309,9 +3326,21 @@ def _update_poll():
                         % e
                     )
 
-            # --------------------------------------------------
-            # ERROR
-            # --------------------------------------------------
+                    try:
+
+                        import traceback
+
+                        print(
+                            traceback.format_exc()
+                        )
+
+                    except Exception:
+
+                        pass
+
+            # ==============================================================
+            # UPDATE CHECK ERROR
+            # ==============================================================
 
             elif resultType == "error":
 
@@ -3359,9 +3388,9 @@ def _update_poll():
                         % e
                     )
 
-            # --------------------------------------------------
+            # ==============================================================
             # INSTALLING
-            # --------------------------------------------------
+            # ==============================================================
 
             elif resultType == "installing":
 
@@ -3382,9 +3411,9 @@ def _update_poll():
                         % e
                     )
 
-            # --------------------------------------------------
+            # ==============================================================
             # INSTALLED
-            # --------------------------------------------------
+            # ==============================================================
 
             elif resultType == "installed":
 
@@ -3405,9 +3434,9 @@ def _update_poll():
                         % e
                     )
 
-            # --------------------------------------------------
+            # ==============================================================
             # INSTALL ERROR
-            # --------------------------------------------------
+            # ==============================================================
 
             elif resultType == "install_error":
 
@@ -3428,9 +3457,9 @@ def _update_poll():
                         % e
                     )
 
-            # --------------------------------------------------
-            # UNKNOWN QUEUE MESSAGE
-            # --------------------------------------------------
+            # ==============================================================
+            # UNKNOWN MESSAGE
+            # ==============================================================
 
             else:
 
@@ -3462,9 +3491,9 @@ def _update_poll():
 
     finally:
 
-        # ------------------------------------------------------
-        # Poller weiterlaufen lassen.
-        # ------------------------------------------------------
+        # ------------------------------------------------------------------
+        # POLLER IMMER WEITERLAUFEN LASSEN
+        # ------------------------------------------------------------------
 
         try:
 
@@ -3482,6 +3511,8 @@ def _update_poll():
                 "UPDATE POLL TIMER ERROR: %s"
                 % e
             )
+
+
 
 
 
