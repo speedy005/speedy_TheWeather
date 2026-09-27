@@ -2790,107 +2790,387 @@ def _update_check_worker():
 # UPDATE POLL
 # ============================================================================
 
+
 def _update_poll():
 
     global _updatePollTimer
     global _updateInfo
+    global _updateInstallInProgress
 
     try:
 
         while True:
 
-            result, payload = (
-                _updateQueue.get_nowait()
+            try:
+
+                result = _updateQueue.get_nowait()
+
+            except Exception:
+
+                break
+
+            try:
+
+                resultType, payload = result
+
+            except Exception:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "UPDATE QUEUE: invalid result: %s"
+                    % str(result)
+                )
+
+                continue
+
+            print(
+                "[speedy_TheWeather] "
+                "UPDATE QUEUE RESULT: %s"
+                % str(resultType)
             )
 
-            # ----------------------------------------------------------------
+            # --------------------------------------------------
             # UPDATE AVAILABLE
-            # ----------------------------------------------------------------
+            # --------------------------------------------------
 
-            if result == "available":
+            if resultType == "available":
 
-                _updateInfo = payload
+                try:
 
-                _update_show_message(
-                    payload
-                )
+                    if not isinstance(
+                        payload,
+                        dict
+                    ):
 
-            # ----------------------------------------------------------------
-            # CURRENT
-            # ----------------------------------------------------------------
+                        print(
+                            "[speedy_TheWeather] "
+                            "UPDATE QUEUE: invalid available payload"
+                        )
 
-            elif result == "current":
+                        continue
 
-                print(
-                    "[speedy_TheWeather] "
-                    "Plugin is up to date: %s"
-                    % payload.get(
-                        "version",
-                        ""
+                    remoteVersion = (
+                        payload.get(
+                            "version",
+                            ""
+                        )
                     )
-                )
 
-            # ----------------------------------------------------------------
-            # INSTALLING
-            # ----------------------------------------------------------------
+                    changes = (
+                        payload.get(
+                            "changes",
+                            ""
+                        )
+                    )
 
-            elif result == "installing":
+                    installerVersion = (
+                        payload.get(
+                            "installer_version",
+                            ""
+                        )
+                    )
 
-                _update_show_installing()
+                    print(
+                        "[speedy_TheWeather] "
+                        "UPDATE AVAILABLE: %s"
+                        % remoteVersion
+                    )
 
-            # ----------------------------------------------------------------
-            # INSTALLED
-            # ----------------------------------------------------------------
+                    _updateInfo = {
+                        "version":
+                            remoteVersion,
 
-            elif result == "installed":
+                        "changes":
+                            changes,
 
-                _update_install_finished()
+                        "installer_version":
+                            installerVersion
+                    }
 
-            # ----------------------------------------------------------------
+                    # --------------------------------------------------
+                    # Nur anzeigen, wenn kein anderer Installations-
+                    # vorgang läuft.
+                    # --------------------------------------------------
+
+                    if not _updateInstallInProgress:
+
+                        _update_show_message(
+                            _updateInfo
+                        )
+
+                    else:
+
+                        print(
+                            "[speedy_TheWeather] "
+                            "UPDATE AVAILABLE ignored because "
+                            "installation is already running"
+                        )
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "ERROR handling update available: %s"
+                        % e
+                    )
+
+                    try:
+
+                        import traceback
+
+                        print(
+                            traceback.format_exc()
+                        )
+
+                    except Exception:
+
+                        pass
+
+            # --------------------------------------------------
+            # CURRENT / NO UPDATE
+            # --------------------------------------------------
+
+            elif resultType == "current":
+
+                try:
+
+                    if isinstance(
+                        payload,
+                        dict
+                    ):
+
+                        currentVersion = (
+                            payload.get(
+                                "version",
+                                ""
+                            )
+                        )
+
+                    else:
+
+                        currentVersion = (
+                            safeStr(payload)
+                        )
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "UPDATE CHECK: already current "
+                        "(%s)"
+                        % currentVersion
+                    )
+
+                    # Bei manueller Suche dem Benutzer mitteilen,
+                    # dass bereits die aktuelle Version installiert ist.
+
+                    if (
+                        currentVersion
+                        and
+                        _overlaySession is not None
+                    ):
+
+                        try:
+
+                            _overlaySession.open(
+                                MessageBox,
+                                _(
+                                    "You are already using the latest version "
+                                    "(%s)."
+                                    % currentVersion
+                                ),
+                                MessageBox.TYPE_INFO
+                            )
+
+                        except Exception as e:
+
+                            print(
+                                "[speedy_TheWeather] "
+                                "Could not show current-version message: %s"
+                                % e
+                            )
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "ERROR handling current update state: %s"
+                        % e
+                    )
+
+            # --------------------------------------------------
             # ERROR
-            # ----------------------------------------------------------------
+            # --------------------------------------------------
 
-            elif result == "error":
+            elif resultType == "error":
 
-                print(
-                    "[speedy_TheWeather] "
-                    + safeStr(
+                try:
+
+                    errorMessage = safeStr(
                         payload
                     )
+
+                    if not errorMessage:
+
+                        errorMessage = _(
+                            "Could not check for updates."
+                        )
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "UPDATE CHECK ERROR: %s"
+                        % errorMessage
+                    )
+
+                    if _overlaySession is not None:
+
+                        try:
+
+                            _overlaySession.open(
+                                MessageBox,
+                                errorMessage,
+                                MessageBox.TYPE_ERROR
+                            )
+
+                        except Exception as e:
+
+                            print(
+                                "[speedy_TheWeather] "
+                                "Could not show update error: %s"
+                                % e
+                            )
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "ERROR handling update error: %s"
+                        % e
+                    )
+
+            # --------------------------------------------------
+            # INSTALLING
+            # --------------------------------------------------
+
+            elif resultType == "installing":
+
+                print(
+                    "[speedy_TheWeather] "
+                    "UPDATE INSTALLATION STARTED"
                 )
 
-            # ----------------------------------------------------------------
+                try:
+
+                    _update_show_installing()
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "Could not show installing message: %s"
+                        % e
+                    )
+
+            # --------------------------------------------------
+            # INSTALLED
+            # --------------------------------------------------
+
+            elif resultType == "installed":
+
+                print(
+                    "[speedy_TheWeather] "
+                    "UPDATE INSTALLATION FINISHED"
+                )
+
+                try:
+
+                    _update_install_finished()
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "ERROR handling installed state: %s"
+                        % e
+                    )
+
+            # --------------------------------------------------
             # INSTALL ERROR
-            # ----------------------------------------------------------------
+            # --------------------------------------------------
 
-            elif result == "install_error":
+            elif resultType == "install_error":
 
-                _update_install_error()
+                print(
+                    "[speedy_TheWeather] "
+                    "UPDATE INSTALLATION FAILED"
+                )
 
-    except queue.Empty:
+                try:
 
-        pass
+                    _update_install_error()
+
+                except Exception as e:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "ERROR handling install error: %s"
+                        % e
+                    )
+
+            # --------------------------------------------------
+            # UNKNOWN QUEUE MESSAGE
+            # --------------------------------------------------
+
+            else:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "UPDATE QUEUE: unknown message type: %s"
+                    % str(resultType)
+                )
 
     except Exception as e:
 
         print(
             "[speedy_TheWeather] "
-            "Update poll failed: %s"
+            "UPDATE POLL EXCEPTION: %s"
             % e
         )
 
-    try:
+        try:
 
-        if _updatePollTimer is not None:
+            import traceback
 
-            _updatePollTimer.start(
-                500,
-                True
+            print(
+                traceback.format_exc()
             )
 
-    except Exception:
+        except Exception:
 
-        pass
+            pass
+
+    finally:
+
+        # ------------------------------------------------------
+        # Poller weiterlaufen lassen.
+        # ------------------------------------------------------
+
+        try:
+
+            if _updatePollTimer is not None:
+
+                _updatePollTimer.start(
+                    500,
+                    True
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "UPDATE POLL TIMER ERROR: %s"
+                % e
+            )
+
+
 
 
 # ============================================================================
@@ -8452,16 +8732,31 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # MANUAL UPDATE CHECK
     # ========================================================
 
+ 
     def checkUpdate(self):
 
         global _overlaySession
         global _updatePollTimer
+        global _updateWorkerStarted
+        global _updateInfo
 
         # ----------------------------------------------------
         # Sicherheit: wirklich Update-Menüpunkt ausgewählt?
         # ----------------------------------------------------
 
-        current = self["config"].getCurrent()
+        try:
+
+            current = self["config"].getCurrent()
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not get current config entry: %s"
+                % e
+            )
+
+            return
 
         if not current:
 
@@ -8472,10 +8767,12 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             return
 
         # ----------------------------------------------------
-        # Aktuelle Session für Update-System setzen
+        # Aktuelle Session für das globale Update-System setzen
         # ----------------------------------------------------
 
         _overlaySession = self.session
+
+        _updateInfo = None
 
         print(
             "[speedy_TheWeather] "
@@ -8492,34 +8789,111 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
                 _updatePollTimer.stop()
 
-        except Exception:
+        except Exception as e:
 
-            pass
+            print(
+                "[speedy_TheWeather] "
+                "Could not stop update poll timer: %s"
+                % e
+            )
 
         # ----------------------------------------------------
-        # Alten lokalen Timer stoppen
+        # Falls bereits ein Worker läuft, keinen zweiten starten
+        # ----------------------------------------------------
+
+        if _updateWorkerStarted:
+
+            print(
+                "[speedy_TheWeather] "
+                "Update worker already running."
+            )
+
+            return
+
+        # ----------------------------------------------------
+        # Alte Queue-Einträge entfernen
+        #
+        # Dadurch verarbeitet die neue Suche keine alten
+        # Update-Ergebnisse.
         # ----------------------------------------------------
 
         try:
 
-            if self._updateCheckTimer is not None:
+            while True:
 
-                self._updateCheckTimer.stop()
+                _updateQueue.get_nowait()
 
         except Exception:
 
             pass
+
+        # ----------------------------------------------------
+        # Globalen Poll-Timer sicherstellen
+        #
+        # WICHTIG:
+        # NUR _update_poll() liest die Queue.
+        # Es gibt KEINEN lokalen checkUpdateQueue()-Timer mehr.
+        # ----------------------------------------------------
+
+        try:
+
+            if _updatePollTimer is None:
+
+                _updatePollTimer = eTimer()
+
+                _updatePollTimer.callback.append(
+                    safeTimerCallback(
+                        _update_poll
+                    )
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not create update poll timer: %s"
+                % e
+            )
+
+            self.session.open(
+                MessageBox,
+                _(
+                    "Update check failed."
+                ),
+                MessageBox.TYPE_ERROR
+            )
+
+            return
+
+        # ----------------------------------------------------
+        # Poller starten
+        #
+        # Nach 500 ms wird _update_poll() aufgerufen.
+        # _update_poll() startet sich danach selbst erneut.
+        # ----------------------------------------------------
+
+        try:
+
+            _updatePollTimer.start(
+                500,
+                True
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "Could not start update poll timer: %s"
+                % e
+            )
 
         # ----------------------------------------------------
         # Update Worker starten
-        #
-        # NICHT _update_begin_worker() verwenden!
-        #
-        # Der kann durch _updateWorkerStarted bereits
-        # gesperrt sein.
         # ----------------------------------------------------
 
         try:
+
+            _updateWorkerStarted = True
 
             thread = threading.Thread(
                 target=_update_check_worker,
@@ -8537,230 +8911,33 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         except Exception as e:
 
+            _updateWorkerStarted = False
+
             print(
                 "[speedy_TheWeather] "
                 "Could not start update worker: %s"
                 % e
             )
 
-            self.session.open(
-                MessageBox,
-                _(
-                    "Update check failed."
-                ),
-                MessageBox.TYPE_ERROR
-            )
-
-            return
-
-        # ----------------------------------------------------
-        # Timer für Queue-Abfrage
-        # ----------------------------------------------------
-
-        try:
-
-            self._updateCheckTimer = eTimer()
-
-            safeTimerCallback(
-                self._updateCheckTimer,
-                self.checkUpdateQueue
-            )
-
-            self._updateCheckTimer.start(
-                100,
-                True
-            )
-
-            print(
-                "[speedy_TheWeather] "
-                "Manual update queue timer started."
-            )
-
-        except Exception as e:
-
-            self._updateCheckTimer = None
-
-            print(
-                "[speedy_TheWeather] "
-                "Could not start update result timer: %s"
-                % e
-            )
-
-            self.session.open(
-                MessageBox,
-                _(
-                    "Update check failed."
-                ),
-                MessageBox.TYPE_ERROR
-            )
-
-    # ========================================================
-    # UPDATE QUEUE
-    # ========================================================
-
-    def checkUpdateQueue(self):
-
-        # ----------------------------------------------------
-        # Queue prüfen
-        # ----------------------------------------------------
-
-        try:
-
-            result = _updateQueue.get_nowait()
-
-        except queue.Empty:
-
-            # Noch kein Ergebnis.
-            # Timer erneut starten.
-
             try:
 
-                if self._updateCheckTimer is not None:
-
-                    self._updateCheckTimer.start(
-                        100,
-                        True
+                _updateQueue.put(
+                    (
+                        "error",
+                        _(
+                            "Update check failed."
+                        )
                     )
-
-            except Exception:
-                pass
-
-            return
-
-        except Exception as e:
-
-            print(
-                "[speedy_TheWeather] "
-                "Update queue error: %s"
-                % e
-            )
-
-            return
-
-        # ----------------------------------------------------
-        # Ergebnis vorhanden
-        # ----------------------------------------------------
-
-        try:
-
-            if self._updateCheckTimer is not None:
-
-                self._updateCheckTimer.stop()
-
-        except Exception:
-
-            pass
-
-        result_type = result[0]
-        data = result[1]
-
-        # ====================================================
-        # ERROR
-        # ====================================================
-
-        if result_type == "error":
-
-            self.session.open(
-                MessageBox,
-                safeStr(data),
-                MessageBox.TYPE_ERROR
-            )
-
-            return
-
-        # ====================================================
-        # CURRENT
-        # ====================================================
-
-        if result_type == "current":
-
-            remote_version = ""
-
-            try:
-
-                remote_version = data.get(
-                    "version",
-                    ""
                 )
 
             except Exception:
 
                 pass
 
-            self.session.open(
-                MessageBox,
-                _(
-                    "The plugin is already up to date."
-                    "\n\n"
-                    "Version: %s"
-                ) % remote_version,
-                MessageBox.TYPE_INFO,
-                timeout=6
-            )
 
-            return
 
-        # ====================================================
-        # AVAILABLE
-        # ====================================================
-
-        if result_type == "available":
-
-            global _updateInfo
-
-            _updateInfo = data
-
-            print(
-                "[speedy_TheWeather] "
-                "Update available: %s"
-                % data.get(
-                    "version",
-                    ""
-                )
-            )
-
-            # Bestehenden Update-Dialog verwenden.
-            _update_show_message(
-                data
-            )
-
-            return
-
-        # ====================================================
-        # INSTALLING
-        # ====================================================
-
-        if result_type == "installing":
-
-            _update_show_installing()
-
-            return
-
-        # ====================================================
-        # INSTALLED
-        # ====================================================
-
-        if result_type == "installed":
-
-            _update_install_finished()
-
-            return
-
-        # ====================================================
-        # INSTALL ERROR
-        # ====================================================
-
-        if result_type == "install_error":
-
-            _update_install_error()
-
-            return
-
-        print(
-            "[speedy_TheWeather] "
-            "Unknown update result: %s"
-            % result_type
-        )
+   
+    
 
     # ========================================================
     # TWO LOCATIONS
@@ -8826,17 +9003,20 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # CLEANUP
     # ========================================================
 
+    
     def __del__(self):
 
         try:
 
-            if self._updateCheckTimer is not None:
+            if _updatePollTimer is not None:
 
-                self._updateCheckTimer.stop()
+                _updatePollTimer.stop()
 
         except Exception:
 
             pass
+
+
 
 class sevendayColorSetup(ConfigListScreen, Screen):
     """
