@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.6.8
+# v.1.6.7
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -26,10 +26,11 @@ except ImportError:
     ThreadPoolExecutor = None
     as_completed = None
 try:
-    import Queue as queue
+    import 1.6.8 as 1.6.8
 except ImportError:
-    import queue
+    import 1.6.8
 from enigma import gRGB
+from Screens.Console import Console
 from enigma import eTimer
 from enigma import ePoint
 from Screens.Screen import Screen
@@ -274,7 +275,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.6.8"
+__version__ = "1.6.7"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -290,7 +291,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.6.8'
+version = '1.6.7'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -401,11 +402,11 @@ UPDATE_SUCCESS_FILE = (
 
 _updateStartTimer = None
 
-# Einziger Timer für die Queue-Verarbeitung
+# Einziger Timer für die 1.6.8-Verarbeitung
 _updatePollTimer = None
 
-# Gemeinsame Update-Queue
-_updateQueue = queue.Queue()
+# Gemeinsame Update-1.6.8
+_update1.6.8 = 1.6.8.1.6.8()
 
 # Verhindert mehrfaches automatisches Starten der Update-Prüfung
 _updateCheckStarted = False
@@ -2216,7 +2217,7 @@ def _update_check_worker():
                 "ERROR: Could not download remote plugin.py."
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2239,7 +2240,7 @@ def _update_check_worker():
                 "ERROR: Downloaded plugin.py does not exist."
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2276,7 +2277,7 @@ def _update_check_worker():
                 "ERROR: Downloaded plugin.py is empty."
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2314,7 +2315,7 @@ def _update_check_worker():
                 % e
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2358,7 +2359,7 @@ def _update_check_worker():
                 % e
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2396,7 +2397,7 @@ def _update_check_worker():
                 % e
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2413,7 +2414,7 @@ def _update_check_worker():
                 "ERROR: Remote version could not be detected."
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2450,7 +2451,7 @@ def _update_check_worker():
                 % e
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2480,7 +2481,7 @@ def _update_check_worker():
                 "Plugin is up to date."
             )
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "current",
                     {
@@ -2655,15 +2656,15 @@ def _update_check_worker():
             )
 
         # --------------------------------------------------------------------
-        # QUEUE RESULT
+        # 1.6.8 RESULT
         # --------------------------------------------------------------------
 
         debug(
-            "QUEUE PUT: available / %s"
+            "1.6.8 PUT: available / %s"
             % remote_version
         )
 
-        _updateQueue.put(
+        _update1.6.8.put(
             (
                 "available",
                 {
@@ -2683,7 +2684,7 @@ def _update_check_worker():
         )
 
         debug(
-            "Update information successfully sent to GUI queue."
+            "Update information successfully sent to GUI 1.6.8."
         )
 
     except Exception as e:
@@ -2719,7 +2720,7 @@ def _update_check_worker():
 
         try:
 
-            _updateQueue.put(
+            _update1.6.8.put(
                 (
                     "error",
                     _(
@@ -2808,7 +2809,7 @@ def _update_poll():
 
             try:
 
-                result = _updateQueue.get_nowait()
+                result = _update1.6.8.get_nowait()
 
             except Exception:
 
@@ -2822,7 +2823,7 @@ def _update_poll():
 
                 print(
                     "[speedy_TheWeather] "
-                    "UPDATE QUEUE: invalid result: %s"
+                    "UPDATE 1.6.8: invalid result: %s"
                     % str(result)
                 )
 
@@ -2830,7 +2831,7 @@ def _update_poll():
 
             print(
                 "[speedy_TheWeather] "
-                "UPDATE QUEUE RESULT: %s"
+                "UPDATE 1.6.8 RESULT: %s"
                 % str(resultType)
             )
 
@@ -2849,7 +2850,7 @@ def _update_poll():
 
                         print(
                             "[speedy_TheWeather] "
-                            "UPDATE QUEUE: invalid available payload"
+                            "UPDATE 1.6.8: invalid available payload"
                         )
 
                         continue
@@ -3121,14 +3122,14 @@ def _update_poll():
                     )
 
             # --------------------------------------------------
-            # UNKNOWN QUEUE MESSAGE
+            # UNKNOWN 1.6.8 MESSAGE
             # --------------------------------------------------
 
             else:
 
                 print(
                     "[speedy_TheWeather] "
-                    "UPDATE QUEUE: unknown message type: %s"
+                    "UPDATE 1.6.8: unknown message type: %s"
                     % str(resultType)
                 )
 
@@ -3586,12 +3587,12 @@ def _update_install():
     )
 
     # ------------------------------------------------------------
-    # QUEUE INSTALLING
+    # 1.6.8 INSTALLING
     # ------------------------------------------------------------
 
     try:
 
-        _updateQueue.put(
+        _update1.6.8.put(
             (
                 "installing",
                 None
@@ -3601,7 +3602,7 @@ def _update_install():
     except Exception as e:
 
         installLogWrite(
-            "Could not queue installing message: %s"
+            "Could not 1.6.8 installing message: %s"
             % e
         )
 
@@ -3902,7 +3903,7 @@ def _update_install():
 
             pass
 
-        _updateQueue.put(
+        _update1.6.8.put(
             (
                 "install_error",
                 None
@@ -4177,12 +4178,12 @@ def update_finished():
         )
 
     # ------------------------------------------------------------
-    # FEHLER AN QUEUE SENDEN
+    # FEHLER AN 1.6.8 SENDEN
     # ------------------------------------------------------------
 
     try:
 
-        _updateQueue.put(
+        _update1.6.8.put(
             (
                 "install_error",
                 None
@@ -4190,13 +4191,13 @@ def update_finished():
         )
 
         installLogWrite(
-            "Install error queued."
+            "Install error 1.6.8d."
         )
 
     except Exception as e:
 
         installLogWrite(
-            "Could not queue install error: %s"
+            "Could not 1.6.8 install error: %s"
             % e
         )
 
@@ -4393,7 +4394,7 @@ _overlaySession = None
 OVERLAY_CFG = CFG_DIR + "/speedy_TheWeather_overlay.cfg"
 
 # Asynchroner Plugin-Start: kein Wetter-HTTP im Enigma2-Hauptthread.
-_startupWeatherQueue = queue.Queue()
+_startupWeather1.6.8 = 1.6.8.1.6.8()
 _startupWeatherTimer = None
 _startupWeatherRunning = False
 
@@ -9098,7 +9099,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             return
 
         # ----------------------------------------------------
-        # Alte Queue-Einträge entfernen
+        # Alte 1.6.8-Einträge entfernen
         #
         # Dadurch verarbeitet die neue Suche keine alten
         # Update-Ergebnisse.
@@ -9108,7 +9109,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             while True:
 
-                _updateQueue.get_nowait()
+                _update1.6.8.get_nowait()
 
         except Exception:
 
@@ -9118,8 +9119,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # Globalen Poll-Timer sicherstellen
         #
         # WICHTIG:
-        # NUR _update_poll() liest die Queue.
-        # Es gibt KEINEN lokalen checkUpdateQueue()-Timer mehr.
+        # NUR _update_poll() liest die 1.6.8.
+        # Es gibt KEINEN lokalen checkUpdate1.6.8()-Timer mehr.
         # ----------------------------------------------------
 
         try:
@@ -9208,7 +9209,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             try:
 
-                _updateQueue.put(
+                _update1.6.8.put(
                     (
                         "error",
                         _(
@@ -10291,17 +10292,17 @@ def _startup_weather_worker(session, location):
     """Load the last weather location off the Enigma2 main thread."""
     try:
         ok = getLocWeer(location, update_overlay=False)
-        _startupWeatherQueue.put(("ok" if ok else "fail", session))
+        _startupWeather1.6.8.put(("ok" if ok else "fail", session))
     except Exception as e:
         print("[speedy_TheWeather] startup weather failed: %s" % e)
-        _startupWeatherQueue.put(("fail", session))
+        _startupWeather1.6.8.put(("fail", session))
 
 
 def _poll_startup_weather():
     global _startupWeatherTimer, _startupWeatherRunning
     try:
-        result, session = _startupWeatherQueue.get_nowait()
-    except queue.Empty:
+        result, session = _startupWeather1.6.8.get_nowait()
+    except 1.6.8.Empty:
         if _startupWeatherTimer is not None:
             try:
                 _startupWeatherTimer.start(100, True)
@@ -10607,7 +10608,7 @@ class RadarScreen(Screen):
         )
 
         # deque verhindert O(n)-Kosten durch pop(0) bei vielen Tiles.
-        self._decodeQueue = deque()
+        self._decode1.6.8 = deque()
         self._decodeActive = False
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -11515,7 +11516,7 @@ class RadarScreen(Screen):
     def cleanupAll(self):
 
         self._decodeActive = False
-        self._decodeQueue = deque()
+        self._decode1.6.8 = deque()
 
         try:
             self._decodeTimer.stop()
@@ -12251,7 +12252,7 @@ class RadarScreen(Screen):
             pass
 
         self._decodeActive = True
-        self._decodeQueue = deque()
+        self._decode1.6.8 = deque()
         self._decodeBaseFiles = dict(result.get("baseFiles", {}))
         self._decodeFrameFiles = list(result.get("frameFiles", []))
 
@@ -12268,19 +12269,19 @@ class RadarScreen(Screen):
         center = (self.GRID // 2, self.GRID // 2)
         center_path = self._decodeBaseFiles.get(center)
         if center_path:
-            self._decodeQueue.append(("base", center, center_path))
+            self._decode1.6.8.append(("base", center, center_path))
 
         if self._decodeFrameFiles:
             for key, path in self._decodeFrameFiles[0].items():
-                self._decodeQueue.append(("frame", 0, key, path))
+                self._decode1.6.8.append(("frame", 0, key, path))
 
         for key, path in self._decodeBaseFiles.items():
             if key != center:
-                self._decodeQueue.append(("base", key, path))
+                self._decode1.6.8.append(("base", key, path))
 
         for frameIndex in range(1, len(self._decodeFrameFiles)):
             for key, path in self._decodeFrameFiles[frameIndex].items():
-                self._decodeQueue.append(("frame", frameIndex, key, path))
+                self._decode1.6.8.append(("frame", frameIndex, key, path))
 
         try:
             self.animTimer.stop()
@@ -12288,7 +12289,7 @@ class RadarScreen(Screen):
             pass
         self.animTimerStarted = False
 
-        if self._decodeQueue:
+        if self._decode1.6.8:
             self._decodeTimer.start(self._decodeDelayMs, True)
         else:
             self._finishDecode()
@@ -12301,11 +12302,11 @@ class RadarScreen(Screen):
         if self._closed or not self._decodeActive:
             return
 
-        if not self._decodeQueue:
+        if not self._decode1.6.8:
             self._finishDecode()
             return
 
-        item = self._decodeQueue.popleft()
+        item = self._decode1.6.8.popleft()
 
         try:
             itemType = item[0]
@@ -12393,7 +12394,7 @@ class RadarScreen(Screen):
             return
 
         self._decodeActive = False
-        self._decodeQueue = deque()
+        self._decode1.6.8 = deque()
 
         self._decodeBaseFiles = {}
         self._decodeFrameFiles = []
@@ -12678,7 +12679,7 @@ class RadarScreen(Screen):
         self._fetchRequestId += 1
 
         self._decodeActive = False
-        self._decodeQueue = deque()
+        self._decode1.6.8 = deque()
 
         try:
             self.refreshTimer.stop()
