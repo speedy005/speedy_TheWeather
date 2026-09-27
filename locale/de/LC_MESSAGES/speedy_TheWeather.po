@@ -589,8 +589,8 @@ msgstr "Die Wetter-Hintergründe wurden erfolgreich heruntergeladen."
 msgid "The weather backgrounds could not be downloaded."
 msgstr "Die Wetter-Hintergründe konnten nicht heruntergeladen werden."
 
-msgid "You are already using the latest version"
-msgstr "Sie verwenden bereits die neueste Version"
+msgid "You are already using the latest version (%s)."
+msgstr "Du verwendest bereits die neueste Version (%s)."
 
 
 
