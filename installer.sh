@@ -7,6 +7,7 @@
 version='1.6.8'
 
 changelog='v1.6.8 EN: Fixed language files and PO/MO names. Added update function. Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart. Added customizable colors. Added automatic weather backgrounds and seasonal backgrounds with automatic download and installation. Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling. Added Ultra Low-End, Low-End, Auto and Normal performance modes. Existing features remain available. Buy me a coffee if you like this plugin. | DE: Sprachdateien sowie PO-/MO-Dateinamen korrigiert. Update-Funktion hinzugefügt. Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert. Anpassbare Farben hinzugefügt. Automatische Wetter-Hintergründe und saisonale Hintergründe mit automatischem Download und Installation hinzugefügt. Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert. Ultra Low-End, Low-End, Auto und Normal Performance-Modi hinzugefügt. Bestehende Funktionen bleiben erhalten. Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
+
 # =========================================================
 # DOWNLOAD
 # =========================================================
@@ -68,6 +69,26 @@ INSTALL_STARTED=0
 
 
 # =========================================================
+# TEMPORARY / BACKUP PATHS
+# =========================================================
+
+# Main temporary working directory.
+TMPPATH="/tmp/speedy_TheWeather_installer"
+
+# Downloaded GitHub archive.
+FILEPATH="/tmp/speedy_TheWeather_installer.tar.gz"
+
+# Existing plugin backup.
+OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather_plugin_backup"
+
+# Enigma2 plugin configuration directory.
+CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
+
+# Configuration backup.
+BACKUP_DIR="/tmp/speedy_TheWeather_config_backup"
+
+
+# =========================================================
 # LOGGING
 # =========================================================
 
@@ -95,12 +116,19 @@ cleanup()
 {
     log "Cleaning up temporary files..."
 
-    if [ -d "$TMPPATH" ]; then
+    if [ -n "$TMPPATH" ] &&
+       [ -d "$TMPPATH" ]; then
+
         rm -rf "$TMPPATH"
+
     fi
 
-    if [ -f "$FILEPATH" ]; then
+
+    if [ -n "$FILEPATH" ] &&
+       [ -f "$FILEPATH" ]; then
+
         rm -f "$FILEPATH"
+
     fi
 }
 
@@ -968,7 +996,7 @@ remove_repository_only_files()
             -o -name "installer.sh" \
             -o -name "version.txt" \
             -o -name "*.svg" \
-			-o -name "*backgrounds_auto.zip" \
+            -o -name "*backgrounds_auto.zip" \
         \) \
         -print \
         -delete
@@ -1363,6 +1391,8 @@ show_info()
     echo "PLUGIN VERSION:  $version"
     echo "PLUGIN PATH:     $PLUGINPATH"
     echo "BRANCH:          $BRANCH"
+    echo "TEMP PATH:       $TMPPATH"
+    echo "CONFIG PATH:     $CONFIG_DIR"
     echo "---------------------------------------------------------"
     echo
 
@@ -1561,3 +1591,4 @@ finish_install
 # =========================================================
 
 exit 0
+
