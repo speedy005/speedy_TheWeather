@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.4
+# v.1.7.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -446,7 +446,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.4"
+__version__ = "1.7.5"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -462,7 +462,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.4'
+version = '1.7.5'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -9998,15 +9998,15 @@ class sevendayColorSetup(ConfigListScreen, Screen):
 
     skin = """
     <screen name="sevendayColorSetup" position="center,center" size="1100,700" title="SevenDay Farben">
-        <widget name="config" position="4,4" size="1070,600" scrollbarMode="showOnDemand" itemHeight="39" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular;23" />
+        <widget name="config" position="4,4" size="1070,600" scrollbarMode="showOnDemand" itemHeight="45" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular;30" />
         <ePixmap pixmap="skin_default/buttons/red.png" position="11,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_red" position="36,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <widget name="key_red" position="36,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" />
         <ePixmap pixmap="skin_default/buttons/green.png" position="282,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_green" position="308,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <widget name="key_green" position="308,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="green" />
         <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_yellow" position="579,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <widget name="key_yellow" position="579,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="yellow" />
         <ePixmap pixmap="skin_default/buttons/blue.png" position="825,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_blue" position="851,650" size="240,40" zPosition="2" transparent="1" font="Regular;20" halign="center" valign="center" />
+        <widget name="key_blue" position="851,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="blue" />
     </screen>"""
 
     _ENTRIES = (
