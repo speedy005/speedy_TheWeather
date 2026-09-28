@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.3
+# v.1.7.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -276,7 +276,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.7.3"
+__version__ = "1.7.4"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -292,7 +292,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.3'
+version = '1.7.4'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -7192,6 +7192,16 @@ class sevendays(Screen):
             True
         )
 
+        # Sehr leichter Timer: nur einmal pro Minute pruefen, ob die
+        # aktuelle Wetterstunde gewechselt hat. Kein Netzwerkzugriff.
+        self.currentHourTimer = eTimer()
+        self._currentHourTimer_conn = safeTimerCallback(
+            self.currentHourTimer,
+            self._updateCurrentBigIcon
+        )
+        self.currentHourTimer.start(60000, False)
+        self.onClose.append(self._stopCurrentHourTimer)
+
     def _loadSevenDayColors(self):
         """Lädt bei jedem neuen SevenDay-Screen die aktuellen Farbwerte."""
         for _color_name, _config_name in (
@@ -7254,6 +7264,69 @@ class sevendays(Screen):
         else:
             self.hourStep = 1
         self.updateFrameselect()
+
+    def _stopCurrentHourTimer(self):
+        try:
+            if hasattr(self, "currentHourTimer"):
+                self.currentHourTimer.stop()
+        except Exception:
+            pass
+
+    def _getCurrentHourData(self):
+        """Gibt den Wetterdatensatz fuer die aktuelle Stunde zurueck."""
+        try:
+            hours = weatherData.get("days", [])[0].get("hours", [])
+        except (AttributeError, IndexError, TypeError):
+            return None
+
+        if not hours:
+            return None
+
+        try:
+            now_hour = datetime.datetime.now().hour
+        except Exception:
+            now_hour = None
+
+        if now_hour is not None:
+            # Buienradar kann Stunden je nach Datenquelle als 0-23
+            # oder 1-24 liefern. Beides wird hier unterstuetzt.
+            for entry in hours:
+                try:
+                    hour = int(entry.get("hour"))
+                except (TypeError, ValueError, AttributeError):
+                    continue
+                if hour == now_hour or (now_hour == 0 and hour == 24):
+                    return entry
+
+        # Sicherer Fallback: erste vorhandene Stunde.
+        return hours[0] if isinstance(hours[0], dict) else None
+
+    def _updateCurrentBigIcon(self):
+        """Aktualisiert das grosse Icon des heutigen Tages auf die aktuelle Stunde."""
+        try:
+            if self.selected != 0:
+                return
+
+            entry = self._getCurrentHourData()
+            if not entry:
+                return
+
+            icon = entry.get("iconcode") or entry.get("icon")
+            if not icon:
+                return
+
+            iconpath = os.path.join(
+                self.WEATHER_PATH,
+                icoonpath,
+                "iconbighd",
+                str(icon) + ".png"
+            )
+
+            widget = self["bigWeerIcon10"]
+            if widget.instance is not None:
+                widget.instance.setPixmap(_load_icon_cached(iconpath))
+        except Exception as e:
+            print("[speedy_TheWeather] current big icon update failed:", e)
 
     def updateFrameselect(self):
         if self.selected < 0:
@@ -7455,6 +7528,11 @@ class sevendays(Screen):
             self["bigWeerIcon1" + str(self.selected)].show()
         except Exception:
             pass
+
+        # Fuer heute (Tag 0) das grosse Icon immer auf die aktuelle
+        # Wetterstunde setzen. Die Icons der zukuenftigen Tage bleiben
+        # unveraendert und zeigen weiterhin deren Tagesprognose.
+        self._updateCurrentBigIcon()
 
         try:
             self["bigDirIcon1" + str(self.selected)].show()
