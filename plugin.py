@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.2
+# v.1.7.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -276,7 +276,7 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-__version__ = "1.7.2"
+__version__ = "1.7.3"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -292,7 +292,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.2'
+version = '1.7.3'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -362,6 +362,22 @@ AUTO_BG_MARKER = os.path.join(
     AUTO_BG_DIR,
     ".installed"
 )
+
+
+_AUTO_BG_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp")
+_AUTO_BG_ALIASES = {
+    "clear": ("sunny", "clear", "sun"),
+    "cloudy": ("cloudy", "cloud"),
+    "mist": ("mist", "fog", "haze"),
+    "rain": ("rain", "rainy", "shower", "drizzle"),
+    "storm": ("thunder", "storm", "thunderstorm"),
+    "snow": ("snow", "snowy", "winter"),
+    "halloween": ("halloween",),
+    "christmas": ("christmas", "kerst", "weihnachten", "xmas"),
+    "newyear": ("newyear", "new_year", "neujahr", "silvester"),
+    "easter": ("easter", "ostern"),
+}
+_AUTO_BG_FILE_CACHE = {}
 
 
 # ============================================================
@@ -565,22 +581,21 @@ def ensureAutoBackgrounds():
             "[speedy_TheWeather] Download startet..."
         )
 
-        command = (
-            "wget -O '%s' "
-            "--timeout=15 "
-            "--tries=2 "
-            "'%s'"
-        ) % (
-            zipFile,
-            AUTO_BG_ZIP_URL
-        )
+        wget_path = "/usr/bin/wget" if os.path.exists("/usr/bin/wget") else "/bin/wget"
+        if not os.path.exists(wget_path):
+            print("[speedy_TheWeather] wget not found")
+            return False
 
-        print(
-            "[speedy_TheWeather] CMD:"
-        )
-        print(command)
+        command = [
+            wget_path,
+            "-O", zipFile,
+            "--timeout=15",
+            "--tries=2",
+            AUTO_BG_ZIP_URL,
+        ]
+        print("[speedy_TheWeather] Download via wget")
 
-        result = os.system(command)
+        result = subprocess.call(command)
 
         print(
             "[speedy_TheWeather] wget return: %s"
@@ -991,170 +1006,36 @@ def ensureAutoBackgrounds():
 
 
 def findAutoBgFile(category):
-    """
-    Sucht den passenden automatischen Hintergrund
-    direkt in AUTO_BG_DIR.
-    """
-
+    """Return the first valid background for *category*, with a small path cache."""
     if not category:
-        print(
-            "[speedy_TheWeather] "
-            "findAutoBgFile: keine Kategorie"
-        )
         return None
-
-    # -------------------------------------------------
-    # Kategorie normalisieren
-    # -------------------------------------------------
-
     try:
         category = str(category).strip().lower()
     except Exception:
         return None
 
-    # -------------------------------------------------
-    # Kategorie -> mögliche Dateinamen
-    # -------------------------------------------------
+    cached = _AUTO_BG_FILE_CACHE.get(category)
+    if cached:
+        try:
+            if os.path.isfile(cached) and os.path.getsize(cached) > 0:
+                return cached
+        except Exception:
+            pass
+        _AUTO_BG_FILE_CACHE.pop(category, None)
 
-    aliases = {
-
-        "clear": (
-            "sunny",
-            "clear",
-            "sun",
-        ),
-
-        "cloudy": (
-            "cloudy",
-            "cloud",
-        ),
-
-        "mist": (
-            "mist",
-            "fog",
-            "haze",
-        ),
-
-        "rain": (
-            "rain",
-            "rainy",
-            "shower",
-            "drizzle",
-        ),
-
-        "storm": (
-            "thunder",
-            "storm",
-            "thunderstorm",
-        ),
-
-        "snow": (
-            "snow",
-            "snowy",
-            "winter",
-        ),
-
-        "halloween": (
-            "halloween",
-        ),
-
-        "christmas": (
-            "christmas",
-            "kerst",
-            "weihnachten",
-            "xmas",
-        ),
-
-        "newyear": (
-            "newyear",
-            "new_year",
-            "neujahr",
-            "silvester",
-        ),
-
-        "easter": (
-            "easter",
-            "ostern",
-        ),
-    }
-
-    names = aliases.get(
-        category,
-        (category,)
-    )
-
-    # -------------------------------------------------
-    # Unterstützte Bildformate
-    # -------------------------------------------------
-
-    extensions = (
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".bmp",
-    )
-
-    # -------------------------------------------------
-    # AUTO_BG_DIR prüfen
-    # -------------------------------------------------
-
-    if not os.path.isdir(
-        AUTO_BG_DIR
-    ):
-
-        print(
-            "[speedy_TheWeather] "
-            "findAutoBgFile: Ordner nicht vorhanden: %s"
-            % AUTO_BG_DIR
-        )
-
+    if not os.path.isdir(AUTO_BG_DIR):
         return None
 
-    # -------------------------------------------------
-    # Datei suchen
-    # -------------------------------------------------
-
+    names = _AUTO_BG_ALIASES.get(category, (category,))
     for name in names:
-
-        for ext in extensions:
-
-            path = os.path.join(
-                AUTO_BG_DIR,
-                name + ext
-            )
-
-            if os.path.isfile(path):
-
-                try:
-                    if os.path.getsize(path) <= 0:
-                        continue
-                except Exception:
-                    continue
-
-                print(
-                    "[speedy_TheWeather] "
-                    "findAutoBgFile: %s -> %s"
-                    % (
-                        category,
-                        path
-                    )
-                )
-
-                return path
-
-    # -------------------------------------------------
-    # Nichts gefunden
-    # -------------------------------------------------
-
-    print(
-        "[speedy_TheWeather] "
-        "findAutoBgFile: kein Bild fuer '%s' in %s"
-        % (
-            category,
-            AUTO_BG_DIR
-        )
-    )
-
+        for ext in _AUTO_BG_EXTENSIONS:
+            path = os.path.join(AUTO_BG_DIR, name + ext)
+            try:
+                if os.path.isfile(path) and os.path.getsize(path) > 0:
+                    _AUTO_BG_FILE_CACHE[category] = path
+                    return path
+            except OSError:
+                continue
     return None
 
 def getHolidayBgCategory():
@@ -1795,36 +1676,23 @@ def _update_download(url, destination, timeout=None):
         # wget-Meldung im Enigma2-Log.
         # --------------------------------------------------------
 
-        command = (
-            "\"%s\" "
-            "--no-check-certificate "
-            "--timeout=%d "
-            "--tries=2 "
-            "--user-agent=\"speedy_TheWeather-Updater/1.0\" "
-            "-O \"%s\" "
-            "\"%s\""
-            %
-            (
-                wgetPath,
-                int(timeout),
-                destination,
-                url
-            )
-        )
+        command = [
+            wgetPath,
+            "--no-check-certificate",
+            "--timeout=%d" % int(timeout),
+            "--tries=2",
+            "--user-agent=speedy_TheWeather-Updater/1.0",
+            "-O", destination,
+            url,
+        ]
 
-        print(
-            "[speedy_TheWeather] "
-            "WGET COMMAND: %s"
-            % command
-        )
+        print("[speedy_TheWeather] WGET DOWNLOAD")
 
         # --------------------------------------------------------
         # DOWNLOAD
         # --------------------------------------------------------
 
-        result = os.system(
-            command
-        )
+        result = subprocess.call(command)
 
         print(
             "[speedy_TheWeather] "
@@ -3826,6 +3694,26 @@ def _update_show_installing():
 
 
 # ============================================================================
+# UPDATE INSTALL LOG
+# ============================================================================
+
+_UPDATE_INSTALL_LOG = "/tmp/speedy_update_install.log"
+
+
+def _update_install_log(message):
+    """Lightweight shared update-install logger; never breaks the update flow."""
+    try:
+        with open(_UPDATE_INSTALL_LOG, "a") as log_file:
+            log_file.write("%s\\n" % message)
+    except Exception:
+        pass
+    try:
+        print("[speedy_TheWeather] %s" % message)
+    except Exception:
+        pass
+
+
+# ============================================================================
 # UPDATE INSTALL
 # ============================================================================
 
@@ -3854,41 +3742,12 @@ def _update_install():
 
     _updateInstallInProgress = True
     _updateConsole = None
+    installLog = _UPDATE_INSTALL_LOG
 
-    installLog = "/tmp/speedy_update_install.log"
 
     # ------------------------------------------------------------------------
     # LOG-FUNKTION
     # ------------------------------------------------------------------------
-
-    def installLogWrite(message):
-
-        try:
-
-            with open(
-                installLog,
-                "a"
-            ) as logFile:
-
-                logFile.write(
-                    "%s\n"
-                    % message
-                )
-
-        except Exception:
-
-            pass
-
-        try:
-
-            print(
-                "[speedy_TheWeather] %s"
-                % message
-            )
-
-        except Exception:
-
-            pass
 
     # ------------------------------------------------------------------------
     # LOG NEU STARTEN
@@ -3913,16 +3772,16 @@ def _update_install():
 
         pass
 
-    installLogWrite(
+    _update_install_log(
         "UPDATE INSTALL START"
     )
 
-    installLogWrite(
+    _update_install_log(
         "Installer URL: %s"
         % UPDATE_INSTALLER_URL
     )
 
-    installLogWrite(
+    _update_install_log(
         "Installer path: %s"
         % UPDATE_INSTALLER_PATH
     )
@@ -3941,13 +3800,13 @@ def _update_install():
                 UPDATE_SUCCESS_FILE
             )
 
-            installLogWrite(
+            _update_install_log(
                 "Old success marker removed."
             )
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Could not remove old success marker: %s"
             % e
         )
@@ -3966,13 +3825,13 @@ def _update_install():
                 UPDATE_INSTALLER_PATH
             )
 
-            installLogWrite(
+            _update_install_log(
                 "Old installer removed."
             )
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Could not remove old installer: %s"
             % e
         )
@@ -3981,7 +3840,7 @@ def _update_install():
     # INSTALLER HERUNTERLADEN
     # ------------------------------------------------------------------------
 
-    installLogWrite(
+    _update_install_log(
         "Downloading installer..."
     )
 
@@ -3995,21 +3854,21 @@ def _update_install():
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Installer download exception: %s"
             % e
         )
 
         downloadResult = False
 
-    installLogWrite(
+    _update_install_log(
         "Installer download result: %s"
         % downloadResult
     )
 
     if not downloadResult:
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: installer download failed."
         )
 
@@ -4038,7 +3897,7 @@ def _update_install():
         UPDATE_INSTALLER_PATH
     ):
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: installer file does not exist."
         )
 
@@ -4069,14 +3928,14 @@ def _update_install():
 
         installerSize = 0
 
-    installLogWrite(
+    _update_install_log(
         "Installer size: %d bytes"
         % installerSize
     )
 
     if installerSize <= 0:
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: installer file is empty."
         )
 
@@ -4110,7 +3969,7 @@ def _update_install():
 
             installerContent = installerFile.read()
 
-        installLogWrite(
+        _update_install_log(
             "Installer read test: OK"
         )
 
@@ -4120,7 +3979,7 @@ def _update_install():
 
             for line in firstLines[:10]:
 
-                installLogWrite(
+                _update_install_log(
                     "INSTALLER: %s"
                     % line
                 )
@@ -4131,7 +3990,7 @@ def _update_install():
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: could not read installer: %s"
             % e
         )
@@ -4164,13 +4023,13 @@ def _update_install():
             0o755
         )
 
-        installLogWrite(
+        _update_install_log(
             "chmod 0755: OK"
         )
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: chmod failed: %s"
             % e
         )
@@ -4202,7 +4061,7 @@ def _update_install():
         bashPath
     ):
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: /bin/bash not found."
         )
 
@@ -4228,7 +4087,7 @@ def _update_install():
         os.X_OK
     ):
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: /bin/bash is not executable."
         )
 
@@ -4249,7 +4108,7 @@ def _update_install():
 
         return
 
-    installLogWrite(
+    _update_install_log(
         "/bin/bash: OK"
     )
 
@@ -4259,7 +4118,7 @@ def _update_install():
 
     if _overlaySession is None:
 
-        installLogWrite(
+        _update_install_log(
             "INSTALLATION ABORTED: no active Enigma2 session."
         )
 
@@ -4280,7 +4139,7 @@ def _update_install():
 
         return
 
-    installLogWrite(
+    _update_install_log(
         "Enigma2 session: OK"
     )
 
@@ -4299,7 +4158,7 @@ def _update_install():
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Could not queue installing message: %s"
             % e
         )
@@ -4332,15 +4191,15 @@ def _update_install():
         )
     )
 
-    installLogWrite(
+    _update_install_log(
         "Installer command:"
     )
 
-    installLogWrite(
+    _update_install_log(
         cmd
     )
 
-    installLogWrite(
+    _update_install_log(
         "Starting Enigma2 Console..."
     )
 
@@ -4360,7 +4219,7 @@ def _update_install():
             closeOnSuccess=True
         )
 
-        installLogWrite(
+        _update_install_log(
             "Enigma2 Console opened successfully."
         )
 
@@ -4369,7 +4228,7 @@ def _update_install():
         _updateConsole = None
         _updateInstallInProgress = False
 
-        installLogWrite(
+        _update_install_log(
             "INSTALL EXCEPTION: %s"
             % e
         )
@@ -4378,7 +4237,7 @@ def _update_install():
 
             import traceback
 
-            installLogWrite(
+            _update_install_log(
                 traceback.format_exc()
             )
 
@@ -4410,46 +4269,6 @@ def update_finished():
     global _updateInstallInProgress
     global _updateRestartTimer
 
-    installLog = "/tmp/speedy_update_install.log"
-
-    def installLogWrite(message):
-
-        try:
-
-            with open(
-                installLog,
-                "a"
-            ) as logFile:
-
-                logFile.write(
-                    "%s\n"
-                    % message
-                )
-
-        except Exception:
-
-            pass
-
-        try:
-
-            print(
-                "[speedy_TheWeather] %s"
-                % message
-            )
-
-        except Exception:
-
-            pass
-
-    installLogWrite(
-        "========================================"
-    )
-
-    installLogWrite(
-        "UPDATE INSTALLER FINISHED CALLBACK"
-    )
-
-    _updateConsole = None
 
     # ------------------------------------------------------------------------
     # SUCCESS MARKER PRÜFEN
@@ -4459,7 +4278,7 @@ def update_finished():
         UPDATE_SUCCESS_FILE
     )
 
-    installLogWrite(
+    _update_install_log(
         "Update success marker: %s"
         % success
     )
@@ -4470,7 +4289,7 @@ def update_finished():
 
     if success:
 
-        installLogWrite(
+        _update_install_log(
             "UPDATE INSTALLATION SUCCESS"
         )
 
@@ -4490,13 +4309,13 @@ def update_finished():
                     UPDATE_INSTALLER_PATH
                 )
 
-                installLogWrite(
+                _update_install_log(
                     "Installer removed."
                 )
 
         except Exception as e:
 
-            installLogWrite(
+            _update_install_log(
                 "Could not remove installer: %s"
                 % e
             )
@@ -4515,13 +4334,13 @@ def update_finished():
                     UPDATE_SUCCESS_FILE
                 )
 
-                installLogWrite(
+                _update_install_log(
                     "Success marker removed."
                 )
 
         except Exception as e:
 
-            installLogWrite(
+            _update_install_log(
                 "Could not remove success marker: %s"
                 % e
             )
@@ -4594,13 +4413,13 @@ def update_finished():
                 True
             )
 
-            installLogWrite(
+            _update_install_log(
                 "Restart message timer started."
             )
 
         except Exception as e:
 
-            installLogWrite(
+            _update_install_log(
                 "Could not start restart timer: %s"
                 % e
             )
@@ -4613,7 +4432,7 @@ def update_finished():
 
             except Exception as e:
 
-                installLogWrite(
+                _update_install_log(
                     "Could not show restart message: %s"
                     % e
                 )
@@ -4624,17 +4443,17 @@ def update_finished():
     # FAILURE
     # ------------------------------------------------------------------------
 
-    installLogWrite(
+    _update_install_log(
         "UPDATE INSTALLATION FAILED"
     )
 
     _updateInstallInProgress = False
 
-    installLogWrite(
+    _update_install_log(
         "Installer retained for diagnostic purposes:"
     )
 
-    installLogWrite(
+    _update_install_log(
         UPDATE_INSTALLER_PATH
     )
 
@@ -4652,13 +4471,13 @@ def update_finished():
                 UPDATE_SUCCESS_FILE
             )
 
-            installLogWrite(
+            _update_install_log(
                 "Failure success marker removed."
             )
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Could not remove failure success marker: %s"
             % e
         )
@@ -4676,13 +4495,13 @@ def update_finished():
             )
         )
 
-        installLogWrite(
+        _update_install_log(
             "Install error queued."
         )
 
     except Exception as e:
 
-        installLogWrite(
+        _update_install_log(
             "Could not queue install error: %s"
             % e
         )
