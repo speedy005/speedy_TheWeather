@@ -196,6 +196,10 @@ _SEVENDAY_COLOR_DEFAULTS = {
     "mintemp": "#00004080",
     "daytype": "#00ffff00",
     "sun": "#00ffff00",
+    "sunrise": "#0000ff00",
+    "sunset": "#00ff0000",
+    "moonrise": "#0000ff00",
+    "moonset": "#00ff0000",
     "hour": "#00ff0000",
     "hourtemp": "#004080ff",
     "rain": "#0000ff00",
@@ -275,6 +279,172 @@ def getCoordsFromEntry(value):
         except ValueError:
             return None, None
     return None, None
+
+
+# -----------------------------------------------------------------------------
+# MONDAUF- / MONDUNTERGANG
+# -----------------------------------------------------------------------------
+# Bewusst lokal berechnet: kein zusaetzlicher Netzwerkabruf. Die Berechnung ist
+# fuer die Anzeige von Auf-/Untergangszeiten ausreichend genau und wird pro
+# Ort/Tag gecacht.
+_MOON_RISESET_CACHE = {}
+
+
+def _moon_julian_day(dt):
+    """Julianischer Tag fuer eine UTC-Datetime."""
+    return (dt - datetime.datetime(2000, 1, 1, 12, 0, 0)).total_seconds() / 86400.0 + 2451545.0
+
+
+def _moon_position(jd):
+    """Niedrigaufloesende geozentrische Mondposition (Grad)."""
+    d = jd - 2451543.5
+    N = math.radians((125.1228 - 0.0529538083 * d) % 360.0)
+    i = math.radians(5.1454)
+    w = math.radians((318.0634 + 0.1643573223 * d) % 360.0)
+    a = 60.2666
+    e = 0.0549
+    M = math.radians((115.3654 + 13.0649929509 * d) % 360.0)
+
+    E = M + e * math.sin(M) * (1.0 + e * math.cos(M))
+    for _ in range(3):
+        E -= (E - e * math.sin(E) - M) / (1.0 - e * math.cos(E))
+
+    xv = a * (math.cos(E) - e)
+    yv = a * (math.sqrt(1.0 - e * e) * math.sin(E))
+    v = math.atan2(yv, xv)
+    r = math.sqrt(xv * xv + yv * yv)
+
+    xh = r * (math.cos(N) * math.cos(v + w) - math.sin(N) * math.sin(v + w) * math.cos(i))
+    yh = r * (math.sin(N) * math.cos(v + w) + math.cos(N) * math.sin(v + w) * math.cos(i))
+    zh = r * (math.sin(v + w) * math.sin(i))
+
+    lon = math.atan2(yh, xh)
+    lat = math.atan2(zh, math.sqrt(xh * xh + yh * yh))
+
+    # Stoerungen fuer die sichtbare Mondposition.
+    Ms = math.radians((356.0470 + 0.9856002585 * d) % 360.0)
+    ws = math.radians((282.9404 + 0.0000470935 * d) % 360.0)
+    Ls = (Ms + ws) % (2.0 * math.pi)
+    Mm = M
+    Lm = (math.degrees(N + w + M)) % 360.0
+    Ms_deg = math.degrees(Ms)
+    Ls_deg = math.degrees(Ls)
+    D = math.radians((Lm - Ls_deg) % 360.0)
+    F = math.radians((Lm - math.degrees(N)) % 360.0)
+    lon += math.radians(-1.274 * math.sin(Mm - D)
+                        + 0.658 * math.sin(2.0 * D)
+                        - 0.186 * math.sin(Ms)
+                        - 0.059 * math.sin(2.0 * Mm - 2.0 * D)
+                        - 0.057 * math.sin(Mm - 2.0 * D + Ms)
+                        + 0.053 * math.sin(Mm + 2.0 * D)
+                        + 0.046 * math.sin(2.0 * D - Ms)
+                        + 0.041 * math.sin(Mm - Ms)
+                        - 0.035 * math.sin(D)
+                        - 0.031 * math.sin(Mm + Ms)
+                        - 0.015 * math.sin(2.0 * F - 2.0 * D)
+                        + 0.011 * math.sin(Mm - 4.0 * D))
+    lat += math.radians(-0.173 * math.sin(F - 2.0 * D)
+                        - 0.055 * math.sin(Mm - F - 2.0 * D)
+                        - 0.046 * math.sin(Mm + F - 2.0 * D)
+                        + 0.033 * math.sin(F + 2.0 * D)
+                        + 0.017 * math.sin(2.0 * Mm + F))
+
+    return lon, lat, r
+
+
+def _moon_altitude(dt_utc, lat_deg, lon_deg):
+    """Mondhoehe in Grad fuer eine UTC-Zeit."""
+    jd = _moon_julian_day(dt_utc)
+    lon, lat, _r = _moon_position(jd)
+
+    # Ekliptik -> Aequatorialkoordinaten.
+    obliq = math.radians(23.4393 - 3.563e-7 * (jd - 2451543.5))
+    sin_dec = math.sin(lat) * math.cos(obliq) + math.cos(lat) * math.sin(obliq) * math.sin(lon)
+    dec = math.asin(max(-1.0, min(1.0, sin_dec)))
+    ra = math.atan2(
+        math.sin(lon) * math.cos(obliq) - math.tan(lat) * math.sin(obliq),
+        math.cos(lon)
+    )
+
+    # GMST / lokale Sternzeit.
+    T = (jd - 2451545.0) / 36525.0
+    gmst = (280.46061837 + 360.98564736629 * (jd - 2451545.0)
+            + 0.000387933 * T * T - T * T * T / 38710000.0) % 360.0
+    lst = math.radians((gmst + lon_deg) % 360.0)
+    ha = lst - ra
+
+    sin_alt = (math.sin(math.radians(lat_deg)) * math.sin(dec)
+               + math.cos(math.radians(lat_deg)) * math.cos(dec) * math.cos(ha))
+    return math.degrees(math.asin(max(-1.0, min(1.0, sin_alt))))
+
+
+def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
+    """Liefert lokale Mondauf-/untergangszeit als HH:MM oder 'na'."""
+    try:
+        key = (date_value.isoformat(), round(float(lat_deg), 4), round(float(lon_deg), 4))
+        cached = _MOON_RISESET_CACHE.get(key)
+        if cached is not None:
+            return cached
+
+        # Lokaler UTC-Offset zum Berechnungszeitpunkt; Enigma2 benoetigt keine
+        # zusaetzliche Zeitzonenbibliothek. Der Offset wird fuer diesen Tag
+        # aus localtime/gmtime ermittelt.
+        local_midnight = datetime.datetime.combine(date_value, datetime.time(0, 0))
+        stamp = time.mktime(local_midnight.timetuple())
+        local_tm = time.localtime(stamp)
+        utc_tm = time.gmtime(stamp)
+        offset = (datetime.datetime(*local_tm[:6]) - datetime.datetime(*utc_tm[:6])).total_seconds()
+
+        def utc_for_minutes(minutes):
+            return local_midnight + datetime.timedelta(minutes=minutes) - datetime.timedelta(seconds=offset)
+
+        # Mondauf-/untergang mit 10-Minuten-Schritten suchen und den Treffer
+        # linear verfeinern. Das sind maximal 145 Positionsberechnungen pro Tag.
+        threshold = -0.27
+        prev_t = 0
+        prev_alt = _moon_altitude(utc_for_minutes(0), lat_deg, lon_deg)
+        rise = None
+        moonset = None
+
+        for minute in range(10, 1441, 10):
+            cur_alt = _moon_altitude(utc_for_minutes(minute), lat_deg, lon_deg)
+            if rise is None and prev_alt < threshold <= cur_alt:
+                lo, hi = minute - 10, minute
+                for _ in range(8):
+                    mid = (lo + hi) / 2.0
+                    if _moon_altitude(utc_for_minutes(mid), lat_deg, lon_deg) >= threshold:
+                        hi = mid
+                    else:
+                        lo = mid
+                rise = (lo + hi) / 2.0
+            if moonset is None and prev_alt >= threshold > cur_alt:
+                lo, hi = minute - 10, minute
+                for _ in range(8):
+                    mid = (lo + hi) / 2.0
+                    if _moon_altitude(utc_for_minutes(mid), lat_deg, lon_deg) < threshold:
+                        hi = mid
+                    else:
+                        lo = mid
+                moonset = (lo + hi) / 2.0
+            prev_alt = cur_alt
+            prev_t = minute
+            if rise is not None and moonset is not None:
+                break
+
+        def fmt(minutes):
+            if minutes is None:
+                return "na"
+            total = int(round(minutes)) % (24 * 60)
+            return "%02d:%02d" % (total // 60, total % 60)
+
+        result = (fmt(rise), fmt(moonset))
+        _MOON_RISESET_CACHE[key] = result
+        # Cache bewusst klein halten.
+        if len(_MOON_RISESET_CACHE) > 16:
+            _MOON_RISESET_CACHE.pop(next(iter(_MOON_RISESET_CACHE)))
+        return result
+    except Exception:
+        return "na", "na"
 
 __version__ = "1.7.4"
 VERSION = __version__
@@ -5471,6 +5641,17 @@ class sevendays(Screen):
 
         return sunrise, sunset
 
+    def _moon(self, data):
+        """Mondauf/-untergang fuer den aktuellen Ort und den heutigen Tag."""
+        try:
+            lat, lon = getCoordsFromEntry(lockaaleStad)
+            if lat is None or lon is None:
+                return "na", "na"
+            today = datetime.datetime.now().date()
+            return _moon_rise_set_for_date(today, lat, lon)
+        except Exception:
+            return "na", "na"
+
     # ================================================================
     # WIDGET-HELFER
     # ================================================================
@@ -5634,7 +5815,7 @@ class sevendays(Screen):
         if hd:
 
             cfg = {
-                "bigpos": "636,102",
+                "bigpos": "636,68",
                 "bigsize": "150,150",
                 "bigscale": False,
 
@@ -5667,12 +5848,19 @@ class sevendays(Screen):
                 "typesize": "220,86",
                 "typefont": 24,
 
-                "sunpos": "625,362",
-                "sunsize": "200,40",
-                "sunfont": 28,
+                "sunpos": "760,238",
+                "sunsize": "360,40",
+                "sunfont": 26,
 
-                "suniconpos": "650,295",
+                "suniconpos": "630,225",
                 "suniconsize": "120,60",
+
+                "moonpos": "760,303",
+                "moonsize": "360,40",
+                "moonfont": 26,
+
+                "mooniconpos": "630,290",
+                "mooniconsize": "120,60",
 
                 "hourx": 120,
                 "hourstep": 216,
@@ -5684,7 +5872,7 @@ class sevendays(Screen):
         else:
 
             cfg = {
-                "bigpos": "422,76",
+                "bigpos": "422,54",
                 "bigsize": "100,100",
                 "bigscale": True,
 
@@ -5717,12 +5905,19 @@ class sevendays(Screen):
                 "typesize": "138,54",
                 "typefont": 16,
 
-                "sunpos": "416,248",
-                "sunsize": "200,40",
-                "sunfont": 18,
+                "sunpos": "490,167",
+                "sunsize": "270,28",
+                "sunfont": 17,
 
-                "suniconpos": "426,206",
+                "suniconpos": "390,157",
                 "suniconsize": "80,40",
+
+                "moonpos": "490,209",
+                "moonsize": "270,28",
+                "moonfont": 17,
+
+                "mooniconpos": "390,199",
+                "mooniconsize": "80,40",
 
                 "hourx": 80,
                 "hourstep": 144,
@@ -5838,31 +6033,119 @@ class sevendays(Screen):
             color=self.COLOR_DAYTYPE
         )
 
+       
+       
         # ================================================================
-        # SONNENAUF- / UNTERGANG
-        # ================================================================
-
-        xml += self._label_xml(
-            "sunriselab",
-            cfg["sunpos"],
-            cfg["sunsize"],
-            cfg["sunfont"],
-            color=self.COLOR_SUN
-        )
-
-        # ================================================================
-        # SONNEN-ICON
+        # SONNEN- / MONDAUF- UND -UNTERGANG
+        # Nur einmal im oberen Bereich erzeugen (Tag 0).
         # ================================================================
 
-        xml += self._eicon_xml(
-            cfg["suniconpos"],
-            cfg["suniconsize"],
-            "{}/{}/iconhd/sunupdownhd.png".format(
-                base,
-                path
-            ),
-            not hd
-        )
+        if day == 0:
+            # ------------------------------------------------------------
+            # SONNE
+            # ------------------------------------------------------------
+            try:
+                sun_x, sun_y = [int(v) for v in cfg["sunpos"].split(",")]
+                sun_h = cfg["sunsize"].split(",")[1]
+            except Exception:
+                sun_x, sun_y = 760, 238
+                sun_h = "40"
+
+            # Breite eines einzelnen Zeitfeldes
+            sun_field_w = 60
+
+            # Breite des Bindestrich-Feldes
+            sun_gap = 10
+
+            # Sonnenaufgang
+            xml += self._label_xml(
+                "sunriselab",
+                "{},{}".format(sun_x, sun_y),
+                "{},{}".format(sun_field_w, sun_h),
+                cfg["sunfont"],
+                color=self.COLOR_SUNRISE
+            )
+
+            # Bindestrich
+            xml += self._label_xml(
+                "sunsep",
+                "{},{}".format(sun_x + sun_field_w, sun_y),
+                "{},{}".format(sun_gap, sun_h),
+                cfg["sunfont"],
+                color=self.COLOR_SUN
+            )
+
+            # Sonnenuntergang
+            xml += self._label_xml(
+                "sunsetlab",
+                "{},{}".format(sun_x + sun_field_w + sun_gap, sun_y),
+                "{},{}".format(sun_field_w, sun_h),
+                cfg["sunfont"],
+                color=self.COLOR_SUNSET
+            )
+
+            xml += self._eicon_xml(
+                cfg["suniconpos"],
+                cfg["suniconsize"],
+                "{}/{}/iconhd/sunupdownhd.png".format(
+                    base,
+                    path
+                ),
+                not hd
+            )
+
+            # ------------------------------------------------------------
+            # MOND
+            # ------------------------------------------------------------
+            try:
+                moon_x, moon_y = [int(v) for v in cfg["moonpos"].split(",")]
+                moon_h = cfg["moonsize"].split(",")[1]
+            except Exception:
+                moon_x, moon_y = 760, 303
+                moon_h = "40"
+
+            # Breite eines einzelnen Zeitfeldes
+            moon_field_w = 60
+
+            # Breite des Bindestrich-Feldes
+            moon_gap = 10
+
+            # Mondaufgang
+            xml += self._label_xml(
+                "moonriselab",
+                "{},{}".format(moon_x, moon_y),
+                "{},{}".format(moon_field_w, moon_h),
+                cfg["moonfont"],
+                color=self.COLOR_MOONRISE
+            )
+
+            # Bindestrich
+            xml += self._label_xml(
+                "moonsep",
+                "{},{}".format(moon_x + moon_field_w, moon_y),
+                "{},{}".format(moon_gap, moon_h),
+                cfg["moonfont"],
+                color=self.COLOR_SUN
+            )
+
+            # Monduntergang
+            xml += self._label_xml(
+                "moonsetlab",
+                "{},{}".format(moon_x + moon_field_w + moon_gap, moon_y),
+                "{},{}".format(moon_field_w, moon_h),
+                cfg["moonfont"],
+                color=self.COLOR_MOONSET
+            )
+
+            xml += self._eicon_xml(
+                cfg["mooniconpos"],
+                cfg["mooniconsize"],
+                "{}/{}/iconhd/moonupdownhd.png".format(
+                    base,
+                    path
+                ),
+                not hd
+            )
 
         # ================================================================
         # PIXMAPS / LABELS REGISTRIEREN
@@ -5891,6 +6174,14 @@ class sevendays(Screen):
         self._label(
             "weertype2{}".format(day)
         )
+
+        if day == 0:
+            self._label("sunriselab")
+            self._label("sunsetlab")
+            self._label("sunsep")
+            self._label("moonriselab")
+            self._label("moonsetlab")
+            self._label("moonsep")
 
         # ================================================================
         # 8 STUNDEN-ICONS
@@ -6310,7 +6601,7 @@ class sevendays(Screen):
                 {wind}
 
                 <widget name="winddiricon1"
-                    position="1100,350"
+                    position="1210,350"
                     scale="1"
                     size="36,36"
                     zPosition="4"
@@ -6369,7 +6660,7 @@ class sevendays(Screen):
 
                 type=self._label_xml(
                     "bigweathertype1",
-                    "870,298",
+                    "980,298",
                     "480,40",
                     28,
                     color=self.COLOR_WEATHERTYPE
@@ -6377,7 +6668,7 @@ class sevendays(Screen):
 
                 feel=self._label_xml(
                     "GevoelsTemp1",
-                    "870,250",
+                    "980,250",
                     "354,40",
                     28,
                     color=self.COLOR_FEELS
@@ -6385,7 +6676,7 @@ class sevendays(Screen):
 
                 wind=self._label_xml(
                     "winddir1",
-                    "870,346",
+                    "980,346",
                     "330,45",
                     28,
                     color=self.COLOR_WIND
@@ -6409,7 +6700,7 @@ class sevendays(Screen):
             {wind}
 
             <widget name="winddiricon1"
-                position="795,240"
+                position="895,240"
                 size="28,28"
                 zPosition="4"
                 alphatest="blend"
@@ -6467,7 +6758,7 @@ class sevendays(Screen):
 
             type=self._label_xml(
                 "bigweathertype1",
-                "565,208",
+                "665,208",
                 "320,30",
                 18,
                 color=self.COLOR_WEATHERTYPE
@@ -6475,7 +6766,7 @@ class sevendays(Screen):
 
             feel=self._label_xml(
                 "GevoelsTemp1",
-                "565,176",
+                "665,176",
                 "236,30",
                 18,
                 color=self.COLOR_FEELS
@@ -6483,7 +6774,7 @@ class sevendays(Screen):
 
             wind=self._label_xml(
                 "winddir1",
-                "565,240",
+                "665,240",
                 "230,30",
                 18,
                 color=self.COLOR_WIND
@@ -7119,14 +7410,15 @@ class sevendays(Screen):
         # ------------------------------------------------------------
 
         sunrise, sunset = self._sun(data)
+        moonrise, moonset = self._moon(data)
 
-        self._label(
-            "sunriselab",
-            "{} - {}".format(
-                sunrise,
-                sunset
-            )
-        )
+        self._label("sunriselab", sunrise)
+        self._label("sunsetlab", sunset)
+        self._label("sunsep", "-")
+
+        self._label("moonriselab", moonrise)
+        self._label("moonsetlab", moonset)
+        self._label("moonsep", "-")
 
         # ------------------------------------------------------------
         # 7 TAGE
@@ -7215,6 +7507,10 @@ class sevendays(Screen):
             ("COLOR_MINTEMP", "mintemp"),
             ("COLOR_DAYTYPE", "daytype"),
             ("COLOR_SUN", "sun"),
+            ("COLOR_SUNRISE", "sunrise"),
+            ("COLOR_SUNSET", "sunset"),
+            ("COLOR_MOONRISE", "moonrise"),
+            ("COLOR_MOONSET", "moonset"),
             ("COLOR_HOUR", "hour"),
             ("COLOR_HOURTEMP", "hourtemp"),
             ("COLOR_RAIN", "rain"),
@@ -9723,7 +10019,11 @@ class sevendayColorSetup(ConfigListScreen, Screen):
         ("Höchsttemperatur", "maxtemp"),
         ("Tiefsttemperatur", "mintemp"),
         ("Tages-Wettertext", "daytype"),
-        ("Sonnenaufgang / Sonnenuntergang", "sun"),
+        ("Sonnenaufgang", "sunrise"),
+        ("Sonnenuntergang", "sunset"),
+        ("Mondaufgang", "moonrise"),
+        ("Monduntergang", "moonset"),
+        ("Trennzeichen Sonne / Mond", "sun"),
         ("Stunde / Uhrzeit", "hour"),
         ("Stundentemperatur", "hourtemp"),
         ("Regen", "rain"),
