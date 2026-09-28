@@ -592,5 +592,17 @@ msgstr "Die Wetter-Hintergründe konnten nicht heruntergeladen werden."
 msgid "You are already using the latest version (%s)."
 msgstr "Du verwendest bereits die neueste Version (%s)."
 
+msgid "Sunrise"
+msgstr "Sonnenaufgang"
+
+msgid "Sunset"
+msgstr "Sonnenuntergang"
+
+msgid "Moonrise"
+msgstr "Mondaufgang"
+
+msgid "Moonset"
+msgstr "Monduntergang"
+
 
 
