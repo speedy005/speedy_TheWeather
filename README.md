@@ -10,24 +10,38 @@ Das Projekt basiert auf der ursprünglichen Arbeit von **Caught** und wurde von 
 
 ## ✨ Features
 
-| Funktion                   | Beschreibung                                                |
-| -------------------------- | ----------------------------------------------------------- |
-| 🌤️ **Aktuelles Wetter**   | Detaillierte aktuelle Wetterdaten und 7-Tage-Vorhersage     |
-| 🕐 **Stündliche Prognose** | Wetterdaten in 1h-, 2h- oder 3h-Intervallen                 |
-| 🌡️ **Temperaturen**       | Höchst-, Tiefst- und gefühlte Temperatur                    |
-| 💨 **Wind**                | Geschwindigkeit, Richtung und Beaufort-Skala                |
-| 🌧️ **Niederschlag**       | Regenwahrscheinlichkeit und Niederschlagsmenge              |
-| ☀️ **Sonne & UV**          | Sonnenaufgang, Sonnenuntergang und UV-Index                 |
-| 🌙 **Mond**                | Mondphase, Beleuchtung, Mondaufgang und Monduntergang       |
-| 🗺️ **Regenradar**         | Animiertes Radar auf Basis von RainViewer und OpenStreetMap |
-| ⚠️ **Wetterwarnungen**     | Erkennung von Sturm, Starkregen, Hitze und Frost            |
-| 📍 **Multi-Location**      | Beliebig viele Orte speichern und schnell wechseln          |
-| 📺 **TV-Overlay**          | Aktuelle Temperatur optional direkt im laufenden TV-Bild    |
-| 🎨 **Skinner-Support**     | Converter und Renderer für eigene Skins                     |
-| ⚡ **Performance**          | 5-Minuten-Cache und asynchrone Radar-Downloads              |
-| 🐍 **Python**              | Kompatibel mit Python 2 und Python 3                        |
-| 🔄 **Auto-Update**         | Automatische Updateprüfung über GitHub                      |
-| 🛠️ **Installer**          | Integrierter Konsolen-Installer                             |
+| Funktion                   | Beschreibung                                                       |
+| -------------------------- | ------------------------------------------------------------------ |
+| 🌤️ **Aktuelles Wetter**   | Detaillierte aktuelle Wetterdaten und 7-Tage-Vorhersage            |
+| 🕐 **Stündliche Prognose** | Wetterdaten in 1h-, 2h- oder 3h-Intervallen                        |
+| 🌡️ **Temperaturen**       | Höchst-, Tiefst- und gefühlte Temperatur                           |
+| 💨 **Wind**                | Geschwindigkeit, Richtung und Beaufort-Skala                       |
+| 🌧️ **Niederschlag**       | Regenwahrscheinlichkeit und Niederschlagsmenge                     |
+| ☀️ **Sonne & UV**          | Sonnenaufgang, Sonnenuntergang und UV-Index                        |
+| 🌙 **Mond**                | Mondphase, Beleuchtung, Mondaufgang und Monduntergang              |
+| 🎨 **Individuelle Farben** | Farben für Sonnen- und Monddaten direkt im Plugin-Menü einstellbar |
+| 🗺️ **Regenradar**         | Animiertes Radar auf Basis von RainViewer und OpenStreetMap        |
+| ⚠️ **Wetterwarnungen**     | Erkennung von Sturm, Starkregen, Hitze und Frost                   |
+| 📍 **Multi-Location**      | Beliebig viele Orte speichern und schnell wechseln                 |
+| 📺 **TV-Overlay**          | Aktuelle Temperatur optional direkt im laufenden TV-Bild           |
+| 🎨 **Skinner-Support**     | Converter und Renderer für eigene Skins                            |
+| ⚡ **Performance**          | 5-Minuten-Cache und optimierte Radar-Verarbeitung                  |
+| 🐍 **Python**              | Kompatibel mit Python 2 und Python 3                               |
+| 🔄 **Auto-Update**         | Automatische Updateprüfung über GitHub                             |
+| 🛠️ **Installer**          | Integrierter Konsolen-Installer                                    |
+
+### 🌅 Sonnen- & Monddaten
+
+Das Plugin zeigt jetzt direkt im Wetter-Screen:
+
+* 🌅 Sonnenaufgang
+* 🌇 Sonnenuntergang
+* 🌙 Mondaufgang
+* 🌘 Monduntergang
+* 🌕 Mondphase
+* 💡 Mondbeleuchtung
+
+Die Farben für **Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang** können individuell im **Plugin-Menü** eingestellt werden.
 
 ---
 
@@ -73,6 +87,8 @@ Beispiele:
 Day1,TemperatureMax
 Day2,WeatherText
 Day3,MoonPhase
+Day1,MoonRise
+Day1,MoonSet
 ```
 
 ### Parameterübersicht
@@ -126,10 +142,6 @@ Beispiel für einen eigenen Wetter-Screen:
     title="5-Tage Wettervorhersage"
     backgroundColor="#101010"
     flags="wfNoBorder">
-
-    <!-- ========================================================= -->
-    <!-- TAG 1 – HEUTE                                             -->
-    <!-- ========================================================= -->
 
     <widget
         source="session.CurrentService"
@@ -285,173 +297,19 @@ Beispiel für einen eigenen Wetter-Screen:
         <convert type="conv_TheWeather">Day1,Pressure</convert>
     </widget>
 
-    <!-- ========================================================= -->
-    <!-- TAG 2 – MORGEN                                            -->
-    <!-- ========================================================= -->
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,40"
-        size="300,40"
-        font="Regular;30"
-        halign="center"
-        valign="center"
-        foregroundColor="#ffffff"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,DayName</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,85"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        valign="center"
-        foregroundColor="#a0a0a0"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,Date_EU</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="rend_TheWeatherPixmap"
-        position="480,125"
-        size="120,120"
-        alphatest="blend"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,Icon</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,255"
-        size="300,30"
-        font="Regular;22"
-        halign="center"
-        valign="center"
-        foregroundColor="#00aaff"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,WeatherText</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,300"
-        size="300,45"
-        font="Regular;36"
-        halign="center"
-        valign="center"
-        foregroundColor="#ff5555"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,TemperatureMax</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,350"
-        size="300,30"
-        font="Regular;24"
-        halign="center"
-        valign="center"
-        foregroundColor="#55aaff"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,TemperatureMin</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,410"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,WindSpeed_KMH</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,440"
-        size="300,25"
-        font="Regular;18"
-        halign="center"
-        foregroundColor="#a0a0a0"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,WindDirection</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,480"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,RainChance</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,510"
-        size="300,25"
-        font="Regular;18"
-        halign="center"
-        foregroundColor="#a0a0a0"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,RainAmount</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,550"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,SunChance</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,590"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,Humidity</convert>
-    </widget>
-
-    <widget
-        source="session.CurrentService"
-        render="Label"
-        position="390,630"
-        size="300,25"
-        font="Regular;20"
-        halign="center"
-        transparent="1">
-        <convert type="conv_TheWeather">Day2,Pressure</convert>
-    </widget>
-
     <!--
-        TAG 3, TAG 4 und TAG 5 werden nach demselben Schema aufgebaut.
+        TAG 2, TAG 3, TAG 4 und TAG 5 werden nach demselben Schema aufgebaut.
 
         Positionen:
+        Day1 = X 50
+        Day2 = X 390
         Day3 = X 730
         Day4 = X 1070
         Day5 = X 1410
 
         Die jeweiligen Converter werden entsprechend angepasst:
+        Day1,...
+        Day2,...
         Day3,...
         Day4,...
         Day5,...
@@ -464,7 +322,7 @@ Beispiel für einen eigenen Wetter-Screen:
 
 ---
 
-# 🌙 2. InfoBar-Integration inklusive Monddaten
+# 🌙 2. InfoBar-Integration inklusive Sonnen- und Monddaten
 
 Beispiel für eine `InfoBar` mit Wetter-, Sonnen- und Monddaten.
 
@@ -737,6 +595,15 @@ Die Konfigurationsdateien und gespeicherten Favoritenorte befinden sich unter:
 /etc/enigma2/speedy_TheWeather/
 ```
 
+Die Farben für folgende Anzeigen können direkt über das Plugin-Menü angepasst werden:
+
+```text
+Sunrise
+Sunset
+Moonrise
+Moonset
+```
+
 ---
 
 # 📋 Anforderungen
@@ -775,7 +642,7 @@ Alle Rechte vorbehalten.
 
 **speedy_TheWeather** is a feature-rich weather plugin for **Enigma2 receivers**.
 
-It provides detailed current weather information, multi-day forecasts, hourly weather data, moon phase calculations, and an integrated animated rain radar.
+It provides detailed current weather information, multi-day forecasts, hourly weather data, sun and moon information, and an integrated animated rain radar.
 
 The plugin is based on the original work by **Caught** and has been further developed, modernized, and optimized by **speedy005 / speedy006**.
 
@@ -783,23 +650,39 @@ The plugin is based on the original work by **Caught** and has been further deve
 
 ## ✨ Features
 
-| Feature                 | Description                                    |
-| ----------------------- | ---------------------------------------------- |
-| 🌤️ **Current Weather** | Detailed current weather information           |
-| 📅 **Forecast**         | 7-day weather forecast                         |
-| 🕐 **Hourly Forecast**  | 1h, 2h or 3h intervals                         |
-| 🌡️ **Temperature**     | High, low and feels-like temperature           |
-| 💨 **Wind**             | Speed, direction and Beaufort scale            |
-| 🌧️ **Precipitation**   | Rain probability and precipitation amount      |
-| ☀️ **Sun & UV**         | Sunrise, sunset and UV index                   |
-| 🌙 **Moon Data**        | Moon phase, illumination, moonrise and moonset |
-| 🗺️ **Rain Radar**      | Animated RainViewer radar with OpenStreetMap   |
-| ⚠️ **Weather Alerts**   | Severe weather detection                       |
-| 📍 **Multi-Location**   | Multiple saved locations                       |
-| 📺 **TV Overlay**       | Optional temperature overlay                   |
-| 🎨 **Skin Support**     | Custom converter and renderer                  |
-| ⚡ **Caching**           | 5-minute weather cache                         |
-| 🔄 **Auto Update**      | GitHub-based update system                     |
+| Feature                 | Description                                                 |
+| ----------------------- | ----------------------------------------------------------- |
+| 🌤️ **Current Weather** | Detailed current weather information                        |
+| 📅 **Forecast**         | 7-day weather forecast                                      |
+| 🕐 **Hourly Forecast**  | 1h, 2h or 3h intervals                                      |
+| 🌡️ **Temperature**     | High, low and feels-like temperature                        |
+| 💨 **Wind**             | Speed, direction and Beaufort scale                         |
+| 🌧️ **Precipitation**   | Rain probability and precipitation amount                   |
+| ☀️ **Sun & UV**         | Sunrise, sunset and UV index                                |
+| 🌙 **Moon Data**        | Moon phase, illumination, moonrise and moonset              |
+| 🎨 **Custom Colors**    | Individual colors for sunrise, sunset, moonrise and moonset |
+| 🗺️ **Rain Radar**      | Animated RainViewer radar with OpenStreetMap                |
+| ⚠️ **Weather Alerts**   | Severe weather detection                                    |
+| 📍 **Multi-Location**   | Multiple saved locations                                    |
+| 📺 **TV Overlay**       | Optional temperature overlay                                |
+| 🎨 **Skin Support**     | Custom converter and renderer                               |
+| ⚡ **Performance**       | 5-minute cache and optimized radar processing               |
+| 🐍 **Python**           | Python 2 and Python 3 compatible                            |
+| 🔄 **Auto Update**      | GitHub-based update system                                  |
+| 🛠️ **Installer**       | Integrated console installer                                |
+
+### 🌅 Sun & Moon Information
+
+The plugin now displays:
+
+* 🌅 Sunrise
+* 🌇 Sunset
+* 🌙 Moonrise
+* 🌘 Moonset
+* 🌕 Moon phase
+* 💡 Moon illumination
+
+The colors for **sunrise, sunset, moonrise and moonset** can be individually configured directly in the **plugin menu**.
 
 ---
 
@@ -811,72 +694,114 @@ Run the following commands via SSH/Telnet:
 wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh
 ```
 
+> The installer handles both installation and updates of the plugin.
+
 ---
 
-## 🔧 Converter Parameters
+# 🎨 Converter & Skin Integration
 
-Use the converter with a day prefix:
+The plugin provides the converter:
+
+```text
+conv_TheWeather
+```
+
+and the renderer:
+
+```text
+rend_TheWeatherPixmap
+```
+
+These can be used to display weather information directly in **InfoBars**, **SecondInfoBars** and **custom Enigma2 skin screens**.
+
+---
+
+## 🔧 Available Converter Parameters
+
+Parameters can be used with a day prefix.
+
+Examples:
 
 ```text
 Day1,TemperatureMax
 Day2,WeatherText
 Day3,MoonPhase
+Day1,MoonRise
+Day1,MoonSet
 ```
 
-| Category    | Converter                                     | Description                |
-| ----------- | --------------------------------------------- | -------------------------- |
-| General     | `City`                                        | Selected location          |
-| Date        | `DayName`                                     | Day of the week            |
-| Date        | `Date`, `Date_EU`, `Date_EU_Short`, `Date_US` | Formatted date             |
-| Temperature | `TemperatureMax`                              | Maximum temperature        |
-| Temperature | `TemperatureMin`                              | Minimum temperature        |
-| Wind        | `WindSpeed_KMH`                               | Wind speed in km/h         |
-| Wind        | `WindSpeed_MS`                                | Wind speed in m/s          |
-| Wind        | `WindSpeed_BFT`                               | Beaufort scale             |
-| Wind        | `WindSpeed_MPH`                               | Wind speed in mph          |
-| Wind        | `WindDirection`                               | Wind direction             |
-| Wind        | `WindDirectionDegree`                         | Direction in degrees       |
-| Rain        | `RainChance`                                  | Rain probability (%)       |
-| Rain        | `RainAmount`                                  | Precipitation amount (mm)  |
-| Sun         | `SunChance`                                   | Sunshine probability       |
-| Sun         | `Sunrise`                                     | Sunrise time               |
-| Sun         | `Sunset`                                      | Sunset time                |
-| UV          | `UVIndex`                                     | UV index                   |
-| Air         | `Humidity`                                    | Relative humidity (%)      |
-| Air         | `Pressure`                                    | Atmospheric pressure (hPa) |
-| Moon        | `MoonPhase`                                   | Calculated moon phase      |
-| Moon        | `MoonIllumination`                            | Moon illumination (%)      |
-| Moon        | `MoonRise`                                    | Moonrise                   |
-| Moon        | `MoonSet`                                     | Moonset                    |
-| Graphics    | `Icon`                                        | Weather icon code          |
-| Text        | `WeatherText`                                 | Weather description        |
+| Category    | Converter             | Description                |
+| ----------- | --------------------- | -------------------------- |
+| General     | `City`                | Selected location          |
+| Date        | `DayName`             | Day of the week            |
+| Date        | `Date`                | Date                       |
+| Date        | `Date_EU`             | European date format       |
+| Date        | `Date_EU_Short`       | Short European date        |
+| Date        | `Date_US`             | US date format             |
+| Temperature | `TemperatureMax`      | Maximum temperature        |
+| Temperature | `TemperatureMin`      | Minimum temperature        |
+| Wind        | `WindSpeed_KMH`       | Wind speed in km/h         |
+| Wind        | `WindSpeed_MS`        | Wind speed in m/s          |
+| Wind        | `WindSpeed_BFT`       | Beaufort scale             |
+| Wind        | `WindSpeed_MPH`       | Wind speed in mph          |
+| Wind        | `WindDirection`       | Wind direction             |
+| Wind        | `WindDirectionDegree` | Direction in degrees       |
+| Rain        | `RainChance`          | Rain probability (%)       |
+| Rain        | `RainAmount`          | Precipitation amount (mm)  |
+| Sun         | `SunChance`           | Sunshine probability       |
+| Sun         | `Sunrise`             | Sunrise time               |
+| Sun         | `Sunset`              | Sunset time                |
+| UV          | `UVIndex`             | UV index                   |
+| Air         | `Humidity`            | Relative humidity (%)      |
+| Air         | `Pressure`            | Atmospheric pressure (hPa) |
+| Moon        | `MoonPhase`           | Calculated moon phase      |
+| Moon        | `MoonIllumination`    | Moon illumination (%)      |
+| Moon        | `MoonRise`            | Moonrise                   |
+| Moon        | `MoonSet`             | Moonset                    |
+| Graphics    | `Icon`                | Weather icon code          |
+| Text        | `WeatherText`         | Weather description        |
 
 ---
 
-## ⚙️ Configuration Path
+# ⚙️ Configuration Path
 
 ```text
 /etc/enigma2/speedy_TheWeather/
 ```
 
+The following display colors can be customized directly from the plugin menu:
+
+```text
+Sunrise
+Sunset
+Moonrise
+Moonset
+```
+
 ---
 
-## 📋 Requirements
+# 📋 Requirements
 
 * Enigma2-based receiver
 * OpenATV, OpenPLi, VTi or similar image
 * Active internet connection
 * Python 2 or Python 3
+* Sufficient free storage space for the plugin and weather data
 
 ---
 
-## 👨‍💻 Credits & License
+# 👨‍💻 Credits & License
 
-**Original Author:** Caught
+**Original Author**
 
-**Modifications & Enhancements:** speedy005 / speedy006
+* Caught
+
+**Development & Enhancements**
+
+* speedy005
+* speedy006
 
 ```text
 Copyright © Caught / speedy005
 All rights reserved.
-```
+
