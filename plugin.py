@@ -9693,7 +9693,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # MANUAL UPDATE CHECK
     # ========================================================
 
-
     def checkUpdate(self):
 
         global _overlaySession
