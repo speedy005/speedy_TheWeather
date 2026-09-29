@@ -101,11 +101,11 @@ OAWeather = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('OAWeather'))
 # 1. Konfigurations-Variablen definieren
 config.plugins.speedy_TheWeather = ConfigSubsection()
 config.plugins.speedy_TheWeather.windunit = ConfigSelection(
-    default="kmh", 
+    default="kmh",
     choices=[("kmh", _("km/h")), ("ms", _("m/s"))]
 )
 config.plugins.speedy_TheWeather.dateformat = ConfigSelection(
-    default="slash", 
+    default="slash",
     choices=[("slash", _("DD/MM/YYYY")), ("dot", _("DD.MM.YYYY"))]
 )
 config.plugins.speedy_TheWeather.performance = ConfigSelection(
@@ -125,7 +125,6 @@ config.plugins.speedy_TheWeather.autoBackgrounds = ConfigYesNo(
 config.plugins.speedy_TheWeather.holidayBackgrounds = ConfigYesNo(
     default=True
 )
-
 # ---------------------------------------------------------------------------
 # SevenDay Farbpalette
 # ---------------------------------------------------------------------------
@@ -224,7 +223,7 @@ for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
 del _sd_color_name, _sd_color_default
 
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
-    default="7", 
+    default="7",
     choices=[
         ("5", "5"),
         ("6", "6"),
@@ -501,6 +500,7 @@ AUTO_BG_ZIP_FILE = (
     "/tmp/backgrounds_auto.zip"
 )
 
+
 # ============================================================
 # AUTO WEATHER BACKGROUNDS - PATHS
 # ============================================================
@@ -542,6 +542,7 @@ _AUTO_BG_ALIASES = {
     "easter": ("easter", "ostern"),
 }
 _AUTO_BG_FILE_CACHE = {}
+
 
 # ============================================================
 # HOLIDAY BACKGROUNDS
@@ -4856,7 +4857,7 @@ def _overlayCheckVisibility():
                 if cd is not None and cd is not InfoBar.instance:
                     systemMenuOpen = True
         except Exception as e:
-            print("[speedy_TheWeather] systemMenuOpen check fout:", e)   
+            print("[speedy_TheWeather] systemMenuOpen check fout:", e)
 
         if _overlayEnabled and (topIsInfoscreen or (liveTv and not anyPluginScreenOpen and not systemMenuOpen)):
             _overlayScreen.show()
@@ -5235,7 +5236,7 @@ def winddirtext(dirtext):
     return text
 
 def kmh_to_beaufort(kmh):
-    
+
     try:
         kmh = float(kmh)
     except (TypeError, ValueError):
@@ -5274,7 +5275,7 @@ def windspeed_with_beaufort(kmh):
     return "%s (Bft %s)" % (speed, bft)
 
 def localWeatherAlert(dayData):
-    
+
     if not dayData:
         return "", ""
 
@@ -5292,7 +5293,7 @@ def localWeatherAlert(dayData):
         feeltemp = 0
 
     bft = kmh_to_beaufort(windkmh)
-    kandidaten = []  
+    kandidaten = []
 
     # Wind: from Bft 7 (near gale)
     if bft is not None and bft >= 9:
@@ -5375,7 +5376,7 @@ class sevendays(Screen):
     COLOR_CLOCK       = "#00ff0000"   # Weiß
     COLOR_DATE        = "#0000ff00"   # Weiß
     # ------------------------------------------------
-    
+
     # ------------------------------------------------
     # colors samples
     # ------------------------------------------------
@@ -5436,7 +5437,7 @@ class sevendays(Screen):
     #COLOR_48 = "#ffc0c0c0"  # Hellgrau
     #COLOR_49 = "#ff404040"  # Dunkelgrau
     #COLOR_50 = "#ffe0e0e0"  # Sehr hellgrau
-    
+
     # ================================================================
     # COLOR ASSIGNMENT
     # ================================================================
@@ -5463,7 +5464,7 @@ class sevendays(Screen):
     #
     # COLOR_CLOCK       → Clock
     # COLOR_DATE        → Date
-    
+
     # ================================================================
     # FARBZUORDNUNG
     # ================================================================
@@ -5598,7 +5599,7 @@ class sevendays(Screen):
         self[name] = StaticText()
         self[name].text = text
 
-    
+
     def _label_xml(
             self,
             source,
@@ -5777,7 +5778,7 @@ class sevendays(Screen):
                 ),
                 "minsize": "110,36",
                 "minfont": 28,
-  
+
                 "typepos": "{},617".format(
                     99 + 248 * day
                 ),
@@ -5969,8 +5970,8 @@ class sevendays(Screen):
             color=self.COLOR_DAYTYPE
         )
 
-       
-       
+
+
         # ================================================================
         # SONNEN- / MONDAUF- UND -UNTERGANG
         # Nur einmal im oberen Bereich erzeugen (Tag 0).
@@ -6773,7 +6774,11 @@ class sevendays(Screen):
 
             alert_color=self.COLOR_ALERT
         )
-        
+
+
+    # ================================================================
+    # HD SKIN
+    # ================================================================
 
     # ================================================================
     # HD SKIN
@@ -7038,7 +7043,7 @@ class sevendays(Screen):
             )
 
     # ================================================================
-    # SKIN   
+    # SKIN
     # ================================================================
 
     def _build_skin(
@@ -8365,7 +8370,7 @@ class sevendays(Screen):
     def bgPictureLoaded(self, picInfo=None):
         if not hasattr(self, 'picload') or self.picload is None:
             return
-        
+
         # Prüft ob das Widget und die C++ Instanz existieren
         if "bgpic" not in self or self["bgpic"] is None or self["bgpic"].instance is None:
             return
@@ -8415,21 +8420,21 @@ class sevendays(Screen):
                 ),
                 MessageBox.TYPE_INFO
             )
-    
+
     #Temporary button for the twolocations
     def openTwoLocations(self):
         self.session.open(twolocations)
 
     def openSetup(self):
         self.session.openWithCallback(self.setupClosed, speedy_TheWeatherSetup)
-    
+
     def setupClosed(self, changed=False):
         if changed:
             self.close()
             self.session.open(sevendays)
-    
+
     def backgroundPickerCallback(self, changed=None):
-        
+
         if changed:
             self.loadBackground()
 
@@ -8499,7 +8504,7 @@ class fourteen(Screen):
                     maxlowertemp = thatdaymin
             if maxlowertemp > sz_h:
                 maxlowertempmover = maxlowertemp- sz_h
-            
+
             for day in range(0, len(dataDagen)):
                 dagenbefore = dataDagen[day]
                 tempdiff = 0
@@ -8630,7 +8635,7 @@ class fourteen(Screen):
                 if yposline < maxheightshift:
                     maxheightshift = yposline
             maxheightshift = 467 - maxheightshift
-            
+
             maxlowertemp = 0
             maxlowertempmover = 0
             for day in range(0, len(dataDagen)):
@@ -8659,16 +8664,16 @@ class fourteen(Screen):
                 if tempdiffcold > 0:
                     lineheightcold = tempdiffcold * 10
                 yposlinecold = (800-(curtemp*10)) - lineheightcold
-                yposlinecold = yposlinecold + maxheightshift           
+                yposlinecold = yposlinecold + maxheightshift
                 thatdaymin = (yposlinecold + 10) + lineheightcold + 36  # take 40 if hight of the linetempmin-label is too low (SD)
                 if thatdaymin > maxlowertemp:
                     maxlowertemp = thatdaymin
             if maxlowertemp > sz_h:
                 maxlowertempmover = maxlowertemp- sz_h
-            
-            
-            
-            
+
+
+
+
             for day in range(0, len(dataDagen)):
                 dagenbefore = dataDagen[day]
                 tempdiff = 0
@@ -8837,6 +8842,7 @@ class CitySearchKeyBoard(VirtualKeyBoard):
         self._suggestTimerConn = safeTimerCallback(self.suggestTimer, self.checkTextChanged)
         self.suggestTimer.start(400, False)
 
+
     def processSelect(self):
         VirtualKeyBoard.processSelect(self)
 
@@ -8939,10 +8945,10 @@ class localcityscreen(Screen):
         self["key_yellow"] = Label(_("Location -"))
         self["key_blue"] = Label(_("Settings"))
         self["favor"] = Label(_("Favorite Locations"))
-        
+
         self.helpInfoDefault = _("Select city and:") + "\n" + _("- Press Ok for Weather info") + "\n" + _("- Press Menu for RainRadar")
         self["helpinfo"] = Label(self.helpInfoDefault)
-        
+
         self["plaatsn"] = Label(_("Location:"))
         self.radarLoadTimer = eTimer()
         self._radarLoadTimerConn = safeTimerCallback(self.radarLoadTimer, self._openRadarDeferred)
@@ -9687,7 +9693,8 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # MANUAL UPDATE CHECK
     # ========================================================
 
-     def checkUpdate(self):
+
+    def checkUpdate(self):
 
         global _overlaySession
         global _updatePollTimer
@@ -9952,7 +9959,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # CLEANUP
     # ========================================================
 
-    
+
     def __del__(self):
 
         try:
@@ -10168,7 +10175,7 @@ class CitySuggestListScreen(Screen):
 class infoscreen(Screen):
     def __init__(self, session):
         global _overlayScreen, _overlayEnabled
-        
+
         # Dynamisches Datumsformat ermitteln
         try:
             if config.plugins.speedy_TheWeather.dateformat.value == "dot":
@@ -10272,7 +10279,7 @@ class infoscreen(Screen):
             pass
 
         Screen.close(self, *args)
-    
+
     def _onCloseOverlay(self):
         global _overlayInfoscreenOpen
         _overlayInfoscreenOpen = False
@@ -10408,7 +10415,7 @@ class CityPickerScreen(Screen):
         self.close(None)
 
 class twolocations(Screen):
-    
+
     COMPARE_CFG = CFG_DIR + "/speedy_TheWeather_compare.cfg"
 
     def __init__(self, session):
@@ -10527,14 +10534,14 @@ class twolocations(Screen):
         self.iconFixTimer.start(300, True)
 
     def _setText(self, key, value):
-        
+
         try:
             self[key].setText("" if value is None else str(value))
         except Exception as e:
             print("twolocations _setText fout op", key, ":", e)
 
     def _fillLocation(self, data, naam, prefix):
-        
+
         try:
             dag = data["days"][0]
         except Exception:
@@ -10634,7 +10641,7 @@ class twolocations(Screen):
             pass
 
     def reloadIcons(self):
-        
+
         self.fillLoc1()
         if self.compareCity:
             self.fillLoc2(self.compareCity)
@@ -10926,7 +10933,7 @@ def fetchRadarTest(lat, lon, zoom=7, outdir="/tmp"):
     req = urllib2.Request("https://api.rainviewer.com/public/weather-maps.json", data=None, headers=headers)
     handler = urllib2.urlopen(req, timeout=10)
     meta = json.loads(handler.read())
-    lastFrame = meta["radar"]["past"][-1]["path"] 
+    lastFrame = meta["radar"]["past"][-1]["path"]
 
     osmUrl = "https://tile.openstreetmap.org/%s/%s/%s.png" % (zoom, xtile, ytile)
     req = urllib2.Request(osmUrl, data=None, headers=headers)
@@ -10986,6 +10993,7 @@ def _poll_startup_weather():
             session.open(localcityscreen)
         except Exception:
             pass
+
 
 def main(session, **kwargs):
     # Updateprüfung bleibt im Hintergrund.
@@ -13396,6 +13404,7 @@ class RadarScreen(Screen):
                 )
             except Exception:
                 pass
+
 
 # ====================================================================
 # AUTOSTART
