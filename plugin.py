@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.5
+# v.1.7.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -280,7 +280,6 @@ def getCoordsFromEntry(value):
             return None, None
     return None, None
 
-
 # -----------------------------------------------------------------------------
 # MONDAUF- / MONDUNTERGANG
 # -----------------------------------------------------------------------------
@@ -289,11 +288,9 @@ def getCoordsFromEntry(value):
 # Ort/Tag gecacht.
 _MOON_RISESET_CACHE = {}
 
-
 def _moon_julian_day(dt):
     """Julianischer Tag fuer eine UTC-Datetime."""
     return (dt - datetime.datetime(2000, 1, 1, 12, 0, 0)).total_seconds() / 86400.0 + 2451545.0
-
 
 def _moon_position(jd):
     """Niedrigaufloesende geozentrische Mondposition (Grad)."""
@@ -351,7 +348,6 @@ def _moon_position(jd):
 
     return lon, lat, r
 
-
 def _moon_altitude(dt_utc, lat_deg, lon_deg):
     """Mondhoehe in Grad fuer eine UTC-Zeit."""
     jd = _moon_julian_day(dt_utc)
@@ -376,7 +372,6 @@ def _moon_altitude(dt_utc, lat_deg, lon_deg):
     sin_alt = (math.sin(math.radians(lat_deg)) * math.sin(dec)
                + math.cos(math.radians(lat_deg)) * math.cos(dec) * math.cos(ha))
     return math.degrees(math.asin(max(-1.0, min(1.0, sin_alt))))
-
 
 def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     """Liefert lokale Mondauf-/untergangszeit als HH:MM oder 'na'."""
@@ -446,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.5"
+__version__ = "1.7.6"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -462,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.5'
+version = '1.7.6'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -470,7 +465,6 @@ version = '1.7.5'
 
 backgroundAutoWeather = True
 holidayBackgroundsEnabled = True
-
 
 # ============================================================
 # GITHUB UPDATE / DOWNLOAD
@@ -610,9 +604,6 @@ _updateInfo = None
 
 # Enigma2 Console-Referenz während der Installation
 _updateConsole = None
-
-
-
 
 import os
 import time
@@ -1173,8 +1164,6 @@ def ensureAutoBackgrounds():
 
         return False
 
-
-
 def findAutoBgFile(category):
     """Return the first valid background for *category*, with a small path cache."""
     if not category:
@@ -1651,8 +1640,6 @@ def getAutoWeatherBackground():
 
     return defaultBg
 
-
-
 # ============================================================================
 # VERSION COMPARISON
 # ============================================================================
@@ -1707,7 +1694,6 @@ def _version_tuple(value):
 
         return (0,)
 
-
 # ============================================================================
 # CHECK REMOTE VERSION
 # ============================================================================
@@ -1750,12 +1736,9 @@ def _update_is_newer(remote_version):
 
         return False
 
-
 # ============================================================================
 # UPDATE DOWNLOAD
 # ============================================================================
-
-
 
 def _update_download(url, destination, timeout=None):
     """
@@ -1986,15 +1969,9 @@ def _update_download(url, destination, timeout=None):
 
         return False
 
-
-
-
-
-
 # ============================================================================
 # EXTRACT PLUGIN VERSION
 # ============================================================================
-
 
 def _update_extract_plugin_version(source):
 
@@ -2084,9 +2061,6 @@ def _update_extract_plugin_version(source):
 
     return ""
 
-
-
-
 # ============================================================================
 # EXTRACT INSTALLER INFORMATION
 # ============================================================================
@@ -2148,7 +2122,6 @@ def _update_extract_installer_info(source):
 
     return result
 
-
 # ============================================================================
 # CHANGELOG TEXT
 # ============================================================================
@@ -2187,14 +2160,10 @@ def _update_changes_text(changes):
         "No changes available."
     )
 
-
 # ============================================================================
 # UPDATE CHECK WORKER
 # ============================================================================
-
-
 UPDATE_DEBUG_LOG = "/tmp/speedy_update_debug.log"
-
 
 def _update_debug(message):
 
@@ -2224,7 +2193,6 @@ def _update_debug(message):
     except Exception:
 
         pass
-
 
 def _update_check_worker():
 
@@ -3130,18 +3098,9 @@ def _update_check_worker():
             "=================================================="
         )
 
-
-
-
-
-
-
-
 # ============================================================================
 # UPDATE POLL
 # ============================================================================
-
-
 
 def _update_poll():
 
@@ -3550,11 +3509,6 @@ def _update_poll():
                 % e
             )
 
-
-
-
-
-
 # ============================================================================
 # START UPDATE WORKER
 # ============================================================================
@@ -3633,7 +3587,6 @@ def _update_begin_worker():
             % e
         )
 
-
 # ============================================================================
 # START UPDATE CHECK
 # ============================================================================
@@ -3693,9 +3646,6 @@ def _update_start_check():
             "Could not start update timer: %s"
             % e
         )
-
-
-
 
 # ============================================================================
 # UPDATE AVAILABLE MESSAGE
@@ -3823,7 +3773,6 @@ def _update_show_message(info):
             % e
         )
 
-
 # ============================================================================
 # UPDATE INSTALL CONFIRMATION
 # ============================================================================
@@ -3832,7 +3781,6 @@ def _update_install_callback(answer):
 
     if answer:
         _update_install()
-
 
 # ============================================================================
 # UPDATE INSTALLING MESSAGE
@@ -3862,13 +3810,11 @@ def _update_show_installing():
             % e
         )
 
-
 # ============================================================================
 # UPDATE INSTALL LOG
 # ============================================================================
 
 _UPDATE_INSTALL_LOG = "/tmp/speedy_update_install.log"
-
 
 def _update_install_log(message):
     """Lightweight shared update-install logger; never breaks the update flow."""
@@ -3881,7 +3827,6 @@ def _update_install_log(message):
         print("[speedy_TheWeather] %s" % message)
     except Exception:
         pass
-
 
 # ============================================================================
 # UPDATE INSTALL
@@ -4428,7 +4373,6 @@ def _update_install():
 
             pass
 
-
 # ============================================================================
 # UPDATE FINISHED
 # ============================================================================
@@ -4676,11 +4620,6 @@ def update_finished():
             % e
         )
 
-
-
-
-
-
 # ============================================================================
 # SUCCESSFUL UPDATE
 # ============================================================================
@@ -4768,7 +4707,6 @@ def _update_install_finished():
             % e
         )
 
-
 # ============================================================================
 # UPDATE INSTALL ERROR
 # ============================================================================
@@ -4842,8 +4780,6 @@ def _update_install_error():
             "Could not show update error: %s"
             % e
         )
-
-
 
 # WICHTIG: Domain an den Dateinamen 'speedy_TheWeather.mo' anpassen!
 # Alle festen Update-Dialogtexte sind mit _() markiert und damit über
@@ -5805,7 +5741,6 @@ class sevendays(Screen):
     # TAGESBEREICH
     # ================================================================
 
-    
     def _build_day_section(self, day, data, hd=True):
 
         icon = self._icon(data)
@@ -6052,7 +5987,9 @@ class sevendays(Screen):
                 sun_h = "40"
 
             # Breite eines einzelnen Zeitfeldes
-            sun_field_w = 60
+            # Etwas breiter, damit HH:MM auch bei groesserer Schrift
+            # nicht rechts abgeschnitten wird.
+            sun_field_w = 75 if hd else 68
 
             # Breite des Bindestrich-Feldes
             sun_gap = 10
@@ -6105,7 +6042,9 @@ class sevendays(Screen):
                 moon_h = "40"
 
             # Breite eines einzelnen Zeitfeldes
-            moon_field_w = 60
+            # Etwas breiter, damit HH:MM auch bei groesserer Schrift
+            # nicht rechts abgeschnitten wird.
+            moon_field_w = 75 if hd else 68
 
             # Breite des Bindestrich-Feldes
             moon_gap = 10
@@ -6228,7 +6167,6 @@ class sevendays(Screen):
             self._pixmap(name)
 
         return xml
-
 
     # ================================================================
     # STUNDENBEREICH
@@ -9903,11 +9841,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
                 pass
 
-
-
-   
-    
-
     # ========================================================
     # TWO LOCATIONS
     # ========================================================
@@ -10095,7 +10028,6 @@ class sevendayColorSetup(ConfigListScreen, Screen):
         for x in self["config"].list:
             x[1].cancel()
         self.close()
-
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
@@ -13512,7 +13444,6 @@ def autostart(
             ignore_errors=True
         )
 
-
 # ====================================================================
 # MENU
 # ====================================================================
@@ -13534,7 +13465,6 @@ def menu(
         ]
 
     return []
-
 
 # ====================================================================
 # PLUGIN DESCRIPTOR
