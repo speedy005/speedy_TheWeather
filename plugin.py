@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.6
+# v.1.7.7
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -125,6 +125,7 @@ config.plugins.speedy_TheWeather.autoBackgrounds = ConfigYesNo(
 config.plugins.speedy_TheWeather.holidayBackgrounds = ConfigYesNo(
     default=True
 )
+
 # ---------------------------------------------------------------------------
 # SevenDay Farbpalette
 # ---------------------------------------------------------------------------
@@ -441,7 +442,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.6"
+__version__ = "1.7.7"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +458,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.6'
+version = '1.7.7'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -500,7 +501,6 @@ AUTO_BG_ZIP_FILE = (
     "/tmp/backgrounds_auto.zip"
 )
 
-
 # ============================================================
 # AUTO WEATHER BACKGROUNDS - PATHS
 # ============================================================
@@ -542,7 +542,6 @@ _AUTO_BG_ALIASES = {
     "easter": ("easter", "ostern"),
 }
 _AUTO_BG_FILE_CACHE = {}
-
 
 # ============================================================
 # HOLIDAY BACKGROUNDS
@@ -5608,12 +5607,13 @@ class sevendays(Screen):
             font,
             halign="left",
             valign="center",
-            color="#00ffffff"
+            color="#00ffffff",
+            weight="Regular"
         ):
         return (
             '<widget render="Label" source="{0}" '
             'position="{1}" size="{2}" zPosition="3" '
-            'valign="{3}" halign="{4}" font="Regular;{5}" '
+            'valign="{3}" halign="{4}" font="{7};{5}" '
             'foregroundColor="{6}" '
             'backgroundColor="#00202020" transparent="1" '
             'shadowColor="black" shadowOffset="-2,-2"/>'
@@ -5624,7 +5624,8 @@ class sevendays(Screen):
             valign,
             halign,
             font,
-            color
+            color,
+            weight
         )
 
 
@@ -5785,14 +5786,14 @@ class sevendays(Screen):
 
                 "sunpos": "760,238",
                 "sunsize": "360,40",
-                "sunfont": 26,
+                "sunfont": 30,
 
                 "suniconpos": "630,225",
                 "suniconsize": "120,60",
 
                 "moonpos": "760,303",
                 "moonsize": "360,40",
-                "moonfont": 26,
+                "moonfont": 30,
 
                 "mooniconpos": "630,290",
                 "mooniconsize": "120,60",
@@ -5842,14 +5843,14 @@ class sevendays(Screen):
 
                 "sunpos": "490,167",
                 "sunsize": "270,28",
-                "sunfont": 17,
+                "sunfont": 25,
 
                 "suniconpos": "390,157",
                 "suniconsize": "80,40",
 
                 "moonpos": "490,209",
                 "moonsize": "270,28",
-                "moonfont": 17,
+                "moonfont": 30,
 
                 "mooniconpos": "390,199",
                 "mooniconsize": "80,40",
@@ -5976,6 +5977,7 @@ class sevendays(Screen):
         # ================================================================
 
         if day == 0:
+
             # ------------------------------------------------------------
             # SONNE
             # ------------------------------------------------------------
@@ -5994,7 +5996,9 @@ class sevendays(Screen):
             # Breite des Bindestrich-Feldes
             sun_gap = 10
 
+            # ------------------------------------------------------------
             # Sonnenaufgang
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "sunriselab",
                 "{},{}".format(sun_x, sun_y),
@@ -6003,24 +6007,45 @@ class sevendays(Screen):
                 color=self.COLOR_SUNRISE
             )
 
+            # ------------------------------------------------------------
             # Bindestrich
+            # 4 Pixel nach links verschoben und fett
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "sunsep",
-                "{},{}".format(sun_x + sun_field_w, sun_y),
-                "{},{}".format(sun_gap, sun_h),
+                "{},{}".format(
+                    sun_x + sun_field_w - 4,
+                    sun_y
+                ),
+                "{},{}".format(
+                    sun_gap,
+                    sun_h
+                ),
                 cfg["sunfont"],
-                color=self.COLOR_SUN
+                color=self.COLOR_SUN,
+                weight="Bold"
             )
 
+            # ------------------------------------------------------------
             # Sonnenuntergang
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "sunsetlab",
-                "{},{}".format(sun_x + sun_field_w + sun_gap, sun_y),
-                "{},{}".format(sun_field_w, sun_h),
+                "{},{}".format(
+                    sun_x + sun_field_w + sun_gap,
+                    sun_y
+                ),
+                "{},{}".format(
+                    sun_field_w,
+                    sun_h
+                ),
                 cfg["sunfont"],
                 color=self.COLOR_SUNSET
             )
 
+            # ------------------------------------------------------------
+            # Sonnen-Icon
+            # ------------------------------------------------------------
             xml += self._eicon_xml(
                 cfg["suniconpos"],
                 cfg["suniconsize"],
@@ -6042,40 +6067,68 @@ class sevendays(Screen):
                 moon_h = "40"
 
             # Breite eines einzelnen Zeitfeldes
-            # Etwas breiter, damit HH:MM auch bei groesserer Schrift
-            # nicht rechts abgeschnitten wird.
+            # Identisch zur Sonne.
             moon_field_w = 75 if hd else 68
 
             # Breite des Bindestrich-Feldes
             moon_gap = 10
 
+            # ------------------------------------------------------------
             # Mondaufgang
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "moonriselab",
-                "{},{}".format(moon_x, moon_y),
-                "{},{}".format(moon_field_w, moon_h),
+                "{},{}".format(
+                    moon_x,
+                    moon_y
+                ),
+                "{},{}".format(
+                    moon_field_w,
+                    moon_h
+                ),
                 cfg["moonfont"],
                 color=self.COLOR_MOONRISE
             )
 
+            # ------------------------------------------------------------
             # Bindestrich
+            # 4 Pixel nach links verschoben und fett
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "moonsep",
-                "{},{}".format(moon_x + moon_field_w, moon_y),
-                "{},{}".format(moon_gap, moon_h),
+                "{},{}".format(
+                    moon_x + moon_field_w - 8,
+                    moon_y
+                ),
+                "{},{}".format(
+                    moon_gap,
+                    moon_h
+                ),
                 cfg["moonfont"],
-                color=self.COLOR_SUN
+                color=self.COLOR_SUN,
+                weight="Bold"
             )
 
+            # ------------------------------------------------------------
             # Monduntergang
+            # ------------------------------------------------------------
             xml += self._label_xml(
                 "moonsetlab",
-                "{},{}".format(moon_x + moon_field_w + moon_gap, moon_y),
-                "{},{}".format(moon_field_w, moon_h),
+                "{},{}".format(
+                    moon_x + moon_field_w + moon_gap,
+                    moon_y
+                ),
+                "{},{}".format(
+                    moon_field_w,
+                    moon_h
+                ),
                 cfg["moonfont"],
                 color=self.COLOR_MOONSET
-            )
+             )
 
+            # ------------------------------------------------------------
+            # Mond-Icon
+            # ------------------------------------------------------------
             xml += self._eicon_xml(
                 cfg["mooniconpos"],
                 cfg["mooniconsize"],
@@ -6721,10 +6774,6 @@ class sevendays(Screen):
             alert_color=self.COLOR_ALERT
         )
         
-
-    # ================================================================
-    # HD SKIN
-    # ================================================================
 
     # ================================================================
     # HD SKIN
@@ -8788,7 +8837,6 @@ class CitySearchKeyBoard(VirtualKeyBoard):
         self._suggestTimerConn = safeTimerCallback(self.suggestTimer, self.checkTextChanged)
         self.suggestTimer.start(400, False)
 
-    
     def processSelect(self):
         VirtualKeyBoard.processSelect(self)
 
@@ -9639,8 +9687,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # MANUAL UPDATE CHECK
     # ========================================================
 
- 
-    def checkUpdate(self):
+     def checkUpdate(self):
 
         global _overlaySession
         global _updatePollTimer
@@ -10939,7 +10986,6 @@ def _poll_startup_weather():
             session.open(localcityscreen)
         except Exception:
             pass
-
 
 def main(session, **kwargs):
     # Updateprüfung bleibt im Hintergrund.
@@ -13350,7 +13396,6 @@ class RadarScreen(Screen):
                 )
             except Exception:
                 pass
-
 
 # ====================================================================
 # AUTOSTART
