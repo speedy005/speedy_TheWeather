@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.7
+# v.1.7.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.7"
+__version__ = "1.7.8"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.7'
+version = '1.7.8'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -1197,6 +1197,24 @@ def findAutoBgFile(category):
                 continue
     return None
 
+def isNightTime():
+    global weatherData
+    try:
+        dag = weatherData["days"][0]
+        sunrise = dag.get("sunrise", "")
+        sunset = dag.get("sunset", "")
+        if not sunrise or not sunset:
+            return False
+        now = time.localtime()
+        nowMin = now.tm_hour * 60 + now.tm_min
+        sr = sunrise.split("T")[1]
+        ss = sunset.split("T")[1]
+        srMin = int(sr[:2]) * 60 + int(sr[3:5])
+        ssMin = int(ss[:2]) * 60 + int(ss[3:5])
+        return not (srMin <= nowMin < ssMin)
+    except Exception:
+        return False
+
 def getHolidayBgCategory():
     """
     Ermittelt die aktuelle Feiertags-Kategorie.
@@ -1349,7 +1367,6 @@ def getAutoWeatherBackground():
                 "[speedy_TheWeather] "
                 "AUTO: weatherData ist kein dict"
             )
-
             return defaultBg
 
         days = weatherData.get(
@@ -1358,12 +1375,10 @@ def getAutoWeatherBackground():
         )
 
         if not days:
-
             print(
                 "[speedy_TheWeather] "
                 "AUTO: keine Wettertage vorhanden"
             )
-
             return defaultBg
 
         day = days[0]
@@ -1376,7 +1391,6 @@ def getAutoWeatherBackground():
                 "[speedy_TheWeather] "
                 "AUTO: Wettertag ist ungueltig"
             )
-
             return defaultBg
 
         hours = day.get(
@@ -1408,14 +1422,10 @@ def getAutoWeatherBackground():
 
             try:
 
-                h = hour.get(
-                    "hour"
-                )
+                h = hour.get("hour")
 
                 if h is None:
-                    h = hour.get(
-                        "time"
-                    )
+                    h = hour.get("time")
 
                 if isinstance(
                     h,
@@ -1431,6 +1441,7 @@ def getAutoWeatherBackground():
                         )[0]
 
                     elif "T" in h:
+
                         h = h.split(
                             "T",
                             1
@@ -1446,17 +1457,13 @@ def getAutoWeatherBackground():
 
                     if int(h) == now_hour:
 
-                        icon = (
-                            hour.get(
-                                "iconcode"
-                            )
+                        icon = hour.get(
+                            "iconcode"
                         )
 
                         if icon is None:
-                            icon = (
-                                hour.get(
-                                    "icon"
-                                )
+                            icon = hour.get(
+                                "icon"
                             )
 
                         print(
@@ -1587,7 +1594,57 @@ def getAutoWeatherBackground():
         return defaultBg
 
     # -------------------------------------------------
-    # KATEGORIE -> BILD
+    # NACHT-HINTERGRUND
+    # -------------------------------------------------
+
+    try:
+
+        if isNightTime():
+
+            nightCategory = (
+                "clear"
+                if category == "sunny"
+                else category
+            )
+
+            nightBg = findAutoBgFile(
+                nightCategory + "_night"
+            )
+
+            if (
+                nightBg
+                and os.path.isfile(nightBg)
+            ):
+
+                print(
+                    "[speedy_TheWeather] "
+                    "AUTO night: %s -> %s"
+                    % (
+                        nightCategory,
+                        nightBg
+                    )
+                )
+
+                return nightBg
+
+            print(
+                "[speedy_TheWeather] "
+                "AUTO night: kein Bild fuer %s"
+                % (
+                    nightCategory + "_night"
+                )
+            )
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] "
+            "AUTO: Nacht-Hintergrund Fehler: %s"
+            % str(e)
+        )
+
+    # -------------------------------------------------
+    # NORMALES WETTERBILD
     # -------------------------------------------------
 
     try:
@@ -1639,6 +1696,8 @@ def getAutoWeatherBackground():
     )
 
     return defaultBg
+
+
 
 # ============================================================================
 # VERSION COMPARISON
