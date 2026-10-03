@@ -601,8 +601,8 @@ msgstr "Sonnenuntergang"
 msgid "Moonrise"
 msgstr "Mondaufgang" 
 
-msgid "Moon:"
-msgstr "Mond:" 
+msgid "Moon: "
+msgstr "Mond: " 
 
 msgid "Moonset"
 msgstr "Monduntergang"
