@@ -691,7 +691,7 @@ The colors for **sunrise, sunset, moonrise and moonset** can be individually con
 Run the following commands via SSH/Telnet:
 
 ```bash
-wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh
+wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh 
 ```
 
 > The installer handles both installation and updates of the plugin.
