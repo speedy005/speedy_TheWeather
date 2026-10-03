@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.0
+# v.1.8.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.8.0"
+__version__ = "1.8.2"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.0'
+version = '1.8.2'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -5401,155 +5401,37 @@ class sevendays(Screen):
     # TEXTFARBEN
     # ================================================================
 
-    # ------------------------------------------------
     # Aktuelles Wetter
-    # ------------------------------------------------
-    COLOR_CITY        = "#0000ff00"   # Grün – Stadt/Ort
-    COLOR_BIGTEMP     = "#000000ff"   # Blau – Temperatur
-    COLOR_WEATHERTYPE = "#00ff0000"   # Rot
-    COLOR_FEELS       = "#00ffff00"   # Gelb
-    COLOR_WIND        = "#0000ffff"   # Cyan
-    # ------------------------------------------------
+    COLOR_CITY        = "#0000ff00"
+    COLOR_BIGTEMP     = "#000000ff"
+    COLOR_WEATHERTYPE = "#00ff0000"
+    COLOR_FEELS       = "#00ffff00"
+    COLOR_WIND        = "#0000ffff"
+
     # 7-Tage-Vorhersage
-    # ------------------------------------------------
-    COLOR_DAY         = "#0000ff00"   # Grün
-    COLOR_MAXTEMP     = "#00ff0000"   # Rot
-    COLOR_MINTEMP     = "#00004080"   # Dunkelblau
-    COLOR_DAYTYPE     = "#00ffff00"   # Gelb
-    # ------------------------------------------------
-    # Sonne
-    # ------------------------------------------------
-    COLOR_SUN         = "#00ffff00"   # Gelb
-    # ------------------------------------------------
+    COLOR_DAY         = "#0000ff00"
+    COLOR_MAXTEMP     = "#00ff0000"
+    COLOR_MINTEMP     = "#00004080"
+    COLOR_DAYTYPE     = "#00ffff00"
+
+    # Sonne / Mond
+    COLOR_SUN         = "#00ffff00"
+
     # Stundenübersicht
-    # ------------------------------------------------
-    COLOR_HOUR        = "#00ff0000"   # Rot – Uhrzeit / Stunde
-    COLOR_HOURTEMP    = "#004080ff"   # Blau – Temperatur / Grad
-    COLOR_RAIN        = "#0000ff00"   # Grün
-    COLOR_SUNPERCENT  = "#00ffff00"   # Gelb
-    COLOR_HUMIDITY    = "#004080ff"   # Blau
-    COLOR_WIND_SPEED  = "#0000ffff"   # Cyan
-    # ------------------------------------------------
+    COLOR_HOUR        = "#00ff0000"
+    COLOR_HOURTEMP    = "#004080ff"
+    COLOR_RAIN        = "#0000ff00"
+    COLOR_SUNPERCENT  = "#00ffff00"
+    COLOR_HUMIDITY    = "#004080ff"
+    COLOR_WIND_SPEED  = "#0000ffff"
+
     # Uhr / Datum
-    # ------------------------------------------------
-    COLOR_CLOCK       = "#00ff0000"   # Weiß
-    COLOR_DATE        = "#0000ff00"   # Weiß
-    # ------------------------------------------------
-
-    # ------------------------------------------------
-    # colors samples
-    # ------------------------------------------------
-    #COLOR_01 = "#ffff0000"  # Rot
-    #COLOR_02 = "#ff00ff00"  # Grün
-    #COLOR_03 = "#ff0000ff"  # Blau
-    #COLOR_04 = "#ffffff00"  # Gelb
-    #COLOR_05 = "#ff00ffff"  # Cyan
-    #COLOR_06 = "#ffff00ff"  # Magenta
-    #COLOR_07 = "#ffffffff"  # Weiß
-    #COLOR_08 = "#ff000000"  # Schwarz
-
-    #COLOR_09 = "#ffff8000"  # Orange
-    #COLOR_10 = "#ffff4000"  # Dunkelorange
-    #COLOR_11 = "#ffffc000"  # Gold
-    #COLOR_12 = "#ffffd700"  # Goldgelb
-    #COLOR_13 = "#ff808000"  # Oliv
-    #COLOR_14 = "#ff80ff00"  # Limette
-    #COLOR_15 = "#ff00ff80"  # Türkisgrün
-    #COLOR_16 = "#ff008080"  # Petrol
-
-    #COLOR_17 = "#ff0080ff"  # Himmelblau
-    #COLOR_18 = "#ff0040ff"  # Tiefblau
-    #COLOR_19 = "#ff4000ff"  # Violettblau
-    #COLOR_20 = "#ff8000ff"  # Violett
-    #COLOR_21 = "#ffc000ff"  # Pinkviolett
-    #COLOR_22 = "#ffff0080"  # Pink
-    #COLOR_23 = "#ffff4080"  # Hellpink
-    #COLOR_24 = "#ffff80c0"  # Rosa
-
-    #COLOR_25 = "#ffff8080"  # Hellrot
-    #COLOR_26 = "#ffff4040"  # Korallenrot
-    #COLOR_27 = "#ffc00000"  # Dunkelrot
-    #COLOR_28 = "#ff800000"  # Weinrot
-    #COLOR_29 = "#ff804000"  # Braun
-    #COLOR_30 = "#ffc08040"  # Hellbraun
-    #COLOR_31 = "#ffe0c080"  # Beige
-    #COLOR_32 = "#ffffe0c0"  # Creme
-
-    #COLOR_33 = "#ff80ff80"  # Hellgrün
-    #COLOR_34 = "#ff40c040"  # Mittelgrün
-    #COLOR_35 = "#ff008000"  # Dunkelgrün
-    #COLOR_36 = "#ff004000"  # Sehr dunkelgrün
-    #COLOR_37 = "#ffc0ff80"  # Gelbgrün
-    #COLOR_38 = "#ff80c000"  # Grasgrün
-
-    #COLOR_39 = "#ff80ffff"  # Hellcyan
-    #COLOR_40 = "#ff40c0ff"  # Hellblau
-    #COLOR_41 = "#ff80c0ff"  # Pastellblau
-    #COLOR_42 = "#ff004080"  # Dunkelblau
-    #COLOR_43 = "#ff002040"  # Marineblau
-
-    #COLOR_44 = "#ffc080ff"  # Hellviolett
-    #COLOR_45 = "#ff8040c0"  # Mittelviolett
-    #COLOR_46 = "#ff400080"  # Dunkelviolett
-
-    #COLOR_47 = "#ff808080"  # Grau
-    #COLOR_48 = "#ffc0c0c0"  # Hellgrau
-    #COLOR_49 = "#ff404040"  # Dunkelgrau
-    #COLOR_50 = "#ffe0e0e0"  # Sehr hellgrau
+    COLOR_CLOCK       = "#00ff0000"
+    COLOR_DATE        = "#0000ff00"
 
     # ================================================================
-    # COLOR ASSIGNMENT
+    # PFAD
     # ================================================================
-
-    # COLOR_CITY        → City name
-    # COLOR_BIGTEMP     → Large current temperature
-    # COLOR_WEATHERTYPE → Weather description
-    # COLOR_FEELS       → Feels-like temperature
-    # COLOR_WIND        → Wind direction
-    #
-    # COLOR_DAY         → Day of the week
-    # COLOR_MAXTEMP     → Maximum temperature
-    # COLOR_MINTEMP     → Minimum temperature
-    # COLOR_DAYTYPE     → Weather description for individual days
-    #
-    # COLOR_SUN         → Sunrise / sunset
-    #
-    # COLOR_HOUR        → Time / hour
-    # COLOR_HOURTEMP    → Temperature in hourly forecast
-    # COLOR_RAIN        → Rain
-    # COLOR_SUNPERCENT  → Sun probability
-    # COLOR_HUMIDITY    → Humidity
-    # COLOR_WIND_SPEED  → Wind speed
-    #
-    # COLOR_CLOCK       → Clock
-    # COLOR_DATE        → Date
-
-    # ================================================================
-    # FARBZUORDNUNG
-    # ================================================================
-
-    # COLOR_CITY        → Stadtname
-    # COLOR_BIGTEMP     → große aktuelle Temperatur
-    # COLOR_WEATHERTYPE → Wetterbeschreibung
-    # COLOR_FEELS       → gefühlte Temperatur
-    # COLOR_WIND        → Windrichtung
-    #
-    # COLOR_DAY         → Wochentag
-    # COLOR_MAXTEMP     → Höchsttemperatur
-    # COLOR_MINTEMP     → Tiefsttemperatur
-    # COLOR_DAYTYPE     → Wetterbeschreibung der einzelnen Tage
-    #
-    # COLOR_SUN         → Sonnenauf-/untergang
-    #
-    # COLOR_HOUR        → Uhrzeit / Stunde
-    # COLOR_HOURTEMP    → Temperatur im Stundenverlauf
-    # COLOR_RAIN        → Regen
-    # COLOR_SUNPERCENT  → Sonnenwahrscheinlichkeit
-    # COLOR_HUMIDITY    → Luftfeuchtigkeit
-    # COLOR_WIND_SPEED  → Windgeschwindigkeit
-    #
-    # COLOR_CLOCK       → Uhr
-    # COLOR_DATE        → Datum
 
     WEATHER_PATH = (
         "/usr/lib/enigma2/python/Plugins/Extensions/"
@@ -5561,7 +5443,9 @@ class sevendays(Screen):
     # ================================================================
 
     def _path(self, *parts):
-        return "/".join([self.WEATHER_PATH] + list(parts))
+        return "/".join(
+            [self.WEATHER_PATH] + list(parts)
+        )
 
     def _day(self, data, n):
         return data[n] if n < len(data) else {}
@@ -5575,13 +5459,10 @@ class sevendays(Screen):
             return "na"
 
     def _icon(self, day):
-        """
-        Tages-/großes Wettericon exakt aus iconcode.
-        Kein Fallback auf hours[0].
-        """
-
         try:
-            return str(day.get("iconcode") or "na")
+            return str(
+                day.get("iconcode") or "na"
+            )
         except Exception:
             return "na"
 
@@ -5613,6 +5494,10 @@ class sevendays(Screen):
 
         return "tempeven.png"
 
+    # ================================================================
+    # SONNE
+    # ================================================================
+
     def _sun(self, data):
         sunrise = "na"
         sunset = "na"
@@ -5636,14 +5521,29 @@ class sevendays(Screen):
 
         return sunrise, sunset
 
+    # ================================================================
+    # MOND
+    # ================================================================
+
     def _moon(self, data):
-        """Mondauf/-untergang fuer den aktuellen Ort und den heutigen Tag."""
+        """Mondauf-/untergang für den aktuellen Ort und heutigen Tag."""
+
         try:
-            lat, lon = getCoordsFromEntry(lockaaleStad)
+            lat, lon = getCoordsFromEntry(
+                lockaaleStad
+            )
+
             if lat is None or lon is None:
                 return "na", "na"
+
             today = datetime.datetime.now().date()
-            return _moon_rise_set_for_date(today, lat, lon)
+
+            return _moon_rise_set_for_date(
+                today,
+                lat,
+                lon
+            )
+
         except Exception:
             return "na", "na"
 
@@ -5658,7 +5558,6 @@ class sevendays(Screen):
         self[name] = StaticText()
         self[name].text = text
 
-
     def _label_xml(
             self,
             source,
@@ -5668,14 +5567,33 @@ class sevendays(Screen):
             halign="left",
             valign="center",
             color="#00ffffff",
-            weight="Regular"
-        ):
+            weight="Regular",
+            nowrap=False
+    ):
+        """
+        Label-XML.
+
+        nowrap=False:
+            normales Label-Verhalten.
+
+        nowrap=True:
+            Text darf nicht in die nächste Zeile umbrechen.
+            Wird bei den Sonnen-/Mondzeiten benutzt.
+        """
+
+        nowrap_xml = (
+            'noWrap="1" '
+            if nowrap
+            else ''
+        )
+
         return (
             '<widget render="Label" source="{0}" '
             'position="{1}" size="{2}" zPosition="3" '
             'valign="{3}" halign="{4}" font="{7};{5}" '
             'foregroundColor="{6}" '
             'backgroundColor="#00202020" transparent="1" '
+            '{8}'
             'shadowColor="black" shadowOffset="-2,-2"/>'
         ).format(
             source,
@@ -5685,19 +5603,18 @@ class sevendays(Screen):
             halign,
             font,
             color,
-            weight
+            weight,
+            nowrap_xml
         )
 
-
-
     def _icon_xml(
-        self,
-        name,
-        pos,
-        size,
-        path,
-        scale=False,
-        z=3
+            self,
+            name,
+            pos,
+            size,
+            path,
+            scale=False,
+            z=3
     ):
         return (
             '<widget name="{0}" position="{1}" size="{2}" '
@@ -5713,12 +5630,12 @@ class sevendays(Screen):
         )
 
     def _eicon_xml(
-        self,
-        pos,
-        size,
-        path,
-        scale=False,
-        z=3
+            self,
+            pos,
+            size,
+            path,
+            scale=False,
+            z=3
     ):
         return (
             '<ePixmap position="{0}" size="{1}" '
@@ -5734,13 +5651,6 @@ class sevendays(Screen):
 
     # ================================================================
     # FARBTASTEN
-    #
-    # Keine externen PNG-Dateien nötig.
-    # Die Beschriftungen werden direkt als Label erzeugt.
-    # ================================================================
-
-    # ================================================================
-    # FARBTASTEN
     # ================================================================
 
     def _color_buttons_xml(self, hd=True):
@@ -5748,23 +5658,100 @@ class sevendays(Screen):
         if hd:
 
             buttons = [
-                ("key_red",    "27,1040",  "310,45", "red",    "20,1050",  "8,25", 38),
-                ("key_green",  "342,1040", "310,45", "green",  "335,1050", "8,25", 38),
-                ("key_yellow", "657,1040", "310,45", "yellow", "650,1050", "8,25", 38),
-                ("key_blue",   "972,1040", "510,45", "blue",   "965,1050", "8,25", 34)
+                (
+                    "key_red",
+                    "27,1040",
+                    "310,45",
+                    "red",
+                    "20,1050",
+                    "8,25",
+                    38
+                ),
+                (
+                    "key_green",
+                    "342,1040",
+                    "310,45",
+                    "green",
+                    "335,1050",
+                    "8,25",
+                    38
+                ),
+                (
+                    "key_yellow",
+                    "657,1040",
+                    "310,45",
+                    "yellow",
+                    "650,1050",
+                    "8,25",
+                    38
+                ),
+                (
+                    "key_blue",
+                    "972,1040",
+                    "510,45",
+                    "blue",
+                    "965,1050",
+                    "8,25",
+                    34
+                )
             ]
 
         else:
+
+            # ========================================================
+            # SD 1280x720
+            # ========================================================
+
             buttons = [
-                ("key_red", "20,684", "300,28", "red", "13,691", "6,14", 25),
-                ("key_green", "325,684", "300,28", "green", "318,691", "6,14", 25),
-                ("key_yellow", "630,684", "300,28", "yellow", "623,691", "6,14", 25),
-                ("key_blue", "935,684", "500,28", "blue", "928,691", "6,14", 22)
+                (
+                    "key_red",
+                    "20,684",
+                    "295,28",
+                    "red",
+                    "13,691",
+                    "6,14",
+                    25
+                ),
+                (
+                    "key_green",
+                    "325,684",
+                    "295,28",
+                    "green",
+                    "318,691",
+                    "6,14",
+                    25
+                ),
+                (
+                    "key_yellow",
+                    "630,684",
+                    "295,28",
+                    "yellow",
+                    "623,691",
+                    "6,14",
+                    25
+                ),
+                (
+                    "key_blue",
+                    "935,684",
+                    "325,28",
+                    "blue",
+                    "928,691",
+                    "6,14",
+                    21
+                )
             ]
 
         xml = ""
 
-        for name, pos, size, foreground, button_pos, button_size, font in buttons:
+        for (
+            name,
+            pos,
+            size,
+            foreground,
+            button_pos,
+            button_size,
+            font
+        ) in buttons:
 
             xml += """
                 <eLabel
@@ -5798,11 +5785,17 @@ class sevendays(Screen):
             )
 
         return xml
+
     # ================================================================
     # TAGESBEREICH
     # ================================================================
 
-    def _build_day_section(self, day, data, hd=True):
+    def _build_day_section(
+            self,
+            day,
+            data,
+            hd=True
+    ):
 
         icon = self._icon(data)
         wind = self._wind(data)
@@ -5867,15 +5860,32 @@ class sevendays(Screen):
 
         else:
 
+            # ========================================================
+            # SD 1280x720
+            # ========================================================
+
             cfg = {
+
+                # ----------------------------------------------------
+                # Großes Wettericon
+                # ----------------------------------------------------
+
                 "bigpos": "422,54",
                 "bigsize": "100,100",
                 "bigscale": True,
+
+                # ----------------------------------------------------
+                # Kleine 7-Tage-Icons
+                # ----------------------------------------------------
 
                 "smallx": 87 + 165 * day,
                 "smally": 328,
                 "smallsize": "48,48",
                 "smallscale": True,
+
+                # ----------------------------------------------------
+                # Wochentag
+                # ----------------------------------------------------
 
                 "daypos": "{},302".format(
                     92 + 165 * day
@@ -5883,11 +5893,19 @@ class sevendays(Screen):
                 "daysize": "130,24",
                 "dayfont": 22,
 
+                # ----------------------------------------------------
+                # Maximum
+                # ----------------------------------------------------
+
                 "maxpos": "{},376".format(
                     92 + 165 * day
                 ),
                 "maxsize": "82,36",
                 "maxfont": 32,
+
+                # ----------------------------------------------------
+                # Minimum
+                # ----------------------------------------------------
 
                 "minpos": "{},389".format(
                     174 + 165 * day
@@ -5895,29 +5913,50 @@ class sevendays(Screen):
                 "minsize": "78,24",
                 "minfont": 18,
 
+                # ----------------------------------------------------
+                # Wetterbeschreibung
+                # ----------------------------------------------------
+
                 "typepos": "{},410".format(
                     69 + 165 * day
                 ),
                 "typesize": "138,54",
                 "typefont": 16,
 
-                "sunpos": "490,167",
-                "sunsize": "270,28",
-                "sunfont": 25,
+                # ====================================================
+                # SONNE
+                #
+                # WICHTIG:
+                # Das Feld wurde von 145 auf 190 Pixel erweitert.
+                # Dadurch können die beiden HH:MM-Werte sauber
+                # nebeneinander dargestellt werden.
+                # ====================================================
 
-                "suniconpos": "390,157",
-                "suniconsize": "80,40",
+                "sunpos": "410,165",
+                "sunsize": "230,30",
+                "sunfont": 23,
 
-                "moonpos": "490,209",
-                "moonsize": "270,28",
-                "moonfont": 30,
+                "suniconpos": "350,158",
+                "suniconsize": "48,32",
 
-                "mooniconpos": "390,199",
-                "mooniconsize": "80,40",
+                # ====================================================
+                # MOND
+                # ====================================================
+
+                "moonpos": "410,207",
+                "moonsize": "230,34",
+                "moonfont": 23,
+
+                "mooniconpos": "350,200",
+                "mooniconsize": "48,32",
+
+                # ----------------------------------------------------
+                # Stunden
+                # ----------------------------------------------------
 
                 "hourx": 80,
                 "hourstep": 144,
-                "houry": 494,
+                "houry": 474,
                 "hoursize": "48,48",
                 "hourscale": True
             }
@@ -5927,9 +5966,9 @@ class sevendays(Screen):
 
         xml = ""
 
-        # ================================================================
-        # GROSSES WETTER-ICON
-        # ================================================================
+        # ============================================================
+        # GROSSES WETTERICON
+        # ============================================================
 
         xml += self._icon_xml(
             "bigWeerIcon1{}".format(day),
@@ -5943,9 +5982,9 @@ class sevendays(Screen):
             cfg["bigscale"]
         )
 
-        # ================================================================
+        # ============================================================
         # WINDRICHTUNGS-ICON SD
-        # ================================================================
+        # ============================================================
 
         if not hd:
 
@@ -5962,9 +6001,9 @@ class sevendays(Screen):
                 1
             )
 
-        # ================================================================
-        # KLEINES WETTER-ICON
-        # ================================================================
+        # ============================================================
+        # KLEINES WETTERICON
+        # ============================================================
 
         xml += self._eicon_xml(
             "{},{}".format(
@@ -5980,9 +6019,9 @@ class sevendays(Screen):
             cfg["smallscale"]
         )
 
-        # ================================================================
+        # ============================================================
         # WOCHENTAG
-        # ================================================================
+        # ============================================================
 
         xml += self._label_xml(
             "smallday2{}".format(day),
@@ -5992,9 +6031,9 @@ class sevendays(Screen):
             color=self.COLOR_DAY
         )
 
-        # ================================================================
-        # MAXIMALE TEMPERATUR
-        # ================================================================
+        # ============================================================
+        # MAXIMUM
+        # ============================================================
 
         xml += self._label_xml(
             "maxtemp2{}".format(day),
@@ -6004,9 +6043,9 @@ class sevendays(Screen):
             color=self.COLOR_MAXTEMP
         )
 
-        # ================================================================
-        # MINIMALE TEMPERATUR
-        # ================================================================
+        # ============================================================
+        # MINIMUM
+        # ============================================================
 
         xml += self._label_xml(
             "minitemp2{}".format(day),
@@ -6016,9 +6055,9 @@ class sevendays(Screen):
             color=self.COLOR_MINTEMP
         )
 
-        # ================================================================
+        # ============================================================
         # WETTERBESCHREIBUNG
-        # ================================================================
+        # ============================================================
 
         xml += self._label_xml(
             "weertype2{}".format(day),
@@ -6029,70 +6068,49 @@ class sevendays(Screen):
             color=self.COLOR_DAYTYPE
         )
 
-
-
-        # ================================================================
-        # SONNEN- / MONDAUF- UND -UNTERGANG
-        # Nur einmal im oberen Bereich erzeugen (Tag 0).
-        # ================================================================
+        # ============================================================
+        # SONNE / MOND
+        # ============================================================
 
         if day == 0:
 
-            # ------------------------------------------------------------
+            # ========================================================
             # SONNE
-            # ------------------------------------------------------------
-            try:
-                sun_x, sun_y = [int(v) for v in cfg["sunpos"].split(",")]
-                sun_h = cfg["sunsize"].split(",")[1]
-            except Exception:
-                sun_x, sun_y = 760, 238
-                sun_h = "40"
+            # ========================================================
 
-            # Breite eines einzelnen Zeitfeldes
-            # Etwas breiter, damit HH:MM auch bei groesserer Schrift
-            # nicht rechts abgeschnitten wird.
-            sun_field_w = 75 if hd else 68
+            sun_x, sun_y = [
+                int(v)
+                for v in cfg["sunpos"].split(",")
+            ]
 
-            # Breite des Bindestrich-Feldes
-            sun_gap = 10
+            sun_h = cfg["sunsize"].split(",")[1]
 
-            # ------------------------------------------------------------
+            # ========================================================
+            # SD
+            #
+            # 78 + 10 + 78 = 166 Pixel
+            #
+            # Das passt bequem in das 190 Pixel große Gesamtfeld.
+            # ========================================================
+
+            if not hd:
+
+                sun_field_w = 95
+                sun_gap = 10
+
+            else:
+
+                sun_field_w = 95
+                sun_gap = 8
+
+            # --------------------------------------------------------
             # Sonnenaufgang
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+
             xml += self._label_xml(
                 "sunriselab",
-                "{},{}".format(sun_x, sun_y),
-                "{},{}".format(sun_field_w, sun_h),
-                cfg["sunfont"],
-                color=self.COLOR_SUNRISE
-            )
-
-            # ------------------------------------------------------------
-            # Bindestrich
-            # 4 Pixel nach links verschoben und fett
-            # ------------------------------------------------------------
-            xml += self._label_xml(
-                "sunsep",
                 "{},{}".format(
-                    sun_x + sun_field_w - 4,
-                    sun_y
-                ),
-                "{},{}".format(
-                    sun_gap,
-                    sun_h
-                ),
-                cfg["sunfont"],
-                color=self.COLOR_SUN,
-                weight="Bold"
-            )
-
-            # ------------------------------------------------------------
-            # Sonnenuntergang
-            # ------------------------------------------------------------
-            xml += self._label_xml(
-                "sunsetlab",
-                "{},{}".format(
-                    sun_x + sun_field_w + sun_gap,
+                    sun_x,
                     sun_y
                 ),
                 "{},{}".format(
@@ -6100,12 +6118,58 @@ class sevendays(Screen):
                     sun_h
                 ),
                 cfg["sunfont"],
-                color=self.COLOR_SUNSET
+                "center",
+                color=self.COLOR_SUNRISE,
+                nowrap=True
             )
 
-            # ------------------------------------------------------------
-            # Sonnen-Icon
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+            # Trennstrich
+            # --------------------------------------------------------
+
+            xml += self._label_xml(
+                "sunsep",
+                "{},{}".format(
+                    sun_x + sun_field_w,
+                    sun_y
+                ),
+                "{},{}".format(
+                    sun_gap,
+                    sun_h
+                ),
+                cfg["sunfont"],
+                "center",
+                color=self.COLOR_SUN,
+                weight="Bold",
+                nowrap=True
+            )
+
+            # --------------------------------------------------------
+            # Sonnenuntergang
+            # --------------------------------------------------------
+
+            xml += self._label_xml(
+                "sunsetlab",
+                "{},{}".format(
+                    sun_x
+                    + sun_field_w
+                    + sun_gap,
+                    sun_y
+                ),
+                "{},{}".format(
+                    sun_field_w,
+                    sun_h
+                ),
+                cfg["sunfont"],
+                "center",
+                color=self.COLOR_SUNSET,
+                nowrap=True
+            )
+
+            # --------------------------------------------------------
+            # Sonnenicon
+            # --------------------------------------------------------
+
             xml += self._eicon_xml(
                 cfg["suniconpos"],
                 cfg["suniconsize"],
@@ -6116,26 +6180,31 @@ class sevendays(Screen):
                 not hd
             )
 
-            # ------------------------------------------------------------
+            # ========================================================
             # MOND
-            # ------------------------------------------------------------
-            try:
-                moon_x, moon_y = [int(v) for v in cfg["moonpos"].split(",")]
-                moon_h = cfg["moonsize"].split(",")[1]
-            except Exception:
-                moon_x, moon_y = 760, 303
-                moon_h = "40"
+            # ========================================================
 
-            # Breite eines einzelnen Zeitfeldes
-            # Identisch zur Sonne.
-            moon_field_w = 75 if hd else 68
+            moon_x, moon_y = [
+                int(v)
+                for v in cfg["moonpos"].split(",")
+            ]
 
-            # Breite des Bindestrich-Feldes
-            moon_gap = 10
+            moon_h = cfg["moonsize"].split(",")[1]
 
-            # ------------------------------------------------------------
+            if not hd:
+
+                moon_field_w = 105
+                moon_gap = 10
+
+            else:
+
+                moon_field_w = 95
+                moon_gap = 8
+
+            # --------------------------------------------------------
             # Mondaufgang
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+
             xml += self._label_xml(
                 "moonriselab",
                 "{},{}".format(
@@ -6147,17 +6216,19 @@ class sevendays(Screen):
                     moon_h
                 ),
                 cfg["moonfont"],
-                color=self.COLOR_MOONRISE
+                "center",
+                color=self.COLOR_MOONRISE,
+                nowrap=True
             )
 
-            # ------------------------------------------------------------
-            # Bindestrich
-            # 4 Pixel nach links verschoben und fett
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+            # Trennstrich
+            # --------------------------------------------------------
+
             xml += self._label_xml(
                 "moonsep",
                 "{},{}".format(
-                    moon_x + moon_field_w - 8,
+                    moon_x + moon_field_w,
                     moon_y
                 ),
                 "{},{}".format(
@@ -6165,17 +6236,22 @@ class sevendays(Screen):
                     moon_h
                 ),
                 cfg["moonfont"],
+                "center",
                 color=self.COLOR_SUN,
-                weight="Bold"
+                weight="Bold",
+                nowrap=True
             )
 
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
             # Monduntergang
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+
             xml += self._label_xml(
                 "moonsetlab",
                 "{},{}".format(
-                    moon_x + moon_field_w + moon_gap,
+                    moon_x
+                    + moon_field_w
+                    + moon_gap,
                     moon_y
                 ),
                 "{},{}".format(
@@ -6183,12 +6259,15 @@ class sevendays(Screen):
                     moon_h
                 ),
                 cfg["moonfont"],
-                color=self.COLOR_MOONSET
-             )
+                "center",
+                color=self.COLOR_MOONSET,
+                nowrap=True
+            )
 
-            # ------------------------------------------------------------
-            # Mond-Icon
-            # ------------------------------------------------------------
+            # --------------------------------------------------------
+            # Mondicon
+            # --------------------------------------------------------
+
             xml += self._eicon_xml(
                 cfg["mooniconpos"],
                 cfg["mooniconsize"],
@@ -6199,9 +6278,9 @@ class sevendays(Screen):
                 not hd
             )
 
-        # ================================================================
-        # PIXMAPS / LABELS REGISTRIEREN
-        # ================================================================
+        # ============================================================
+        # WIDGETS REGISTRIEREN
+        # ============================================================
 
         self._pixmap(
             "bigWeerIcon1{}".format(day)
@@ -6228,16 +6307,18 @@ class sevendays(Screen):
         )
 
         if day == 0:
+
             self._label("sunriselab")
             self._label("sunsetlab")
             self._label("sunsep")
+
             self._label("moonriselab")
             self._label("moonsetlab")
             self._label("moonsep")
 
-        # ================================================================
-        # 8 STUNDEN-ICONS
-        # ================================================================
+        # ============================================================
+        # 8 STUNDENICONS
+        # ============================================================
 
         for slot in range(8):
 
@@ -6285,7 +6366,11 @@ class sevendays(Screen):
     # STUNDENBEREICH
     # ================================================================
 
-    def _build_hour_section(self, hour, hd=True):
+    def _build_hour_section(
+            self,
+            hour,
+            hd=True
+    ):
 
         base = self.WEATHER_PATH
 
@@ -6386,11 +6471,15 @@ class sevendays(Screen):
 
         else:
 
+            # ========================================================
+            # SD 1280x720
+            # ========================================================
+
             x = 144 * hour
 
             bg = (
                 64 + x,
-                489,
+                469,
                 "129,205",
                 "vlak_uursd.png"
             )
@@ -6399,15 +6488,15 @@ class sevendays(Screen):
                 (
                     "dayhour3",
                     64 + x,
-                    506,
+                    486,
                     "129,28",
                     20,
                     "center"
                 ),
-               (
+                (
                     "daytemp3",
                     80 + x,
-                    540,
+                    520,
                     "120,36",
                     32,
                     "left"
@@ -6415,7 +6504,7 @@ class sevendays(Screen):
                 (
                     "sunpercent3",
                     112 + x,
-                    580,
+                    560,
                     "82,21",
                     18,
                     "left"
@@ -6423,7 +6512,7 @@ class sevendays(Screen):
                 (
                     "daypercent3",
                     112 + x,
-                    606,
+                    586,
                     "80,20",
                     18,
                     "left"
@@ -6431,7 +6520,7 @@ class sevendays(Screen):
                 (
                     "hrdayper3",
                     112 + x,
-                    632,
+                    612,
                     "80,20",
                     18,
                     "left"
@@ -6439,7 +6528,7 @@ class sevendays(Screen):
                 (
                     "dayspeed3",
                     112 + x,
-                    658,
+                    638,
                     "82,21",
                     18,
                     "left"
@@ -6450,28 +6539,28 @@ class sevendays(Screen):
                 (
                     "sunicon",
                     76 + x,
-                    578,
+                    558,
                     "24,24",
                     "sunpchd.png"
                 ),
                 (
                     "rainicon",
                     77 + x,
-                    605,
+                    585,
                     "20,20",
                     "rainhd.png"
                 ),
                 (
                     "rhicon",
                     79 + x,
-                    632,
+                    612,
                     "16,20",
                     "rhhd.png"
                 ),
                 (
                     "windicon",
                     79 + x,
-                    656,
+                    636,
                     "25,25",
                     "turbinehd.png"
                 )
@@ -6479,9 +6568,9 @@ class sevendays(Screen):
 
             scale = True
 
-        # ================================================================
-        # STUNDEN-HINTERGRUND
-        # ================================================================
+        # ============================================================
+        # HINTERGRUND
+        # ============================================================
 
         name = "vlakuur{}".format(hour)
 
@@ -6503,47 +6592,43 @@ class sevendays(Screen):
 
         self._pixmap(name)
 
-        # ================================================================
-        # STUNDEN-LABELS
-        # ================================================================
+        # ============================================================
+        # LABELS
+        # ============================================================
 
-        for prefix, px, py, size, font, align in labels:
+        for (
+            prefix,
+            px,
+            py,
+            size,
+            font,
+            align
+        ) in labels:
 
             name = "{}{}".format(
                 prefix,
                 hour
             )
 
-            # ------------------------------------------------------------
-            # Farbe je nach Label
-            # ------------------------------------------------------------
-
             if prefix == "dayhour3":
-
                 color = self.COLOR_HOUR
 
             elif prefix == "daytemp3":
-
                 color = self.COLOR_HOURTEMP
 
             elif prefix == "sunpercent3":
-
                 color = self.COLOR_SUNPERCENT
 
             elif prefix == "daypercent3":
-
                 color = self.COLOR_RAIN
 
             elif prefix == "hrdayper3":
-
                 color = self.COLOR_HUMIDITY
 
             elif prefix == "dayspeed3":
-
                 color = self.COLOR_WIND_SPEED
 
             else:
-
                 color = "#00ffffff"
 
             xml += self._label_xml(
@@ -6560,11 +6645,17 @@ class sevendays(Screen):
 
             self._label(name)
 
-        # ================================================================
-        # STUNDEN-ICONS
-        # ================================================================
+        # ============================================================
+        # ICONS
+        # ============================================================
 
-        for prefix, px, py, size, filename in icons:
+        for (
+            prefix,
+            px,
+            py,
+            size,
+            filename
+        ) in icons:
 
             name = "{}{}".format(
                 prefix,
@@ -6595,13 +6686,14 @@ class sevendays(Screen):
     # ================================================================
 
     def _clock_xml(
-        self,
-        pos,
-       size,
-        font,
-        fmt,
-        color="#00ffffff"
+            self,
+            pos,
+            size,
+            font,
+            fmt,
+            color="#00ffffff"
     ):
+
         return """
             <widget source="global.CurrentTime" render="Label"
                 position="{0}" size="{1}" transparent="1"
@@ -6614,7 +6706,7 @@ class sevendays(Screen):
                     Format:{3}
                 </convert>
             </widget>
-         """.format(
+        """.format(
             pos,
             size,
             font,
@@ -6627,9 +6719,9 @@ class sevendays(Screen):
     # ================================================================
 
     def _main_widgets(
-        self,
-        hd,
-        winddir_top
+            self,
+            hd,
+            winddir_top
     ):
 
         base = self.WEATHER_PATH
@@ -6736,6 +6828,10 @@ class sevendays(Screen):
                 alert_color=self.COLOR_ALERT
             )
 
+        # ============================================================
+        # SD
+        # ============================================================
+
         return """
             <widget name="yellowdot"
                 position="184,307"
@@ -6773,11 +6869,11 @@ class sevendays(Screen):
 
             <widget name="weatheralert1"
                 position="955,165"
-                size="340,42"
+                size="320,42"
                 zPosition="3"
                 valign="center"
                 halign="left"
-                font="Regular;32"
+                font="Regular;30"
                 foregroundColor="{alert_color}"
                 backgroundColor="#00202020"
                 transparent="1"
@@ -6834,20 +6930,15 @@ class sevendays(Screen):
             alert_color=self.COLOR_ALERT
         )
 
-
-    # ================================================================
-    # HD SKIN
-    # ================================================================
-
     # ================================================================
     # HD SKIN
     # ================================================================
 
     def _build_hd_skin(
-        self,
-        data,
-        winddir_top,
-        tempicon
+            self,
+            data,
+            winddir_top,
+            tempicon
     ):
 
         content = ""
@@ -6904,10 +6995,6 @@ class sevendays(Screen):
 
             {content}
 
-            <!-- ================================================= -->
-            <!-- MENU + OK OBEN RECHTS                            -->
-            <!-- ================================================= -->
-
             <ePixmap
                 pixmap="{base}/{pack}/buttons/menubutton.png"
                 position="1580,46"
@@ -6922,10 +7009,6 @@ class sevendays(Screen):
                 zPosition="3"
                 alphatest="blend"/>
 
-            <!-- ================================================= -->
-            <!-- FARBTASTEN UNTEN                                 -->
-            <!-- ================================================= -->
-
             {colorbuttons}
 
         </screen>
@@ -6937,10 +7020,6 @@ class sevendays(Screen):
             tempicon=tempicon,
             content=content,
 
-            # ------------------------------------------------
-            # Uhrzeit – WEISS
-            # ------------------------------------------------
-
             clock=self._clock_xml(
                 "1760,35",
                 "400,45",
@@ -6948,10 +7027,6 @@ class sevendays(Screen):
                 "%H:%M:%S",
                 color=self.COLOR_CLOCK
             ),
-
-            # ------------------------------------------------
-            # Datum – GELB
-            # ------------------------------------------------
 
             date=self._clock_xml(
                 "1760,72",
@@ -6966,19 +7041,20 @@ class sevendays(Screen):
                 winddir_top
             ),
 
-            colorbuttons=self._color_buttons_xml(True)
+            colorbuttons=self._color_buttons_xml(
+                True
+            )
         )
-
 
     # ================================================================
     # SD SKIN
     # ================================================================
 
     def _build_sd_skin(
-        self,
-        data,
-        winddir_top,
-        tempicon
+            self,
+            data,
+            winddir_top,
+            tempicon
     ):
 
         content = ""
@@ -7037,26 +7113,22 @@ class sevendays(Screen):
             {content}
 
             <!-- ================================================= -->
-            <!-- MENU + OK UNTEN RECHTS                           -->
+            <!-- MENU + OK                                        -->
             <!-- ================================================= -->
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/menubuttonsd.png"
-                position="1100,680"
+                position="1160,90"
                 size="60,36"
                 zPosition="10"
                 alphatest="blend"/>
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/okbuttonsd.png"
-                position="1170,680"
+                position="1228,90"
                 size="36,36"
                 zPosition="10"
                 alphatest="blend"/>
-
-            <!-- ================================================= -->
-            <!-- FARBTASTEN UNTEN                                 -->
-            <!-- ================================================= -->
 
             {colorbuttons}
 
@@ -7069,10 +7141,6 @@ class sevendays(Screen):
             tempicon=tempicon,
             content=content,
 
-            # ------------------------------------------------
-            # Uhrzeit – WEISS
-            # ------------------------------------------------
-
             clock=self._clock_xml(
                 "1091,12",
                 "150,55",
@@ -7081,13 +7149,9 @@ class sevendays(Screen):
                 color=self.COLOR_CLOCK
             ),
 
-            # ------------------------------------------------
-            # Datum – GELB
-            # ------------------------------------------------
-
             date=self._clock_xml(
                 "941,32",
-                "300,55",
+                "210,55",
                 16,
                 "%a.%d.%m",
                 color=self.COLOR_DATE
@@ -7098,18 +7162,20 @@ class sevendays(Screen):
                 winddir_top
             ),
 
-            colorbuttons=self._color_buttons_xml(False)
+            colorbuttons=self._color_buttons_xml(
+                False
             )
+        )
 
     # ================================================================
     # SKIN
     # ================================================================
 
     def _build_skin(
-        self,
-        data,
-        winddir_top,
-        tempicon
+            self,
+            data,
+            winddir_top,
+            tempicon
     ):
 
         if sz_w > 1800:
@@ -7130,7 +7196,11 @@ class sevendays(Screen):
     # TAGESDATEN
     # ================================================================
 
-    def _set_day(self, day, data):
+    def _set_day(
+            self,
+            day,
+            data
+    ):
 
         names = (
             "smallday2",
@@ -7140,7 +7210,10 @@ class sevendays(Screen):
         )
 
         widgets = [
-            "{}{}".format(x, day)
+            "{}{}".format(
+                x,
+                day
+            )
             for x in names
         ]
 
@@ -7158,6 +7231,7 @@ class sevendays(Screen):
                 self[name].text = ""
 
             try:
+
                 self[
                     "bigWeerIcon1{}".format(day)
                 ].hide()
@@ -7184,9 +7258,9 @@ class sevendays(Screen):
         except Exception:
             pass
 
-        # ------------------------------------------------------------
+        # ============================================================
         # DATUM
-        # ------------------------------------------------------------
+        # ============================================================
 
         info1 = ""
 
@@ -7229,9 +7303,9 @@ class sevendays(Screen):
                     e
                 )
 
-        # ------------------------------------------------------------
+        # ============================================================
         # TEMPERATUREN
-        # ------------------------------------------------------------
+        # ============================================================
 
         mintemp = data.get("mintemp")
 
@@ -7253,20 +7327,42 @@ class sevendays(Screen):
         if mintemp is not None:
 
             try:
-                info2 = "{:.0f}\xb0".format(float(mintemp))
-            except (TypeError, ValueError):
-                info2 = safeStr(mintemp) + "\xb0"
+
+                info2 = "{:.0f}\xb0".format(
+                    float(mintemp)
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                info2 = (
+                    safeStr(mintemp)
+                    + "\xb0"
+                )
 
         if maxtemp is not None:
 
             try:
-                info3 = "{:.0f}\xb0".format(float(maxtemp))
-            except (TypeError, ValueError):
-                info3 = safeStr(maxtemp) + "\xb0"
 
-        # ------------------------------------------------------------
+                info3 = "{:.0f}\xb0".format(
+                    float(maxtemp)
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                info3 = (
+                    safeStr(maxtemp)
+                    + "\xb0"
+                )
+
+        # ============================================================
         # ANZEIGEN
-        # ------------------------------------------------------------
+        # ============================================================
 
         self[
             "smallday2{}".format(day)
@@ -7315,9 +7411,9 @@ class sevendays(Screen):
         self.selected = 0
         self.hourStep = 1
 
-        # ------------------------------------------------------------
+        # ============================================================
         # OBERER WINDPFEIL
-        # ------------------------------------------------------------
+        # ============================================================
 
         winddir_top = (
             self._wind(data[0])
@@ -7325,22 +7421,23 @@ class sevendays(Screen):
             else "na"
         )
 
-        # ------------------------------------------------------------
+        # ============================================================
         # TEMPERATURBILD
-        # ------------------------------------------------------------
+        # ============================================================
 
-        tempicon = self._temp_picture(data)
+        tempicon = self._temp_picture(
+            data
+        )
 
-        # ------------------------------------------------------------
-        # SEVENDAY FARBEN AUS DER AKTUELLEN CONFIG
-        # ------------------------------------------------------------
-        # Bei jedem neuen Wetterfenster werden die aktuellen Werte aus
-        # ConfigSelection gelesen. Ein GUI-Neustart ist nicht erforderlich.
+        # ============================================================
+        # FARBEN LADEN
+        # ============================================================
+
         self._loadSevenDayColors()
 
-        # ------------------------------------------------------------
+        # ============================================================
         # SKIN
-        # ------------------------------------------------------------
+        # ============================================================
 
         self.skin = self._build_skin(
             data,
@@ -7348,9 +7445,9 @@ class sevendays(Screen):
             tempicon
         )
 
-        # ------------------------------------------------------------
+        # ============================================================
         # DATUMSFORMAT
-        # ------------------------------------------------------------
+        # ============================================================
 
         try:
 
@@ -7375,11 +7472,12 @@ class sevendays(Screen):
                 e
             )
 
-        # ------------------------------------------------------------
+        # ============================================================
         # ALLGEMEINE WIDGETS
-        # ------------------------------------------------------------
+        # ============================================================
 
         self["city1"] = StaticText()
+
         self["city1"].text = str(
             citynamedisplay
         )
@@ -7390,6 +7488,7 @@ class sevendays(Screen):
             "GevoelsTemp1",
             "winddir1"
         ):
+
             self[name] = StaticText()
 
         for name in (
@@ -7397,6 +7496,7 @@ class sevendays(Screen):
             "weatheralertbg1",
             "weatheralerticon1"
         ):
+
             self[name] = Pixmap()
 
         self["weatheralert1"] = Label("")
@@ -7405,9 +7505,9 @@ class sevendays(Screen):
 
         self["bgpic"] = Pixmap()
 
-        # ------------------------------------------------------------
+        # ============================================================
         # HINTERGRUND
-        # ------------------------------------------------------------
+        # ============================================================
 
         try:
 
@@ -7431,9 +7531,9 @@ class sevendays(Screen):
 
             self.picload = None
 
-        # ------------------------------------------------------------
+        # ============================================================
         # STUNDEN
-        # ------------------------------------------------------------
+        # ============================================================
 
         defaults = {
             "dayhour3": "00h",
@@ -7456,42 +7556,80 @@ class sevendays(Screen):
                     value
                 )
 
-        # ------------------------------------------------------------
-        # SONNENAUFGANG / SONNENUNTERGANG
-        # ------------------------------------------------------------
+        # ============================================================
+        # SONNE / MOND
+        # ============================================================
 
         sunrise, sunset = self._sun(data)
         moonrise, moonset = self._moon(data)
 
-        self._label("sunriselab", sunrise)
-        self._label("sunsetlab", sunset)
-        self._label("sunsep", "-")
+        self._label(
+            "sunriselab",
+            sunrise
+        )
 
-        self._label("moonriselab", moonrise)
-        self._label("moonsetlab", moonset)
-        self._label("moonsep", "-")
+        self._label(
+            "sunsetlab",
+            sunset
+        )
 
-        # ------------------------------------------------------------
+        self._label(
+            "sunsep",
+            "-"
+        )
+
+        self._label(
+            "moonriselab",
+            moonrise
+        )
+
+        self._label(
+            "moonsetlab",
+            moonset
+        )
+
+        self._label(
+            "moonsep",
+            "-"
+        )
+
+        # ============================================================
         # 7 TAGE
-        # ------------------------------------------------------------
+        # ============================================================
 
         for day in range(7):
 
             self._set_day(
                 day,
-                self._day(data, day)
+                self._day(
+                    data,
+                    day
+                )
             )
-        # ------------------------------------------------------------
-        # FARBTASTEN-BESCHRIFTUNGEN
-        # ------------------------------------------------------------
 
-        self["key_red"] = StaticText(_("Back"))
-        self["key_green"] = StaticText(_("Hours"))
-        self["key_yellow"] = StaticText(_("Radar"))
-        self["key_blue"] = StaticText(_("Compare Two Locations"))
-        # ------------------------------------------------------------
+        # ============================================================
+        # FARBTASTEN
+        # ============================================================
+
+        self["key_red"] = StaticText(
+            _("Back")
+        )
+
+        self["key_green"] = StaticText(
+            _("Hours")
+        )
+
+        self["key_yellow"] = StaticText(
+            _("Radar")
+        )
+
+        self["key_blue"] = StaticText(
+            _("Compare Two Locations")
+        )
+
+        # ============================================================
         # ACTIONMAP
-        # ------------------------------------------------------------
+        # ============================================================
 
         self["myActionMap"] = ActionMap(
             [
@@ -7513,15 +7651,15 @@ class sevendays(Screen):
             -1
         )
 
-        # ------------------------------------------------------------
+        # ============================================================
         # STARTANZEIGE
-        # ------------------------------------------------------------
+        # ============================================================
 
         self.updateFrameselect()
 
-        # ------------------------------------------------------------
+        # ============================================================
         # TIMER
-        # ------------------------------------------------------------
+        # ============================================================
 
         self.alertFixTimer = eTimer()
 
@@ -7535,19 +7673,32 @@ class sevendays(Screen):
             True
         )
 
-        # Sehr leichter Timer: nur einmal pro Minute pruefen, ob die
-        # aktuelle Wetterstunde gewechselt hat. Kein Netzwerkzugriff.
         self.currentHourTimer = eTimer()
+
         self._currentHourTimer_conn = safeTimerCallback(
             self.currentHourTimer,
             self._updateCurrentBigIcon
         )
-        self.currentHourTimer.start(60000, False)
-        self.onClose.append(self._stopCurrentHourTimer)
+
+        self.currentHourTimer.start(
+            60000,
+            False
+        )
+
+        self.onClose.append(
+            self._stopCurrentHourTimer
+        )
+
+    # ================================================================
+    # FARBEN LADEN
+    # ================================================================
 
     def _loadSevenDayColors(self):
-        """Lädt bei jedem neuen SevenDay-Screen die aktuellen Farbwerte."""
-        for _color_name, _config_name in (
+
+        for (
+            _color_name,
+            _config_name
+        ) in (
             ("COLOR_CITY", "city"),
             ("COLOR_BIGTEMP", "bigtemp"),
             ("COLOR_WEATHERTYPE", "weathertype"),
@@ -7572,93 +7723,210 @@ class sevendays(Screen):
             ("COLOR_DATE", "date"),
             ("COLOR_ALERT", "alert"),
         ):
+
             try:
+
                 cfg = getattr(
                     config.plugins.speedy_TheWeather,
                     "sevenday_color_" + _config_name
                 )
-                value = cfg.value or _SEVENDAY_COLOR_DEFAULTS[_config_name]
-                setattr(self, _color_name, value)
-            except Exception:
+
+                value = (
+                    cfg.value
+                    or _SEVENDAY_COLOR_DEFAULTS[
+                        _config_name
+                    ]
+                )
+
                 setattr(
                     self,
                     _color_name,
-                    _SEVENDAY_COLOR_DEFAULTS[_config_name]
+                    value
                 )
 
+            except Exception:
+
+                setattr(
+                    self,
+                    _color_name,
+                    _SEVENDAY_COLOR_DEFAULTS[
+                        _config_name
+                    ]
+                )
+
+    # ================================================================
+    # SLOT HOURS
+    # ================================================================
+
     def getSlotHours(self, day):
+
         global weatherData
+
         dataDagen = weatherData["days"]
         dataUrr = dataDagen[day]["hours"]
+
         result = []
         datacount = 0
+
         for data in dataUrr:
+
             try:
-                hour = int(data.get("hour"))
-            except (TypeError, ValueError):
+
+                hour = int(
+                    data.get("hour")
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
                 continue
-            if hour >= 1 and self.hourStep > 0 and ((hour - 1) % self.hourStep) == 0:
+
+            if (
+                hour >= 1
+                and self.hourStep > 0
+                and ((hour - 1) % self.hourStep) == 0
+            ):
+
                 if datacount < 8:
+
                     result.append(data)
                     datacount += 1
+
         return result
 
+    # ================================================================
+    # STUNDENSCHRITT
+    # ================================================================
+
     def toggleHourStep(self):
+
         if self.hourStep == 1:
+
             self.hourStep = 2
+
         elif self.hourStep == 2:
+
             self.hourStep = 3
+
         else:
+
             self.hourStep = 1
+
         self.updateFrameselect()
 
+    # ================================================================
+    # TIMER STOPPEN
+    # ================================================================
+
     def _stopCurrentHourTimer(self):
+
         try:
-            if hasattr(self, "currentHourTimer"):
+
+            if hasattr(
+                self,
+                "currentHourTimer"
+            ):
+
                 self.currentHourTimer.stop()
+
         except Exception:
             pass
 
+    # ================================================================
+    # AKTUELLE STUNDE
+    # ================================================================
+
     def _getCurrentHourData(self):
-        """Gibt den Wetterdatensatz fuer die aktuelle Stunde zurueck."""
+
         try:
-            hours = weatherData.get("days", [])[0].get("hours", [])
-        except (AttributeError, IndexError, TypeError):
+
+            hours = weatherData.get(
+                "days",
+                []
+            )[0].get(
+                "hours",
+                []
+            )
+
+        except (
+            AttributeError,
+            IndexError,
+            TypeError
+        ):
+
             return None
 
         if not hours:
             return None
 
         try:
+
             now_hour = datetime.datetime.now().hour
+
         except Exception:
+
             now_hour = None
 
         if now_hour is not None:
-            # Buienradar kann Stunden je nach Datenquelle als 0-23
-            # oder 1-24 liefern. Beides wird hier unterstuetzt.
+
             for entry in hours:
+
                 try:
-                    hour = int(entry.get("hour"))
-                except (TypeError, ValueError, AttributeError):
+
+                    hour = int(
+                        entry.get("hour")
+                    )
+
+                except (
+                    TypeError,
+                    ValueError,
+                    AttributeError
+                ):
+
                     continue
-                if hour == now_hour or (now_hour == 0 and hour == 24):
+
+                if (
+                    hour == now_hour
+                    or (
+                        now_hour == 0
+                        and hour == 24
+                    )
+                ):
+
                     return entry
 
-        # Sicherer Fallback: erste vorhandene Stunde.
-        return hours[0] if isinstance(hours[0], dict) else None
+        return (
+            hours[0]
+            if isinstance(
+                hours[0],
+                dict
+            )
+            else None
+        )
+
+    # ================================================================
+    # GROSSES ICON AKTUALISIEREN
+    # ================================================================
 
     def _updateCurrentBigIcon(self):
-        """Aktualisiert das grosse Icon des heutigen Tages auf die aktuelle Stunde."""
+
         try:
+
             if self.selected != 0:
                 return
 
             entry = self._getCurrentHourData()
+
             if not entry:
                 return
 
-            icon = entry.get("iconcode") or entry.get("icon")
+            icon = (
+                entry.get("iconcode")
+                or entry.get("icon")
+            )
+
             if not icon:
                 return
 
@@ -7669,53 +7937,98 @@ class sevendays(Screen):
                 str(icon) + ".png"
             )
 
-            widget = self["bigWeerIcon10"]
+            widget = self[
+                "bigWeerIcon10"
+            ]
+
             if widget.instance is not None:
-                widget.instance.setPixmap(_load_icon_cached(iconpath))
+
+                widget.instance.setPixmap(
+                    _load_icon_cached(
+                        iconpath
+                    )
+                )
+
         except Exception as e:
-            print("[speedy_TheWeather] current big icon update failed:", e)
+
+            print(
+                "[speedy_TheWeather] "
+                "current big icon update failed:",
+                e
+            )
+
+    # ================================================================
+    # AUSWAHL AKTUALISIEREN
+    # ================================================================
 
     def updateFrameselect(self):
+
         if self.selected < 0:
             self.selected = 6
+
         elif self.selected > 6:
             self.selected = 0
 
-        # ---------------------------------------------------------
-        # Gelben Punkt unter dem ausgewählten Tag verschieben
-        # ---------------------------------------------------------
+        # ============================================================
+        # GELBER PUNKT
+        # ============================================================
+
         if sz_w > 1800:
-            self["yellowdot"].moveTo(275 + (248 * self.selected), 463, 2)
+
+            self["yellowdot"].moveTo(
+                275 + (
+                    248 * self.selected
+                ),
+                463,
+                2
+            )
+
         else:
-            self["yellowdot"].moveTo(184 + (165 * self.selected), 307, 2)
+
+            self["yellowdot"].moveTo(
+                184 + (
+                    165 * self.selected
+                ),
+                307,
+                2
+            )
 
         self["yellowdot"].startMoving()
 
         global weatherData
+
         dataDagen = weatherData["days"]
 
-        # ---------------------------------------------------------
-        # Sicherheit: Daten vorhanden?
-        # ---------------------------------------------------------
         if not dataDagen:
             return
 
-        # ---------------------------------------------------------
-        # Oberer Bereich
-        # Die Anzeige oben bleibt weiterhin auf Tag 0 / aktuelle
-        # Wetterstunde bezogen, wie im bisherigen Code.
-        # ---------------------------------------------------------
+        # ============================================================
+        # OBERER BEREICH
+        # ============================================================
+
         temptext = "na"
 
         try:
-            if dataDagen[self.selected + 0].get("temperature"):
-                temptext = dataDagen[self.selected + 0]["temperature"]
+
+            if dataDagen[
+                self.selected + 0
+            ].get("temperature"):
+
+                temptext = dataDagen[
+                    self.selected + 0
+                ]["temperature"]
+
         except Exception:
             pass
 
         try:
-            dataPerUur = weatherData["days"][0]["hours"]
+
+            dataPerUur = weatherData[
+                "days"
+            ][0]["hours"]
+
         except Exception:
+
             dataPerUur = []
 
         self["bigtemp1"].setText("")
@@ -7724,77 +8037,143 @@ class sevendays(Screen):
         self["winddir1"].setText("")
 
         try:
+
             if dataPerUur:
+
                 self["bigtemp1"].setText(
                     '{:>4}'.format(
-                        str("%.1f" % dataPerUur[0]["temperature"])
+                        str(
+                            "%.1f"
+                            % dataPerUur[0][
+                                "temperature"
+                            ]
+                        )
                     )
                 )
 
-                self["GevoelsTemp1"].setText(
+                self[
+                    "GevoelsTemp1"
+                ].setText(
                     _("Feels Like: ")
-                    + str("%.1f" % dataPerUur[0]["feeltemperature"])
+                    + str(
+                        "%.1f"
+                        % dataPerUur[0][
+                            "feeltemperature"
+                        ]
+                    )
                     + "\xb0C"
                 )
 
-                self["winddir1"].setText(
+                self[
+                    "winddir1"
+                ].setText(
                     _("Wind direction: ")
-                    + str(winddirtext(dataPerUur[0]["winddirection"]))
+                    + str(
+                        winddirtext(
+                            dataPerUur[0][
+                                "winddirection"
+                            ]
+                        )
+                    )
                 )
 
-                self["bigweathertype1"].setText(
-                    icontotext(str(dataPerUur[0]["iconcode"]))
+                self[
+                    "bigweathertype1"
+                ].setText(
+                    icontotext(
+                        str(
+                            dataPerUur[0][
+                                "iconcode"
+                            ]
+                        )
+                    )
                 )
+
         except Exception:
             pass
 
-        # ---------------------------------------------------------
-        # Wetterwarnung
-        # ---------------------------------------------------------
+        # ============================================================
+        # WETTERWARNUNG
+        # ============================================================
+
         try:
-            alertKleur, alertTekst = localWeatherAlert(dataDagen[0])
+
+            alertKleur, alertTekst = (
+                localWeatherAlert(
+                    dataDagen[0]
+                )
+            )
+
         except Exception as e:
+
             alertKleur, alertTekst = "", ""
+
             print(
-                "updateFrameselect: fout bij bepalen weeralarm:",
+                "updateFrameselect: "
+                "fout bij bepalen weeralarm:",
                 e
             )
 
         if alertTekst:
+
             kleurwaarde = {
                 "yellow": gRGB(0xf2c200),
                 "orange": gRGB(0xff8c00),
-                "red":    gRGB(0xe02020),
-                "blue":   gRGB(0x40a0ff),
-            }.get(alertKleur, gRGB(0xffffff))
+                "red": gRGB(0xe02020),
+                "blue": gRGB(0x40a0ff),
+            }.get(
+                alertKleur,
+                gRGB(0xffffff)
+            )
 
-            self["weatheralert1"].setText(alertTekst)
+            self[
+                "weatheralert1"
+            ].setText(
+                alertTekst
+            )
 
             try:
-                if self["weatheralert1"].instance is not None:
-                    self["weatheralert1"].instance.setForegroundColor(
+
+                if (
+                    self[
+                        "weatheralert1"
+                    ].instance is not None
+                ):
+
+                    self[
+                        "weatheralert1"
+                    ].instance.setForegroundColor(
                         kleurwaarde
                     )
+
             except Exception as e:
+
                 print(
-                    "updateFrameselect: fout bij instellen "
+                    "updateFrameselect: "
+                    "fout bij instellen "
                     "weeralarm-kleur:",
                     e
                 )
 
             try:
+
                 if sz_w > 1800:
+
                     iconpad = (
-                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "/usr/lib/enigma2/python/"
+                        "Plugins/Extensions/"
                         "speedy_TheWeather/"
                         + SHARED_PACK
                         + "/alert/alert_"
                         + alertKleur
                         + ".png"
                     )
+
                 else:
+
                     iconpad = (
-                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "/usr/lib/enigma2/python/"
+                        "Plugins/Extensions/"
                         "speedy_TheWeather/"
                         + SHARED_PACK
                         + "/alert/alert_"
@@ -7802,197 +8181,280 @@ class sevendays(Screen):
                         + "_sd.png"
                     )
 
-                if self["weatheralerticon1"].instance is not None:
-                    self["weatheralerticon1"].instance.setPixmapFromFile(
+                if (
+                    self[
+                        "weatheralerticon1"
+                    ].instance is not None
+                ):
+
+                    self[
+                        "weatheralerticon1"
+                    ].instance.setPixmapFromFile(
                         iconpad
                     )
-                    self["weatheralerticon1"].show()
+
+                    self[
+                        "weatheralerticon1"
+                    ].show()
 
             except Exception as e:
+
                 print(
-                    "updateFrameselect: fout bij laden alert-icoon:",
+                    "updateFrameselect: "
+                    "fout bij laden alert-icoon:",
                     e
                 )
-                self["weatheralerticon1"].hide()
 
-            self["weatheralertbg1"].show()
+                self[
+                    "weatheralerticon1"
+                ].hide()
+
+            self[
+                "weatheralertbg1"
+            ].show()
 
         else:
-            self["weatheralert1"].setText("")
-            self["weatheralerticon1"].hide()
-            self["weatheralertbg1"].hide()
 
-        # ---------------------------------------------------------
-        # Werte des ausgewählten Tages
-        # ---------------------------------------------------------
+            self[
+                "weatheralert1"
+            ].setText(
+                ""
+            )
+
+            self[
+                "weatheralerticon1"
+            ].hide()
+
+            self[
+                "weatheralertbg1"
+            ].hide()
+
+        # ============================================================
+        # GROSSE DATEN
+        # ============================================================
+
         feeltext = "na"
 
         try:
-            if dataDagen[0].get("feeltemperature"):
-                feeltext = dataDagen[0]["feeltemperature"]
+
+            if dataDagen[0].get(
+                "feeltemperature"
+            ):
+
+                feeltext = dataDagen[0][
+                    "feeltemperature"
+                ]
+
         except Exception:
             pass
 
         windtext = "na"
 
         try:
-            if dataDagen[0].get("winddirection"):
-                windtext = dataDagen[0]["winddirection"]
+
+            if dataDagen[0].get(
+                "winddirection"
+            ):
+
+                windtext = dataDagen[0][
+                    "winddirection"
+                ]
+
         except Exception:
             pass
 
         typetext = "na"
 
         try:
-            if dataDagen[0].get("iconcode"):
-                typetext = dataDagen[0]["iconcode"]
+
+            if dataDagen[0].get(
+                "iconcode"
+            ):
+
+                typetext = dataDagen[0][
+                    "iconcode"
+                ]
+
         except Exception:
             pass
 
-        # ---------------------------------------------------------
-        # WICHTIG:
-        # Alle großen Tages-Wettericons zuerst verstecken.
-        #
-        # bigWeerIcon10 ... bigWeerIcon16 liegen absichtlich
-        # auf derselben Position. Es darf deshalb immer nur
-        # EIN Icon sichtbar sein.
-        # ---------------------------------------------------------
+        # ============================================================
+        # ALLE GROSSEN ICONS VERSTECKEN
+        # ============================================================
+
         for day in range(0, 7):
+
             try:
-                self["bigWeerIcon1" + str(day)].hide()
+
+                self[
+                    "bigWeerIcon1"
+                    + str(day)
+                ].hide()
+
             except Exception:
                 pass
 
             try:
-                self["bigDirIcon1" + str(day)].hide()
+
+                self[
+                    "bigDirIcon1"
+                    + str(day)
+                ].hide()
+
             except Exception:
                 pass
 
-        # ---------------------------------------------------------
-        # Nur das große Wettericon des ausgewählten Tages anzeigen
-        # ---------------------------------------------------------
+        # ============================================================
+        # AUSGEWÄHLTES ICON
+        # ============================================================
+
         try:
-            self["bigWeerIcon1" + str(self.selected)].show()
+
+            self[
+                "bigWeerIcon1"
+                + str(self.selected)
+            ].show()
+
         except Exception:
             pass
 
-        # Fuer heute (Tag 0) das grosse Icon immer auf die aktuelle
-        # Wetterstunde setzen. Die Icons der zukuenftigen Tage bleiben
-        # unveraendert und zeigen weiterhin deren Tagesprognose.
         self._updateCurrentBigIcon()
 
         try:
-            self["bigDirIcon1" + str(self.selected)].show()
+
+            self[
+                "bigDirIcon1"
+                + str(self.selected)
+            ].show()
+
         except Exception:
             pass
 
-        # ---------------------------------------------------------
-        # Stunden des ausgewählten Tages
-        # ---------------------------------------------------------
+        # ============================================================
+        # STUNDEN
+        # ============================================================
+
         try:
-            dataPerUur = weatherData["days"][self.selected]["hours"]
+
+            dataPerUur = weatherData[
+                "days"
+            ][
+                self.selected
+            ][
+                "hours"
+            ]
+
         except Exception:
+
             dataPerUur = []
 
-        slotHours = self.getSlotHours(self.selected)
+        slotHours = self.getSlotHours(
+            self.selected
+        )
 
-        # ---------------------------------------------------------
-        # 8 Stundenfelder aktualisieren
-        # ---------------------------------------------------------
+        # ============================================================
+        # 8 STUNDENFELDER
+        # ============================================================
+
         for perUurUpdate in range(0, 8):
 
-            # -----------------------------------------------------
-            # Alle Tages-Icons für diesen Stundenplatz verstecken
-            # -----------------------------------------------------
             for day in range(0, 7):
+
                 try:
+
                     self[
                         "dayIcon"
                         + str(day)
                         + str(perUurUpdate)
                     ].hide()
+
                 except Exception:
                     pass
 
-            # -----------------------------------------------------
-            # Stundenfeld und Zusatzicons verstecken
-            # -----------------------------------------------------
             try:
-                self["vlakuur" + str(perUurUpdate)].hide()
+
+                self[
+                    "vlakuur"
+                    + str(perUurUpdate)
+                ].hide()
+
             except Exception:
                 pass
 
-            try:
-                self["sunicon" + str(perUurUpdate)].hide()
-            except Exception:
-                pass
+            for prefix in (
+                "sunicon",
+                "rainicon",
+                "rhicon",
+                "windicon"
+            ):
 
-            try:
-                self["rainicon" + str(perUurUpdate)].hide()
-            except Exception:
-                pass
+                try:
 
-            try:
-                self["rhicon" + str(perUurUpdate)].hide()
-            except Exception:
-                pass
+                    self[
+                        prefix
+                        + str(perUurUpdate)
+                    ].hide()
 
-            try:
-                self["windicon" + str(perUurUpdate)].hide()
-            except Exception:
-                pass
+                except Exception:
+                    pass
 
-            # -----------------------------------------------------
-            # Prüfen, ob für diesen Slot Daten vorhanden sind
-            # -----------------------------------------------------
             slotHasData = (
-                perUurUpdate < len(slotHours)
+                perUurUpdate
+                < len(slotHours)
             )
 
             if slotHasData:
 
-                # -------------------------------------------------
-                # Icon des ausgewählten Tages anzeigen
-                # -------------------------------------------------
                 try:
+
                     self[
                         "dayIcon"
                         + str(self.selected)
                         + str(perUurUpdate)
                     ].show()
+
                 except Exception:
                     pass
 
-                # -------------------------------------------------
-                # Stundenfeld anzeigen
-                # -------------------------------------------------
                 try:
+
                     self[
                         "vlakuur"
                         + str(perUurUpdate)
                     ].show()
+
                 except Exception:
                     pass
 
-                try:
-                    self[
-                        "sunicon"
-                        + str(perUurUpdate)
-                    ].show()
-                except Exception:
-                    pass
+                for prefix in (
+                    "sunicon",
+                    "rainicon",
+                    "rhicon",
+                    "windicon"
+                ):
 
-                # -------------------------------------------------
-                # Wettericon laden
-                # -------------------------------------------------
+                    try:
+
+                        self[
+                            prefix
+                            + str(perUurUpdate)
+                        ].show()
+
+                    except Exception:
+                        pass
+
                 try:
+
                     iconpath = (
-                        "/usr/lib/enigma2/python/Plugins/Extensions/"
+                        "/usr/lib/enigma2/python/"
+                        "Plugins/Extensions/"
                         "speedy_TheWeather/"
                         + icoonpath
                         + "/iconhd/"
                         + str(
-                            slotHours[perUurUpdate]["iconcode"]
+                            slotHours[
+                                perUurUpdate
+                            ]["iconcode"]
                         )
                         + ".png"
                     )
@@ -8002,52 +8464,33 @@ class sevendays(Screen):
                         + str(self.selected)
                         + str(perUurUpdate)
                     ].instance.setPixmap(
-                        _load_icon_cached(iconpath)
+                        _load_icon_cached(
+                            iconpath
+                        )
                     )
 
                 except Exception:
                     pass
 
-                # -------------------------------------------------
-                # Regen / Luftfeuchtigkeit / Wind anzeigen
-                # -------------------------------------------------
-                try:
-                    self[
-                        "rainicon"
-                        + str(perUurUpdate)
-                    ].show()
-                except Exception:
-                    pass
+            # ========================================================
+            # STUNDENTEXTE
+            # ========================================================
 
-                try:
-                    self[
-                        "rhicon"
-                        + str(perUurUpdate)
-                    ].show()
-                except Exception:
-                    pass
-
-                try:
-                    self[
-                        "windicon"
-                        + str(perUurUpdate)
-                    ].show()
-                except Exception:
-                    pass
-
-            # -----------------------------------------------------
-            # Texte der Stundenfelder
-            # -----------------------------------------------------
             try:
+
                 if slotHasData:
 
-                    entry = slotHours[perUurUpdate]
+                    entry = slotHours[
+                        perUurUpdate
+                    ]
 
                     self[
                         "dayhour3"
                         + str(perUurUpdate)
                     ].setText(
-                        str(entry["hour"]) + _("h")
+                        str(
+                            entry["hour"]
+                        ) + _("h")
                     )
 
                     self[
@@ -8057,23 +8500,33 @@ class sevendays(Screen):
                         '{:>4}'.format(
                             str(
                                 "%.0f"
-                                % entry["temperature"]
+                                % entry[
+                                    "temperature"
+                                ]
                             )
                             + "\xb0C"
                         )
                     )
 
-                    # Schreibweise des ursprünglichen Codes beibehalten
                     try:
-                        precipitation = entry["precipation"]
+
+                        precipitation = entry[
+                            "precipation"
+                        ]
+
                     except Exception:
-                        precipitation = entry["precipitation"]
+
+                        precipitation = entry[
+                            "precipitation"
+                        ]
 
                     self[
                         "daypercent3"
                         + str(perUurUpdate)
                     ].setText(
-                        str(precipitation) + "%"
+                        str(
+                            precipitation
+                        ) + "%"
                     )
 
                     self[
@@ -8081,7 +8534,9 @@ class sevendays(Screen):
                         + str(perUurUpdate)
                     ].setText(
                         format_windspeed(
-                            entry.get("windspeed")
+                            entry.get(
+                                "windspeed"
+                            )
                         )
                     )
 
@@ -8089,62 +8544,53 @@ class sevendays(Screen):
                         "sunpercent3"
                         + str(perUurUpdate)
                     ].setText(
-                        str(entry["sunshine"]) + "%"
+                        str(
+                            entry["sunshine"]
+                        ) + "%"
                     )
 
                     self[
                         "hrdayper3"
                         + str(perUurUpdate)
                     ].setText(
-                        str(entry["humidity"]) + "%"
+                        str(
+                            entry["humidity"]
+                        ) + "%"
                     )
 
                 else:
-                    self[
-                        "dayhour3"
-                        + str(perUurUpdate)
-                    ].setText("")
 
-                    self[
-                        "daytemp3"
-                        + str(perUurUpdate)
-                    ].setText("")
-
-                    self[
-                        "daypercent3"
-                        + str(perUurUpdate)
-                    ].setText("")
-
-                    self[
-                        "dayspeed3"
-                        + str(perUurUpdate)
-                    ].setText("")
-
-                    self[
-                        "sunpercent3"
-                        + str(perUurUpdate)
-                    ].setText("")
-
-                    self[
+                    for prefix in (
+                        "dayhour3",
+                        "daytemp3",
+                        "daypercent3",
+                        "dayspeed3",
+                        "sunpercent3",
                         "hrdayper3"
-                        + str(perUurUpdate)
-                    ].setText("")
+                    ):
+
+                        self[
+                            prefix
+                            + str(perUurUpdate)
+                        ].setText("")
 
             except Exception:
 
-                # -------------------------------------------------
-                # Fallback für unterschiedliche API-Schreibweisen
-                # -------------------------------------------------
                 try:
+
                     if slotHasData:
 
-                        entry = slotHours[perUurUpdate]
+                        entry = slotHours[
+                            perUurUpdate
+                        ]
 
                         self[
                             "dayhour3"
                             + str(perUurUpdate)
                         ].setText(
-                            str(entry["hour"]) + _("h")
+                            str(
+                                entry["hour"]
+                            ) + _("h")
                         )
 
                         self[
@@ -8154,7 +8600,9 @@ class sevendays(Screen):
                             '{:>4}'.format(
                                 str(
                                     "%.0f"
-                                    % entry["temperature"]
+                                    % entry[
+                                        "temperature"
+                                    ]
                                 )
                                 + "\xb0C"
                             )
@@ -8165,7 +8613,9 @@ class sevendays(Screen):
                             + str(perUurUpdate)
                         ].setText(
                             str(
-                                entry["precipitation"]
+                                entry[
+                                    "precipitation"
+                                ]
                             ) + "%"
                         )
 
@@ -8174,7 +8624,9 @@ class sevendays(Screen):
                             + str(perUurUpdate)
                         ].setText(
                             format_windspeed(
-                                entry.get("windspeed")
+                                entry.get(
+                                    "windspeed"
+                                )
                             )
                         )
 
@@ -8182,150 +8634,179 @@ class sevendays(Screen):
                             "sunpercent3"
                             + str(perUurUpdate)
                         ].setText(
-                            str(entry["sunshine"]) + "%"
+                            str(
+                                entry["sunshine"]
+                            ) + "%"
                         )
 
                         self[
                             "hrdayper3"
                             + str(perUurUpdate)
                         ].setText(
-                            str(entry["humidity"]) + "%"
+                            str(
+                                entry["humidity"]
+                            ) + "%"
                         )
 
                     else:
-                        self[
-                            "dayhour3"
-                            + str(perUurUpdate)
-                        ].setText("")
 
-                        self[
-                            "daytemp3"
-                            + str(perUurUpdate)
-                        ].setText("")
-
-                        self[
-                            "daypercent3"
-                            + str(perUurUpdate)
-                        ].setText("")
-
-                        self[
-                            "dayspeed3"
-                            + str(perUurUpdate)
-                        ].setText("")
-
-                        self[
-                            "sunpercent3"
-                            + str(perUurUpdate)
-                        ].setText("")
-
-                        self[
+                        for prefix in (
+                            "dayhour3",
+                            "daytemp3",
+                            "daypercent3",
+                            "dayspeed3",
+                            "sunpercent3",
                             "hrdayper3"
-                            + str(perUurUpdate)
-                        ].setText("")
+                        ):
+
+                            self[
+                                prefix
+                                + str(perUurUpdate)
+                            ].setText("")
 
                 except Exception:
 
                     try:
+
                         self[
                             "dayIcon"
                             + str(self.selected)
                             + str(perUurUpdate)
                         ].hide()
+
                     except Exception:
                         pass
 
                     try:
+
                         self[
                             "vlakuur"
                             + str(perUurUpdate)
                         ].hide()
+
                     except Exception:
                         pass
 
-                    try:
-                        self[
-                            "sunicon"
-                            + str(perUurUpdate)
-                        ].hide()
-                    except Exception:
-                        pass
+                    for prefix in (
+                        "sunicon",
+                        "rainicon",
+                        "rhicon",
+                        "windicon"
+                    ):
 
-                    try:
-                        self[
-                            "rainicon"
-                            + str(perUurUpdate)
-                        ].hide()
-                    except Exception:
-                        pass
+                        try:
 
-                    try:
-                        self[
-                            "rhicon"
-                            + str(perUurUpdate)
-                        ].hide()
-                    except Exception:
-                        pass
+                            self[
+                                prefix
+                                + str(perUurUpdate)
+                            ].hide()
 
-                    try:
-                        self[
-                            "windicon"
-                            + str(perUurUpdate)
-                        ].hide()
-                    except Exception:
-                        pass
+                        except Exception:
+                            pass
+
+    # ================================================================
+    # MENU
+    # ================================================================
 
     def KeyMenu(self):
-        self.session.open(localcityscreen)
+
+        self.session.open(
+            localcityscreen
+        )
+
+    # ================================================================
+    # LINKS
+    # ================================================================
 
     def left(self):
+
         self.selected -= 1
+
         self.updateFrameselect()
+
+    # ================================================================
+    # RECHTS
+    # ================================================================
 
     def right(self):
+
         self.selected += 1
+
         self.updateFrameselect()
 
+    # ================================================================
+    # 14 TAGE
+    # ================================================================
+
     def fourteendays(self):
-        self.session.open(fourteen)
+
+        self.session.open(
+            fourteen
+        )
+
+    # ================================================================
+    # BACKGROUND
+    # ================================================================
 
     import os
 
     def loadBackground(self):
+
         global backgroundpath
         global backgroundAutoWeather
 
-        if not hasattr(self, 'picload') or self.picload is None:
+        if (
+            not hasattr(
+                self,
+                'picload'
+            )
+            or self.picload is None
+        ):
             return
 
         bg_folder = (
-            "/usr/lib/enigma2/python/Plugins/Extensions/"
+            "/usr/lib/enigma2/python/"
+            "Plugins/Extensions/"
             "speedy_TheWeather/backgrounds"
         )
 
         default_bg = (
-            "/usr/lib/enigma2/python/Plugins/Extensions/"
+            "/usr/lib/enigma2/python/"
+            "Plugins/Extensions/"
             "speedy_TheWeather/"
-            + SHARED_PACK +
-            "/backgroundhd_2.png"
+            + SHARED_PACK
+            + "/backgroundhd_2.png"
         )
 
-        # -------------------------------------------------
-        # AUTOMATISCHES WETTERBILD
-        # -------------------------------------------------
+        # ============================================================
+        # AUTO BACKGROUND
+        # ============================================================
+
         try:
+
             backgroundAutoWeather = bool(
-                config.plugins.speedy_TheWeather.autoBackgrounds.value
+                config.plugins.speedy_TheWeather
+                .autoBackgrounds.value
             )
+
         except Exception:
             pass
 
         bgfile = None
 
         if backgroundAutoWeather:
-            try:
-                auto_bg = getAutoWeatherBackground()
 
-                if auto_bg and os.path.isfile(auto_bg):
+            try:
+
+                auto_bg = (
+                    getAutoWeatherBackground()
+                )
+
+                if (
+                    auto_bg
+                    and os.path.isfile(auto_bg)
+                ):
+
                     bgfile = auto_bg
 
                     print(
@@ -8335,22 +8816,29 @@ class sevendays(Screen):
                     )
 
             except Exception as e:
+
                 print(
                     "[speedy_TheWeather] "
                     "AUTO Hintergrund Fehler: %s"
                     % e
                 )
 
-        # -------------------------------------------------
-        # MANUELLER HINTERGRUND / FALLBACK
-        # -------------------------------------------------
+        # ============================================================
+        # MANUELL / FALLBACK
+        # ============================================================
+
         if not bgfile:
 
             if (
                 backgroundpath
-                and os.path.isabs(backgroundpath)
-                and os.path.isfile(backgroundpath)
+                and os.path.isabs(
+                    backgroundpath
+                )
+                and os.path.isfile(
+                    backgroundpath
+                )
             ):
+
                 bgfile = backgroundpath
 
             elif (
@@ -8362,23 +8850,33 @@ class sevendays(Screen):
                     )
                 )
             ):
+
                 bgfile = os.path.join(
                     bg_folder,
                     backgroundpath
                 )
 
-            elif os.path.isfile(default_bg):
+            elif os.path.isfile(
+                default_bg
+            ):
+
                 bgfile = default_bg
 
-        # -------------------------------------------------
-        # KEIN BILD GEFUNDEN
-        # -------------------------------------------------
-        if not bgfile or not os.path.isfile(bgfile):
+        # ============================================================
+        # KEIN BILD
+        # ============================================================
+
+        if (
+            not bgfile
+            or not os.path.isfile(bgfile)
+        ):
+
             print(
                 "[speedy_TheWeather] "
                 "Kein gültiger Hintergrund: %s"
                 % bgfile
             )
+
             return
 
         print(
@@ -8387,12 +8885,14 @@ class sevendays(Screen):
             % bgfile
         )
 
-        # -------------------------------------------------
-        # BILD DEKODIEREN
-        # -------------------------------------------------
+        # ============================================================
+        # DEKODIEREN
+        # ============================================================
+
         try:
 
             if sz_w > 1800:
+
                 self.picload.setPara(
                     [
                         1920,
@@ -8404,7 +8904,9 @@ class sevendays(Screen):
                         "#ff000000"
                     ]
                 )
+
             else:
+
                 self.picload.setPara(
                     [
                         1280,
@@ -8417,48 +8919,103 @@ class sevendays(Screen):
                     ]
                 )
 
-            self.picload.startDecode(bgfile)
+            self.picload.startDecode(
+                bgfile
+            )
 
         except Exception as e:
+
             print(
                 "[speedy_TheWeather] "
                 "loadBackground Fehler: %s"
                 % e
             )
 
-    def bgPictureLoaded(self, picInfo=None):
-        if not hasattr(self, 'picload') or self.picload is None:
+    # ================================================================
+    # BACKGROUND GELADEN
+    # ================================================================
+
+    def bgPictureLoaded(
+            self,
+            picInfo=None
+    ):
+
+        if (
+            not hasattr(
+                self,
+                'picload'
+            )
+            or self.picload is None
+        ):
             return
 
-        # Prüft ob das Widget und die C++ Instanz existieren
-        if "bgpic" not in self or self["bgpic"] is None or self["bgpic"].instance is None:
+        if (
+            "bgpic" not in self
+            or self["bgpic"] is None
+            or self["bgpic"].instance is None
+        ):
             return
 
         try:
+
             ptr = self.picload.getData()
+
             if ptr is not None:
-                self["bgpic"].instance.setPixmap(ptr)
-                self["bgpic"].show()
+
+                self[
+                    "bgpic"
+                ].instance.setPixmap(
+                    ptr
+                )
+
+                self[
+                    "bgpic"
+                ].show()
+
         except Exception as e:
-            print("[speedy_TheWeather] bgPictureLoaded Fehler:", e)
+
+            print(
+                "[speedy_TheWeather] "
+                "bgPictureLoaded Fehler:",
+                e
+            )
+
+    # ================================================================
+    # RADAR
+    # ================================================================
 
     def openRadar(self):
+
         global lockaaleStad
 
         print(
-            "[speedy_TheWeather] openRadar lockaaleStad=%r"
+            "[speedy_TheWeather] "
+            "openRadar lockaaleStad=%r"
             % lockaaleStad
         )
 
-        lat, lon = getCoordsFromEntry(lockaaleStad)
+        lat, lon = getCoordsFromEntry(
+            lockaaleStad
+        )
 
-        if lat is not None and lon is not None:
+        if (
+            lat is not None
+            and lon is not None
+        ):
 
-            parts = safeStr(lockaaleStad).split("|")
-            location_name = parts[0].strip() if parts else ""
+            parts = safeStr(
+                lockaaleStad
+            ).split("|")
+
+            location_name = (
+                parts[0].strip()
+                if parts
+                else ""
+            )
 
             print(
-                "[speedy_TheWeather] radar location_name=%r"
+                "[speedy_TheWeather] "
+                "radar location_name=%r"
                 % location_name
             )
 
@@ -8471,6 +9028,7 @@ class sevendays(Screen):
             )
 
         else:
+
             self.session.open(
                 MessageBox,
                 _(
@@ -8480,27 +9038,67 @@ class sevendays(Screen):
                 MessageBox.TYPE_INFO
             )
 
-    #Temporary button for the twolocations
+    # ================================================================
+    # TWO LOCATIONS
+    # ================================================================
+
     def openTwoLocations(self):
-        self.session.open(twolocations)
+
+        self.session.open(
+            twolocations
+        )
+
+    # ================================================================
+    # SETUP
+    # ================================================================
 
     def openSetup(self):
-        self.session.openWithCallback(self.setupClosed, speedy_TheWeatherSetup)
 
-    def setupClosed(self, changed=False):
+        self.session.openWithCallback(
+            self.setupClosed,
+            speedy_TheWeatherSetup
+        )
+
+    def setupClosed(
+            self,
+            changed=False
+    ):
+
         if changed:
+
             self.close()
-            self.session.open(sevendays)
 
-    def backgroundPickerCallback(self, changed=None):
+            self.session.open(
+                sevendays
+            )
+
+    # ================================================================
+    # BACKGROUND CALLBACK
+    # ================================================================
+
+    def backgroundPickerCallback(
+            self,
+            changed=None
+    ):
 
         if changed:
+
             self.loadBackground()
 
+    # ================================================================
+    # EXIT
+    # ================================================================
+
     def exit(self):
+
         ClosePlugin()
 
+    # ================================================================
+    # CANCEL
+    # ================================================================
+
     def cancel(self):
+
         ClosePlugin()
 
 class fourteen(Screen):
