@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.4
+# v.1.8.5
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.8.4"
+__version__ = "1.8.5"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.4'
+version = '1.8.5'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -11107,13 +11107,14 @@ class twolocations(Screen):
         # =========================================================
         # HD
         # =========================================================
+
         if sz_w > 1800:
 
             skin = """
                 <screen name="twolocations"
-                        flags="wfNoBorder"
-                        position="center,center"
-                        size="1920,1080">
+                    flags="wfNoBorder"
+                    position="center,center"
+                    size="1920,1080">
 
                 <ePixmap
                     pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
@@ -11197,7 +11198,7 @@ class twolocations(Screen):
 
                 <widget name="loc1mintemp"
                     position="320,310"
-                    size="380,60"
+                    size="600,60"
                     zPosition="3"
                     font="Regular;48"
                     foregroundColor="#000000ff"
@@ -11213,7 +11214,7 @@ class twolocations(Screen):
                     size="600,56"
                     zPosition="3"
                     font="Regular;44"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#00ffff00"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11226,7 +11227,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#0080c0ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11239,7 +11240,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#00ffa500"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11252,7 +11253,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#004080ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11265,7 +11266,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#00ffff00"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11278,7 +11279,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11291,7 +11292,7 @@ class twolocations(Screen):
                     size="808,68"
                     zPosition="3"
                     font="Regular;48"
-                    foregroundColor="#000000ff"
+                    foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11343,7 +11344,7 @@ class twolocations(Screen):
 
                 <widget name="loc2mintemp"
                     position="1280,310"
-                    size="380,60"
+                    size="600,60"
                     zPosition="3"
                     font="Regular;48"
                     foregroundColor="#0000ff00"
@@ -11359,7 +11360,7 @@ class twolocations(Screen):
                     size="600,56"
                     zPosition="3"
                     font="Regular;44"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#00ffff00"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11372,7 +11373,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#0080c0ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11385,7 +11386,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#00ffa500"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11398,7 +11399,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#004080ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11411,7 +11412,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#00ffff00"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11424,7 +11425,7 @@ class twolocations(Screen):
                     size="600,52"
                     zPosition="3"
                     font="Regular;40"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11437,7 +11438,7 @@ class twolocations(Screen):
                     size="808,68"
                     zPosition="3"
                     font="Regular;48"
-                    foregroundColor="#0000ff00"
+                    foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     halign="left"
                     valign="center"
@@ -11520,13 +11521,14 @@ class twolocations(Screen):
         # =========================================================
         # SD 1280x720
         # =========================================================
+
         else:
 
             skin = """
                 <screen name="twolocations"
-                        flags="wfNoBorder"
-                        position="center,center"
-                        size="1280,720">
+                    flags="wfNoBorder"
+                    position="center,center"
+                    size="1280,720">
 
                 <ePixmap
                     pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
@@ -11637,7 +11639,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#0080c0ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11650,7 +11652,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ffa500"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11663,7 +11665,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#004080ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11689,7 +11691,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11702,7 +11704,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11755,7 +11757,7 @@ class twolocations(Screen):
 
                 <widget name="loc2mintemp"
                     position="842,238"
-                    size="470,44"
+                    size="474,44"
                     zPosition="3"
                     font="Regular;36"
                     halign="left"
@@ -11786,7 +11788,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#0080c0ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11799,7 +11801,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ffa500"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11812,7 +11814,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#004080ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11838,7 +11840,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11851,7 +11853,7 @@ class twolocations(Screen):
                     font="Regular;32"
                     halign="left"
                     valign="center"
-                    foregroundColor="#00ffff00"
+                    foregroundColor="#00ffffff"
                     backgroundColor="#00202020"
                     transparent="1"
                     shadowColor="black"
@@ -11915,7 +11917,7 @@ class twolocations(Screen):
                 <ePixmap
                     pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png"
                     position="695,663"
-                    size="26"
+                    size="26,26"
                     alphatest="blend"/>
 
                 <widget name="key_yellow"
@@ -12013,8 +12015,13 @@ class twolocations(Screen):
         self.fillLoc1()
 
         if self.compareCity:
-            self.fillLoc2(self.compareCity)
+
+            self.fillLoc2(
+                self.compareCity
+            )
+
         else:
+
             self._setText(
                 "loc2name",
                 _("No 2nd location")
@@ -12032,7 +12039,10 @@ class twolocations(Screen):
             self.reloadIcons
         )
 
-        self.iconFixTimer.start(300, True)
+        self.iconFixTimer.start(
+            300,
+            True
+        )
 
     # =============================================================
     # Hilfsfunktion Text
@@ -12041,17 +12051,57 @@ class twolocations(Screen):
     def _setText(self, key, value):
 
         try:
+
             self[key].setText(
                 "" if value is None else str(value)
             )
 
         except Exception as e:
+
             print(
                 "twolocations _setText fout op",
                 key,
                 ":",
                 e
             )
+
+    # =============================================================
+    # Farben ab Wetterbeschreibung
+    # =============================================================
+
+    def _setWeatherColors(self, prefix):
+
+        colors = {
+            "weertype": 0x00ffff,  # Cyan
+            "feel":     0x80c0ff,  # Hellblau
+            "wind":     0xffa500,  # Orange
+            "rain":     0x4080ff,  # Blau
+            "sun":      0xffff00,  # Gelb
+            "moon":     0xc080ff   # Violett
+        }
+
+        for name, color in colors.items():
+
+            try:
+
+                widget = self[
+                    prefix + name
+                ]
+
+                if widget.instance is not None:
+
+                    widget.instance.setForegroundColor(
+                        gRGB(color)
+                    )
+
+            except Exception as e:
+
+                print(
+                    "twolocations: Farbe für",
+                    prefix + name,
+                    "konnte nicht gesetzt werden:",
+                    e
+                )
 
     # =============================================================
     # Zeit aus verschiedenen API-Formaten lesen
@@ -12070,20 +12120,21 @@ class twolocations(Screen):
         if not value:
             return ""
 
-        # ISO:
-        # 2026-10-03T07:32:00
-        # 2026-10-03T07:32:00Z
         if "T" in value:
 
             try:
-                value = value.split("T", 1)[1]
+                value = value.split(
+                    "T",
+                    1
+                )[1]
+
             except Exception:
                 return ""
 
-        # Eventuell Datum mit Leerzeichen
         elif " " in value and len(value) > 5:
 
             try:
+
                 possible = value.split(" ")[-1]
 
                 if ":" in possible:
@@ -12092,7 +12143,6 @@ class twolocations(Screen):
             except Exception:
                 pass
 
-        # HH:MM:SS -> HH:MM
         if len(value) >= 5 and ":" in value:
             return value[:5]
 
@@ -12107,6 +12157,7 @@ class twolocations(Screen):
         for name in names:
 
             try:
+
                 value = dag.get(name)
 
                 if value not in (
@@ -12115,7 +12166,10 @@ class twolocations(Screen):
                     "None",
                     "--"
                 ):
-                    result = self._getTimeValue(value)
+
+                    result = self._getTimeValue(
+                        value
+                    )
 
                     if result:
                         return result
@@ -12132,13 +12186,16 @@ class twolocations(Screen):
     def _fillLocation(self, data, naam, prefix):
 
         try:
+
             dag = data["days"][0]
 
         except Exception:
+
             self._setText(
                 prefix + "name",
                 _("Data error")
             )
+
             return
 
         self._setText(
@@ -12147,7 +12204,7 @@ class twolocations(Screen):
         )
 
         # =========================================================
-        # Aktuelle Stunde suchen
+        # Aktuelle Stunde
         # =========================================================
 
         hours = dag.get(
@@ -12158,6 +12215,7 @@ class twolocations(Screen):
         current_hour = None
 
         try:
+
             from datetime import datetime
 
             now = datetime.now()
@@ -12179,13 +12237,17 @@ class twolocations(Screen):
 
                 try:
 
-                    hstr = str(htime).replace(
+                    hstr = str(
+                        htime
+                    ).replace(
                         "Z",
                         ""
                     )
 
                     if "T" in hstr:
-                        hstr = hstr.split("T")[1]
+                        hstr = hstr.split(
+                            "T"
+                        )[1]
 
                     hstr = hstr[:5]
 
@@ -12210,6 +12272,7 @@ class twolocations(Screen):
                         best_diff is None or
                         diff < best_diff
                     ):
+
                         best_diff = diff
                         current_hour = hour
 
@@ -12223,8 +12286,6 @@ class twolocations(Screen):
                 "konnte nicht ermittelt werden:",
                 e
             )
-
-        # Fallback
 
         if current_hour is None and hours:
             current_hour = hours[0]
@@ -12280,7 +12341,7 @@ class twolocations(Screen):
         )
 
         # =========================================================
-        # Aktuelle Wetterbeschreibung
+        # Wetterbeschreibung
         # =========================================================
 
         try:
@@ -12288,12 +12349,14 @@ class twolocations(Screen):
             iconcode = ""
 
             if current_hour:
+
                 iconcode = current_hour.get(
                     "iconcode",
                     ""
                 )
 
             if not iconcode:
+
                 iconcode = dag.get(
                     "iconcode",
                     ""
@@ -12345,7 +12408,9 @@ class twolocations(Screen):
             self._setText(
                 prefix + "feel",
                 _("Feels Like: ") +
-                "%.1f\xb0C" % float(feeltemp)
+                "%.1f\xb0C" % float(
+                    feeltemp
+                )
             )
 
         except Exception:
@@ -12415,7 +12480,9 @@ class twolocations(Screen):
             self._setText(
                 prefix + "rain",
                 _("Rain: ") +
-                "%.1f mm" % float(rainmm)
+                "%.1f mm" % float(
+                    rainmm
+                )
             )
 
         except Exception:
@@ -12426,7 +12493,7 @@ class twolocations(Screen):
             )
 
         # =========================================================
-        # SONNE
+        # Sonne
         # =========================================================
 
         try:
@@ -12447,7 +12514,7 @@ class twolocations(Screen):
 
             self._setText(
                 prefix + "sun",
-                _("Sun: ") +
+                _("Sun:") + " " +
                 sunrise +
                 "  -  " +
                 sunset
@@ -12461,7 +12528,7 @@ class twolocations(Screen):
             )
 
         # =========================================================
-        # MOND
+        # Mond
         # =========================================================
 
         try:
@@ -12484,8 +12551,6 @@ class twolocations(Screen):
                 ]
             )
 
-            # Falls API keine Mondwerte liefert:
-            # nicht "None" anzeigen.
             if not moonrise:
                 moonrise = "--"
 
@@ -12494,7 +12559,7 @@ class twolocations(Screen):
 
             self._setText(
                 prefix + "moon",
-                _("Moon: ") +
+                _("Moon:") + " " +
                 moonrise +
                 "  -  " +
                 moonset
@@ -12510,8 +12575,17 @@ class twolocations(Screen):
 
             self._setText(
                 prefix + "moon",
-                _("Moon: --  -  --")
+                _("Moon:") +
+                " --  -  --"
             )
+
+        # =========================================================
+        # Farben setzen
+        # =========================================================
+
+        self._setWeatherColors(
+            prefix
+        )
 
         # =========================================================
         # Warnung
@@ -12616,7 +12690,7 @@ class twolocations(Screen):
             pass
 
         # =========================================================
-        # Wetter-Icon aus aktueller Stunde
+        # Wetter-Icon
         # =========================================================
 
         try:
@@ -12635,29 +12709,15 @@ class twolocations(Screen):
                     ""
                 )
 
-            if sz_w > 1800:
-
-                iconbestand = (
-                    "/usr/lib/enigma2/python/"
-                    "Plugins/Extensions/"
-                    "speedy_TheWeather/" +
-                    icoonpath +
-                    "/iconbighd/" +
-                    str(iconcode) +
-                    ".png"
-                )
-
-            else:
-
-                iconbestand = (
-                    "/usr/lib/enigma2/python/"
-                    "Plugins/Extensions/"
-                    "speedy_TheWeather/" +
-                    icoonpath +
-                    "/iconbighd/" +
-                    str(iconcode) +
-                    ".png"
-                )
+            iconbestand = (
+                "/usr/lib/enigma2/python/"
+                "Plugins/Extensions/"
+                "speedy_TheWeather/" +
+                icoonpath +
+                "/iconbighd/" +
+                str(iconcode) +
+                ".png"
+            )
 
             if self[
                 prefix + "icon"
@@ -12685,6 +12745,7 @@ class twolocations(Screen):
         self.fillLoc1()
 
         if self.compareCity:
+
             self.fillLoc2(
                 self.compareCity
             )
