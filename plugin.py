@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.9
+# v.1.8.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.9"
+__version__ = "1.8.0"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.9'
+version = '1.8.0'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -13097,7 +13097,11 @@ class RadarScreen(Screen):
         self,
         result
     ):
-        if self._closed:
+        if getattr(self, "_closed", True):
+            return
+
+        if not result:
+            self.fetchBusy = False
             return
 
         try:
@@ -13107,45 +13111,106 @@ class RadarScreen(Screen):
 
         self._decodeActive = True
         self._decodeQueue = deque()
-        self._decodeBaseFiles = dict(result.get("baseFiles", {}))
-        self._decodeFrameFiles = list(result.get("frameFiles", []))
 
-        self.framePixmaps = [{} for _ in self._decodeFrameFiles]
-        self.frameReady = [False for _ in self._decodeFrameFiles]
-        self.frameTimes = list(result.get("frameTimes", []))
-        self.frameIsForecast = [False for _ in self._decodeFrameFiles]
+        self._decodeBaseFiles = dict(
+            result.get("baseFiles", {})
+        )
+
+        self._decodeFrameFiles = list(
+            result.get("frameFiles", [])
+        )
+
+        self.framePixmaps = [
+            {}
+            for _ in self._decodeFrameFiles
+        ]
+
+        self.frameReady = [
+            False
+            for _ in self._decodeFrameFiles
+        ]
+
+        self.frameTimes = list(
+            result.get("frameTimes", [])
+        )
+
+        self.frameIsForecast = [
+            False
+            for _ in self._decodeFrameFiles
+        ]
+
         self.currentFrameIndex = 0
-        self._decodeRemaining = [len(files) for files in self._decodeFrameFiles]
 
-        # Perceived startup speed matters more than finishing the base map
-        # first. Decode the centre base tile, then every tile of frame 0,
-        # then the remaining base tiles and finally the later frames.
-        center = (self.GRID // 2, self.GRID // 2)
+        self._decodeRemaining = [
+            len(files)
+            for files in self._decodeFrameFiles
+        ]
+
+        # Perceived startup speed matters more than
+        # finishing the base map first.
+        # Decode centre base tile first, then frame 0,
+        # then remaining base tiles and later frames.
+
+        center = (
+            self.GRID // 2,
+            self.GRID // 2
+        )
+
         center_path = self._decodeBaseFiles.get(center)
+
         if center_path:
-            self._decodeQueue.append(("base", center, center_path))
+            self._decodeQueue.append(
+                ("base", center, center_path)
+            )
 
         if self._decodeFrameFiles:
+
             for key, path in self._decodeFrameFiles[0].items():
-                self._decodeQueue.append(("frame", 0, key, path))
+
+                self._decodeQueue.append(
+                    ("frame", 0, key, path)
+                )
 
         for key, path in self._decodeBaseFiles.items():
-            if key != center:
-                self._decodeQueue.append(("base", key, path))
 
-        for frameIndex in range(1, len(self._decodeFrameFiles)):
+            if key != center:
+
+                self._decodeQueue.append(
+                    ("base", key, path)
+                )
+
+        for frameIndex in range(
+            1,
+            len(self._decodeFrameFiles)
+        ):
+
             for key, path in self._decodeFrameFiles[frameIndex].items():
-                self._decodeQueue.append(("frame", frameIndex, key, path))
+
+                self._decodeQueue.append(
+                    (
+                        "frame",
+                        frameIndex,
+                        key,
+                        path
+                    )
+                )
 
         try:
             self.animTimer.stop()
         except Exception:
             pass
+
         self.animTimerStarted = False
 
         if self._decodeQueue:
-            self._decodeTimer.start(self._decodeDelayMs, True)
+
+            self._decodeTimer.start(
+                self._decodeDelayMs,
+                True
+            )
+
         else:
+
             self._finishDecode()
 
     # =============================================================
@@ -13153,7 +13218,12 @@ class RadarScreen(Screen):
     # =============================================================
 
     def _decodeNextTile(self):
-        if self._closed or not self._decodeActive:
+
+        if (
+            getattr(self, "_closed", True)
+            or
+            not getattr(self, "_decodeActive", False)
+        ):
             return
 
         if not self._decodeQueue:
@@ -13163,15 +13233,24 @@ class RadarScreen(Screen):
         item = self._decodeQueue.popleft()
 
         try:
+
             itemType = item[0]
 
             if itemType == "base":
-                key, path = item[1], item[2]
+
+                key = item[1]
+                path = item[2]
+
                 pix = _load_cached_png(path)
+
                 if pix is not None:
+
                     self.basePixmaps[key] = pix
+
                     widget = self._baseWidgets.get(key)
+
                     if widget is not None:
+
                         try:
                             widget.instance.setPixmap(pix)
                             widget.show()
@@ -13179,22 +13258,66 @@ class RadarScreen(Screen):
                             pass
 
             else:
-                frameIndex, key, path = item[1], item[2], item[3]
+
+                frameIndex = item[1]
+                key = item[2]
+                path = item[3]
+
                 pix = _load_cached_png(path)
-                if frameIndex < len(self.framePixmaps):
+
+                if (
+                    frameIndex >= 0
+                    and
+                    frameIndex < len(self.framePixmaps)
+                ):
+
                     if pix is not None:
-                        self.framePixmaps[frameIndex][key] = pix
-                    self._decodeRemaining[frameIndex] -= 1
-                    if self._decodeRemaining[frameIndex] <= 0:
-                        self._markFrameReady(frameIndex)
+                        self.framePixmaps[
+                            frameIndex
+                        ][key] = pix
+
+                    if (
+                        frameIndex < len(
+                            self._decodeRemaining
+                        )
+                    ):
+
+                        self._decodeRemaining[
+                            frameIndex
+                        ] -= 1
+
+                        if (
+                            self._decodeRemaining[
+                                frameIndex
+                            ] <= 0
+                        ):
+                            self._markFrameReady(
+                                frameIndex
+                            )
 
         except Exception as e:
-            print("[speedy_TheWeather] Decode tile error: %s" % e)
 
-        if self._decodeActive and not self._closed:
+            print(
+                "[speedy_TheWeather] "
+                "Decode tile error: %s"
+                % e
+            )
+
+        if (
+            getattr(self, "_decodeActive", False)
+            and
+            not getattr(self, "_closed", True)
+        ):
+
             try:
-                self._decodeTimer.start(self._decodeDelayMs, True)
+
+                self._decodeTimer.start(
+                    self._decodeDelayMs,
+                    True
+                )
+
             except Exception:
+
                 self._decodeNextTile()
 
     # =============================================================
@@ -13206,7 +13329,7 @@ class RadarScreen(Screen):
         frameIndex
     ):
 
-        if self._closed:
+        if getattr(self, "_closed", True):
             return
 
         if (
@@ -13227,15 +13350,19 @@ class RadarScreen(Screen):
             frameIndex
         ] = True
 
-        # Erster Frame sofort anzeigen.
+        # Ersten Frame sofort anzeigen.
         if frameIndex == 0:
 
-            self.showFrame(
-                0
-            )
+            if getattr(self, "_closed", True):
+                return
 
-            if not self.paused:
+            self.showFrame(0)
 
+            if (
+                not getattr(self, "paused", True)
+                and
+                not getattr(self, "_closed", True)
+            ):
                 self.startAnimation()
 
     # =============================================================
@@ -13244,7 +13371,7 @@ class RadarScreen(Screen):
 
     def _finishDecode(self):
 
-        if self._closed:
+        if getattr(self, "_closed", True):
             return
 
         self._decodeActive = False
@@ -13256,12 +13383,15 @@ class RadarScreen(Screen):
 
         self.fetchBusy = False
 
-        self["key_blue"].setText(
-            _("Map zoom: %s")
-            % self.ZOOM_LEVELS[
-                self.zoomIndex
-            ]
-        )
+        try:
+            self["key_blue"].setText(
+                _("Map zoom: %s")
+                % self.ZOOM_LEVELS[
+                    self.zoomIndex
+                ]
+            )
+        except Exception:
+            pass
 
         if (
             self.frameReady
@@ -13269,8 +13399,9 @@ class RadarScreen(Screen):
             self.frameReady[0]
             and
             not self.paused
+            and
+            not getattr(self, "_closed", True)
         ):
-
             self.startAnimation()
 
     # =============================================================
