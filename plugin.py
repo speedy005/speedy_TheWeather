@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.7.8
+# v.1.7.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.7.8"
+__version__ = "1.7.9"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.7.8'
+version = '1.7.9'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -8510,6 +8510,7 @@ class fourteen(Screen):
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
         global weatherData
+        skin = ""
         if sz_w > 1800:
             dayinfoblok = ""
             lines_size = {'-1.png': [122, 15], '-2.png': [122, 30], '-3.png': [122, 45], '-4.png': [122, 60], '-5.png': [122, 75], '-6.png': [122, 90], '-7.png': [122, 105], '-8.png': [122, 120], '-9.png': [122, 135], '-10.png': [122, 150], '-11.png': [122, 165], '-12.png': [122, 180], '-13.png': [122, 195], '-14.png': [122, 210], '-15.png': [122, 225], '0.png': [122, 5], '1.png': [122, 15], '2.png': [122, 30], '3.png': [122, 45], '4.png': [122, 60], '5.png': [122, 75], '6.png': [122, 90], '7.png': [122, 105], '8.png': [122, 120], '9.png': [122, 135], '10.png': [122, 150], '11.png': [122, 165], '12.png': [122, 180], '13.png': [122, 195], '14.png': [122, 210], '15.png': [122, 225], 'b-1.png': [122, 15], 'b-2.png': [122, 30], 'b-3.png': [122, 45], 'b-4.png': [122, 60], 'b-5.png': [122, 75], 'b-6.png': [122, 90], 'b-7.png': [122, 105], 'b-8.png': [122, 120], 'b-9.png': [122, 135], 'b-10.png': [122, 150], 'b-11.png': [122, 165], 'b-12.png': [122, 180], 'b-13.png': [122, 195], 'b-14.png': [122, 210], 'b-15.png': [122, 225], 'b0.png': [122, 5], 'b1.png': [122, 15], 'b2.png': [122, 30], 'b3.png': [122, 45], 'b4.png': [122, 60], 'b5.png': [122, 75], 'b6.png': [122, 90], 'b7.png': [122, 105], 'b8.png': [122, 120], 'b9.png': [122, 135], 'b10.png': [122, 150], 'b11.png': [122, 165], 'b12.png': [122, 180], 'b13.png': [122, 195], 'b14.png': [122, 210], 'b15.png': [122, 225]}
@@ -9139,12 +9140,25 @@ class localcityscreen(Screen):
 
         def worker():
             try:
+                if getattr(self, "_closed", False):
+                    return
+
                 url = "https://location.buienradar.nl/1.1/location/search?query=%s" % quote_plus(query)
                 results = _http_json(url, timeout=12)
-                if req_id == self._citySearchRequestId:
-                    self._citySearchResult = results or []
+
+                if getattr(self, "_closed", True):
+                    return
+
+                if req_id != getattr(self, "_citySearchRequestId", None):
+                    return
+
+                self._citySearchResult = results or []
+
             except Exception as e:
-                if req_id == self._citySearchRequestId:
+                if getattr(self, "_closed", True):
+                    return
+
+                if req_id == getattr(self, "_citySearchRequestId", None):
                     self._citySearchError = e
 
         self._citySearchThread = threading.Thread(target=worker)
@@ -12244,6 +12258,17 @@ class RadarScreen(Screen):
 
     def cleanupAll(self):
 
+        # ---------------------------------------------------------
+        # Screen ist geschlossen: laufende Worker ungültig machen
+        # ---------------------------------------------------------
+
+        self._closed = True
+
+        try:
+            self._fetchRequestId += 1
+        except Exception:
+            self._fetchRequestId = 1
+
         self._decodeActive = False
         self._decodeQueue = deque()
 
@@ -12268,10 +12293,8 @@ class RadarScreen(Screen):
             pass
 
         try:
-
             if self._radarPollTimer is not None:
                 self._radarPollTimer.stop()
-
         except Exception:
             pass
 
@@ -12280,6 +12303,7 @@ class RadarScreen(Screen):
                 self._radarDownloadPool.shutdown(wait=False)
             except Exception:
                 pass
+
             self._radarDownloadPool = None
 
         self._clear_pixmaps()
@@ -12405,10 +12429,16 @@ class RadarScreen(Screen):
 
             key, url, path = job
 
+            currentRequestId = getattr(
+                self,
+                "_fetchRequestId",
+                None
+            )
+
             if (
-                self._closed
+                getattr(self, "_closed", True)
                 or
-                req_id != self._fetchRequestId
+                req_id != currentRequestId
             ):
 
                 return key, None
@@ -12443,32 +12473,58 @@ class RadarScreen(Screen):
 
             return results
 
-        pool = self._radarDownloadPool
+        pool = getattr(
+            self,
+            "_radarDownloadPool",
+            None
+        )
+
         if pool is None:
+
             for job in jobs:
+
                 key, value = one(job)
-                if isinstance(value, Exception):
+
+                if isinstance(
+                    value,
+                    Exception
+                ):
                     raise value
+
                 results[key] = value
+
             return results
 
         futures = [
-            pool.submit(one, job)
+            pool.submit(
+                one,
+                job
+            )
             for job in jobs
         ]
 
         for future in futures:
+
             key, value = future.result()
 
-            if isinstance(value, Exception):
+            if isinstance(
+                value,
+                Exception
+            ):
                 raise value
 
             results[key] = value
 
+            currentRequestId = getattr(
+                self,
+                "_fetchRequestId",
+                None
+            )
+
             if (
-                self._closed
+                getattr(self, "_closed", True)
                 or
-                req_id != self._fetchRequestId
+                req_id != currentRequestId
             ):
                 return {}
 
@@ -12480,17 +12536,25 @@ class RadarScreen(Screen):
 
     def startFetch(self):
 
-        if self._closed:
+        if getattr(self, "_closed", True):
             return
 
-        if self.fetchBusy:
+        if getattr(self, "fetchBusy", False):
             return
 
         self.fetchBusy = True
 
-        self._fetchRequestId += 1
+        currentRequestId = getattr(
+            self,
+            "_fetchRequestId",
+            0
+        )
 
-        req_id = self._fetchRequestId
+        currentRequestId += 1
+
+        self._fetchRequestId = currentRequestId
+
+        req_id = currentRequestId
 
         self._radarResult = None
         self._radarError = None
@@ -12548,6 +12612,26 @@ class RadarScreen(Screen):
 
         try:
 
+            # -----------------------------------------------------
+            # Request-ID / Screen sicher prüfen
+            # -----------------------------------------------------
+
+            currentRequestId = getattr(
+                self,
+                "_fetchRequestId",
+                None
+            )
+
+            if currentRequestId is None:
+                return
+
+            if (
+                getattr(self, "_closed", True)
+                or
+                req_id != currentRequestId
+            ):
+                return
+
             zoom = int(
                 self.BASE_ZOOM_OVERRIDE
                 if self.BASE_ZOOM_OVERRIDE is not None
@@ -12593,9 +12677,13 @@ class RadarScreen(Screen):
                 )
 
             if (
-                self._closed
+                getattr(self, "_closed", True)
                 or
-                req_id != self._fetchRequestId
+                req_id != getattr(
+                    self,
+                    "_fetchRequestId",
+                    None
+                )
             ):
                 return
 
@@ -12718,9 +12806,13 @@ class RadarScreen(Screen):
             ):
 
                 if (
-                    self._closed
+                    getattr(self, "_closed", True)
                     or
-                    req_id != self._fetchRequestId
+                    req_id != getattr(
+                        self,
+                        "_fetchRequestId",
+                        None
+                    )
                 ):
                     return
 
@@ -12796,9 +12888,13 @@ class RadarScreen(Screen):
                 )
 
                 if (
-                    self._closed
+                    getattr(self, "_closed", True)
                     or
-                    req_id != self._fetchRequestId
+                    req_id != getattr(
+                        self,
+                        "_fetchRequestId",
+                        None
+                    )
                 ):
                     return
 
@@ -12829,6 +12925,21 @@ class RadarScreen(Screen):
                     "No usable radar frames downloaded"
                 )
 
+            # -----------------------------------------------------
+            # Ergebnis nochmals absichern
+            # -----------------------------------------------------
+
+            if (
+                getattr(self, "_closed", True)
+                or
+                req_id != getattr(
+                    self,
+                    "_fetchRequestId",
+                    None
+                )
+            ):
+                return
+
             self._radarResult = {
                 "reqId": req_id,
                 "baseFiles": baseFiles,
@@ -12841,8 +12952,17 @@ class RadarScreen(Screen):
         except Exception as e:
 
             if (
-                req_id == self._fetchRequestId
-                and not self._closed
+                req_id == getattr(
+                    self,
+                    "_fetchRequestId",
+                    None
+                )
+                and
+                not getattr(
+                    self,
+                    "_closed",
+                    True
+                )
             ):
 
                 self._radarError = e
@@ -12853,7 +12973,7 @@ class RadarScreen(Screen):
 
     def _pollRadarWorker(self):
 
-        if self._closed:
+        if getattr(self, "_closed", True):
             return
 
         # ---------------------------------------------------------
@@ -12872,10 +12992,11 @@ class RadarScreen(Screen):
                 self._radarThread.is_alive()
             ):
 
-                self._radarPollTimer.start(
-                    _RADAR_POLL_INTERVAL_MS,
-                    False
-                )
+                if self._radarPollTimer is not None:
+                    self._radarPollTimer.start(
+                        _RADAR_POLL_INTERVAL_MS,
+                        False
+                    )
 
                 return
 
@@ -12897,9 +13018,7 @@ class RadarScreen(Screen):
             return
 
         # ---------------------------------------------------------
-        # WICHTIG:
         # Poll-Timer stoppen, sobald Ergebnis/Fehler vorhanden ist.
-        # Sonst läuft er während des Decoders weiter.
         # ---------------------------------------------------------
 
         try:
@@ -12929,7 +13048,6 @@ class RadarScreen(Screen):
             )
 
             # NICHT lastUpdate verändern!
-            # Dadurch bleibt die letzte gültige Radarzeit stehen.
             print(
                 "[speedy_TheWeather] "
                 "Radar fetch error: %s"
@@ -12946,11 +13064,18 @@ class RadarScreen(Screen):
 
         self._radarResult = None
 
+        currentRequestId = getattr(
+            self,
+            "_fetchRequestId",
+            None
+        )
+
         if (
             not result
             or
-            result.get("reqId")
-            != self._fetchRequestId
+            currentRequestId is None
+            or
+            result.get("reqId") != currentRequestId
         ):
 
             self.fetchBusy = False
