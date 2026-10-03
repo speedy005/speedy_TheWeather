@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.2
+# v.1.8.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.8.2"
+__version__ = "1.8.3"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.2'
+version = '1.8.3'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -11220,95 +11220,240 @@ class twolocations(Screen):
 
         self._setText(prefix + "name", naam)
 
+        # ---------------------------------------------------------
+        # Aktuelle Stunde suchen
+        # ---------------------------------------------------------
+        hours = dag.get("hours", [])
+        current_hour = None
+
         try:
-            curtemp = "%.1f\xb0C" % dag["hours"][0]["temperature"]
+            from datetime import datetime
+
+            now = datetime.now()
+            best_diff = None
+
+            for hour in hours:
+                htime = hour.get("time", hour.get("datetime", ""))
+
+                if not htime:
+                    continue
+
+                try:
+                    # verschiedene mögliche API-Zeitformate
+                    hstr = str(htime).replace("Z", "")
+
+                    if "T" in hstr:
+                        hstr = hstr.split("T")[1]
+
+                    hstr = hstr[:5]
+
+                    hh, mm = hstr.split(":")
+                    hour_minutes = int(hh) * 60 + int(mm)
+                    now_minutes = now.hour * 60 + now.minute
+
+                    diff = abs(hour_minutes - now_minutes)
+
+                    if best_diff is None or diff < best_diff:
+                        best_diff = diff
+                        current_hour = hour
+
+                except Exception:
+                    continue
+
+        except Exception as e:
+            print("twolocations: aktuelle Stunde konnte nicht ermittelt werden:", e)
+
+        # Fallback
+        if current_hour is None and hours:
+            current_hour = hours[0]
+
+        # ---------------------------------------------------------
+        # Temperatur
+        # ---------------------------------------------------------
+        try:
+            if current_hour and "temperature" in current_hour:
+                curtemp = "%.1f\xb0C" % float(current_hour["temperature"])
+            else:
+                curtemp = "%.0f\xb0C" % float(dag["maxtemperature"])
         except Exception:
-            try:
-                curtemp = "%.0f\xb0C" % dag["maxtemperature"]
-            except Exception:
-                curtemp = "--"
+            curtemp = "--"
+
         self._setText(prefix + "maxtemp", curtemp)
 
+        # ---------------------------------------------------------
+        # Tages-Min/Max
+        # ---------------------------------------------------------
         try:
-            mintemp = "%.0f\xb0 / %.0f\xb0" % (dag["mintemperature"], dag["maxtemperature"])
+            mintemp = "%.0f\xb0 / %.0f\xb0" % (
+                float(dag["mintemperature"]),
+                float(dag["maxtemperature"])
+            )
         except Exception:
             mintemp = "--"
+
         self._setText(prefix + "mintemp", mintemp)
 
+        # ---------------------------------------------------------
+        # AKTUELLE Wetterbeschreibung
+        # ---------------------------------------------------------
         try:
-            self._setText(prefix + "weertype", icontotext(dag.get("iconcode", "")))
-        except Exception:
-            pass
+            iconcode = ""
 
+            if current_hour:
+                iconcode = current_hour.get("iconcode", "")
+
+            # Fallback auf Tages-Icon
+            if not iconcode:
+                iconcode = dag.get("iconcode", "")
+
+            self._setText(prefix + "weertype", icontotext(iconcode))
+
+        except Exception as e:
+            print("twolocations: Wetterbeschreibung Fehler:", e)
+            self._setText(prefix + "weertype", "")
+
+        # ---------------------------------------------------------
+        # Gefühlt
+        # ---------------------------------------------------------
         try:
-            hours = dag.get("hours", [])
-            if hours and "feeltemperature" in hours[0]:
-                feeltemp = hours[0]["feeltemperature"]
+            if current_hour and "feeltemperature" in current_hour:
+                feeltemp = current_hour["feeltemperature"]
             else:
-                feeltemp = dag.get("feeltemperature", dag.get("maxtemperature", "--"))
-            self._setText(prefix + "feel", _("Feels Like: ") + "%.1f\xb0C" % float(feeltemp))
-        except Exception:
-            pass
+                feeltemp = dag.get(
+                    "feeltemperature",
+                    dag.get("maxtemperature", "--")
+                )
 
+            self._setText(
+                prefix + "feel",
+                _("Feels Like: ") + "%.1f\xb0C" % float(feeltemp)
+            )
+        except Exception:
+            self._setText(prefix + "feel", "")
+
+        # ---------------------------------------------------------
+        # Wind
+        # ---------------------------------------------------------
         try:
-            ws = dag.get("windspeed", 0)
-            self._setText(prefix + "wind", _("Wind: ") + windspeed_with_beaufort(ws))
-        except Exception:
-            pass
+            if current_hour and "windspeed" in current_hour:
+                ws = current_hour["windspeed"]
+            else:
+                ws = dag.get("windspeed", 0)
 
+            self._setText(
+                prefix + "wind",
+                _("Wind: ") + windspeed_with_beaufort(ws)
+            )
+        except Exception:
+            self._setText(prefix + "wind", "")
+
+        # ---------------------------------------------------------
+        # Regen
+        # ---------------------------------------------------------
         try:
-            rainmm = dag.get("precipitationmm", 0)
-            self._setText(prefix + "rain", _("Rain: ") + "%.1f mm" % float(rainmm))
-        except Exception:
-            pass
+            if current_hour and "precipitationmm" in current_hour:
+                rainmm = current_hour["precipitationmm"]
+            else:
+                rainmm = dag.get("precipitationmm", 0)
 
+            self._setText(
+                prefix + "rain",
+                _("Rain: ") + "%.1f mm" % float(rainmm)
+            )
+        except Exception:
+            self._setText(prefix + "rain", "")
+
+        # ---------------------------------------------------------
+        # Sonnenauf-/untergang
+        # ---------------------------------------------------------
         try:
             sunrise = (str(dag.get("sunrise", "")).split("T")[1])[:-3]
-            sunset  = (str(dag.get("sunset",  "")).split("T")[1])[:-3]
-            self._setText(prefix + "sun", _("Sun: ") + sunrise + "  -  " + sunset)
+            sunset  = (str(dag.get("sunset", "")).split("T")[1])[:-3]
+
+            self._setText(
+                prefix + "sun",
+                _("Sun: ") + sunrise + "  -  " + sunset
+            )
         except Exception:
             self._setText(prefix + "sun", "")
 
+        # ---------------------------------------------------------
+        # Warnung
+        # ---------------------------------------------------------
         try:
             alertkleur, alerttekst = localWeatherAlert(dag)
+
             if alerttekst:
-                kleurwaarde = {"yellow": gRGB(0xf2c200), "orange": gRGB(0xff8c00),
-                               "red": gRGB(0xe02020), "blue": gRGB(0x40a0ff)}.get(alertkleur, gRGB(0xffffff))
+                kleurwaarde = {
+                    "yellow": gRGB(0xf2c200),
+                    "orange": gRGB(0xff8c00),
+                    "red": gRGB(0xe02020),
+                    "blue": gRGB(0x40a0ff)
+                }.get(alertkleur, gRGB(0xffffff))
+
                 self._setText(prefix + "alert", alerttekst)
+
                 try:
                     if self[prefix + "alert"].instance is not None:
                         self[prefix + "alert"].instance.setForegroundColor(kleurwaarde)
                 except Exception:
                     pass
+
                 try:
                     if sz_w > 1800:
-                        alerticon = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/alert/alert_" + alertkleur + ".png"
+                        alerticon = (
+                            "/usr/lib/enigma2/python/Plugins/Extensions/"
+                            "speedy_TheWeather/" + SHARED_PACK +
+                            "/alert/alert_" + alertkleur + ".png"
+                        )
                     else:
-                        alerticon = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + SHARED_PACK + "/alert/alert_" + alertkleur + "_sd.png"
+                        alerticon = (
+                            "/usr/lib/enigma2/python/Plugins/Extensions/"
+                            "speedy_TheWeather/" + SHARED_PACK +
+                            "/alert/alert_" + alertkleur + "_sd.png"
+                        )
+
                     if self[prefix + "alerticon"].instance is not None:
                         self[prefix + "alerticon"].instance.setPixmapFromFile(alerticon)
                         self[prefix + "alerticon"].show()
+
                 except Exception:
                     self[prefix + "alerticon"].hide()
+
             else:
                 self._setText(prefix + "alert", "")
                 self[prefix + "alerticon"].hide()
+
         except Exception:
             pass
 
+        # ---------------------------------------------------------
+        # Wetter-Icon ebenfalls aus aktueller Stunde
+        # ---------------------------------------------------------
         try:
-            iconcode = dag.get("iconcode", "")
-            if sz_w > 1800:
-                iconbestand = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + icoonpath + "/iconbighd/" + str(iconcode) + ".png"
+            if current_hour:
+                iconcode = current_hour.get("iconcode", "")
             else:
-                iconbestand = "/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/" + icoonpath + "/iconbighd/" + str(iconcode) + ".png"
-            try:
-                if self[prefix + "icon"].instance is not None:
-                    self[prefix + "icon"].instance.setPixmapFromFile(iconbestand)
-            except Exception:
-                pass
-        except Exception:
-            pass
+                iconcode = dag.get("iconcode", "")
+
+            if sz_w > 1800:
+                iconbestand = (
+                    "/usr/lib/enigma2/python/Plugins/Extensions/"
+                    "speedy_TheWeather/" + icoonpath +
+                    "/iconbighd/" + str(iconcode) + ".png"
+                )
+            else:
+                iconbestand = (
+                    "/usr/lib/enigma2/python/Plugins/Extensions/"
+                    "speedy_TheWeather/" + icoonpath +
+                    "/iconbighd/" + str(iconcode) + ".png"
+                )
+
+            if self[prefix + "icon"].instance is not None:
+                self[prefix + "icon"].instance.setPixmapFromFile(iconbestand)
+
+        except Exception as e:
+            print("twolocations: Icon Fehler:", e)
 
     def reloadIcons(self):
 
