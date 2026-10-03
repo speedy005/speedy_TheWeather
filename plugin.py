@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.3
+# v.1.8.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -441,7 +441,7 @@ def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
     except Exception:
         return "na", "na"
 
-__version__ = "1.8.3"
+__version__ = "1.8.4"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +457,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.3'
+version = '1.8.4'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -11094,6 +11094,7 @@ class twolocations(Screen):
         self.onClose.append(lambda: RemoveScreen(self))
 
         self.compareCity = ""
+
         if os.path.exists(self.COMPARE_CFG):
             try:
                 with open(self.COMPARE_CFG) as f:
@@ -11103,144 +11104,1085 @@ class twolocations(Screen):
             except Exception:
                 pass
 
+        # =========================================================
+        # HD
+        # =========================================================
         if sz_w > 1800:
+
             skin = """
-                <screen name="twolocations" flags="wfNoBorder" position="center,center" size="1920,1080">
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,112" size="1920,3" zPosition="1"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="0,1010" size="1920,3" zPosition="1"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png" position="958,112" size="3,868" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1634,35" size="225,45" transparent="1" zPosition="3" font="Regular;36" foregroundColor="#00ff0000" backgroundColor="#00ff0000" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="1409,74" size="450,37" transparent="1" zPosition="3" font="Regular;24" foregroundColor="#00ffff00" backgroundColor="#0000ff00" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
-                <widget name="loc1name"     position="40,125"   size="880,72"  zPosition="3" font="Regular;58" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1icon"     position="140,215"  size="160,160" zPosition="3" alphatest="blend"/>
-                <widget name="loc1maxtemp"  position="320,215"  size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#00ff0000" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1mintemp"  position="320,310"  size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1weertype" position="320,400"  size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1feel"     position="320,468"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1wind"     position="320,530"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1rain"     position="320,592"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1sun"      position="320,654"  size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1alert"    position="320,720"  size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#000000ff" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1alerticon" position="216,724"  size="64,64"   zPosition="4" alphatest="blend" transparent="1"/>
-                <widget name="loc2name"     position="1000,125" size="880,72"  zPosition="3" font="Regular;58" foregroundColor="#000000ff" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2icon"     position="1100,215" size="160,160" zPosition="3" alphatest="blend"/>
-                <widget name="loc2maxtemp"  position="1280,215" size="380,95"  zPosition="3" font="Regular;78" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2mintemp"  position="1280,310" size="380,60"  zPosition="3" font="Regular;48" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2weertype" position="1280,400" size="600,56"  zPosition="3" font="Regular;44" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2feel"     position="1280,468" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2wind"     position="1280,530" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2rain"     position="1280,592" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2sun"      position="1280,654" size="600,52"  zPosition="3" font="Regular;40" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2alert"    position="1280,720" size="808,68"  zPosition="3" font="Regular;48" foregroundColor="#0000ff00" backgroundColor="#00202020" halign="left" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2alerticon" position="1176,724" size="64,64"  zPosition="4" alphatest="blend" transparent="1"/>
-                <widget name="statusmsg"    position="40,808"   size="1840,56" zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="center" valign="center" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png"    position="192,1022"  size="34,34" alphatest="blend"/>
-                <widget name="key_red" position="242,1015"  size="370,48" zPosition="3" font="Regular;40" foregroundColor="#00ff0000" backgroundColor="#00202020" halign="left" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png" position="628,1022"  size="34,34" alphatest="blend"/>
-                <widget name="comp" position="85,45" size="1085,55" valign="center" halign="left" zPosition="1" font="Regular;36" foregroundColor="#000000ff" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="key_yellow" position="678,1015"  size="600,48" zPosition="3" font="Regular;40" foregroundColor="#00ffff00" backgroundColor="#00202020" halign="left" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <screen name="twolocations"
+                        flags="wfNoBorder"
+                        position="center,center"
+                        size="1920,1080">
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
+                    position="0,112"
+                    size="1920,3"
+                    zPosition="1"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
+                    position="0,1010"
+                    size="1920,3"
+                    zPosition="1"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline3.png"
+                    position="958,112"
+                    size="3,868"
+                    zPosition="1"/>
+
+                <widget source="global.CurrentTime"
+                    render="Label"
+                    position="1634,35"
+                    size="225,45"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;36"
+                    foregroundColor="#00ff0000"
+                    backgroundColor="#00ff0000"
+                    valign="center"
+                    halign="right">
+                    <convert type="ClockToText">Format:%-H:%M:%S</convert>
+                </widget>
+
+                <widget source="global.CurrentTime"
+                    render="Label"
+                    position="1409,74"
+                    size="450,37"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;24"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#0000ff00"
+                    valign="center"
+                    halign="right">
+                    <convert type="ClockToText">Format:%a %d/%m/%y</convert>
+                </widget>
+
+                <!-- ===================== ORT 1 ===================== -->
+
+                <widget name="loc1name"
+                    position="40,125"
+                    size="880,72"
+                    zPosition="3"
+                    font="Regular;58"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    halign="center"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1icon"
+                    position="140,215"
+                    size="160,160"
+                    zPosition="3"
+                    alphatest="blend"/>
+
+                <widget name="loc1maxtemp"
+                    position="320,215"
+                    size="380,95"
+                    zPosition="3"
+                    font="Regular;78"
+                    foregroundColor="#00ff0000"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1mintemp"
+                    position="320,310"
+                    size="380,60"
+                    zPosition="3"
+                    font="Regular;48"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1weertype"
+                    position="320,400"
+                    size="600,56"
+                    zPosition="3"
+                    font="Regular;44"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1feel"
+                    position="320,468"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1wind"
+                    position="320,530"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1rain"
+                    position="320,592"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1sun"
+                    position="320,654"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1moon"
+                    position="320,706"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1alert"
+                    position="320,772"
+                    size="808,68"
+                    zPosition="3"
+                    font="Regular;48"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1alerticon"
+                    position="216,776"
+                    size="64,64"
+                    zPosition="4"
+                    alphatest="blend"
+                    transparent="1"/>
+
+
+                <!-- ===================== ORT 2 ===================== -->
+
+                <widget name="loc2name"
+                    position="1000,125"
+                    size="880,72"
+                    zPosition="3"
+                    font="Regular;58"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    halign="center"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2icon"
+                    position="1100,215"
+                    size="160,160"
+                    zPosition="3"
+                    alphatest="blend"/>
+
+                <widget name="loc2maxtemp"
+                    position="1280,215"
+                    size="380,95"
+                    zPosition="3"
+                    font="Regular;78"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2mintemp"
+                    position="1280,310"
+                    size="380,60"
+                    zPosition="3"
+                    font="Regular;48"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2weertype"
+                    position="1280,400"
+                    size="600,56"
+                    zPosition="3"
+                    font="Regular;44"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2feel"
+                    position="1280,468"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2wind"
+                    position="1280,530"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2rain"
+                    position="1280,592"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2sun"
+                    position="1280,654"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2moon"
+                    position="1280,706"
+                    size="600,52"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2alert"
+                    position="1280,772"
+                    size="808,68"
+                    zPosition="3"
+                    font="Regular;48"
+                    foregroundColor="#0000ff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2alerticon"
+                    position="1176,776"
+                    size="64,64"
+                    zPosition="4"
+                    alphatest="blend"
+                    transparent="1"/>
+
+
+                <widget name="statusmsg"
+                    position="40,850"
+                    size="1840,56"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    halign="center"
+                    valign="center"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red34.png"
+                    position="192,1022"
+                    size="34,34"
+                    alphatest="blend"/>
+
+                <widget name="key_red"
+                    position="242,1015"
+                    size="370,48"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#00ff0000"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow34.png"
+                    position="628,1022"
+                    size="34,34"
+                    alphatest="blend"/>
+
+                <widget name="comp"
+                    position="85,45"
+                    size="1085,55"
+                    valign="center"
+                    halign="left"
+                    zPosition="1"
+                    font="Regular;36"
+                    foregroundColor="#000000ff"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="key_yellow"
+                    position="678,1015"
+                    size="600,48"
+                    zPosition="3"
+                    font="Regular;40"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    halign="left"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
                 </screen>"""
+
+        # =========================================================
+        # SD 1280x720
+        # =========================================================
         else:
+
             skin = """
-                <screen name="twolocations" flags="wfNoBorder" position="center,center" size="1280,720">
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png" position="0,88"   size="1280,2" zPosition="1"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png" position="0,630" size="1280,2" zPosition="1"/>
-                <widget source="global.CurrentTime" render="Label" position="1090,18" size="170,40" transparent="1" zPosition="3" font="Regular;30" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%-H:%M:%S</convert></widget>
-                <widget source="global.CurrentTime" render="Label" position="940,52"  size="320,34" transparent="1" zPosition="3" font="Regular;20" foregroundColor="#00ffff00" backgroundColor="#00202020" valign="center" halign="right"><convert type="ClockToText">Format:%a %d/%m/%y</convert></widget>
-                <widget name="loc1name"     position="244,95"    size="618,52"  zPosition="3" font="Regular;42" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1icon"     position="94,143"   size="130,130" scale="1" zPosition="3" alphatest="blend"/>
-                <widget name="loc1maxtemp"  position="244,158"  size="470,80"  zPosition="3" font="Regular;72" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1mintemp"  position="244,238"  size="470,44"  zPosition="3" font="Regular;36" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1weertype" position="244,296"  size="474,44"  zPosition="3" font="Regular;34" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1feel"     position="244,348"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1wind"     position="244,394"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1rain"     position="244,440"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1sun"      position="244,486"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1alert"    position="244,538"  size="576,50"  zPosition="3" font="Regular;36" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc1alerticon" position="183,542"  size="42,42"   zPosition="4" alphatest="blend" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
-                <widget name="loc2name"     position="842,95"   size="618,52"  zPosition="3" font="Regular;42" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2icon"     position="692,143"  size="130,130" scale="1" zPosition="3" alphatest="blend"/>
-                <widget name="loc2maxtemp"  position="842,158"  size="470,80"  zPosition="3" font="Regular;72" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2mintemp"  position="842,238"  size="470,44"  zPosition="3" font="Regular;36" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2weertype" position="842,296"  size="474,44"  zPosition="3" font="Regular;34" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2feel"     position="842,348"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2wind"     position="842,394"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2rain"     position="842,440"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2sun"      position="842,486"  size="474,40"  zPosition="3" font="Regular;32" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2alert"    position="842,538"  size="576,50"  zPosition="3" font="Regular;36" halign="left" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="loc2alerticon" position="781,542" size="42,42"   zPosition="4" alphatest="blend" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1"/>
-                <widget name="statusmsg"    position="10,602"   size="1260,44" zPosition="3" font="Regular;30" halign="center" valign="center" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png" position="145,663" size="26,26" alphatest="blend"/>
-                <widget name="key_red" position="185,663" size="220,32" zPosition="1" font="Regular;24" halign="left" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <widget name="comp" position="57,30" size="723,37" valign="center" halign="left" zPosition="1" font="Regular;24"  foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
-                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png" position="695,663" size="26,26" alphatest="blend"/>
-                <widget name="key_yellow" position="735,663" size="220,32" zPosition="1" font="Regular;24" halign="left"  foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
+                <screen name="twolocations"
+                        flags="wfNoBorder"
+                        position="center,center"
+                        size="1280,720">
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    position="0,88"
+                    size="1280,2"
+                    zPosition="1"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/borders/smallline2.png"
+                    position="0,630"
+                    size="1280,2"
+                    zPosition="1"/>
+
+                <widget source="global.CurrentTime"
+                    render="Label"
+                    position="1090,18"
+                    size="170,40"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;30"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+                    <convert type="ClockToText">Format:%-H:%M:%S</convert>
+                </widget>
+
+                <widget source="global.CurrentTime"
+                    render="Label"
+                    position="940,52"
+                    size="320,34"
+                    transparent="1"
+                    zPosition="3"
+                    font="Regular;20"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    valign="center"
+                    halign="right">
+                    <convert type="ClockToText">Format:%a %d/%m/%y</convert>
+                </widget>
+
+
+                <!-- ===================== ORT 1 ===================== -->
+
+                <widget name="loc1name"
+                    position="244,95"
+                    size="618,52"
+                    zPosition="3"
+                    font="Regular;42"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1icon"
+                    position="94,143"
+                    size="130,130"
+                    scale="1"
+                    zPosition="3"
+                    alphatest="blend"/>
+
+                <widget name="loc1maxtemp"
+                    position="244,158"
+                    size="470,80"
+                    zPosition="3"
+                    font="Regular;72"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1mintemp"
+                    position="244,238"
+                    size="470,44"
+                    zPosition="3"
+                    font="Regular;36"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1weertype"
+                    position="244,296"
+                    size="474,44"
+                    zPosition="3"
+                    font="Regular;34"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1feel"
+                    position="244,348"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1wind"
+                    position="244,394"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1rain"
+                    position="244,440"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1sun"
+                    position="244,486"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1moon"
+                    position="244,526"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1alert"
+                    position="244,570"
+                    size="576,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc1alerticon"
+                    position="183,570"
+                    size="38,38"
+                    zPosition="4"
+                    alphatest="blend"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"/>
+
+
+                <!-- ===================== ORT 2 ===================== -->
+
+                <widget name="loc2name"
+                    position="842,95"
+                    size="618,52"
+                    zPosition="3"
+                    font="Regular;42"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2icon"
+                    position="692,143"
+                    size="130,130"
+                    scale="1"
+                    zPosition="3"
+                    alphatest="blend"/>
+
+                <widget name="loc2maxtemp"
+                    position="842,158"
+                    size="470,80"
+                    zPosition="3"
+                    font="Regular;72"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2mintemp"
+                    position="842,238"
+                    size="470,44"
+                    zPosition="3"
+                    font="Regular;36"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2weertype"
+                    position="842,296"
+                    size="474,44"
+                    zPosition="3"
+                    font="Regular;34"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2feel"
+                    position="842,348"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2wind"
+                    position="842,394"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2rain"
+                    position="842,440"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2sun"
+                    position="842,486"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2moon"
+                    position="842,526"
+                    size="474,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2alert"
+                    position="842,570"
+                    size="576,40"
+                    zPosition="3"
+                    font="Regular;32"
+                    halign="left"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="loc2alerticon"
+                    position="781,570"
+                    size="38,38"
+                    zPosition="4"
+                    alphatest="blend"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"/>
+
+
+                <widget name="statusmsg"
+                    position="10,606"
+                    size="1260,24"
+                    zPosition="3"
+                    font="Regular;22"
+                    halign="center"
+                    valign="center"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/red26.png"
+                    position="145,663"
+                    size="26,26"
+                    alphatest="blend"/>
+
+                <widget name="key_red"
+                    position="185,663"
+                    size="220,32"
+                    zPosition="1"
+                    font="Regular;24"
+                    halign="left"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <widget name="comp"
+                    position="57,30"
+                    size="723,37"
+                    valign="center"
+                    halign="left"
+                    zPosition="1"
+                    font="Regular;24"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
+                <ePixmap
+                    pixmap="/usr/lib/enigma2/python/Plugins/Extensions/speedy_TheWeather/""" + SHARED_PACK + """/buttons/yellow26.png"
+                    position="695,663"
+                    size="26"
+                    alphatest="blend"/>
+
+                <widget name="key_yellow"
+                    position="735,663"
+                    size="220,32"
+                    zPosition="1"
+                    font="Regular;24"
+                    halign="left"
+                    foregroundColor="#00ffff00"
+                    backgroundColor="#00202020"
+                    transparent="1"
+                    shadowColor="black"
+                    shadowOffset="-2,-2"/>
+
                 </screen>"""
 
-        self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
+        self.skin = skin.replace(
+            "Format:%a %d/%m/%y",
+            getDateFormat()
+        )
 
-        for n in ["loc1name","loc1maxtemp","loc1mintemp","loc1weertype","loc1feel","loc1wind","loc1rain","loc1sun","loc1alert",
-                  "loc2name","loc2maxtemp","loc2mintemp","loc2weertype","loc2feel","loc2wind","loc2rain","loc2sun","loc2alert",
-                  "statusmsg","key_red","key_yellow"]:
+        # =========================================================
+        # Labels
+        # =========================================================
+
+        for n in [
+            "loc1name",
+            "loc1maxtemp",
+            "loc1mintemp",
+            "loc1weertype",
+            "loc1feel",
+            "loc1wind",
+            "loc1rain",
+            "loc1sun",
+            "loc1moon",
+            "loc1alert",
+
+            "loc2name",
+            "loc2maxtemp",
+            "loc2mintemp",
+            "loc2weertype",
+            "loc2feel",
+            "loc2wind",
+            "loc2rain",
+            "loc2sun",
+            "loc2moon",
+            "loc2alert",
+
+            "statusmsg",
+            "key_red",
+            "key_yellow"
+        ]:
             self[n] = Label("")
-        for n in ["loc1icon", "loc2icon", "loc1alerticon", "loc2alerticon"]:
+
+        for n in [
+            "loc1icon",
+            "loc2icon",
+            "loc1alerticon",
+            "loc2alerticon"
+        ]:
             self[n] = Pixmap()
 
-        self["actions"] = ActionMap(["WizardActions","MenuActions"], {"back": self.exit, "cancel": self.exit}, -1)
-        self["ColorActions"] = HelpableActionMap(self, "ColorActions", {"red": self.exit, "yellow": self.changeCompareCity, "blue": self.exit}, -1)
+        # =========================================================
+        # Actions
+        # =========================================================
+
+        self["actions"] = ActionMap(
+            ["WizardActions", "MenuActions"],
+            {
+                "back": self.exit,
+                "cancel": self.exit
+            },
+            -1
+        )
+
+        self["ColorActions"] = HelpableActionMap(
+            self,
+            "ColorActions",
+            {
+                "red": self.exit,
+                "yellow": self.changeCompareCity,
+                "blue": self.exit
+            },
+            -1
+        )
+
         self["key_red"] = Label(_("Exit"))
         self["key_yellow"] = Label(_("Choose 2nd location"))
         self["comp"] = Label(_("Compare Locations"))
 
+        # =========================================================
+        # Daten laden
+        # =========================================================
+
         self.fillLoc1()
+
         if self.compareCity:
             self.fillLoc2(self.compareCity)
         else:
-            self._setText("loc2name", _("No 2nd location"))
-            self._setText("statusmsg", _("Press YELLOW to choose a 2nd location."))
+            self._setText(
+                "loc2name",
+                _("No 2nd location")
+            )
+
+            self._setText(
+                "statusmsg",
+                _("Press YELLOW to choose a 2nd location.")
+            )
 
         self.iconFixTimer = eTimer()
-        self._iconFixTimer_conn = safeTimerCallback(self.iconFixTimer, self.reloadIcons)
+
+        self._iconFixTimer_conn = safeTimerCallback(
+            self.iconFixTimer,
+            self.reloadIcons
+        )
+
         self.iconFixTimer.start(300, True)
+
+    # =============================================================
+    # Hilfsfunktion Text
+    # =============================================================
 
     def _setText(self, key, value):
 
         try:
-            self[key].setText("" if value is None else str(value))
+            self[key].setText(
+                "" if value is None else str(value)
+            )
+
         except Exception as e:
-            print("twolocations _setText fout op", key, ":", e)
+            print(
+                "twolocations _setText fout op",
+                key,
+                ":",
+                e
+            )
+
+    # =============================================================
+    # Zeit aus verschiedenen API-Formaten lesen
+    # =============================================================
+
+    def _getTimeValue(self, value):
+
+        if value is None:
+            return ""
+
+        try:
+            value = str(value).strip()
+        except Exception:
+            return ""
+
+        if not value:
+            return ""
+
+        # ISO:
+        # 2026-10-03T07:32:00
+        # 2026-10-03T07:32:00Z
+        if "T" in value:
+
+            try:
+                value = value.split("T", 1)[1]
+            except Exception:
+                return ""
+
+        # Eventuell Datum mit Leerzeichen
+        elif " " in value and len(value) > 5:
+
+            try:
+                possible = value.split(" ")[-1]
+
+                if ":" in possible:
+                    value = possible
+
+            except Exception:
+                pass
+
+        # HH:MM:SS -> HH:MM
+        if len(value) >= 5 and ":" in value:
+            return value[:5]
+
+        return value
+
+    # =============================================================
+    # Mondwert aus Tagesdaten holen
+    # =============================================================
+
+    def _getMoonTime(self, dag, names):
+
+        for name in names:
+
+            try:
+                value = dag.get(name)
+
+                if value not in (
+                    None,
+                    "",
+                    "None",
+                    "--"
+                ):
+                    result = self._getTimeValue(value)
+
+                    if result:
+                        return result
+
+            except Exception:
+                pass
+
+        return ""
+
+    # =============================================================
+    # Standort füllen
+    # =============================================================
 
     def _fillLocation(self, data, naam, prefix):
 
         try:
             dag = data["days"][0]
+
         except Exception:
-            self._setText(prefix + "name", _("Data error"))
+            self._setText(
+                prefix + "name",
+                _("Data error")
+            )
             return
 
-        self._setText(prefix + "name", naam)
+        self._setText(
+            prefix + "name",
+            naam
+        )
 
-        # ---------------------------------------------------------
+        # =========================================================
         # Aktuelle Stunde suchen
-        # ---------------------------------------------------------
-        hours = dag.get("hours", [])
+        # =========================================================
+
+        hours = dag.get(
+            "hours",
+            []
+        )
+
         current_hour = None
 
         try:
             from datetime import datetime
 
             now = datetime.now()
+
             best_diff = None
 
             for hour in hours:
-                htime = hour.get("time", hour.get("datetime", ""))
+
+                htime = hour.get(
+                    "time",
+                    hour.get(
+                        "datetime",
+                        ""
+                    )
+                )
 
                 if not htime:
                     continue
 
                 try:
-                    # verschiedene mögliche API-Zeitformate
-                    hstr = str(htime).replace("Z", "")
+
+                    hstr = str(htime).replace(
+                        "Z",
+                        ""
+                    )
 
                     if "T" in hstr:
                         hstr = hstr.split("T")[1]
@@ -11248,12 +12190,26 @@ class twolocations(Screen):
                     hstr = hstr[:5]
 
                     hh, mm = hstr.split(":")
-                    hour_minutes = int(hh) * 60 + int(mm)
-                    now_minutes = now.hour * 60 + now.minute
 
-                    diff = abs(hour_minutes - now_minutes)
+                    hour_minutes = (
+                        int(hh) * 60 +
+                        int(mm)
+                    )
 
-                    if best_diff is None or diff < best_diff:
+                    now_minutes = (
+                        now.hour * 60 +
+                        now.minute
+                    )
+
+                    diff = abs(
+                        hour_minutes -
+                        now_minutes
+                    )
+
+                    if (
+                        best_diff is None or
+                        diff < best_diff
+                    ):
                         best_diff = diff
                         current_hour = hour
 
@@ -11261,246 +12217,636 @@ class twolocations(Screen):
                     continue
 
         except Exception as e:
-            print("twolocations: aktuelle Stunde konnte nicht ermittelt werden:", e)
+
+            print(
+                "twolocations: aktuelle Stunde "
+                "konnte nicht ermittelt werden:",
+                e
+            )
 
         # Fallback
+
         if current_hour is None and hours:
             current_hour = hours[0]
 
-        # ---------------------------------------------------------
+        # =========================================================
         # Temperatur
-        # ---------------------------------------------------------
+        # =========================================================
+
         try:
-            if current_hour and "temperature" in current_hour:
-                curtemp = "%.1f\xb0C" % float(current_hour["temperature"])
+
+            if (
+                current_hour and
+                "temperature" in current_hour
+            ):
+
+                curtemp = "%.1f\xb0C" % float(
+                    current_hour["temperature"]
+                )
+
             else:
-                curtemp = "%.0f\xb0C" % float(dag["maxtemperature"])
+
+                curtemp = "%.0f\xb0C" % float(
+                    dag["maxtemperature"]
+                )
+
         except Exception:
+
             curtemp = "--"
 
-        self._setText(prefix + "maxtemp", curtemp)
+        self._setText(
+            prefix + "maxtemp",
+            curtemp
+        )
 
-        # ---------------------------------------------------------
+        # =========================================================
         # Tages-Min/Max
-        # ---------------------------------------------------------
+        # =========================================================
+
         try:
+
             mintemp = "%.0f\xb0 / %.0f\xb0" % (
                 float(dag["mintemperature"]),
                 float(dag["maxtemperature"])
             )
+
         except Exception:
+
             mintemp = "--"
 
-        self._setText(prefix + "mintemp", mintemp)
+        self._setText(
+            prefix + "mintemp",
+            mintemp
+        )
 
-        # ---------------------------------------------------------
-        # AKTUELLE Wetterbeschreibung
-        # ---------------------------------------------------------
+        # =========================================================
+        # Aktuelle Wetterbeschreibung
+        # =========================================================
+
         try:
+
             iconcode = ""
 
             if current_hour:
-                iconcode = current_hour.get("iconcode", "")
+                iconcode = current_hour.get(
+                    "iconcode",
+                    ""
+                )
 
-            # Fallback auf Tages-Icon
             if not iconcode:
-                iconcode = dag.get("iconcode", "")
+                iconcode = dag.get(
+                    "iconcode",
+                    ""
+                )
 
-            self._setText(prefix + "weertype", icontotext(iconcode))
+            self._setText(
+                prefix + "weertype",
+                icontotext(iconcode)
+            )
 
         except Exception as e:
-            print("twolocations: Wetterbeschreibung Fehler:", e)
-            self._setText(prefix + "weertype", "")
 
-        # ---------------------------------------------------------
+            print(
+                "twolocations: "
+                "Wetterbeschreibung Fehler:",
+                e
+            )
+
+            self._setText(
+                prefix + "weertype",
+                ""
+            )
+
+        # =========================================================
         # Gefühlt
-        # ---------------------------------------------------------
+        # =========================================================
+
         try:
-            if current_hour and "feeltemperature" in current_hour:
-                feeltemp = current_hour["feeltemperature"]
+
+            if (
+                current_hour and
+                "feeltemperature" in current_hour
+            ):
+
+                feeltemp = current_hour[
+                    "feeltemperature"
+                ]
+
             else:
+
                 feeltemp = dag.get(
                     "feeltemperature",
-                    dag.get("maxtemperature", "--")
+                    dag.get(
+                        "maxtemperature",
+                        "--"
+                    )
                 )
 
             self._setText(
                 prefix + "feel",
-                _("Feels Like: ") + "%.1f\xb0C" % float(feeltemp)
+                _("Feels Like: ") +
+                "%.1f\xb0C" % float(feeltemp)
             )
-        except Exception:
-            self._setText(prefix + "feel", "")
 
-        # ---------------------------------------------------------
+        except Exception:
+
+            self._setText(
+                prefix + "feel",
+                ""
+            )
+
+        # =========================================================
         # Wind
-        # ---------------------------------------------------------
+        # =========================================================
+
         try:
-            if current_hour and "windspeed" in current_hour:
-                ws = current_hour["windspeed"]
+
+            if (
+                current_hour and
+                "windspeed" in current_hour
+            ):
+
+                ws = current_hour[
+                    "windspeed"
+                ]
+
             else:
-                ws = dag.get("windspeed", 0)
+
+                ws = dag.get(
+                    "windspeed",
+                    0
+                )
 
             self._setText(
                 prefix + "wind",
-                _("Wind: ") + windspeed_with_beaufort(ws)
+                _("Wind: ") +
+                windspeed_with_beaufort(ws)
             )
-        except Exception:
-            self._setText(prefix + "wind", "")
 
-        # ---------------------------------------------------------
+        except Exception:
+
+            self._setText(
+                prefix + "wind",
+                ""
+            )
+
+        # =========================================================
         # Regen
-        # ---------------------------------------------------------
+        # =========================================================
+
         try:
-            if current_hour and "precipitationmm" in current_hour:
-                rainmm = current_hour["precipitationmm"]
+
+            if (
+                current_hour and
+                "precipitationmm" in current_hour
+            ):
+
+                rainmm = current_hour[
+                    "precipitationmm"
+                ]
+
             else:
-                rainmm = dag.get("precipitationmm", 0)
+
+                rainmm = dag.get(
+                    "precipitationmm",
+                    0
+                )
 
             self._setText(
                 prefix + "rain",
-                _("Rain: ") + "%.1f mm" % float(rainmm)
+                _("Rain: ") +
+                "%.1f mm" % float(rainmm)
             )
-        except Exception:
-            self._setText(prefix + "rain", "")
 
-        # ---------------------------------------------------------
-        # Sonnenauf-/untergang
-        # ---------------------------------------------------------
+        except Exception:
+
+            self._setText(
+                prefix + "rain",
+                ""
+            )
+
+        # =========================================================
+        # SONNE
+        # =========================================================
+
         try:
-            sunrise = (str(dag.get("sunrise", "")).split("T")[1])[:-3]
-            sunset  = (str(dag.get("sunset", "")).split("T")[1])[:-3]
+
+            sunrise = self._getTimeValue(
+                dag.get(
+                    "sunrise",
+                    ""
+                )
+            )
+
+            sunset = self._getTimeValue(
+                dag.get(
+                    "sunset",
+                    ""
+                )
+            )
 
             self._setText(
                 prefix + "sun",
-                _("Sun: ") + sunrise + "  -  " + sunset
+                _("Sun: ") +
+                sunrise +
+                "  -  " +
+                sunset
             )
-        except Exception:
-            self._setText(prefix + "sun", "")
 
-        # ---------------------------------------------------------
-        # Warnung
-        # ---------------------------------------------------------
+        except Exception:
+
+            self._setText(
+                prefix + "sun",
+                ""
+            )
+
+        # =========================================================
+        # MOND
+        # =========================================================
+
         try:
-            alertkleur, alerttekst = localWeatherAlert(dag)
+
+            moonrise = self._getMoonTime(
+                dag,
+                [
+                    "moonrise",
+                    "moonriseTime",
+                    "moonrise_time"
+                ]
+            )
+
+            moonset = self._getMoonTime(
+                dag,
+                [
+                    "moonset",
+                    "moonsetTime",
+                    "moonset_time"
+                ]
+            )
+
+            # Falls API keine Mondwerte liefert:
+            # nicht "None" anzeigen.
+            if not moonrise:
+                moonrise = "--"
+
+            if not moonset:
+                moonset = "--"
+
+            self._setText(
+                prefix + "moon",
+                _("Moon: ") +
+                moonrise +
+                "  -  " +
+                moonset
+            )
+
+        except Exception as e:
+
+            print(
+                "twolocations: "
+                "Mondauf-/untergang Fehler:",
+                e
+            )
+
+            self._setText(
+                prefix + "moon",
+                _("Moon: --  -  --")
+            )
+
+        # =========================================================
+        # Warnung
+        # =========================================================
+
+        try:
+
+            alertkleur, alerttekst = localWeatherAlert(
+                dag
+            )
 
             if alerttekst:
+
                 kleurwaarde = {
                     "yellow": gRGB(0xf2c200),
                     "orange": gRGB(0xff8c00),
                     "red": gRGB(0xe02020),
                     "blue": gRGB(0x40a0ff)
-                }.get(alertkleur, gRGB(0xffffff))
+                }.get(
+                    alertkleur,
+                    gRGB(0xffffff)
+                )
 
-                self._setText(prefix + "alert", alerttekst)
+                self._setText(
+                    prefix + "alert",
+                    alerttekst
+                )
 
                 try:
-                    if self[prefix + "alert"].instance is not None:
-                        self[prefix + "alert"].instance.setForegroundColor(kleurwaarde)
+
+                    if self[
+                        prefix + "alert"
+                    ].instance is not None:
+
+                        self[
+                            prefix + "alert"
+                        ].instance.setForegroundColor(
+                            kleurwaarde
+                        )
+
                 except Exception:
                     pass
 
                 try:
+
                     if sz_w > 1800:
+
                         alerticon = (
-                            "/usr/lib/enigma2/python/Plugins/Extensions/"
-                            "speedy_TheWeather/" + SHARED_PACK +
-                            "/alert/alert_" + alertkleur + ".png"
-                        )
-                    else:
-                        alerticon = (
-                            "/usr/lib/enigma2/python/Plugins/Extensions/"
-                            "speedy_TheWeather/" + SHARED_PACK +
-                            "/alert/alert_" + alertkleur + "_sd.png"
+                            "/usr/lib/enigma2/python/"
+                            "Plugins/Extensions/"
+                            "speedy_TheWeather/" +
+                            SHARED_PACK +
+                            "/alert/alert_" +
+                            alertkleur +
+                            ".png"
                         )
 
-                    if self[prefix + "alerticon"].instance is not None:
-                        self[prefix + "alerticon"].instance.setPixmapFromFile(alerticon)
-                        self[prefix + "alerticon"].show()
+                    else:
+
+                        alerticon = (
+                            "/usr/lib/enigma2/python/"
+                            "Plugins/Extensions/"
+                            "speedy_TheWeather/" +
+                            SHARED_PACK +
+                            "/alert/alert_" +
+                            alertkleur +
+                            "_sd.png"
+                        )
+
+                    if self[
+                        prefix + "alerticon"
+                    ].instance is not None:
+
+                        self[
+                            prefix + "alerticon"
+                        ].instance.setPixmapFromFile(
+                            alerticon
+                        )
+
+                        self[
+                            prefix + "alerticon"
+                        ].show()
 
                 except Exception:
-                    self[prefix + "alerticon"].hide()
+
+                    self[
+                        prefix + "alerticon"
+                    ].hide()
 
             else:
-                self._setText(prefix + "alert", "")
-                self[prefix + "alerticon"].hide()
+
+                self._setText(
+                    prefix + "alert",
+                    ""
+                )
+
+                self[
+                    prefix + "alerticon"
+                ].hide()
 
         except Exception:
             pass
 
-        # ---------------------------------------------------------
-        # Wetter-Icon ebenfalls aus aktueller Stunde
-        # ---------------------------------------------------------
+        # =========================================================
+        # Wetter-Icon aus aktueller Stunde
+        # =========================================================
+
         try:
+
             if current_hour:
-                iconcode = current_hour.get("iconcode", "")
+
+                iconcode = current_hour.get(
+                    "iconcode",
+                    ""
+                )
+
             else:
-                iconcode = dag.get("iconcode", "")
+
+                iconcode = dag.get(
+                    "iconcode",
+                    ""
+                )
 
             if sz_w > 1800:
+
                 iconbestand = (
-                    "/usr/lib/enigma2/python/Plugins/Extensions/"
-                    "speedy_TheWeather/" + icoonpath +
-                    "/iconbighd/" + str(iconcode) + ".png"
-                )
-            else:
-                iconbestand = (
-                    "/usr/lib/enigma2/python/Plugins/Extensions/"
-                    "speedy_TheWeather/" + icoonpath +
-                    "/iconbighd/" + str(iconcode) + ".png"
+                    "/usr/lib/enigma2/python/"
+                    "Plugins/Extensions/"
+                    "speedy_TheWeather/" +
+                    icoonpath +
+                    "/iconbighd/" +
+                    str(iconcode) +
+                    ".png"
                 )
 
-            if self[prefix + "icon"].instance is not None:
-                self[prefix + "icon"].instance.setPixmapFromFile(iconbestand)
+            else:
+
+                iconbestand = (
+                    "/usr/lib/enigma2/python/"
+                    "Plugins/Extensions/"
+                    "speedy_TheWeather/" +
+                    icoonpath +
+                    "/iconbighd/" +
+                    str(iconcode) +
+                    ".png"
+                )
+
+            if self[
+                prefix + "icon"
+            ].instance is not None:
+
+                self[
+                    prefix + "icon"
+                ].instance.setPixmapFromFile(
+                    iconbestand
+                )
 
         except Exception as e:
-            print("twolocations: Icon Fehler:", e)
+
+            print(
+                "twolocations: Icon Fehler:",
+                e
+            )
+
+    # =============================================================
+    # Icons neu laden
+    # =============================================================
 
     def reloadIcons(self):
 
         self.fillLoc1()
+
         if self.compareCity:
-            self.fillLoc2(self.compareCity)
+            self.fillLoc2(
+                self.compareCity
+            )
+
+    # =============================================================
+    # Ort 1
+    # =============================================================
 
     def fillLoc1(self):
-        global weatherData, citynamedisplay
+
+        global weatherData
+        global citynamedisplay
+
         try:
-            self._fillLocation(weatherData, citynamedisplay, "loc1")
+
+            self._fillLocation(
+                weatherData,
+                citynamedisplay,
+                "loc1"
+            )
+
         except Exception as e:
-            print("twolocations fillLoc1 fout:", e)
-            self._setText("loc1name", _("Error loading"))
+
+            print(
+                "twolocations fillLoc1 fout:",
+                e
+            )
+
+            self._setText(
+                "loc1name",
+                _("Error loading")
+            )
+
+    # =============================================================
+    # Ort 2
+    # =============================================================
 
     def fillLoc2(self, city):
-        self._setText("statusmsg", _("Loading..."))
+
+        self._setText(
+            "statusmsg",
+            _("Loading...")
+        )
+
         try:
-            data, naam = getLocWeerFor(city)
+
+            data, naam = getLocWeerFor(
+                city
+            )
+
             if data and naam:
-                self._fillLocation(data, naam, "loc2")
-                self._setText("statusmsg", "")
+
+                self._fillLocation(
+                    data,
+                    naam,
+                    "loc2"
+                )
+
+                self._setText(
+                    "statusmsg",
+                    ""
+                )
+
             else:
-                self._setText("loc2name", _("Not found"))
-                self._setText("statusmsg", _("City not found. Press YELLOW to change."))
+
+                self._setText(
+                    "loc2name",
+                    _("Not found")
+                )
+
+                self._setText(
+                    "statusmsg",
+                    _(
+                        "City not found. "
+                        "Press YELLOW to change."
+                    )
+                )
+
         except Exception as e:
-            print("twolocations fillLoc2 fout:", e)
-            self._setText("loc2name", _("Error loading"))
-            self._setText("statusmsg", _("Error fetching data."))
+
+            print(
+                "twolocations fillLoc2 fout:",
+                e
+            )
+
+            self._setText(
+                "loc2name",
+                _("Error loading")
+            )
+
+            self._setText(
+                "statusmsg",
+                _("Error fetching data.")
+            )
+
+    # =============================================================
+    # Zweiten Ort auswählen
+    # =============================================================
 
     def changeCompareCity(self):
-        global SavedLokaleWeer
-        if not SavedLokaleWeer:
-            self.session.open(MessageBox, _("No saved cities found.\nFirst add cities via the location screen."), MessageBox.TYPE_INFO)
-            return
-        self.session.openWithCallback(self.onCompareCityChosen, CityPickerScreen, SavedLokaleWeer)
 
-    def onCompareCityChosen(self, stadcode=None):
+        global SavedLokaleWeer
+
+        if not SavedLokaleWeer:
+
+            self.session.open(
+                MessageBox,
+                _(
+                    "No saved cities found.\n"
+                    "First add cities via the location screen."
+                ),
+                MessageBox.TYPE_INFO
+            )
+
+            return
+
+        self.session.openWithCallback(
+            self.onCompareCityChosen,
+            CityPickerScreen,
+            SavedLokaleWeer
+        )
+
+    # =============================================================
+    # Zweiten Ort speichern
+    # =============================================================
+
+    def onCompareCityChosen(
+        self,
+        stadcode=None
+    ):
+
         if not stadcode:
             return
+
         self.compareCity = stadcode
+
         try:
-            with open(self.COMPARE_CFG, "w") as f:
-                f.write(self.compareCity)
+
+            with open(
+                self.COMPARE_CFG,
+                "w"
+            ) as f:
+
+                f.write(
+                    self.compareCity
+                )
+
         except Exception as e:
-            print("twolocations: opslaan 2e stad mislukt:", e)
-        self.fillLoc2(self.compareCity)
+
+            print(
+                "twolocations: "
+                "opslaan 2e stad mislukt:",
+                e
+            )
+
+        self.fillLoc2(
+            self.compareCity
+        )
+
+    # =============================================================
+    # Beenden
+    # =============================================================
 
     def exit(self):
         self.close()
