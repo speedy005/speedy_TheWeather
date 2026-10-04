@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.1
+# v.1.9.2
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1194,7 +1194,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.1"
+__version__ = "1.9.2"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1210,7 +1210,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.1'
+version = '1.9.2'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -6337,6 +6337,9 @@ class sevendays(Screen):
     COLOR_CLOCK       = "#00ff0000"
     COLOR_DATE        = "#0000ff00"
 
+    # Alert
+    COLOR_ALERT      = "#00ff0000"
+
     # ================================================================
     # PFAD
     # ================================================================
@@ -6622,12 +6625,6 @@ class sevendays(Screen):
 
         # ============================================================
         # SONNE / MOND ANZEIGE
-        #
-        # WICHTIG:
-        # NICHT _label() verwenden.
-        #
-        # Die Widgets wurden bereits in
-        # _build_day_section() registriert.
         # ============================================================
 
         try:
@@ -6904,10 +6901,6 @@ class sevendays(Screen):
                 lockaaleStad
             )
 
-            # ========================================================
-            # KOORDINATEN
-            # ========================================================
-
             lat, lon = getCoordsFromEntry(
                 lockaaleStad
             )
@@ -6970,11 +6963,6 @@ class sevendays(Screen):
 
             # ========================================================
             # MONDAUFGANG FEHLT
-            #
-            # Dann kommt der Mond bereits ueber dem Horizont
-            # in den heutigen Tag.
-            #
-            # -> VORTAG nach Mondaufgang fragen
             # ========================================================
 
             if (
@@ -6985,7 +6973,7 @@ class sevendays(Screen):
 
                 previous_day = (
                     today
-                    - timedelta(days=1)
+                    - datetime.timedelta(days=1)
                 )
 
                 previous_rise, previous_set = (
@@ -7022,8 +7010,6 @@ class sevendays(Screen):
 
             # ========================================================
             # MONDUNTERGANG FEHLT
-            #
-            # -> FOLGETAG nach Monduntergang fragen
             # ========================================================
 
             if (
@@ -7034,7 +7020,7 @@ class sevendays(Screen):
 
                 next_day = (
                     today
-                    + timedelta(days=1)
+                    + datetime.timedelta(days=1)
                 )
 
                 next_rise, next_set = (
@@ -7078,9 +7064,11 @@ class sevendays(Screen):
                 or
                 moonrise == "na"
             ):
+
                 moonrise = "--"
 
             else:
+
                 moonrise = str(
                     moonrise
                 )
@@ -7090,16 +7078,14 @@ class sevendays(Screen):
                 or
                 moonset == "na"
             ):
+
                 moonset = "--"
 
             else:
+
                 moonset = str(
                     moonset
                 )
-
-            # ========================================================
-            # ENDERGEBNIS
-            # ========================================================
 
             print(
                 "[speedy_TheWeather] MOND: "
@@ -7378,6 +7364,7 @@ class sevendays(Screen):
 
         icon = self._icon(data)
         wind = self._wind(data)
+
         hours = data.get(
             "hours",
             []
@@ -8839,7 +8826,7 @@ class sevendays(Screen):
                 ).split("T")[0]
 
                 unix = time.mktime(
-                    datetime(
+                    datetime.datetime(
                         int(date_value[:4]),
                         int(date_value[5:7]),
                         int(date_value[8:10])
@@ -8970,6 +8957,8 @@ class sevendays(Screen):
                 ) or "na"
             )
         )
+
+
 
     # ================================================================
     # INIT
