@@ -667,6 +667,338 @@ msgstr "[FEHLER] Installation wurde mit Fehlern beendet."
 msgid "[ERROR] See the log above for details."
 msgstr "[FEHLER] Details siehe Log oben."
 
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "START DER AUTO-HINTERGRUND-INSTALLATION"
+
+msgid "Log file: %s"
+msgstr "Logdatei: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[INFO] Automatische Hintergründe sind deaktiviert"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "AUTO-HINTERGRUND-PRÜFUNG"
+
+msgid "[STEP] Checking background directories"
+msgstr "[SCHRITT] Background-Verzeichnisse werden geprüft"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[ERSTELLEN] Background-Hauptverzeichnis: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Background-Hauptverzeichnis vorhanden: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[ERSTELLEN] Auto-Verzeichnis: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Auto-Verzeichnis vorhanden: %s"
+
+msgid "Background root: %s"
+msgstr "Background-Hauptverzeichnis: %s"
+
+msgid "Auto directory: %s"
+msgstr "Auto-Verzeichnis: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[INFO] Installationsmarker vorhanden: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[INFO] Kein Installationsmarker vorhanden"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[SCHRITT] Alte ZIP wird geprüft: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[LÖSCHEN] Alte ZIP wird gelöscht"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Alte ZIP gelöscht"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[INFO] Keine alte ZIP vorhanden"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[WARNUNG] Alte ZIP konnte nicht gelöscht werden: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[DOWNLOAD] DOWNLOAD START"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[DOWNLOAD] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[DOWNLOAD] Ziel: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[FEHLER] wget wurde nicht gefunden!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[DOWNLOAD] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[DOWNLOAD] wget wird ausgeführt..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[DOWNLOAD] wget Rückgabecode: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[FEHLER] DOWNLOAD FEHLGESCHLAGEN"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[BEREINIGUNG] Fehlerhafte ZIP gelöscht"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] DOWNLOAD ERFOLGREICH"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[SCHRITT] Heruntergeladene ZIP wird geprüft"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[FEHLER] ZIP wurde nicht erstellt!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Größe: %s Bytes"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[FEHLER] ZIP ist leer!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] ZIP-Datei vorhanden"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] ZIP-Format wird geprüft..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[FEHLER] Ungültige ZIP-Datei!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] ZIP ist gültig"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] ZIP wird geöffnet..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Dateien in der ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[ÜBERSPRUNGEN] AUTO ist keine JPG-Datei: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[ÜBERSPRUNGEN] EXTRA ist keine JPG-Datei: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[GEFUNDEN] AUTO-JPG-Dateien in der ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[GEFUNDEN] EXTRA-JPG-Dateien in der ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[FEHLER] Keine AUTO-JPG-Dateien in der ZIP gefunden!"
+
+msgid "No AUTO files found"
+msgstr "Keine AUTO-Dateien gefunden"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[WARNUNG] Keine EXTRA-JPG-Dateien in der ZIP gefunden!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[INSTALLATION] AUTO-INSTALLATION START"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[INSTALLATION] AUTO-Dateien: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[INSTALLATION] AUTO-Quelle: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[INSTALLATION] AUTO-Ziel: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[INSTALLATION] AUTO gelesen: %s Bytes"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[FEHLER] AUTO-Datei ist leer: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[FEHLER] AUTO-Temporärdatei ist leer: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[INSTALLATION] Alte AUTO-Datei wird ersetzt: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[FEHLER] AUTO-Zieldatei existiert nicht: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[FEHLER] AUTO-Zieldatei ist leer: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] AUTO INSTALLIERT: %s (%s Bytes)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[FEHLER] AUTO-Fehler %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[INSTALLATION] AUTO FERTIG: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[INSTALLATION] EXTRA-INSTALLATION START"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[INSTALLATION] EXTRA-Dateien: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[INSTALLATION] EXTRA-Quelle: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[INSTALLATION] EXTRA-Ziel: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[INSTALLATION] EXTRA gelesen: %s Bytes"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[FEHLER] EXTRA-Datei ist leer: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[FEHLER] EXTRA-Temporärdatei ist leer: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[INSTALLATION] Alte EXTRA-Datei wird ersetzt: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[FEHLER] EXTRA-Zieldatei existiert nicht: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[FEHLER] EXTRA-Zieldatei ist leer: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] EXTRA INSTALLIERT: %s (%s Bytes)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[FEHLER] EXTRA-Fehler %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[INSTALLATION] EXTRA FERTIG: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP geschlossen"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[PRÜFUNG] ABSCHLIESSENDE PRÜFUNG"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[PRÜFUNG] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[FEHLER] AUTO FEHLT: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[FEHLER] AUTO LEER: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] AUTO VERIFIZIERT: %s (%s Bytes)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[PRÜFUNG] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[FEHLER] EXTRA FEHLT: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[FEHLER] EXTRA LEER: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] EXTRA VERIFIZIERT: %s (%s Bytes)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[ERGEBNIS] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[ERGEBNIS] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[ERGEBNIS] AUTO-Fehler: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[ERGEBNIS] EXTRA-Fehler: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[ERGEBNIS] Prüfungsfehler: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[FEHLER] Keine AUTO-Dateien gefunden!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[FEHLER] AUTO-INSTALLATION UNVOLLSTÄNDIG"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[FEHLER] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[BEREINIGUNG] Alter Marker entfernt"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[WARNUNG] Marker konnte nicht entfernt werden: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[FEHLER] EXTRA-INSTALLATION UNVOLLSTÄNDIG"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[FEHLER] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[FEHLER] ABSCHLIESSENDE PRÜFUNG FEHLGESCHLAGEN"
+
+msgid "[ERROR] %s"
+msgstr "[FEHLER] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[MARKER] Installationsmarker wird geschrieben..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Marker geschrieben: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[FEHLER] Marker-Fehler: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[BEREINIGUNG] ZIP wird auf Löschung geprüft..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] ZIP gelöscht: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[INFO] ZIP ist bereits nicht vorhanden"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[WARNUNG] ZIP konnte nicht gelöscht werden: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[ERFOLG] AUTO-HINTERGRÜNDE ERFOLGREICH INSTALLIERT"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[ERFOLG] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[ERFOLG] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[ERFOLG] INSTALLATION ABGESCHLOSSEN"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[FATALER FEHLER] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[BEREINIGUNG] ZIP nach Fehler gelöscht"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[BEREINIGUNG] Marker nach Fehler entfernt"
+
+
+
 
 
 
