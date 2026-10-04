@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.9
+# v.1.9.0
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1194,7 +1194,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.8.9"
+__version__ = "1.9.0"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1210,7 +1210,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.9'
+version = '1.9.0'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -5875,32 +5875,183 @@ def _get_weather_by_city_id(city_id):
     return data
 
 def _search_city(query):
-    query = safeStr(query).strip()
-    if not query:
+    try:
+        query = safeStr(query).strip()
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH: query=%r"
+            % query
+        )
+
+        if not query:
+            return None, None
+
+        # ----------------------------------------
+        # Eingabe:
+        #
+        # Berlin
+        # Berlin(DE)
+        # Berlin_DE
+        # ----------------------------------------
+
+        city = query
+        country = ""
+
+        if "(" in query and query.endswith(")"):
+            city, country = query.rsplit("(", 1)
+            city = city.strip()
+            country = country[:-1].strip().lower()
+
+        elif "_" in query:
+            city, country = query.split("_", 1)
+            city = city.strip()
+            country = country.strip().lower()
+
+        if not city:
+            return None, None
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH: "
+            "city=%r country=%r"
+            % (city, country)
+        )
+
+        # ----------------------------------------
+        # Buienradar Location Search
+        # ----------------------------------------
+
+        url = (
+            "https://location.buienradar.nl/1.1/location/search"
+            "?query="
+            + quote_plus(city)
+        )
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH URL: %s"
+            % url
+        )
+
+        results = _http_json(url)
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH RESULTS: %r"
+            % results
+        )
+
+        if not isinstance(results, list):
+            print(
+                "[speedy_TheWeather] CITY SEARCH: "
+                "Ergebnis ist keine Liste"
+            )
+            return None, None
+
+        if not results:
+            print(
+                "[speedy_TheWeather] CITY SEARCH: "
+                "keine Treffer"
+            )
+            return None, None
+
+        # ----------------------------------------
+        # passenden Treffer auswählen
+        # ----------------------------------------
+
+        selected = results[0]
+
+        if country:
+
+            for item in results:
+
+                item_country = safeStr(
+                    item.get(
+                        "countrycode",
+                        ""
+                    )
+                ).strip().lower()
+
+                if item_country == country:
+                    selected = item
+                    break
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH SELECTED: %r"
+            % selected
+        )
+
+        city_id = selected.get("id")
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH CITY_ID: %r"
+            % city_id
+        )
+
+        if city_id is None:
+            print(
+                "[speedy_TheWeather] CITY SEARCH: "
+                "keine City-ID"
+            )
+            return None, None
+
+        # ----------------------------------------
+        # Wetter über vorhandene Funktion laden
+        # ----------------------------------------
+
+        data = _get_weather_by_city_id(
+            city_id
+        )
+
+        print(
+            "[speedy_TheWeather] CITY WEATHER DATA: %s"
+            % (
+                "OK"
+                if data is not None
+                else "NONE"
+            )
+        )
+
+        if data is None:
+            print(
+                "[speedy_TheWeather] CITY SEARCH: "
+                "Wetterdaten nicht gefunden"
+            )
+            return None, None
+
+        # ----------------------------------------
+        # Anzeigename
+        # ----------------------------------------
+
+        name = "%s(%s)" % (
+            selected.get(
+                "name",
+                city
+            ),
+            selected.get(
+                "countrycode",
+                ""
+            )
+        )
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH OK: %s"
+            % name
+        )
+
+        return data, name
+
+    except Exception as e:
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH ERROR: %s"
+            % str(e)
+        )
+
+        try:
+            import traceback
+            traceback.print_exc()
+        except Exception:
+            pass
+
         return None, None
-    parts = query.split('_', 1)
-    city = parts[0].strip()
-    country = parts[1].strip().lower() if len(parts) == 2 else ''
-    if not city:
-        return None, None
-    url = 'https://location.buienradar.nl/1.1/location/search?query=' + quote_plus(city)
-    results = _http_json(url)
-    if not isinstance(results, list) or not results:
-        return None, None
-    selected = results[0]
-    if country:
-        for item in results:
-            if safeStr(item.get('countrycode', '')).lower() == country:
-                selected = item
-                break
-    city_id = selected.get('id')
-    if city_id is None:
-        return None, None
-    data = _http_json('https://forecast.buienradar.nl/2.0/forecast/%s' % city_id)
-    if data is None:
-        return None, None
-    name = '%s  %s' % (selected.get('name', city), selected.get('countrycode', ''))
-    return data, name.strip()
 
 def getLocWeer(iscity=None, update_overlay=True):
     global weatherData, lockaaleStad, citynamedisplay
@@ -11329,64 +11480,160 @@ class localcityscreen(Screen):
         self._citySearchBusy = True
         self._citySearchResult = None
         self._citySearchError = None
+
         query = safeStr(searchterm).strip()
+
+        # Falls der Eingabewert z.B. "Berlin(DE)" enthält,
+        # nur "Berlin" an die Suche übergeben.
+        if "(" in query and query.endswith(")"):
+            query = query.rsplit("(", 1)[0].strip()
+
+        print(
+            "[speedy_TheWeather] CITY SEARCH START: '%s'"
+            % query
+        )
 
         def worker():
             try:
                 if getattr(self, "_closed", False):
+                    print(
+                        "[speedy_TheWeather] CITY SEARCH: "
+                        "Screen bereits geschlossen"
+                    )
                     return
 
-                url = "https://location.buienradar.nl/1.1/location/search?query=%s" % quote_plus(query)
-                results = _http_json(url, timeout=12)
+                url = (
+                    "https://location.buienradar.nl/1.1/"
+                    "location/search?query=%s"
+                    % quote_plus(query)
+                )
 
-                if getattr(self, "_closed", True):
+                print(
+                    "[speedy_TheWeather] CITY SEARCH URL: %s"
+                    % url
+                )
+
+                results = _http_json(
+                    url,
+                    timeout=12
+                )
+
+                # WICHTIG:
+                # Default muss False sein!
+                if getattr(self, "_closed", False):
                     return
 
-                if req_id != getattr(self, "_citySearchRequestId", None):
+                if req_id != getattr(
+                    self,
+                    "_citySearchRequestId",
+                    None
+                ):
+                    print(
+                        "[speedy_TheWeather] CITY SEARCH: "
+                        "alte Anfrage verworfen"
+                    )
                     return
 
-                self._citySearchResult = results or []
+                if not isinstance(results, list):
+                    results = []
+
+                self._citySearchResult = results
+
+                print(
+                    "[speedy_TheWeather] CITY SEARCH: "
+                    "%d Ergebnisse"
+                    % len(results)
+                )
 
             except Exception as e:
-                if getattr(self, "_closed", True):
+
+                # Auch hier MUSS der Default False sein.
+                if getattr(self, "_closed", False):
                     return
 
-                if req_id == getattr(self, "_citySearchRequestId", None):
+                if req_id == getattr(
+                    self,
+                    "_citySearchRequestId",
+                    None
+                ):
                     self._citySearchError = e
 
-        self._citySearchThread = threading.Thread(target=worker)
+                print(
+                    "[speedy_TheWeather] CITY SEARCH FEHLER: %s"
+                    % str(e)
+                )
+
+        self._citySearchThread = threading.Thread(
+            target=worker
+        )
         self._citySearchThread.daemon = True
         self._citySearchThread.start()
-        self._citySearchTimer.start(100, True)
+
+        self._citySearchTimer.start(
+            100,
+            True
+        )
+
 
     def _pollCitySearch(self):
-        if self._citySearchResult is None and self._citySearchError is None:
-            if self._citySearchThread is not None and self._citySearchThread.is_alive():
-                self._citySearchTimer.start(100, True)
+
+        if (
+            self._citySearchResult is None
+            and self._citySearchError is None
+        ):
+
+            if (
+                self._citySearchThread is not None
+                and self._citySearchThread.is_alive()
+            ):
+                self._citySearchTimer.start(
+                    100,
+                    True
+                )
                 return
 
         result = self._citySearchResult
         error = self._citySearchError
+
         self._citySearchResult = None
         self._citySearchError = None
         self._citySearchBusy = False
 
         if error is not None:
-            print("[speedy_TheWeather] city search error: %s" % error)
+
+            print(
+                "[speedy_TheWeather] city search error: %s"
+                % str(error)
+            )
+
             self.session.open(
                 MessageBox,
                 _("No matching cities found."),
                 MessageBox.TYPE_INFO
             )
+
             return
 
         if not result:
+
+            print(
+                "[speedy_TheWeather] CITY SEARCH: "
+                "keine Ergebnisse"
+            )
+
             self.session.open(
                 MessageBox,
                 _("No matching cities found."),
                 MessageBox.TYPE_INFO
             )
+
             return
+
+        print(
+            "[speedy_TheWeather] ÖFFNE "
+            "CitySuggestListScreen mit %d Ergebnissen"
+            % len(result)
+        )
 
         self.session.openWithCallback(
             self.onCityChosen,
