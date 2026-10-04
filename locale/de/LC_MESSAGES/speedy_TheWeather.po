@@ -610,5 +610,14 @@ msgstr "Mond :"
 msgid "Sun :"
 msgstr "Sonne :"
 
+msgid "No matching cities found."
+msgstr "Keine passenden Städte gefunden."
+
+msgid "Could not save the selected location."
+msgstr "Die ausgewählte Stadt konnte nicht gespeichert werden."
+
+msgid "Choose a match:"
+msgstr "Stadt auswählen:"
+
 
 
