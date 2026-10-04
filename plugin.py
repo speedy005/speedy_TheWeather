@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.2
+# v.1.9.3
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1194,7 +1194,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.2"
+__version__ = "1.9.3"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1210,7 +1210,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.2'
+version = '1.9.3'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -1358,132 +1358,435 @@ _updateInfo = None
 # Enigma2 Console-Referenz während der Installation
 _updateConsole = None
 
+AUTO_BG_LOG = "/tmp/speedy_TheWeather_auto_bg.log"
+
+def autoBgLog(message, liveQueue=None):
+    """
+    Schreibt Log nach /tmp und zusätzlich auf die Konsole.
+
+    Wenn liveQueue übergeben wurde, wird dieselbe Logzeile
+    zusätzlich an den Live-TV-Logbildschirm geschickt.
+
+    Python 2 + Python 3 kompatibel.
+    """
+
+    try:
+        timestamp = time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        line = (
+            "[%s] %s"
+            % (
+                timestamp,
+                message
+            )
+        )
+
+        # -------------------------------------------------
+        # Konsole / Enigma2 Log
+        # -------------------------------------------------
+        print(line)
+
+        # -------------------------------------------------
+        # Logdatei
+        # -------------------------------------------------
+        try:
+            with open(
+                AUTO_BG_LOG,
+                "a"
+            ) as f:
+
+                f.write(
+                    line + "\n"
+                )
+
+        except Exception:
+            pass
+
+        # -------------------------------------------------
+        # Live-TV-Log
+        # -------------------------------------------------
+        if liveQueue is not None:
+            try:
+                liveQueue.put(
+                    ("LOG", line)
+                )
+            except Exception:
+                pass
+
+    except Exception:
+        pass
+
+
+# ============================================================
+
 import os
 import time
 import zipfile
 import subprocess
 
-def ensureAutoBackgrounds():
-    """
-    Lädt backgrounds_auto.zip von GitHub.
+# ============================================================
+# AUTO BACKGROUNDS INSTALLATION
+# Python 2 + Python 3 kompatibel
+# ============================================================
 
-    ZIP:
+def ensureAutoBackgrounds(liveScreen=None):
+    """
+    Downloads backgrounds_auto.zip from GitHub and installs ALL
+    JPG/JPEG files from the AUTO and EXTRA folders.
+
+    Supported ZIP structures:
+
+        backgrounds_auto/auto/*.jpg
+        backgrounds_auto/extra/*.jpg
+
+    and alternatively:
+
         auto/*.jpg
         extra/*.jpg
 
     Installation:
-        auto/*  -> backgrounds/auto/
-        extra/* -> backgrounds/
 
-    Python 2 + Python 3 kompatibel.
+        AUTO:
+            -> backgrounds/auto/
+
+        EXTRA:
+            -> backgrounds/
+
+    There is NO fixed list of AUTO or EXTRA files.
+
+    All JPG/JPEG files found in the corresponding ZIP folders
+    are installed.
+
+    Python 2 + Python 3 compatible.
+
+    Log:
+        /tmp/speedy_TheWeather_auto_bg.log
+
+    If liveScreen is supplied and liveScreen.logQueue exists,
+    all log lines are additionally sent to the live screen.
+
+    IMPORTANT:
+    This function must NOT be executed in the GUI thread.
+
+    wget therefore runs in the worker thread.
+
+    The GUI is never modified directly from this function.
     """
 
+    # ========================================================
+    # LOGFILE
+    # ========================================================
+
+    AUTO_BG_LOG = "/tmp/speedy_TheWeather_auto_bg.log"
+
+    # ========================================================
+    # LOGGER
+    # ========================================================
+
+    def autoBgLog(message):
+        """
+        Writes one log line to:
+
+        1. Enigma2 console
+        2. logfile
+        3. live screen queue
+
+        The GUI is NOT modified directly from this thread.
+        """
+
+        try:
+
+            timestamp = time.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+            line = (
+                "[%s] [speedy_TheWeather] %s"
+                % (
+                    timestamp,
+                    message
+                )
+            )
+
+            # ------------------------------------------------
+            # CONSOLE
+            # ------------------------------------------------
+
+            try:
+                print(line)
+            except Exception:
+                pass
+
+            # ------------------------------------------------
+            # LOGFILE
+            # ------------------------------------------------
+
+            try:
+
+                with open(
+                    AUTO_BG_LOG,
+                    "a"
+                ) as logFile:
+
+                    logFile.write(
+                        line + "\n"
+                    )
+
+            except Exception:
+                pass
+
+            # ------------------------------------------------
+            # LIVE SCREEN
+            # ------------------------------------------------
+
+            if liveScreen is not None:
+
+                try:
+
+                    if hasattr(
+                        liveScreen,
+                        "logQueue"
+                    ):
+
+                        liveScreen.logQueue.put(
+                            (
+                                "LOG",
+                                line
+                            )
+                        )
+
+                except Exception:
+                    pass
+
+        except Exception:
+            pass
+
+    # ========================================================
+    # SHORT LOGGER
+    # ========================================================
+
+    def log(message):
+        autoBgLog(message)
+
+    # ========================================================
+    # CREATE NEW LOGFILE
+    # ========================================================
+
+    try:
+
+        with open(
+            AUTO_BG_LOG,
+            "w"
+        ) as logFile:
+
+            logFile.write(
+                "==================================================\n"
+            )
+
+            logFile.write(
+                "speedy_TheWeather AUTO BACKGROUND LOG\n"
+            )
+
+            logFile.write(
+                "==================================================\n"
+            )
+
+    except Exception:
+        pass
+
+    # ========================================================
+    # START
+    # ========================================================
+
+    log(
+        _("AUTO BACKGROUND INSTALLATION START")
+    )
+
+    log(
+        _("Log file: %s")
+        % AUTO_BG_LOG
+    )
+
+    # ========================================================
+    # AUTO BACKGROUNDS DISABLED?
+    # ========================================================
+
     if not backgroundAutoWeather:
-        print("[speedy_TheWeather] Auto backgrounds deaktiviert")
+
+        log(
+            _("[INFO] Automatic backgrounds are disabled")
+        )
+
         return False
 
-    print("==================================================")
-    print("[speedy_TheWeather] AUTO BG CHECK")
-    print("==================================================")
+    # ========================================================
+    # HEADER
+    # ========================================================
+
+    log(
+        "=================================================="
+    )
+
+    log(
+        _("AUTO BACKGROUND CHECK")
+    )
+
+    log(
+        "=================================================="
+    )
 
     zipFile = AUTO_BG_ZIP_FILE
 
+    # ========================================================
+    # MAIN TRY
+    # ========================================================
+
     try:
-        # ====================================================
-        # Verzeichnisse erstellen
-        # ====================================================
-
-        if not os.path.isdir(BACKGROUND_ROOT):
-            os.makedirs(BACKGROUND_ROOT)
-
-        if not os.path.isdir(AUTO_BG_DIR):
-            os.makedirs(AUTO_BG_DIR)
-
-        print(
-            "[speedy_TheWeather] Background Root:"
-        )
-        print(BACKGROUND_ROOT)
-
-        print(
-            "[speedy_TheWeather] Auto Directory:"
-        )
-        print(AUTO_BG_DIR)
 
         # ====================================================
-        # Benötigte AUTO-Dateien
+        # DIRECTORIES
         # ====================================================
 
-        requiredAutoBackgrounds = (
-            "sunny.jpg",
-            "cloudy.jpg",
-            "mist.jpg",
-            "rain.jpg",
-            "thunder.jpg",
-            "snow.jpg",
-            "halloween.jpg",
-            "kerst.jpg",
-            "newyear.jpg",
+        log(
+            _("[STEP] Checking background directories")
         )
 
-        # ====================================================
-        # Prüfen ob AUTO bereits installiert
-        # ====================================================
+        # ----------------------------------------------------
+        # BACKGROUND ROOT
+        # ----------------------------------------------------
 
-        allInstalled = True
+        if not os.path.isdir(
+            BACKGROUND_ROOT
+        ):
 
-        for filename in requiredAutoBackgrounds:
-
-            target = os.path.join(
-                AUTO_BG_DIR,
-                filename
-            )
-
-            if not os.path.isfile(target):
-                allInstalled = False
-                break
-
-            try:
-                if os.path.getsize(target) <= 0:
-                    allInstalled = False
-                    break
-            except Exception:
-                allInstalled = False
-                break
-
-        if allInstalled:
-
-            print(
-                "[speedy_TheWeather] "
-                "Alle Auto-BGs bereits vorhanden."
+            log(
+                _("[CREATE] Background root: %s")
+                % BACKGROUND_ROOT
             )
 
             try:
-                with open(AUTO_BG_MARKER, "w") as f:
-                    f.write("installed\n")
-                    f.write(
-                        "timestamp=%s\n"
-                        % int(time.time())
-                    )
-            except Exception as e:
-                print(
-                    "[speedy_TheWeather] "
-                    "Marker Fehler: %s"
-                    % e
+
+                os.makedirs(
+                    BACKGROUND_ROOT
                 )
 
-            return True
+            except OSError:
+
+                if not os.path.isdir(
+                    BACKGROUND_ROOT
+                ):
+
+                    raise
+
+        else:
+
+            log(
+                _("[OK] Background root exists: %s")
+                % BACKGROUND_ROOT
+            )
+
+        # ----------------------------------------------------
+        # AUTO DIRECTORY
+        # ----------------------------------------------------
+
+        if not os.path.isdir(
+            AUTO_BG_DIR
+        ):
+
+            log(
+                _("[CREATE] Auto directory: %s")
+                % AUTO_BG_DIR
+            )
+
+            try:
+
+                os.makedirs(
+                    AUTO_BG_DIR
+                )
+
+            except OSError:
+
+                if not os.path.isdir(
+                    AUTO_BG_DIR
+                ):
+
+                    raise
+
+        else:
+
+            log(
+                _("[OK] Auto directory exists: %s")
+                % AUTO_BG_DIR
+            )
+
+        log(
+            _("Background root: %s")
+            % BACKGROUND_ROOT
+        )
+
+        log(
+            _("Auto directory: %s")
+            % AUTO_BG_DIR
+        )
 
         # ====================================================
-        # Alte ZIP löschen
+        # MARKER
         # ====================================================
+
+        if os.path.isfile(
+            AUTO_BG_MARKER
+        ):
+
+            log(
+                _("[INFO] Installation marker exists: %s")
+                % AUTO_BG_MARKER
+            )
+
+        else:
+
+            log(
+                _("[INFO] No installation marker found")
+            )
+
+        # ====================================================
+        # DELETE OLD ZIP
+        # ====================================================
+
+        log(
+            _("[STEP] Checking old ZIP: %s")
+            % zipFile
+        )
 
         try:
-            if os.path.exists(zipFile):
-                os.remove(zipFile)
+
+            if os.path.exists(
+                zipFile
+            ):
+
+                log(
+                    _("[DELETE] Old ZIP will be deleted")
+                )
+
+                os.remove(
+                    zipFile
+                )
+
+                log(
+                    _("[OK] Old ZIP deleted")
+                )
+
+            else:
+
+                log(
+                    _("[INFO] No old ZIP found")
+                )
+
         except Exception as e:
-            print(
-                "[speedy_TheWeather] "
-                "Alte ZIP konnte nicht gelöscht werden: %s"
+
+            log(
+                _("[WARNING] Old ZIP could not be deleted: %s")
                 % e
             )
 
@@ -1491,115 +1794,447 @@ def ensureAutoBackgrounds():
         # DOWNLOAD
         # ====================================================
 
-        print(
-            "[speedy_TheWeather] Download startet..."
+        log(
+            "=================================================="
         )
 
-        wget_path = "/usr/bin/wget" if os.path.exists("/usr/bin/wget") else "/bin/wget"
-        if not os.path.exists(wget_path):
-            print("[speedy_TheWeather] wget not found")
+        log(
+            _("[DOWNLOAD] DOWNLOAD START")
+        )
+
+        log(
+            _("[DOWNLOAD] URL: %s")
+            % AUTO_BG_ZIP_URL
+        )
+
+        log(
+            _("[DOWNLOAD] Target: %s")
+            % zipFile
+        )
+
+        # ====================================================
+        # FIND WGET
+        # ====================================================
+
+        if os.path.exists(
+            "/usr/bin/wget"
+        ):
+
+            wget_path = "/usr/bin/wget"
+
+        elif os.path.exists(
+            "/bin/wget"
+        ):
+
+            wget_path = "/bin/wget"
+
+        else:
+
+            wget_path = None
+
+        if wget_path is None:
+
+            log(
+                _("[ERROR] wget was not found!")
+            )
+
             return False
+
+        log(
+            _("[DOWNLOAD] wget: %s")
+            % wget_path
+        )
+
+        # ====================================================
+        # WGET COMMAND
+        # ====================================================
 
         command = [
             wget_path,
-            "-O", zipFile,
+            "-O",
+            zipFile,
             "--timeout=15",
             "--tries=2",
             AUTO_BG_ZIP_URL,
         ]
-        print("[speedy_TheWeather] Download via wget")
 
-        result = subprocess.call(command)
+        log(
+            _("[DOWNLOAD] Running wget...")
+        )
 
-        print(
-            "[speedy_TheWeather] wget return: %s"
+        # ====================================================
+        # DOWNLOAD
+        # ====================================================
+
+        result = subprocess.call(
+            command
+        )
+
+        log(
+            _("[DOWNLOAD] wget return code: %s")
             % result
         )
 
         if result != 0:
-            print(
-                "[speedy_TheWeather] "
-                "DOWNLOAD FEHLGESCHLAGEN"
+
+            log(
+                _("[ERROR] DOWNLOAD FAILED")
             )
+
+            try:
+
+                if os.path.exists(
+                    zipFile
+                ):
+
+                    os.remove(
+                        zipFile
+                    )
+
+                    log(
+                        _("[CLEANUP] Invalid ZIP deleted")
+                    )
+
+            except Exception:
+                pass
+
             return False
 
+        log(
+            _("[OK] DOWNLOAD SUCCESSFUL")
+        )
+
         # ====================================================
-        # ZIP vorhanden?
+        # CHECK ZIP
         # ====================================================
 
-        if not os.path.isfile(zipFile):
-            print(
-                "[speedy_TheWeather] "
-                "ZIP wurde nicht erstellt."
+        log(
+            _("[STEP] Checking downloaded ZIP")
+        )
+
+        if not os.path.isfile(
+            zipFile
+        ):
+
+            log(
+                _("[ERROR] ZIP was not created!")
             )
+
             return False
 
         try:
-            zipSize = os.path.getsize(zipFile)
+
+            zipSize = os.path.getsize(
+                zipFile
+            )
+
         except Exception:
+
             zipSize = 0
 
-        print(
-            "[speedy_TheWeather] "
-            "ZIP Größe: %s Bytes"
+        log(
+            _("[ZIP] Size: %s bytes")
             % zipSize
         )
 
         if zipSize <= 0:
-            print(
-                "[speedy_TheWeather] "
-                "ZIP ist leer."
-            )
-            return False
 
-        # ====================================================
-        # ZIP prüfen
-        # ====================================================
-
-        if not zipfile.is_zipfile(zipFile):
-
-            print(
-                "[speedy_TheWeather] "
-                "FEHLER: Keine gültige ZIP!"
+            log(
+                _("[ERROR] ZIP is empty!")
             )
 
             return False
 
-        print(
-            "[speedy_TheWeather] "
-            "ZIP ist gültig."
+        log(
+            _("[OK] ZIP file exists")
         )
 
         # ====================================================
-        # ZIP öffnen
+        # ZIP FORMAT
         # ====================================================
+
+        log(
+            _("[ZIP] Checking ZIP format...")
+        )
+
+        if not zipfile.is_zipfile(
+            zipFile
+        ):
+
+            log(
+                _("[ERROR] Invalid ZIP file!")
+            )
+
+            try:
+
+                os.remove(
+                    zipFile
+                )
+
+            except Exception:
+                pass
+
+            return False
+
+        log(
+            _("[OK] ZIP is valid")
+        )
+
+        # ====================================================
+        # OPEN ZIP
+        # ====================================================
+
+        log(
+            _("[ZIP] Opening ZIP...")
+        )
 
         zf = zipfile.ZipFile(
             zipFile,
             "r"
         )
 
+        autoInstalled = 0
+        extraInstalled = 0
+
+        autoTotal = 0
+        extraTotal = 0
+
+        autoErrors = []
+        extraErrors = []
+
         try:
+
+            # =================================================
+            # ZIP MEMBERS
+            # =================================================
 
             members = zf.namelist()
 
-            print(
-                "[speedy_TheWeather] "
-                "ZIP Dateien: %s"
+            log(
+                _("[ZIP] Files in ZIP: %s")
                 % len(members)
             )
 
+            # -------------------------------------------------
+            # ZIP CONTENT
+            # -------------------------------------------------
+
+            for member in members:
+
+                log(
+                    _("[ZIP] %s")
+                    % member
+                )
+
             # =================================================
-            # AUTO/
+            # COLLECT AUTO MEMBERS
             # =================================================
 
-            autoInstalled = 0
+            autoMembers = []
 
-            for filename in requiredAutoBackgrounds:
+            for member in members:
 
-                sourceName = (
-                    "auto/" +
-                    filename
+                if member.endswith(
+                    "/"
+                ):
+                    continue
+
+                normalizedMember = member.replace(
+                    "\\",
+                    "/"
+                )
+
+                if normalizedMember.startswith(
+                    "backgrounds_auto/auto/"
+                ):
+
+                    autoMembers.append(
+                        member
+                    )
+
+                elif normalizedMember.startswith(
+                    "auto/"
+                ):
+
+                    autoMembers.append(
+                        member
+                    )
+
+            # =================================================
+            # COLLECT EXTRA MEMBERS
+            # =================================================
+
+            extraMembers = []
+
+            for member in members:
+
+                if member.endswith(
+                    "/"
+                ):
+                    continue
+
+                normalizedMember = member.replace(
+                    "\\",
+                    "/"
+                )
+
+                if normalizedMember.startswith(
+                    "backgrounds_auto/extra/"
+                ):
+
+                    extraMembers.append(
+                        member
+                    )
+
+                elif normalizedMember.startswith(
+                    "extra/"
+                ):
+
+                    extraMembers.append(
+                        member
+                    )
+
+            # =================================================
+            # ONLY JPG/JPEG
+            # =================================================
+
+            filteredAutoMembers = []
+
+            for member in autoMembers:
+
+                filename = os.path.basename(
+                    member
+                )
+
+                lowerName = filename.lower()
+
+                if (
+                    lowerName.endswith(".jpg")
+                    or
+                    lowerName.endswith(".jpeg")
+                ):
+
+                    filteredAutoMembers.append(
+                        member
+                    )
+
+                else:
+
+                    log(
+                        _("[SKIP] AUTO is not a JPG file: %s")
+                        % member
+                    )
+
+            autoMembers = filteredAutoMembers
+
+            filteredExtraMembers = []
+
+            for member in extraMembers:
+
+                filename = os.path.basename(
+                    member
+                )
+
+                lowerName = filename.lower()
+
+                if (
+                    lowerName.endswith(".jpg")
+                    or
+                    lowerName.endswith(".jpeg")
+                ):
+
+                    filteredExtraMembers.append(
+                        member
+                    )
+
+                else:
+
+                    log(
+                        _("[SKIP] EXTRA is not a JPG file: %s")
+                        % member
+                    )
+
+            extraMembers = filteredExtraMembers
+
+            # =================================================
+            # COUNTS
+            # =================================================
+
+            autoTotal = len(
+                autoMembers
+            )
+
+            extraTotal = len(
+                extraMembers
+            )
+
+            log(
+                "=================================================="
+            )
+
+            log(
+                _("[FOUND] AUTO JPG files in ZIP: %s")
+                % autoTotal
+            )
+
+            log(
+                _("[FOUND] EXTRA JPG files in ZIP: %s")
+                % extraTotal
+            )
+
+            log(
+                "=================================================="
+            )
+
+            # =================================================
+            # NO AUTO FILES
+            # =================================================
+
+            if autoTotal == 0:
+
+                log(
+                    _("[ERROR] No AUTO JPG files found in ZIP!")
+                )
+
+                autoErrors.append(
+                    _("No AUTO files found")
+                )
+
+            # =================================================
+            # NO EXTRA FILES
+            # =================================================
+
+            if extraTotal == 0:
+
+                log(
+                    _("[WARNING] No EXTRA JPG files found in ZIP!")
+                )
+
+            # =================================================
+            # AUTO INSTALLATION
+            # =================================================
+
+            log(
+                "--------------------------------------------------"
+            )
+
+            log(
+                _("[INSTALL] AUTO INSTALLATION START")
+            )
+
+            log(
+                _("[INSTALL] AUTO files: %s")
+                % autoTotal
+            )
+
+            log(
+                "--------------------------------------------------"
+            )
+
+            for member in autoMembers:
+
+                filename = os.path.basename(
+                    member
                 )
 
                 targetPath = os.path.join(
@@ -1607,106 +2242,233 @@ def ensureAutoBackgrounds():
                     filename
                 )
 
-                if sourceName not in members:
+                tempPath = (
+                    targetPath +
+                    ".tmp"
+                )
 
-                    print(
-                        "[speedy_TheWeather] "
-                        "AUTO fehlt in ZIP: %s"
-                        % sourceName
-                    )
+                log(
+                    _("[INSTALL] AUTO source: %s")
+                    % member
+                )
 
-                    continue
+                log(
+                    _("[INSTALL] AUTO target: %s")
+                    % targetPath
+                )
 
                 try:
 
+                    # ==========================================
+                    # READ
+                    # ==========================================
+
                     data = zf.read(
-                        sourceName
+                        member
+                    )
+
+                    log(
+                        _("[INSTALL] AUTO read: %s bytes")
+                        % len(data)
                     )
 
                     if not data:
-                        print(
-                            "[speedy_TheWeather] "
-                            "AUTO Datei leer: %s"
-                            % sourceName
+
+                        log(
+                            _("[ERROR] AUTO file is empty: %s")
+                            % member
                         )
+
+                        autoErrors.append(
+                            filename
+                        )
+
                         continue
 
-                    tempPath = (
-                        targetPath +
-                        ".tmp"
-                    )
+                    # ==========================================
+                    # TEMPORARY FILE
+                    # ==========================================
 
                     with open(
                         tempPath,
                         "wb"
                     ) as f:
-                        f.write(data)
+
+                        f.write(
+                            data
+                        )
+
+                    # ==========================================
+                    # CHECK TEMP
+                    # ==========================================
+
+                    try:
+
+                        tempSize = os.path.getsize(
+                            tempPath
+                        )
+
+                    except Exception:
+
+                        tempSize = 0
+
+                    if tempSize <= 0:
+
+                        log(
+                            _("[ERROR] AUTO temporary file is empty: %s")
+                            % filename
+                        )
+
+                        autoErrors.append(
+                            filename
+                        )
+
+                        try:
+                            os.remove(tempPath)
+                        except Exception:
+                            pass
+
+                        continue
+
+                    # ==========================================
+                    # REPLACE OLD FILE
+                    # ==========================================
 
                     if os.path.exists(
                         targetPath
                     ):
+
+                        log(
+                            _("[INSTALL] Replacing old AUTO file: %s")
+                            % filename
+                        )
+
                         os.remove(
                             targetPath
                         )
+
+                    # ==========================================
+                    # TEMP -> TARGET
+                    # ==========================================
 
                     os.rename(
                         tempPath,
                         targetPath
                     )
 
+                    # ==========================================
+                    # CHECK TARGET
+                    # ==========================================
+
+                    if not os.path.isfile(
+                        targetPath
+                    ):
+
+                        log(
+                            _("[ERROR] AUTO target does not exist: %s")
+                            % targetPath
+                        )
+
+                        autoErrors.append(
+                            filename
+                        )
+
+                        continue
+
+                    try:
+
+                        installedSize = os.path.getsize(
+                            targetPath
+                        )
+
+                    except Exception:
+
+                        installedSize = 0
+
+                    if installedSize <= 0:
+
+                        log(
+                            _("[ERROR] AUTO target is empty: %s")
+                            % targetPath
+                        )
+
+                        autoErrors.append(
+                            filename
+                        )
+
+                        continue
+
                     autoInstalled += 1
 
-                    print(
-                        "[speedy_TheWeather] "
-                        "AUTO installiert: %s"
-                        % filename
+                    log(
+                        _("[OK] AUTO INSTALLED: %s (%s bytes)")
+                        % (
+                            filename,
+                            installedSize
+                        )
                     )
 
                 except Exception as e:
 
-                    print(
-                        "[speedy_TheWeather] "
-                        "AUTO Fehler %s: %s"
+                    log(
+                        _("[ERROR] AUTO error %s: %s")
                         % (
                             filename,
                             e
                         )
                     )
 
+                    autoErrors.append(
+                        filename
+                    )
+
                     try:
+
                         if os.path.exists(
                             tempPath
                         ):
+
                             os.remove(
                                 tempPath
                             )
+
                     except Exception:
                         pass
 
+            log(
+                _("[INSTALL] AUTO FINISHED: %s/%s")
+                % (
+                    autoInstalled,
+                    autoTotal
+                )
+            )
+
             # =================================================
-            # EXTRA/
+            # EXTRA INSTALLATION
             # =================================================
 
-            extraInstalled = 0
+            log(
+                "--------------------------------------------------"
+            )
 
-            for member in members:
+            log(
+                _("[INSTALL] EXTRA INSTALLATION START")
+            )
 
-                if not member.startswith(
-                    "extra/"
-                ):
-                    continue
+            log(
+                _("[INSTALL] EXTRA files: %s")
+                % extraTotal
+            )
 
-                if member.endswith(
-                    "/"
-                ):
-                    continue
+            log(
+                "--------------------------------------------------"
+            )
+
+            for member in extraMembers:
 
                 filename = os.path.basename(
                     member
                 )
-
-                if not filename:
-                    continue
 
                 targetPath = os.path.join(
                     BACKGROUND_ROOT,
@@ -1718,134 +2480,574 @@ def ensureAutoBackgrounds():
                     ".tmp"
                 )
 
+                log(
+                    _("[INSTALL] EXTRA source: %s")
+                    % member
+                )
+
+                log(
+                    _("[INSTALL] EXTRA target: %s")
+                    % targetPath
+                )
+
                 try:
+
+                    # ==========================================
+                    # READ
+                    # ==========================================
 
                     data = zf.read(
                         member
                     )
 
+                    log(
+                        _("[INSTALL] EXTRA read: %s bytes")
+                        % len(data)
+                    )
+
                     if not data:
-                        print(
-                            "[speedy_TheWeather] "
-                            "EXTRA Datei leer: %s"
+
+                        log(
+                            _("[ERROR] EXTRA file is empty: %s")
                             % member
                         )
+
+                        extraErrors.append(
+                            filename
+                        )
+
                         continue
+
+                    # ==========================================
+                    # TEMPORARY FILE
+                    # ==========================================
 
                     with open(
                         tempPath,
                         "wb"
                     ) as f:
-                        f.write(data)
+
+                        f.write(
+                            data
+                        )
+
+                    # ==========================================
+                    # CHECK TEMP
+                    # ==========================================
+
+                    try:
+
+                        tempSize = os.path.getsize(
+                            tempPath
+                        )
+
+                    except Exception:
+
+                        tempSize = 0
+
+                    if tempSize <= 0:
+
+                        log(
+                            _("[ERROR] EXTRA temporary file is empty: %s")
+                            % filename
+                        )
+
+                        extraErrors.append(
+                            filename
+                        )
+
+                        try:
+                            os.remove(tempPath)
+                        except Exception:
+                            pass
+
+                        continue
+
+                    # ==========================================
+                    # REPLACE OLD FILE
+                    # ==========================================
 
                     if os.path.exists(
                         targetPath
                     ):
+
+                        log(
+                            _("[INSTALL] Replacing old EXTRA file: %s")
+                            % filename
+                        )
+
                         os.remove(
                             targetPath
                         )
+
+                    # ==========================================
+                    # TEMP -> TARGET
+                    # ==========================================
 
                     os.rename(
                         tempPath,
                         targetPath
                     )
 
+                    # ==========================================
+                    # CHECK TARGET
+                    # ==========================================
+
+                    if not os.path.isfile(
+                        targetPath
+                    ):
+
+                        log(
+                            _("[ERROR] EXTRA target does not exist: %s")
+                            % targetPath
+                        )
+
+                        extraErrors.append(
+                            filename
+                        )
+
+                        continue
+
+                    try:
+
+                        installedSize = os.path.getsize(
+                            targetPath
+                        )
+
+                    except Exception:
+
+                        installedSize = 0
+
+                    if installedSize <= 0:
+
+                        log(
+                            _("[ERROR] EXTRA target is empty: %s")
+                            % targetPath
+                        )
+
+                        extraErrors.append(
+                            filename
+                        )
+
+                        continue
+
                     extraInstalled += 1
 
-                    print(
-                        "[speedy_TheWeather] "
-                        "EXTRA installiert: %s"
-                        % filename
+                    log(
+                        _("[OK] EXTRA INSTALLED: %s (%s bytes)")
+                        % (
+                            filename,
+                            installedSize
+                        )
                     )
 
                 except Exception as e:
 
-                    print(
-                        "[speedy_TheWeather] "
-                        "EXTRA Fehler %s: %s"
+                    log(
+                        _("[ERROR] EXTRA error %s: %s")
                         % (
-                            member,
+                            filename,
                             e
                         )
                     )
 
+                    extraErrors.append(
+                        filename
+                    )
+
                     try:
+
                         if os.path.exists(
                             tempPath
                         ):
+
                             os.remove(
                                 tempPath
                             )
+
                     except Exception:
                         pass
 
-            print(
-                "[speedy_TheWeather] "
-                "AUTO installiert: %s"
-                % autoInstalled
-            )
-
-            print(
-                "[speedy_TheWeather] "
-                "EXTRA installiert: %s"
-                % extraInstalled
+            log(
+                _("[INSTALL] EXTRA FINISHED: %s/%s")
+                % (
+                    extraInstalled,
+                    extraTotal
+                )
             )
 
         finally:
 
-            zf.close()
+            # =================================================
+            # CLOSE ZIP
+            # =================================================
+
+            try:
+
+                zf.close()
+
+            except Exception:
+                pass
+
+            log(
+                _("[ZIP] ZIP closed")
+            )
 
         # ====================================================
-        # AUTO-NACHKONTROLLE
+        # FINAL VERIFICATION
         # ====================================================
 
-        missing = []
+        log(
+            "=================================================="
+        )
 
-        for filename in requiredAutoBackgrounds:
+        log(
+            _("[VERIFY] FINAL VERIFICATION")
+        )
 
-            target = os.path.join(
+        log(
+            "=================================================="
+        )
+
+        verificationErrors = []
+
+        # ====================================================
+        # AUTO VERIFY
+        # ====================================================
+
+        log(
+            _("[VERIFY] AUTO: %s/%s")
+            % (
+                autoInstalled,
+                autoTotal
+            )
+        )
+
+        for member in autoMembers:
+
+            filename = os.path.basename(
+                member
+            )
+
+            targetPath = os.path.join(
                 AUTO_BG_DIR,
                 filename
             )
 
             if not os.path.isfile(
-                target
+                targetPath
             ):
-                missing.append(
-                    filename
+
+                log(
+                    _("[FAIL] AUTO MISSING: %s")
+                    % targetPath
                 )
+
+                verificationErrors.append(
+                    "AUTO: " + filename
+                )
+
                 continue
 
             try:
-                if os.path.getsize(
-                    target
-                ) <= 0:
-                    missing.append(
-                        filename
-                    )
-            except Exception:
-                missing.append(
-                    filename
+
+                fileSize = os.path.getsize(
+                    targetPath
                 )
 
-        if missing:
+            except Exception:
 
-            print(
-                "[speedy_TheWeather] "
-                "FEHLER - AUTO Dateien fehlen:"
+                fileSize = 0
+
+            if fileSize <= 0:
+
+                log(
+                    _("[FAIL] AUTO EMPTY: %s")
+                    % targetPath
+                )
+
+                verificationErrors.append(
+                    "AUTO: " + filename
+                )
+
+            else:
+
+                log(
+                    _("[OK] AUTO VERIFIED: %s (%s bytes)")
+                    % (
+                        filename,
+                        fileSize
+                    )
+                )
+
+        # ====================================================
+        # EXTRA VERIFY
+        # ====================================================
+
+        log(
+            _("[VERIFY] EXTRA: %s/%s")
+            % (
+                extraInstalled,
+                extraTotal
+            )
+        )
+
+        for member in extraMembers:
+
+            filename = os.path.basename(
+                member
             )
 
-            for filename in missing:
-                print(
-                    "  - %s"
-                    % filename
+            targetPath = os.path.join(
+                BACKGROUND_ROOT,
+                filename
+            )
+
+            if not os.path.isfile(
+                targetPath
+            ):
+
+                log(
+                    _("[FAIL] EXTRA MISSING: %s")
+                    % targetPath
+                )
+
+                verificationErrors.append(
+                    "EXTRA: " + filename
+                )
+
+                continue
+
+            try:
+
+                fileSize = os.path.getsize(
+                    targetPath
+                )
+
+            except Exception:
+
+                fileSize = 0
+
+            if fileSize <= 0:
+
+                log(
+                    _("[FAIL] EXTRA EMPTY: %s")
+                    % targetPath
+                )
+
+                verificationErrors.append(
+                    "EXTRA: " + filename
+                )
+
+            else:
+
+                log(
+                    _("[OK] EXTRA VERIFIED: %s (%s bytes)")
+                    % (
+                        filename,
+                        fileSize
+                    )
+                )
+
+        # ====================================================
+        # FINAL RESULT
+        # ====================================================
+
+        log(
+            "=================================================="
+        )
+
+        log(
+            _("[RESULT] AUTO: %s/%s")
+            % (
+                autoInstalled,
+                autoTotal
+            )
+        )
+
+        log(
+            _("[RESULT] EXTRA: %s/%s")
+            % (
+                extraInstalled,
+                extraTotal
+            )
+        )
+
+        log(
+            _("[RESULT] AUTO errors: %s")
+            % len(autoErrors)
+        )
+
+        log(
+            _("[RESULT] EXTRA errors: %s")
+            % len(extraErrors)
+        )
+
+        log(
+            _("[RESULT] Verification errors: %s")
+            % len(verificationErrors)
+        )
+
+        log(
+            "=================================================="
+        )
+
+        # ====================================================
+        # NO AUTO FILES
+        # ====================================================
+
+        if autoTotal == 0:
+
+            log(
+                _("[ERROR] No AUTO files found!")
+            )
+
+            try:
+
+                if os.path.exists(
+                    AUTO_BG_MARKER
+                ):
+
+                    os.remove(
+                        AUTO_BG_MARKER
+                    )
+
+            except Exception:
+                pass
+
+            return False
+
+        # ====================================================
+        # AUTO INCOMPLETE
+        # ====================================================
+
+        if autoInstalled != autoTotal:
+
+            log(
+                _("[ERROR] AUTO INSTALLATION INCOMPLETE")
+            )
+
+            log(
+                _("[ERROR] AUTO: %s/%s")
+                % (
+                    autoInstalled,
+                    autoTotal
+                )
+            )
+
+            try:
+
+                if os.path.exists(
+                    AUTO_BG_MARKER
+                ):
+
+                    os.remove(
+                        AUTO_BG_MARKER
+                    )
+
+                    log(
+                        _("[CLEANUP] Old marker removed")
+                    )
+
+            except Exception as e:
+
+                log(
+                    _("[WARNING] Marker could not be removed: %s")
+                    % e
                 )
 
             return False
 
         # ====================================================
-        # MARKER
+        # EXTRA INCOMPLETE
         # ====================================================
+        #
+        # Only check this if the ZIP actually contains
+        # EXTRA files.
+        #
+
+        if extraTotal > 0:
+
+            if extraInstalled != extraTotal:
+
+                log(
+                    _("[ERROR] EXTRA INSTALLATION INCOMPLETE")
+                )
+
+                log(
+                    _("[ERROR] EXTRA: %s/%s")
+                    % (
+                        extraInstalled,
+                        extraTotal
+                    )
+                )
+
+                try:
+
+                    if os.path.exists(
+                        AUTO_BG_MARKER
+                    ):
+
+                        os.remove(
+                            AUTO_BG_MARKER
+                        )
+
+                        log(
+                            _("[CLEANUP] Old marker removed")
+                        )
+
+                except Exception as e:
+
+                    log(
+                        _("[WARNING] Marker could not be removed: %s")
+                        % e
+                    )
+
+                return False
+
+        # ====================================================
+        # VERIFICATION ERRORS
+        # ====================================================
+
+        if verificationErrors:
+
+            log(
+                _("[ERROR] FINAL VERIFICATION FAILED")
+            )
+
+            for errorItem in verificationErrors:
+
+                log(
+                    _("[ERROR] %s")
+                    % errorItem
+                )
+
+            try:
+
+                if os.path.exists(
+                    AUTO_BG_MARKER
+                ):
+
+                    os.remove(
+                        AUTO_BG_MARKER
+                    )
+
+                    log(
+                        _("[CLEANUP] Old marker removed")
+                    )
+
+            except Exception:
+                pass
+
+            return False
+
+        # ====================================================
+        # WRITE MARKER
+        # ====================================================
+
+        log(
+            _("[MARKER] Writing installation marker...")
+        )
 
         try:
 
@@ -1863,57 +3065,164 @@ def ensureAutoBackgrounds():
                     % int(time.time())
                 )
 
+                f.write(
+                    "auto=%s\n"
+                    % autoInstalled
+                )
+
+                f.write(
+                    "extra=%s\n"
+                    % extraInstalled
+                )
+
+            log(
+                _("[OK] Marker written: %s")
+                % AUTO_BG_MARKER
+            )
+
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
-                "Marker Fehler: %s"
+            log(
+                _("[ERROR] Marker error: %s")
                 % e
             )
 
+            return False
+
         # ====================================================
-        # ZIP löschen
+        # DELETE ZIP
         # ====================================================
+
+        log(
+            _("[CLEANUP] Checking ZIP for deletion...")
+        )
 
         try:
 
             if os.path.exists(
                 zipFile
             ):
+
                 os.remove(
                     zipFile
                 )
 
+                log(
+                    _("[OK] ZIP deleted: %s")
+                    % zipFile
+                )
+
+            else:
+
+                log(
+                    _("[INFO] ZIP is already absent")
+                )
+
         except Exception as e:
 
-            print(
-                "[speedy_TheWeather] "
-                "ZIP konnte nicht gelöscht werden: %s"
+            log(
+                _("[WARNING] ZIP could not be deleted: %s")
                 % e
             )
 
-        print(
+        # ====================================================
+        # SUCCESS
+        # ====================================================
+
+        log(
             "=================================================="
         )
 
-        print(
-            "[speedy_TheWeather] "
-            "AUTO BACKGROUNDS ERFOLGREICH INSTALLIERT"
+        log(
+            _("[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY")
         )
 
-        print(
+        log(
+            _("[SUCCESS] AUTO: %s/%s")
+            % (
+                autoInstalled,
+                autoTotal
+            )
+        )
+
+        log(
+            _("[SUCCESS] EXTRA: %s/%s")
+            % (
+                extraInstalled,
+                extraTotal
+            )
+        )
+
+        log(
+            _("[SUCCESS] INSTALLATION COMPLETED")
+        )
+
+        log(
             "=================================================="
         )
 
         return True
 
+    # ========================================================
+    # FATAL ERROR
+    # ========================================================
+
     except Exception as e:
 
-        print(
-            "[speedy_TheWeather] "
-            "ensureAutoBackgrounds FEHLER: %s"
+        log(
+            "=================================================="
+        )
+
+        log(
+            _("[FATAL ERROR] ensureAutoBackgrounds: %s")
             % e
         )
+
+        log(
+            "=================================================="
+        )
+
+        # ----------------------------------------------------
+        # REMOVE ZIP
+        # ----------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                zipFile
+            ):
+
+                os.remove(
+                    zipFile
+                )
+
+                log(
+                    _("[CLEANUP] ZIP deleted after error")
+                )
+
+        except Exception:
+            pass
+
+        # ----------------------------------------------------
+        # REMOVE MARKER
+        # ----------------------------------------------------
+
+        try:
+
+            if os.path.exists(
+                AUTO_BG_MARKER
+            ):
+
+                os.remove(
+                    AUTO_BG_MARKER
+                )
+
+                log(
+                    _("[CLEANUP] Marker removed after error")
+                )
+
+        except Exception:
+            pass
 
         return False
 
@@ -11707,6 +13016,822 @@ class localcityscreen(Screen):
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
 
+
+# ========================================================
+# AUTO BACKGROUND LIVE LOG SCREEN
+# ========================================================
+
+import threading
+
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
+
+from enigma import eTimer, getDesktop
+from Components.ActionMap import ActionMap
+from Components.Label import Label
+from Screens.Screen import Screen
+
+# ============================================================
+# AUTO BACKGROUND LOG SCREEN
+# HD + FHD FULLSCREEN
+# ============================================================
+# -*- coding: utf-8 -*-
+# ============================================================
+
+class AutoBackgroundLogScreen(Screen):
+
+    # ========================================================
+    # FHD SKIN
+    # ========================================================
+
+    skinFHD = """
+    <screen
+        name="AutoBackgroundLogScreen"
+        position="0,0"
+        size="1920,1080"
+        title="speedy_TheWeather"
+        flags="wfNoBorder">
+
+        <widget
+            name="background"
+            position="0,0"
+            size="1920,1080"
+            backgroundColor="#101010"
+            transparent="0" />
+
+        <widget
+            name="title"
+            position="60,35"
+            size="1800,65"
+            font="Regular;38"
+            halign="center"
+            valign="center"
+            foregroundColor="#ffffff"
+            transparent="1" />
+
+        <widget
+            name="separator"
+            position="60,115"
+            size="1800,2"
+            backgroundColor="#505050"
+            transparent="0" />
+
+        <widget
+            name="log"
+            position="70,140"
+            size="1780,810"
+            font="Regular;23"
+            foregroundColor="#ffffff"
+            backgroundColor="#151515"
+            transparent="0"
+            halign="left"
+            valign="top" />
+
+        <widget
+            name="status"
+            position="60,970"
+            size="1800,55"
+            font="Regular;30"
+            halign="center"
+            valign="center"
+            foregroundColor="#ffffff"
+            transparent="1" />
+
+    </screen>
+    """
+
+    # ========================================================
+    # HD SKIN
+    # ========================================================
+
+    skinHD = """
+    <screen
+        name="AutoBackgroundLogScreen"
+        position="0,0"
+        size="1280,720"
+        title="speedy_TheWeather"
+        flags="wfNoBorder">
+
+        <widget
+            name="background"
+            position="0,0"
+            size="1280,720"
+            backgroundColor="#101010"
+            transparent="0" />
+
+        <widget
+            name="title"
+            position="40,20"
+            size="1200,45"
+            font="Regular;28"
+            halign="center"
+            valign="center"
+            foregroundColor="#ffffff"
+            transparent="1" />
+
+        <widget
+            name="separator"
+            position="40,78"
+            size="1200,2"
+            backgroundColor="#505050"
+            transparent="0" />
+
+        <widget
+            name="log"
+            position="45,95"
+            size="1190,535"
+            font="Regular;18"
+            foregroundColor="#ffffff"
+            backgroundColor="#151515"
+            transparent="0"
+            halign="left"
+            valign="top" />
+
+        <widget
+            name="status"
+            position="40,650"
+            size="1200,40"
+            font="Regular;23"
+            halign="center"
+            valign="center"
+            foregroundColor="#ffffff"
+            transparent="1" />
+
+    </screen>
+    """
+
+    # ========================================================
+    # DEFAULT
+    # ========================================================
+
+    skin = skinFHD
+
+    # ========================================================
+    # INIT
+    # ========================================================
+
+    def __init__(self, session):
+
+        # ====================================================
+        # AUFLÖSUNG ERMITTELN
+        # ====================================================
+
+        try:
+            desktopSize = getDesktop(0).size()
+
+            self.screenWidth = desktopSize.width()
+            self.screenHeight = desktopSize.height()
+
+        except Exception:
+
+            # Fallback auf FHD
+            self.screenWidth = 1920
+            self.screenHeight = 1080
+
+        # ====================================================
+        # HD / FHD AUSWÄHLEN
+        # ====================================================
+
+        if (
+            self.screenWidth <= 1280
+            or
+            self.screenHeight <= 720
+        ):
+
+            self.skin = self.skinHD
+
+            print(
+                "[speedy_TheWeather] "
+                "AutoBackgroundLogScreen: HD %sx%s"
+                % (
+                    self.screenWidth,
+                    self.screenHeight
+                )
+            )
+
+        else:
+
+            self.skin = self.skinFHD
+
+            print(
+                "[speedy_TheWeather] "
+                "AutoBackgroundLogScreen: FHD %sx%s"
+                % (
+                    self.screenWidth,
+                    self.screenHeight
+                )
+            )
+
+        # ====================================================
+        # SCREEN INITIALISIEREN
+        # ====================================================
+
+        Screen.__init__(
+            self,
+            session
+        )
+
+        self.session = session
+
+        # ====================================================
+        # WIDGETS
+        # ====================================================
+
+        self["background"] = Label("")
+
+        self["separator"] = Label("")
+
+        self["title"] = Label(
+            _("speedy_TheWeather - Auto Backgrounds")
+        )
+
+        self["log"] = Label("")
+
+        self["status"] = Label(
+            _("Download is preparing...")
+        )
+
+        # ====================================================
+        # LIVE LOG QUEUE
+        # ====================================================
+
+        self.logQueue = Queue.Queue()
+
+        # ====================================================
+        # LOGZEILEN
+        # ====================================================
+
+        self.logLines = []
+
+        # ====================================================
+        # MAXIMALE LOGZEILEN
+        # ====================================================
+
+        if self.screenHeight <= 720:
+
+            # HD
+            self.maxLogLines = 24
+
+        else:
+
+            # FHD
+            self.maxLogLines = 29
+
+        # ====================================================
+        # STATUS
+        # ====================================================
+
+        self.running = False
+        self.finished = False
+        self.result = None
+
+        # ====================================================
+        # WORKER
+        # ====================================================
+
+        self.workerThread = None
+
+        # ====================================================
+        # POLL TIMER
+        # ====================================================
+
+        self.pollTimer = eTimer()
+
+        try:
+
+            self.pollTimer.callback.append(
+                self.pollLogQueue
+            )
+
+        except Exception:
+
+            try:
+
+                self.pollTimer_conn = (
+                    self.pollTimer.timeout.connect(
+                        self.pollLogQueue
+                    )
+                )
+
+            except Exception:
+                pass
+
+        # ====================================================
+        # START TIMER
+        # ====================================================
+
+        self.startTimer = eTimer()
+
+        try:
+
+            self.startTimer.callback.append(
+                self.startDownload
+            )
+
+        except Exception:
+
+            try:
+
+                self.startTimer_conn = (
+                    self.startTimer.timeout.connect(
+                        self.startDownload
+                    )
+                )
+
+            except Exception:
+                pass
+
+        # ====================================================
+        # ACTIONS
+        # ====================================================
+
+        self["actions"] = ActionMap(
+            [
+                "SetupActions",
+                "OkCancelActions"
+            ],
+            {
+                "cancel": self.keyCancel,
+                "ok": self.keyOK,
+            },
+            -2
+        )
+
+        # ====================================================
+        # SCREEN ERST ANZEIGEN
+        # ====================================================
+
+        try:
+
+            self.startTimer.start(
+                300,
+                True
+            )
+
+        except Exception:
+
+            try:
+
+                self.startTimer.start(
+                    300
+                )
+
+            except Exception:
+
+                self.startDownload()
+
+    # ========================================================
+    # DOWNLOAD STARTEN
+    # ========================================================
+
+    def startDownload(self):
+
+        if self.running:
+            return
+
+        if self.finished:
+            return
+
+        self.running = True
+
+        self["status"].setText(
+            _("Installing automatic backgrounds...")
+        )
+
+        # ====================================================
+        # QUEUE LEEREN
+        # ====================================================
+
+        try:
+
+            while True:
+                self.logQueue.get_nowait()
+
+        except Exception:
+            pass
+
+        # ====================================================
+        # LOG TIMER STARTEN
+        # ====================================================
+
+        try:
+
+            self.pollTimer.start(
+                100
+            )
+
+        except Exception:
+
+            try:
+
+                self.pollTimer.start(
+                    100,
+                    False
+                )
+
+            except Exception:
+                pass
+
+        # ====================================================
+        # ERSTE SCREEN-MELDUNGEN
+        # ====================================================
+
+        self.addLogLine(
+            "=================================================="
+        )
+
+        self.addLogLine(
+            _("[SCREEN] Automatic background installation")
+        )
+
+        self.addLogLine(
+            _("[SCREEN] Resolution: %sx%s")
+            % (
+                self.screenWidth,
+                self.screenHeight
+            )
+        )
+
+        self.addLogLine(
+            _("[SCREEN] Installation is starting...")
+        )
+
+        self.addLogLine(
+            "=================================================="
+        )
+
+        # ====================================================
+        # WORKER THREAD
+        # ====================================================
+
+        try:
+
+            self.workerThread = threading.Thread(
+                target=self.downloadWorker
+            )
+
+            try:
+                self.workerThread.daemon = True
+            except Exception:
+                pass
+
+            self.workerThread.start()
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "LiveLog Thread error: %s"
+                % e
+            )
+
+            self.running = False
+            self.finished = True
+            self.result = False
+
+            self["status"].setText(
+                _("Error starting the download")
+            )
+
+            self.addLogLine(
+                _("[ERROR] Worker could not be started: %s")
+                % e
+            )
+
+    # ========================================================
+    # WORKER
+    # ========================================================
+
+    def downloadWorker(self):
+
+        result = False
+
+        try:
+
+            # =================================================
+            # DOWNLOAD / INSTALLATION
+            #
+            # NICHT IM GUI-THREAD
+            # =================================================
+
+            result = ensureAutoBackgrounds(
+                self
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "LiveLog Worker error: %s"
+                % e
+            )
+
+            result = False
+
+            try:
+
+                self.logQueue.put(
+                    (
+                        "LOG",
+                        _("[ERROR] Worker exception: %s")
+                        % e
+                    )
+                )
+
+            except Exception:
+                pass
+
+        # ====================================================
+        # ERGEBNIS AN GUI
+        # ====================================================
+
+        try:
+
+            self.logQueue.put(
+                (
+                    "DONE",
+                    result
+                )
+            )
+
+        except Exception:
+            pass
+
+    # ========================================================
+    # QUEUE AUSLESEN
+    # ========================================================
+
+    def pollLogQueue(self):
+
+        finishedResult = None
+        gotFinished = False
+
+        # ====================================================
+        # ALLE NEUEN EINTRÄGE
+        # ====================================================
+
+        while True:
+
+            try:
+
+                item = self.logQueue.get_nowait()
+
+            except Exception:
+
+                break
+
+            if not item:
+                continue
+
+            try:
+
+                itemType = item[0]
+                itemData = item[1]
+
+            except Exception:
+
+                continue
+
+            # =================================================
+            # LOG
+            # =================================================
+
+            if itemType == "LOG":
+
+                self.addLogLine(
+                    itemData
+                )
+
+            # =================================================
+            # FERTIG
+            # =================================================
+
+            elif itemType == "DONE":
+
+                finishedResult = itemData
+                gotFinished = True
+
+        # ====================================================
+        # FERTIG
+        # ====================================================
+
+        if gotFinished:
+
+            self.finishDownload(
+                finishedResult
+            )
+
+    # ========================================================
+    # LOGZEILE
+    # ========================================================
+
+    def addLogLine(self, line):
+
+        try:
+
+            if line is None:
+                return
+
+            text = str(line)
+
+            self.logLines.append(
+                text
+            )
+
+            # =================================================
+            # NUR LETZTE ZEILEN BEHALTEN
+            # =================================================
+
+            if len(
+                self.logLines
+            ) > self.maxLogLines:
+
+                self.logLines = (
+                    self.logLines[
+                        -self.maxLogLines:
+                    ]
+                )
+
+            # =================================================
+            # SCREEN AKTUALISIEREN
+            # =================================================
+
+            self["log"].setText(
+                "\n".join(
+                    self.logLines
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "LiveLog addLogLine error: %s"
+                % e
+            )
+
+    # ========================================================
+    # DOWNLOAD FERTIG
+    # ========================================================
+
+    def finishDownload(self, result):
+
+        if self.finished:
+            return
+
+        self.running = False
+        self.finished = True
+
+        try:
+            self.result = bool(result)
+        except Exception:
+            self.result = False
+
+        # ====================================================
+        # LOG TIMER STOPPEN
+        # ====================================================
+
+        try:
+            self.pollTimer.stop()
+        except Exception:
+            pass
+
+        # ====================================================
+        # ERFOLG
+        # ====================================================
+
+        if self.result:
+
+            self["status"].setText(
+                _(
+                    "[OK] Automatic backgrounds "
+                    "installed successfully"
+                )
+            )
+
+            self.addLogLine(
+                "=================================================="
+            )
+
+            self.addLogLine(
+                _("[SUCCESS] Installation completed successfully.")
+            )
+
+            self.addLogLine(
+                _("[SUCCESS] All AUTO and EXTRA images were processed.")
+            )
+
+            self.addLogLine(
+                _("[SCREEN] Press OK or EXIT to close.")
+            )
+
+            self.addLogLine(
+                "=================================================="
+            )
+
+        # ====================================================
+        # FEHLER
+        # ====================================================
+
+        else:
+
+            self["status"].setText(
+                _(
+                    "[ERROR] Installation failed"
+                )
+            )
+
+            self.addLogLine(
+                "=================================================="
+            )
+
+            self.addLogLine(
+                _("[ERROR] Installation was completed with errors.")
+            )
+
+            self.addLogLine(
+                _("[ERROR] See the log above for details.")
+            )
+
+            self.addLogLine(
+                _("[SCREEN] Press OK or EXIT to close.")
+            )
+
+            self.addLogLine(
+                "=================================================="
+            )
+
+    # ========================================================
+    # OK
+    # ========================================================
+
+    def keyOK(self):
+
+        # Während Download nicht schließen
+        if self.running:
+            return
+
+        if self.finished:
+
+            self.close(
+                self.result
+            )
+
+    # ========================================================
+    # EXIT / CANCEL
+    # ========================================================
+
+    def keyCancel(self):
+
+        # Während Download nicht schließen
+        if self.running:
+            return
+
+        if self.finished:
+
+            self.close(
+                self.result
+            )
+
+    # ========================================================
+    # SCREEN SCHLIESSEN
+    # ========================================================
+
+    def closeScreen(self):
+
+        try:
+            self.pollTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.startTimer.stop()
+        except Exception:
+            pass
+
+        self.close(
+            self.result
+        )
+
+    # ========================================================
+    # SCREEN GELÖSCHT
+    # ========================================================
+
+    def __del__(self):
+
+        try:
+            self.pollTimer.stop()
+        except Exception:
+            pass
+
+        try:
+            self.startTimer.stop()
+        except Exception:
+            pass
+
+
 from Components.Label import Label
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
@@ -12181,61 +14306,89 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # DOWNLOAD AUTO BACKGROUNDS CONFIRMED
     # ========================================================
 
+    
     def downloadAutoBackgroundsConfirmed(
-        self,
-        answer
-    ):
+            self,
+            answer
+        ):
 
-        if not answer:
+            if not answer:
 
-            print(
-                "[speedy_TheWeather] "
-                "Background download cancelled."
-            )
+                print(
+                    "[speedy_TheWeather] "
+                    "Background download cancelled."
+                )
 
-            return
-
-        print(
-            "[speedy_TheWeather] "
-            "Starting background download."
-        )
-
-        try:
-
-            result = ensureAutoBackgrounds()
-
-        except Exception as e:
+                return
 
             print(
                 "[speedy_TheWeather] "
-                "Background download exception: %s"
-                % e
+                "Starting background download."
             )
 
-            result = False
+            # ====================================================
+            # LIVE LOG SCREEN ÖFFNEN
+            # ====================================================
+            #
+            # Der eigentliche Download läuft jetzt innerhalb von
+            # AutoBackgroundLogScreen in einem Worker-Thread.
+            #
+            # Dadurch bleibt Enigma2 während wget und der ZIP-
+            # Installation bedienbar bzw. der Live-Log sichtbar.
+            # ====================================================
 
-        if result:
-
-            self.session.open(
-                MessageBox,
-                _(
-                    "The weather backgrounds "
-                    "were downloaded successfully."
-                ),
-                MessageBox.TYPE_INFO,
-                timeout=5
+            self.session.openWithCallback(
+                self.autoBackgroundDownloadFinished,
+                AutoBackgroundLogScreen
             )
 
-        else:
 
-            self.session.open(
-                MessageBox,
-                _(
-                    "The weather backgrounds "
-                    "could not be downloaded."
-                ),
-                MessageBox.TYPE_ERROR
+    def autoBackgroundDownloadFinished(
+            self,
+            result
+        ):
+
+            print(
+                "[speedy_TheWeather] "
+                "Background download finished: %s"
+                % result
             )
+
+            # ====================================================
+            # ERFOLG
+            # ====================================================
+
+            if result:
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "The weather backgrounds "
+                        "were downloaded successfully."
+                    ),
+                    MessageBox.TYPE_INFO,
+                    timeout=5
+                )
+
+            # ====================================================
+            # FEHLER
+            # ====================================================
+
+            else:
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "The weather backgrounds "
+                        "could not be downloaded.\n\n"
+                        "Please check the log:\n"
+                        "/tmp/speedy_TheWeather_auto_bg.log"
+                    ),
+                    MessageBox.TYPE_ERROR,
+                    timeout=8
+                )
+
+
 
     # ========================================================
     # MANUAL UPDATE CHECK
