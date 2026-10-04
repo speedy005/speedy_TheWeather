@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.5
+# v.1.8.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -52,6 +52,8 @@ from Components.Language import language
 from Screens.MessageBox import MessageBox
 from Screens.InfoBar import InfoBar
 from Plugins.Plugin import PluginDescriptor
+from datetime import datetime as dt_datetime
+from datetime import timedelta, date, time
 from Components.Pixmap import Pixmap, MovingPixmap
 from Screens.VirtualKeyBoard import VirtualKeyBoard
 from Components.Sources.StaticText import StaticText
@@ -211,6 +213,15 @@ _SEVENDAY_COLOR_DEFAULTS = {
     "alert": "#00ffff00",
 }
 
+_TWOLOCATIONS_COLOR_DEFAULTS = {
+    "weathertype": "#0000ffff",  # Cyan
+    "feels":       "#0080c0ff",  # Hellblau
+    "wind":        "#00ffa500",  # Orange
+    "rain":        "#004080ff",  # Blau
+    "sun":         "#00ffff00",  # Gelb
+    "moon":        "#00ffd27f",  # Mondgold
+}
+
 for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
     setattr(
         config.plugins.speedy_TheWeather,
@@ -220,6 +231,17 @@ for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
             choices=SEVENDAY_COLOR_CHOICES
         )
     )
+for _tl_color_name, _tl_color_default in _TWOLOCATIONS_COLOR_DEFAULTS.items():
+    setattr(
+        config.plugins.speedy_TheWeather,
+        "twoloc_color_" + _tl_color_name,
+        ConfigSelection(
+            default=_tl_color_default,
+            choices=SEVENDAY_COLOR_CHOICES
+        )
+    )
+
+del _tl_color_name, _tl_color_default
 del _sd_color_name, _sd_color_default
 
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
@@ -271,177 +293,908 @@ def stripCoords(value):
 # SavedLokaleWeer; it can be used as a saved entry for display testing.
 TEST_MCMURDO_ENTRY = "McMurdo Station-6696480|-77.84632|166.66824"
 
-def getCoordsFromEntry(value):
-    parts = safeStr(value).split("|")
-    if len(parts) == 3:
-        try:
-            return float(parts[1]), float(parts[2])
-        except ValueError:
-            return None, None
-    return None, None
+# =============================================================================
+# KOORDINATEN AUS EINEM EINTRAG LESEN
+# =============================================================================
 
-# -----------------------------------------------------------------------------
+def getCoordsFromEntry(value):
+    """
+    Erwartet z.B.:
+
+        Deutschland|51.4344|6.7623
+
+    Rueckgabe:
+
+        (latitude, longitude)
+
+    Bei Fehler:
+
+        (None, None)
+    """
+    try:
+        parts = safeStr(value).split("|")
+
+        if len(parts) != 3:
+            return None, None
+
+        lat = float(parts[1].strip())
+        lon = float(parts[2].strip())
+
+        # Plausibilitaetspruefung
+        if lat < -90.0 or lat > 90.0:
+            return None, None
+
+        if lon < -180.0 or lon > 180.0:
+            return None, None
+
+        return lat, lon
+
+    except Exception as e:
+        print("[Moon] getCoordsFromEntry Fehler: %s" % str(e))
+        return None, None
+
+
+# =============================================================================
 # MONDAUF- / MONDUNTERGANG
-# -----------------------------------------------------------------------------
-# Bewusst lokal berechnet: kein zusaetzlicher Netzwerkabruf. Die Berechnung ist
-# fuer die Anzeige von Auf-/Untergangszeiten ausreichend genau und wird pro
-# Ort/Tag gecacht.
+# =============================================================================
+#
+# Die Berechnung erfolgt komplett lokal.
+# Kein Netzwerkzugriff erforderlich.
+#
+# Rueckgabe:
+#
+#     ("HH:MM", "HH:MM")
+#
+# Beispiel:
+#
+#     ("07:42", "19:13")
+#
+# Wenn der Mond an diesem Tag nicht auf- bzw. untergeht:
+#
+#     ("na", "19:13")
+#
+# =============================================================================
+
 _MOON_RISESET_CACHE = {}
 
+
 def _moon_julian_day(dt):
-    """Julianischer Tag fuer eine UTC-Datetime."""
-    return (dt - datetime.datetime(2000, 1, 1, 12, 0, 0)).total_seconds() / 86400.0 + 2451545.0
+    """
+    Julianischer Tag fuer eine UTC-Datetime.
+    """
+
+    return (
+        (dt - datetime.datetime(2000, 1, 1, 12, 0, 0)).total_seconds()
+        / 86400.0
+        + 2451545.0
+    )
+
 
 def _moon_position(jd):
-    """Niedrigaufloesende geozentrische Mondposition (Grad)."""
+    """
+    Niedrigaufloesende geozentrische Mondposition.
+
+    Rueckgabe:
+        longitude, latitude, distance
+    """
+
     d = jd - 2451543.5
-    N = math.radians((125.1228 - 0.0529538083 * d) % 360.0)
+
+    N = math.radians(
+        (125.1228 - 0.0529538083 * d) % 360.0
+    )
+
     i = math.radians(5.1454)
-    w = math.radians((318.0634 + 0.1643573223 * d) % 360.0)
+
+    w = math.radians(
+        (318.0634 + 0.1643573223 * d) % 360.0
+    )
+
     a = 60.2666
     e = 0.0549
-    M = math.radians((115.3654 + 13.0649929509 * d) % 360.0)
 
-    E = M + e * math.sin(M) * (1.0 + e * math.cos(M))
-    for _ in range(3):
-        E -= (E - e * math.sin(E) - M) / (1.0 - e * math.cos(E))
+    M = math.radians(
+        (115.3654 + 13.0649929509 * d) % 360.0
+    )
 
-    xv = a * (math.cos(E) - e)
-    yv = a * (math.sqrt(1.0 - e * e) * math.sin(E))
+    # -------------------------------------------------------------------------
+    # Exzentrische Anomalie
+    # -------------------------------------------------------------------------
+
+    E = M + e * math.sin(M) * (
+        1.0 + e * math.cos(M)
+    )
+
+    for _ in range(5):
+        denominator = 1.0 - e * math.cos(E)
+
+        if abs(denominator) < 0.000001:
+            break
+
+        E -= (
+            E - e * math.sin(E) - M
+        ) / denominator
+
+    # -------------------------------------------------------------------------
+    # Position in der Bahnebene
+    # -------------------------------------------------------------------------
+
+    xv = a * (
+        math.cos(E) - e
+    )
+
+    yv = a * (
+        math.sqrt(1.0 - e * e)
+        * math.sin(E)
+    )
+
     v = math.atan2(yv, xv)
-    r = math.sqrt(xv * xv + yv * yv)
 
-    xh = r * (math.cos(N) * math.cos(v + w) - math.sin(N) * math.sin(v + w) * math.cos(i))
-    yh = r * (math.sin(N) * math.cos(v + w) + math.cos(N) * math.sin(v + w) * math.cos(i))
-    zh = r * (math.sin(v + w) * math.sin(i))
+    r = math.sqrt(
+        xv * xv + yv * yv
+    )
 
-    lon = math.atan2(yh, xh)
-    lat = math.atan2(zh, math.sqrt(xh * xh + yh * yh))
+    # -------------------------------------------------------------------------
+    # Ekliptische Koordinaten
+    # -------------------------------------------------------------------------
 
-    # Stoerungen fuer die sichtbare Mondposition.
-    Ms = math.radians((356.0470 + 0.9856002585 * d) % 360.0)
-    ws = math.radians((282.9404 + 0.0000470935 * d) % 360.0)
-    Ls = (Ms + ws) % (2.0 * math.pi)
+    xh = r * (
+        math.cos(N) * math.cos(v + w)
+        -
+        math.sin(N) * math.sin(v + w) * math.cos(i)
+    )
+
+    yh = r * (
+        math.sin(N) * math.cos(v + w)
+        +
+        math.cos(N) * math.sin(v + w) * math.cos(i)
+    )
+
+    zh = r * (
+        math.sin(v + w)
+        * math.sin(i)
+    )
+
+    lon = math.atan2(
+        yh,
+        xh
+    )
+
+    lat = math.atan2(
+        zh,
+        math.sqrt(
+            xh * xh + yh * yh
+        )
+    )
+
+    # -------------------------------------------------------------------------
+    # Stoerungen fuer die sichtbare Mondposition
+    # -------------------------------------------------------------------------
+
+    Ms = math.radians(
+        (356.0470 + 0.9856002585 * d) % 360.0
+    )
+
+    ws = math.radians(
+        (282.9404 + 0.0000470935 * d) % 360.0
+    )
+
+    Ls = (
+        Ms + ws
+    ) % (2.0 * math.pi)
+
     Mm = M
-    Lm = (math.degrees(N + w + M)) % 360.0
-    Ms_deg = math.degrees(Ms)
+
+    Lm = (
+        math.degrees(N + w + M)
+    ) % 360.0
+
     Ls_deg = math.degrees(Ls)
-    D = math.radians((Lm - Ls_deg) % 360.0)
-    F = math.radians((Lm - math.degrees(N)) % 360.0)
-    lon += math.radians(-1.274 * math.sin(Mm - D)
-                        + 0.658 * math.sin(2.0 * D)
-                        - 0.186 * math.sin(Ms)
-                        - 0.059 * math.sin(2.0 * Mm - 2.0 * D)
-                        - 0.057 * math.sin(Mm - 2.0 * D + Ms)
-                        + 0.053 * math.sin(Mm + 2.0 * D)
-                        + 0.046 * math.sin(2.0 * D - Ms)
-                        + 0.041 * math.sin(Mm - Ms)
-                        - 0.035 * math.sin(D)
-                        - 0.031 * math.sin(Mm + Ms)
-                        - 0.015 * math.sin(2.0 * F - 2.0 * D)
-                        + 0.011 * math.sin(Mm - 4.0 * D))
-    lat += math.radians(-0.173 * math.sin(F - 2.0 * D)
-                        - 0.055 * math.sin(Mm - F - 2.0 * D)
-                        - 0.046 * math.sin(Mm + F - 2.0 * D)
-                        + 0.033 * math.sin(F + 2.0 * D)
-                        + 0.017 * math.sin(2.0 * Mm + F))
+
+    D = math.radians(
+        (Lm - Ls_deg) % 360.0
+    )
+
+    F = math.radians(
+        (Lm - math.degrees(N)) % 360.0
+    )
+
+    # -------------------------------------------------------------------------
+    # Laengengrad-Stoerungen
+    # -------------------------------------------------------------------------
+
+    lon += math.radians(
+        -1.274 * math.sin(Mm - D)
+        + 0.658 * math.sin(2.0 * D)
+        - 0.186 * math.sin(Ms)
+        - 0.059 * math.sin(2.0 * Mm - 2.0 * D)
+        - 0.057 * math.sin(Mm - 2.0 * D + Ms)
+        + 0.053 * math.sin(Mm + 2.0 * D)
+        + 0.046 * math.sin(2.0 * D - Ms)
+        + 0.041 * math.sin(Mm - Ms)
+        - 0.035 * math.sin(D)
+        - 0.031 * math.sin(Mm + Ms)
+        - 0.015 * math.sin(2.0 * F - 2.0 * D)
+        + 0.011 * math.sin(Mm - 4.0 * D)
+    )
+
+    # -------------------------------------------------------------------------
+    # Breitengrad-Stoerungen
+    # -------------------------------------------------------------------------
+
+    lat += math.radians(
+        -0.173 * math.sin(F - 2.0 * D)
+        -0.055 * math.sin(Mm - F - 2.0 * D)
+        -0.046 * math.sin(Mm + F - 2.0 * D)
+        +0.033 * math.sin(F + 2.0 * D)
+        +0.017 * math.sin(2.0 * Mm + F)
+    )
 
     return lon, lat, r
 
+
 def _moon_altitude(dt_utc, lat_deg, lon_deg):
-    """Mondhoehe in Grad fuer eine UTC-Zeit."""
-    jd = _moon_julian_day(dt_utc)
-    lon, lat, _r = _moon_position(jd)
+    """
+    Mondhoehe ueber dem Horizont in Grad.
 
-    # Ekliptik -> Aequatorialkoordinaten.
-    obliq = math.radians(23.4393 - 3.563e-7 * (jd - 2451543.5))
-    sin_dec = math.sin(lat) * math.cos(obliq) + math.cos(lat) * math.sin(obliq) * math.sin(lon)
-    dec = math.asin(max(-1.0, min(1.0, sin_dec)))
-    ra = math.atan2(
-        math.sin(lon) * math.cos(obliq) - math.tan(lat) * math.sin(obliq),
-        math.cos(lon)
-    )
+    dt_utc muss UTC sein.
+    """
 
-    # GMST / lokale Sternzeit.
-    T = (jd - 2451545.0) / 36525.0
-    gmst = (280.46061837 + 360.98564736629 * (jd - 2451545.0)
-            + 0.000387933 * T * T - T * T * T / 38710000.0) % 360.0
-    lst = math.radians((gmst + lon_deg) % 360.0)
-    ha = lst - ra
-
-    sin_alt = (math.sin(math.radians(lat_deg)) * math.sin(dec)
-               + math.cos(math.radians(lat_deg)) * math.cos(dec) * math.cos(ha))
-    return math.degrees(math.asin(max(-1.0, min(1.0, sin_alt))))
-
-def _moon_rise_set_for_date(date_value, lat_deg, lon_deg):
-    """Liefert lokale Mondauf-/untergangszeit als HH:MM oder 'na'."""
     try:
-        key = (date_value.isoformat(), round(float(lat_deg), 4), round(float(lon_deg), 4))
-        cached = _MOON_RISESET_CACHE.get(key)
-        if cached is not None:
+        jd = _moon_julian_day(dt_utc)
+
+        moon_lon, moon_lat, _moon_distance = _moon_position(jd)
+
+        # -------------------------------------------------------------
+        # Ekliptik -> Aequator
+        # -------------------------------------------------------------
+
+        obliq = math.radians(
+            23.4393
+            - 3.563e-7 * (jd - 2451543.5)
+        )
+
+        sin_dec = (
+            math.sin(moon_lat) * math.cos(obliq)
+            +
+            math.cos(moon_lat)
+            * math.sin(obliq)
+            * math.sin(moon_lon)
+        )
+
+        sin_dec = max(-1.0, min(1.0, sin_dec))
+
+        dec = math.asin(sin_dec)
+
+        # Rektaszension
+        y = (
+            math.sin(moon_lon) * math.cos(obliq)
+            -
+            math.tan(moon_lat) * math.sin(obliq)
+        )
+
+        x = math.cos(moon_lon)
+
+        ra = math.atan2(y, x)
+
+        # -------------------------------------------------------------
+        # GMST
+        # -------------------------------------------------------------
+
+        T = (
+            jd - 2451545.0
+        ) / 36525.0
+
+        gmst = (
+            280.46061837
+            +
+            360.98564736629
+            * (jd - 2451545.0)
+            +
+            0.000387933 * T * T
+            -
+            T * T * T / 38710000.0
+        ) % 360.0
+
+        # -------------------------------------------------------------
+        # Lokale Sternzeit
+        # -------------------------------------------------------------
+
+        lst = math.radians(
+            (gmst + float(lon_deg)) % 360.0
+        )
+
+        hour_angle = lst - ra
+
+        # -------------------------------------------------------------
+        # Horizontkoordinaten
+        # -------------------------------------------------------------
+
+        lat_rad = math.radians(
+            float(lat_deg)
+        )
+
+        sin_alt = (
+            math.sin(lat_rad)
+            * math.sin(dec)
+            +
+            math.cos(lat_rad)
+            * math.cos(dec)
+            * math.cos(hour_angle)
+        )
+
+        sin_alt = max(-1.0, min(1.0, sin_alt))
+
+        return math.degrees(
+            math.asin(sin_alt)
+        )
+
+    except Exception as e:
+
+        print(
+            "[Moon] FEHLER _moon_altitude: %s"
+            % str(e)
+        )
+
+        return -90.0
+
+
+def _moon_rise_set_for_date(
+        date_value,
+        lat_deg,
+        lon_deg
+):
+    """
+    Berechnet Mondaufgang und Monduntergang
+    fuer einen lokalen Kalendertag.
+
+    Rueckgabe:
+
+        ("HH:MM", "HH:MM")
+
+    Wenn kein Auf- oder Untergang stattfindet:
+
+        ("na", "HH:MM")
+        oder
+        ("HH:MM", "na")
+    """
+
+    try:
+
+        # ========================================================
+        # KOORDINATEN
+        # ========================================================
+
+        lat_deg = float(lat_deg)
+        lon_deg = float(lon_deg)
+
+        if lat_deg < -90.0 or lat_deg > 90.0:
+
+            print(
+                "[Moon] Ungueltige Latitude: %s"
+                % str(lat_deg)
+            )
+
+            return "na", "na"
+
+        if lon_deg < -180.0 or lon_deg > 180.0:
+
+            print(
+                "[Moon] Ungueltige Longitude: %s"
+                % str(lon_deg)
+            )
+
+            return "na", "na"
+
+        # ========================================================
+        # DATUM
+        # ========================================================
+
+        if not isinstance(
+            date_value,
+            datetime.date
+        ):
+
+            print(
+                "[Moon] Ungueltiges Datum: %s"
+                % str(date_value)
+            )
+
+            return "na", "na"
+
+        # ========================================================
+        # CACHE
+        # ========================================================
+
+        key = (
+            date_value.isoformat(),
+            round(lat_deg, 4),
+            round(lon_deg, 4)
+        )
+
+        if key in _MOON_RISESET_CACHE:
+
+            cached = _MOON_RISESET_CACHE[key]
+
+            print(
+                "[Moon] Cache: %s | rise=%s | set=%s"
+                % (
+                    date_value.isoformat(),
+                    cached[0],
+                    cached[1]
+                )
+            )
+
             return cached
 
-        # Lokaler UTC-Offset zum Berechnungszeitpunkt; Enigma2 benoetigt keine
-        # zusaetzliche Zeitzonenbibliothek. Der Offset wird fuer diesen Tag
-        # aus localtime/gmtime ermittelt.
-        local_midnight = datetime.datetime.combine(date_value, datetime.time(0, 0))
-        stamp = time.mktime(local_midnight.timetuple())
-        local_tm = time.localtime(stamp)
-        utc_tm = time.gmtime(stamp)
-        offset = (datetime.datetime(*local_tm[:6]) - datetime.datetime(*utc_tm[:6])).total_seconds()
+        # ========================================================
+        # LOKALE MITTERNACHT
+        # ========================================================
 
-        def utc_for_minutes(minutes):
-            return local_midnight + datetime.timedelta(minutes=minutes) - datetime.timedelta(seconds=offset)
+        local_midnight = datetime.datetime.combine(
+            date_value,
+            datetime.time(
+                0,
+                0,
+                0
+            )
+        )
 
-        # Mondauf-/untergang mit 10-Minuten-Schritten suchen und den Treffer
-        # linear verfeinern. Das sind maximal 145 Positionsberechnungen pro Tag.
+        # ========================================================
+        # ZEITVERSATZ LOKAL -> UTC
+        # ========================================================
+
+        timestamp = time.mktime(
+            local_midnight.timetuple()
+        )
+
+        local_tm = time.localtime(
+            timestamp
+        )
+
+        if hasattr(
+            local_tm,
+            "tm_gmtoff"
+        ):
+
+            offset_seconds = (
+                local_tm.tm_gmtoff
+            )
+
+        else:
+
+            utc_tm = time.gmtime(
+                timestamp
+            )
+
+            local_as_timestamp = (
+                time.mktime(
+                    (
+                        local_tm.tm_year,
+                        local_tm.tm_mon,
+                        local_tm.tm_mday,
+                        local_tm.tm_hour,
+                        local_tm.tm_min,
+                        local_tm.tm_sec,
+                        0,
+                        0,
+                        -1
+                    )
+                )
+            )
+
+            utc_as_timestamp = (
+                time.mktime(
+                    (
+                        utc_tm.tm_year,
+                        utc_tm.tm_mon,
+                        utc_tm.tm_mday,
+                        utc_tm.tm_hour,
+                        utc_tm.tm_min,
+                        utc_tm.tm_sec,
+                        0,
+                        0,
+                        -1
+                    )
+                )
+            )
+
+            offset_seconds = (
+                local_as_timestamp
+                - utc_as_timestamp
+            )
+
+        print(
+            "[Moon] Datum=%s | Offset=%s Sekunden"
+            % (
+                date_value.isoformat(),
+                str(offset_seconds)
+            )
+        )
+
+        # ========================================================
+        # LOKALE MINUTEN -> UTC
+        # ========================================================
+
+        def utc_for_local_minutes(
+                minutes
+        ):
+
+            return (
+                local_midnight
+                + datetime.timedelta(
+                    minutes=float(minutes)
+                )
+                - datetime.timedelta(
+                    seconds=float(offset_seconds)
+                )
+            )
+
+        # ========================================================
+        # HORIZONTHOEHE
+        #
+        # -0.27 Grad ist ein sinnvoller praktischer
+        # Horizontwert fuer den Mond.
+        # ========================================================
+
         threshold = -0.27
-        prev_t = 0
-        prev_alt = _moon_altitude(utc_for_minutes(0), lat_deg, lon_deg)
+
         rise = None
         moonset = None
 
-        for minute in range(10, 1441, 10):
-            cur_alt = _moon_altitude(utc_for_minutes(minute), lat_deg, lon_deg)
-            if rise is None and prev_alt < threshold <= cur_alt:
-                lo, hi = minute - 10, minute
-                for _ in range(8):
-                    mid = (lo + hi) / 2.0
-                    if _moon_altitude(utc_for_minutes(mid), lat_deg, lon_deg) >= threshold:
+        # ========================================================
+        # START 00:00
+        # ========================================================
+
+        previous_altitude = _moon_altitude(
+            utc_for_local_minutes(0),
+            lat_deg,
+            lon_deg
+        )
+
+        print(
+            "[Moon DEBUG] %s | 00:00 | altitude=%.3f"
+            % (
+                date_value.isoformat(),
+                previous_altitude
+            )
+        )
+
+        # ========================================================
+        # ALLE 5 MINUTEN
+        # ========================================================
+
+        for minute in range(
+            5,
+            1441,
+            5
+        ):
+
+            current_altitude = _moon_altitude(
+                utc_for_local_minutes(minute),
+                lat_deg,
+                lon_deg
+            )
+
+            # ----------------------------------------------------
+            # DEBUG JEDE VOLLE STUNDE
+            # ----------------------------------------------------
+
+            if minute % 60 == 0:
+
+                print(
+                    "[Moon DEBUG] %02d:%02d | altitude=%.3f"
+                    % (
+                        minute // 60,
+                        minute % 60,
+                        current_altitude
+                    )
+                )
+
+            # ====================================================
+            # MONDAUFGANG
+            # ====================================================
+
+            if (
+                rise is None
+                and
+                previous_altitude < threshold
+                and
+                current_altitude >= threshold
+            ):
+
+                lo = float(
+                    minute - 5
+                )
+
+                hi = float(
+                    minute
+                )
+
+                # ------------------------------------------------
+                # Binaere Verfeinerung
+                # ------------------------------------------------
+
+                for _ in range(20):
+
+                    mid = (
+                        lo + hi
+                    ) / 2.0
+
+                    altitude = _moon_altitude(
+                        utc_for_local_minutes(mid),
+                        lat_deg,
+                        lon_deg
+                    )
+
+                    if altitude >= threshold:
+
                         hi = mid
+
                     else:
+
                         lo = mid
-                rise = (lo + hi) / 2.0
-            if moonset is None and prev_alt >= threshold > cur_alt:
-                lo, hi = minute - 10, minute
-                for _ in range(8):
-                    mid = (lo + hi) / 2.0
-                    if _moon_altitude(utc_for_minutes(mid), lat_deg, lon_deg) < threshold:
+
+                rise = (
+                    lo + hi
+                ) / 2.0
+
+                print(
+                    "[Moon] MONDAUFGANG gefunden: "
+                    "%.2f Minuten"
+                    % rise
+                )
+
+            # ====================================================
+            # MONDUNTERGANG
+            # ====================================================
+
+            if (
+                moonset is None
+                and
+                previous_altitude >= threshold
+                and
+                current_altitude < threshold
+            ):
+
+                lo = float(
+                    minute - 5
+                )
+
+                hi = float(
+                    minute
+                )
+
+                # ------------------------------------------------
+                # Binaere Verfeinerung
+                # ------------------------------------------------
+
+                for _ in range(20):
+
+                    mid = (
+                        lo + hi
+                    ) / 2.0
+
+                    altitude = _moon_altitude(
+                        utc_for_local_minutes(mid),
+                        lat_deg,
+                        lon_deg
+                    )
+
+                    if altitude < threshold:
+
                         hi = mid
+
                     else:
+
                         lo = mid
-                moonset = (lo + hi) / 2.0
-            prev_alt = cur_alt
-            prev_t = minute
-            if rise is not None and moonset is not None:
+
+                moonset = (
+                    lo + hi
+                ) / 2.0
+
+                print(
+                    "[Moon] MONDUNTERGANG gefunden: "
+                    "%.2f Minuten"
+                    % moonset
+                )
+
+            previous_altitude = (
+                current_altitude
+            )
+
+            # ====================================================
+            # BEIDE GEFUNDEN
+            # ====================================================
+
+            if (
+                rise is not None
+                and
+                moonset is not None
+            ):
+
                 break
 
-        def fmt(minutes):
-            if minutes is None:
-                return "na"
-            total = int(round(minutes)) % (24 * 60)
-            return "%02d:%02d" % (total // 60, total % 60)
+        # ========================================================
+        # MINUTEN -> HH:MM
+        # ========================================================
 
-        result = (fmt(rise), fmt(moonset))
+        def format_time(
+                minutes
+        ):
+
+            if minutes is None:
+
+                return "na"
+
+            total_minutes = int(
+                round(
+                    float(minutes)
+                )
+            )
+
+            total_minutes %= 1440
+
+            hours = (
+                total_minutes // 60
+            )
+
+            mins = (
+                total_minutes % 60
+            )
+
+            return "%02d:%02d" % (
+                hours,
+                mins
+            )
+
+        # ========================================================
+        # ERGEBNIS
+        # ========================================================
+
+        moonrise = format_time(
+            rise
+        )
+
+        moonset_text = format_time(
+            moonset
+        )
+
+        result = (
+            moonrise,
+            moonset_text
+        )
+
+        # ========================================================
+        # CACHE SPEICHERN
+        # ========================================================
+
         _MOON_RISESET_CACHE[key] = result
-        # Cache bewusst klein halten.
-        if len(_MOON_RISESET_CACHE) > 16:
-            _MOON_RISESET_CACHE.pop(next(iter(_MOON_RISESET_CACHE)))
-        return result
-    except Exception:
+
+        if len(
+            _MOON_RISESET_CACHE
+        ) > 16:
+
+            first_key = next(
+                iter(
+                    _MOON_RISESET_CACHE
+                )
+            )
+
+            del _MOON_RISESET_CACHE[
+                first_key
+            ]
+
+        # ========================================================
+        # AUSGABE
+        # ========================================================
+
+        print(
+            "[Moon] %s | lat=%.4f lon=%.4f | "
+            "Aufgang=%s | Untergang=%s"
+            % (
+                date_value.isoformat(),
+                lat_deg,
+                lon_deg,
+                moonrise,
+                moonset_text
+            )
+        )
+
+        return (
+            moonrise,
+            moonset_text
+        )
+
+    except Exception as e:
+
+        print(
+            "[Moon] FEHLER in "
+            "_moon_rise_set_for_date: %s"
+            % str(e)
+        )
+
+        try:
+
+            import traceback
+
+            traceback.print_exc()
+
+        except Exception:
+
+            pass
+
         return "na", "na"
 
-__version__ = "1.8.5"
+
+# =============================================================================
+# HILFSFUNKTION FUER DIE ANZEIGE
+# =============================================================================
+
+def getMoonRiseSet(date_value, lat_deg, lon_deg):
+    """
+    Komfortfunktion.
+
+    Rueckgabe:
+        moonrise, moonset
+    """
+
+    return _moon_rise_set_for_date(
+        date_value,
+        lat_deg,
+        lon_deg
+    )
+
+
+# =============================================================================
+# BEISPIEL FUER DIE VERWENDUNG
+# =============================================================================
+#
+# WICHTIG:
+#
+# Nicht:
+#
+#     moonrise = _moon_rise_set_for_date(...)
+#
+# sondern:
+#
+#     moonrise, moonset = _moon_rise_set_for_date(...)
+#
+# =============================================================================
+
+def getMoonTimesForLocation(date_value, location_entry):
+    """
+    Liest Koordinaten direkt aus einem Location-Eintrag.
+
+    Beispiel location_entry:
+        "Duisburg|51.4344|6.7623"
+
+    Rueckgabe:
+        ("HH:MM", "HH:MM")
+    """
+
+    lat, lon = getCoordsFromEntry(
+        location_entry
+    )
+
+    if lat is None or lon is None:
+
+        print(
+            "[Moon] Keine gueltigen Koordinaten: %s"
+            % safeStr(location_entry)
+        )
+
+        return "na", "na"
+
+    return _moon_rise_set_for_date(
+        date_value,
+        lat,
+        lon
+    )
+
+
+
+__version__ = "1.8.6"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -457,7 +1210,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.5'
+version = '1.8.6'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -5416,6 +6169,10 @@ class sevendays(Screen):
 
     # Sonne / Mond
     COLOR_SUN         = "#00ffff00"
+    COLOR_SUNRISE     = "#00ffff00"
+    COLOR_SUNSET      = "#00ffff00"
+    COLOR_MOONRISE    = "#00ffff00"
+    COLOR_MOONSET     = "#00ffff00"
 
     # Stundenübersicht
     COLOR_HOUR        = "#00ff0000"
@@ -5439,48 +6196,499 @@ class sevendays(Screen):
     )
 
     # ================================================================
+    # INITIALISIERUNG
+    # ================================================================
+
+    def __init__(self, session):
+
+        Screen.__init__(
+            self,
+            session
+        )
+
+        AddNewScreen(self)
+
+        self.onClose.append(
+            lambda: RemoveScreen(self)
+        )
+
+        global weatherData
+
+        data = weatherData.get(
+            "days",
+            []
+        )
+
+        self.selected = 0
+        self.hourStep = 1
+
+        # ============================================================
+        # OBERER WINDPFEIL
+        # ============================================================
+
+        winddir_top = (
+            self._wind(data[0])
+            if data
+            else "na"
+        )
+
+        # ============================================================
+        # TEMPERATURBILD
+        # ============================================================
+
+        tempicon = self._temp_picture(
+            data
+        )
+
+        # ============================================================
+        # FARBEN
+        # ============================================================
+
+        try:
+
+            self._loadSevenDayColors()
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "_loadSevenDayColors Fehler:",
+                repr(e)
+            )
+
+        # ============================================================
+        # SKIN
+        # ============================================================
+
+        self.skin = self._build_skin(
+            data,
+            winddir_top,
+            tempicon
+        )
+
+        # ============================================================
+        # DATUMSFORMAT
+        # ============================================================
+
+        try:
+
+            date_format = getDateFormat()
+
+            for old in (
+                "Format:%a %d/%m/%y",
+                "Format:%a %d.%m",
+                "Format:%a %d.%m.%y"
+            ):
+
+                self.skin = self.skin.replace(
+                    old,
+                    date_format
+                )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "date format replacement failed:",
+                repr(e)
+            )
+
+        # ============================================================
+        # ALLGEMEINE WIDGETS
+        # ============================================================
+
+        self["city1"] = StaticText()
+
+        self["city1"].text = str(
+            citynamedisplay
+        )
+
+        for name in (
+            "bigtemp1",
+            "bigweathertype1",
+            "GevoelsTemp1",
+            "winddir1"
+        ):
+
+            self[name] = StaticText()
+
+        for name in (
+            "winddiricon1",
+            "weatheralertbg1",
+            "weatheralerticon1"
+        ):
+
+            self[name] = Pixmap()
+
+        self["weatheralert1"] = Label("")
+
+        self["yellowdot"] = MovingPixmap()
+
+        self["bgpic"] = Pixmap()
+
+        # ============================================================
+        # HINTERGRUND
+        # ============================================================
+
+        try:
+
+            self.picload = ePicLoad()
+
+            self._picload_conn = safeSignalConnect(
+                self.picload.PictureData,
+                self.bgPictureLoaded
+            )
+
+            self.loadBackground()
+
+        except Exception as e:
+
+            print(
+                "speedy_TheWeather: "
+                "ePicLoad niet beschikbaar, "
+                "standard Hintergrund:",
+                repr(e)
+            )
+
+            self.picload = None
+
+        # ============================================================
+        # STUNDEN-WIDGETS
+        # ============================================================
+
+        defaults = {
+            "dayhour3": "00h",
+            "daytemp3": "--\xb0C",
+            "sunpercent3": "--%",
+            "daypercent3": "--%",
+            "hrdayper3": "--%",
+            "dayspeed3": "--Km/h"
+        }
+
+        for hour in range(8):
+
+            for prefix, value in defaults.items():
+
+                self._label(
+                    "{}{}".format(
+                        prefix,
+                        hour
+                    ),
+                    value
+                )
+
+        # ============================================================
+        # 7 TAGE
+        # ============================================================
+
+        for day in range(7):
+
+            self._set_day(
+                day,
+                self._day(
+                    data,
+                    day
+                )
+            )
+
+        # ============================================================
+        # SONNE
+        # ============================================================
+
+        sunrise = "--"
+        sunset = "--"
+
+        try:
+
+            sunrise, sunset = self._sun(
+                data
+            )
+
+            if not sunrise or sunrise == "na":
+                sunrise = "--"
+
+            if not sunset or sunset == "na":
+                sunset = "--"
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE: sunrise=%s sunset=%s"
+                % (
+                    sunrise,
+                    sunset
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE FEHLER:",
+                repr(e)
+            )
+
+            sunrise = "--"
+            sunset = "--"
+
+        # ============================================================
+        # MOND
+        # ============================================================
+
+        moonrise = "--"
+        moonset = "--"
+
+        try:
+
+            moonrise, moonset = self._moon(
+                data
+            )
+
+            if not moonrise or moonrise == "na":
+                moonrise = "--"
+
+            if not moonset or moonset == "na":
+                moonset = "--"
+
+            print(
+                "[speedy_TheWeather] "
+                "MOND: moonrise=%s moonset=%s"
+                % (
+                    moonrise,
+                    moonset
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "MOND FEHLER:",
+                repr(e)
+            )
+
+            moonrise = "--"
+            moonset = "--"
+
+        # ============================================================
+        # SONNE / MOND ANZEIGE
+        #
+        # WICHTIG:
+        # NICHT _label() verwenden.
+        #
+        # Die Widgets wurden bereits in
+        # _build_day_section() registriert.
+        # ============================================================
+
+        try:
+
+            self["sunriselab"].text = str(
+                sunrise
+            )
+
+            self["sunsetlab"].text = str(
+                sunset
+            )
+
+            self["sunsep"].text = "-"
+
+            self["moonriselab"].text = str(
+                moonrise
+            )
+
+            self["moonsetlab"].text = str(
+                moonset
+            )
+
+            self["moonsep"].text = "-"
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE/MOND Anzeige: "
+                "Sonne=%s - %s | Mond=%s - %s"
+                % (
+                    sunrise,
+                    sunset,
+                    moonrise,
+                    moonset
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE/MOND WIDGET FEHLER:",
+                repr(e)
+            )
+
+        # ============================================================
+        # FARBTASTEN
+        # ============================================================
+
+        self["key_red"] = StaticText(
+            _("Back")
+        )
+
+        self["key_green"] = StaticText(
+            _("Hours")
+        )
+
+        self["key_yellow"] = StaticText(
+            _("Radar")
+        )
+
+        self["key_blue"] = StaticText(
+            _("Compare Two Locations")
+        )
+
+        # ============================================================
+        # ACTIONMAP
+        # ============================================================
+
+        self["myActionMap"] = ActionMap(
+            [
+                "SetupActions",
+                "MenuActions",
+                "ColorActions"
+            ],
+            {
+                "menu": self.KeyMenu,
+                "left": self.left,
+                "right": self.right,
+                "cancel": self.cancel,
+                "red": self.cancel,
+                "ok": self.fourteendays,
+                "green": self.toggleHourStep,
+                "yellow": self.openRadar,
+                "blue": self.openTwoLocations
+            },
+            -1
+        )
+
+        # ============================================================
+        # STARTANZEIGE
+        # ============================================================
+
+        self.updateFrameselect()
+
+        # ============================================================
+        # ALERT TIMER
+        # ============================================================
+
+        self.alertFixTimer = eTimer()
+
+        self._alertFixTimer_conn = safeTimerCallback(
+            self.alertFixTimer,
+            self.updateFrameselect
+        )
+
+        self.alertFixTimer.start(
+            200,
+            True
+        )
+
+        # ============================================================
+        # AKTUELLES GROSSES WETTERICON
+        # ============================================================
+
+        self.currentHourTimer = eTimer()
+
+        self._currentHourTimer_conn = safeTimerCallback(
+            self.currentHourTimer,
+            self._updateCurrentBigIcon
+        )
+
+        self.currentHourTimer.start(
+            60000,
+            False
+        )
+
+        self.onClose.append(
+            self._stopCurrentHourTimer
+        )
+
+    # ================================================================
     # ALLGEMEIN
     # ================================================================
 
     def _path(self, *parts):
+
         return "/".join(
             [self.WEATHER_PATH] + list(parts)
         )
 
     def _day(self, data, n):
-        return data[n] if n < len(data) else {}
+
+        return (
+            data[n]
+            if n < len(data)
+            else {}
+        )
 
     def _wind(self, day):
+
         try:
+
             return str(
-                day["hours"][0].get("winddirection") or "na"
+                day["hours"][0].get(
+                    "winddirection"
+                ) or "na"
             )
-        except (KeyError, IndexError, TypeError):
+
+        except (
+            KeyError,
+            IndexError,
+            TypeError
+        ):
+
             return "na"
 
     def _icon(self, day):
+
         try:
+
             return str(
-                day.get("iconcode") or "na"
+                day.get(
+                    "iconcode"
+                ) or "na"
             )
+
         except Exception:
+
             return "na"
 
     def _temp_picture(self, data):
+
         temps = []
 
         try:
+
             for day in data:
-                for hour in day.get("hours", []):
-                    if hour.get("temperature") is not None:
+
+                for hour in day.get(
+                    "hours",
+                    []
+                ):
+
+                    if hour.get(
+                        "temperature"
+                    ) is not None:
+
                         temps.append(
-                            round(float(hour["temperature"]))
+                            round(
+                                float(
+                                    hour[
+                                        "temperature"
+                                    ]
+                                )
+                            )
                         )
 
                 if len(temps) > 3:
                     break
 
         except Exception:
+
             pass
 
         if len(temps) < 2:
@@ -5499,25 +6707,35 @@ class sevendays(Screen):
     # ================================================================
 
     def _sun(self, data):
+
         sunrise = "na"
         sunset = "na"
 
         try:
+
             if data:
+
                 day = data[0]
 
                 if day.get("sunrise"):
+
                     sunrise = str(
                         day["sunrise"]
                     ).split("T")[1][:5]
 
                 if day.get("sunset"):
+
                     sunset = str(
                         day["sunset"]
                     ).split("T")[1][:5]
 
-        except Exception:
-            pass
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE FEHLER:",
+                repr(e)
+            )
 
         return sunrise, sunset
 
@@ -5526,36 +6744,258 @@ class sevendays(Screen):
     # ================================================================
 
     def _moon(self, data):
-        """Mondauf-/untergang für den aktuellen Ort und heutigen Tag."""
 
         try:
+
+            print(
+                "[speedy_TheWeather] MOND: "
+                "lokaleStadt =",
+                lockaaleStad
+            )
+
+            # ========================================================
+            # KOORDINATEN
+            # ========================================================
+
             lat, lon = getCoordsFromEntry(
                 lockaaleStad
             )
 
+            print(
+                "[speedy_TheWeather] MOND: "
+                "Koordinaten = %s / %s"
+                % (
+                    str(lat),
+                    str(lon)
+                )
+            )
+
             if lat is None or lon is None:
-                return "na", "na"
+
+                print(
+                    "[speedy_TheWeather] MOND: "
+                    "keine Koordinaten"
+                )
+
+                return "--", "--"
+
+            lat = float(lat)
+            lon = float(lon)
+
+            # ========================================================
+            # HEUTIGES DATUM
+            # ========================================================
 
             today = datetime.datetime.now().date()
 
-            return _moon_rise_set_for_date(
+            print(
+                "[speedy_TheWeather] MOND: "
+                "Datum=%s lat=%.4f lon=%.4f"
+                % (
+                    today.isoformat(),
+                    lat,
+                    lon
+                )
+            )
+
+            # ========================================================
+            # HEUTE BERECHNEN
+            # ========================================================
+
+            moonrise, moonset = _moon_rise_set_for_date(
                 today,
                 lat,
                 lon
             )
 
-        except Exception:
-            return "na", "na"
+            print(
+                "[speedy_TheWeather] MOND: "
+                "Heute rise=%s set=%s"
+                % (
+                    str(moonrise),
+                    str(moonset)
+                )
+            )
+
+            # ========================================================
+            # MONDAUFGANG FEHLT
+            #
+            # Dann kommt der Mond bereits ueber dem Horizont
+            # in den heutigen Tag.
+            #
+            # -> VORTAG nach Mondaufgang fragen
+            # ========================================================
+
+            if (
+                not moonrise
+                or
+                moonrise == "na"
+            ):
+
+                previous_day = (
+                    today
+                    - timedelta(days=1)
+                )
+
+                previous_rise, previous_set = (
+                    _moon_rise_set_for_date(
+                        previous_day,
+                        lat,
+                        lon
+                    )
+                )
+
+                print(
+                    "[speedy_TheWeather] MOND: "
+                    "Vortag=%s rise=%s set=%s"
+                    % (
+                        previous_day.isoformat(),
+                        str(previous_rise),
+                        str(previous_set)
+                    )
+                )
+
+                if (
+                    previous_rise
+                    and
+                    previous_rise != "na"
+                ):
+
+                    moonrise = previous_rise
+
+                    print(
+                        "[speedy_TheWeather] MOND: "
+                        "Vortag-Aufgang uebernommen: %s"
+                        % str(moonrise)
+                    )
+
+            # ========================================================
+            # MONDUNTERGANG FEHLT
+            #
+            # -> FOLGETAG nach Monduntergang fragen
+            # ========================================================
+
+            if (
+                not moonset
+                or
+                moonset == "na"
+            ):
+
+                next_day = (
+                    today
+                    + timedelta(days=1)
+                )
+
+                next_rise, next_set = (
+                    _moon_rise_set_for_date(
+                        next_day,
+                        lat,
+                        lon
+                    )
+                )
+
+                print(
+                    "[speedy_TheWeather] MOND: "
+                    "Folgetag=%s rise=%s set=%s"
+                    % (
+                        next_day.isoformat(),
+                        str(next_rise),
+                        str(next_set)
+                    )
+                )
+
+                if (
+                    next_set
+                    and
+                    next_set != "na"
+                ):
+
+                    moonset = next_set
+
+                    print(
+                        "[speedy_TheWeather] MOND: "
+                        "Folgetag-Untergang uebernommen: %s"
+                        % str(moonset)
+                    )
+
+            # ========================================================
+            # FINALER WERT
+            # ========================================================
+
+            if (
+                not moonrise
+                or
+                moonrise == "na"
+            ):
+                moonrise = "--"
+
+            else:
+                moonrise = str(
+                    moonrise
+                )
+
+            if (
+                not moonset
+                or
+                moonset == "na"
+            ):
+                moonset = "--"
+
+            else:
+                moonset = str(
+                    moonset
+                )
+
+            # ========================================================
+            # ENDERGEBNIS
+            # ========================================================
+
+            print(
+                "[speedy_TheWeather] MOND: "
+                "ENDERGEBNIS = [%s] - [%s]"
+                % (
+                    moonrise,
+                    moonset
+                )
+            )
+
+            return (
+                moonrise,
+                moonset
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "MOND FEHLER:",
+                repr(e)
+            )
+
+            try:
+
+                import traceback
+
+                traceback.print_exc()
+
+            except Exception:
+
+                pass
+
+            return "--", "--"
 
     # ================================================================
     # WIDGET-HELFER
     # ================================================================
 
     def _pixmap(self, name):
+
         self[name] = Pixmap()
 
     def _label(self, name, text=""):
+
         self[name] = StaticText()
+
         self[name].text = text
 
     def _label_xml(
@@ -5570,16 +7010,6 @@ class sevendays(Screen):
             weight="Regular",
             nowrap=False
     ):
-        """
-        Label-XML.
-
-        nowrap=False:
-            normales Label-Verhalten.
-
-        nowrap=True:
-            Text darf nicht in die nächste Zeile umbrechen.
-            Wird bei den Sonnen-/Mondzeiten benutzt.
-        """
 
         nowrap_xml = (
             'noWrap="1" '
@@ -5616,6 +7046,7 @@ class sevendays(Screen):
             scale=False,
             z=3
     ):
+
         return (
             '<widget name="{0}" position="{1}" size="{2}" '
             '{3}zPosition="{4}" alphatest="blend" '
@@ -5637,6 +7068,7 @@ class sevendays(Screen):
             scale=False,
             z=3
     ):
+
         return (
             '<ePixmap position="{0}" size="{1}" '
             '{2}zPosition="{3}" alphatest="blend" '
@@ -5697,10 +7129,6 @@ class sevendays(Screen):
             ]
 
         else:
-
-            # ========================================================
-            # SD 1280x720
-            # ========================================================
 
             buttons = [
                 (
@@ -5799,7 +7227,10 @@ class sevendays(Screen):
 
         icon = self._icon(data)
         wind = self._wind(data)
-        hours = data.get("hours", [])
+        hours = data.get(
+            "hours",
+            []
+        )
 
         if hd:
 
@@ -5860,32 +7291,15 @@ class sevendays(Screen):
 
         else:
 
-            # ========================================================
-            # SD 1280x720
-            # ========================================================
-
             cfg = {
-
-                # ----------------------------------------------------
-                # Großes Wettericon
-                # ----------------------------------------------------
-
                 "bigpos": "422,54",
                 "bigsize": "100,100",
                 "bigscale": True,
-
-                # ----------------------------------------------------
-                # Kleine 7-Tage-Icons
-                # ----------------------------------------------------
 
                 "smallx": 87 + 165 * day,
                 "smally": 328,
                 "smallsize": "48,48",
                 "smallscale": True,
-
-                # ----------------------------------------------------
-                # Wochentag
-                # ----------------------------------------------------
 
                 "daypos": "{},302".format(
                     92 + 165 * day
@@ -5893,19 +7307,11 @@ class sevendays(Screen):
                 "daysize": "130,24",
                 "dayfont": 22,
 
-                # ----------------------------------------------------
-                # Maximum
-                # ----------------------------------------------------
-
                 "maxpos": "{},376".format(
                     92 + 165 * day
                 ),
                 "maxsize": "82,36",
                 "maxfont": 32,
-
-                # ----------------------------------------------------
-                # Minimum
-                # ----------------------------------------------------
 
                 "minpos": "{},389".format(
                     174 + 165 * day
@@ -5913,24 +7319,11 @@ class sevendays(Screen):
                 "minsize": "78,24",
                 "minfont": 18,
 
-                # ----------------------------------------------------
-                # Wetterbeschreibung
-                # ----------------------------------------------------
-
                 "typepos": "{},410".format(
                     69 + 165 * day
                 ),
                 "typesize": "138,54",
                 "typefont": 16,
-
-                # ====================================================
-                # SONNE
-                #
-                # WICHTIG:
-                # Das Feld wurde von 145 auf 190 Pixel erweitert.
-                # Dadurch können die beiden HH:MM-Werte sauber
-                # nebeneinander dargestellt werden.
-                # ====================================================
 
                 "sunpos": "410,165",
                 "sunsize": "230,30",
@@ -5939,20 +7332,12 @@ class sevendays(Screen):
                 "suniconpos": "350,158",
                 "suniconsize": "48,32",
 
-                # ====================================================
-                # MOND
-                # ====================================================
-
                 "moonpos": "410,207",
                 "moonsize": "230,34",
                 "moonfont": 23,
 
                 "mooniconpos": "350,200",
                 "mooniconsize": "48,32",
-
-                # ----------------------------------------------------
-                # Stunden
-                # ----------------------------------------------------
 
                 "hourx": 80,
                 "hourstep": 144,
@@ -5983,7 +7368,7 @@ class sevendays(Screen):
         )
 
         # ============================================================
-        # WINDRICHTUNGS-ICON SD
+        # WINDRICHTUNGS-ICON
         # ============================================================
 
         if not hd:
@@ -6074,24 +7459,12 @@ class sevendays(Screen):
 
         if day == 0:
 
-            # ========================================================
-            # SONNE
-            # ========================================================
-
             sun_x, sun_y = [
                 int(v)
                 for v in cfg["sunpos"].split(",")
             ]
 
             sun_h = cfg["sunsize"].split(",")[1]
-
-            # ========================================================
-            # SD
-            #
-            # 78 + 10 + 78 = 166 Pixel
-            #
-            # Das passt bequem in das 190 Pixel große Gesamtfeld.
-            # ========================================================
 
             if not hd:
 
@@ -6104,7 +7477,7 @@ class sevendays(Screen):
                 sun_gap = 8
 
             # --------------------------------------------------------
-            # Sonnenaufgang
+            # SONNENAUFGANG
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6124,7 +7497,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Trennstrich
+            # SONNENTRENNER
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6145,7 +7518,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Sonnenuntergang
+            # SONNENUNTERGANG
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6167,7 +7540,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Sonnenicon
+            # SONNENICON
             # --------------------------------------------------------
 
             xml += self._eicon_xml(
@@ -6180,9 +7553,9 @@ class sevendays(Screen):
                 not hd
             )
 
-            # ========================================================
-            # MOND
-            # ========================================================
+            # --------------------------------------------------------
+            # MOND POSITION
+            # --------------------------------------------------------
 
             moon_x, moon_y = [
                 int(v)
@@ -6202,7 +7575,7 @@ class sevendays(Screen):
                 moon_gap = 8
 
             # --------------------------------------------------------
-            # Mondaufgang
+            # MONDAUFGANG
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6222,7 +7595,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Trennstrich
+            # MONDTRENNER
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6243,7 +7616,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Monduntergang
+            # MONDUNTERGANG
             # --------------------------------------------------------
 
             xml += self._label_xml(
@@ -6265,7 +7638,7 @@ class sevendays(Screen):
             )
 
             # --------------------------------------------------------
-            # Mondicon
+            # MONDICON
             # --------------------------------------------------------
 
             xml += self._eicon_xml(
@@ -6308,13 +7681,29 @@ class sevendays(Screen):
 
         if day == 0:
 
-            self._label("sunriselab")
-            self._label("sunsetlab")
-            self._label("sunsep")
+            self._label(
+                "sunriselab"
+            )
 
-            self._label("moonriselab")
-            self._label("moonsetlab")
-            self._label("moonsep")
+            self._label(
+                "sunsetlab"
+            )
+
+            self._label(
+                "sunsep"
+            )
+
+            self._label(
+                "moonriselab"
+            )
+
+            self._label(
+                "moonsetlab"
+            )
+
+            self._label(
+                "moonsep"
+            )
 
         # ============================================================
         # 8 STUNDENICONS
@@ -6329,7 +7718,9 @@ class sevendays(Screen):
             )
 
             hour_icon = str(
-                hour.get("iconcode") or "na"
+                hour.get(
+                    "iconcode"
+                ) or "na"
             )
 
             name = "dayIcon{}{}".format(
@@ -6358,7 +7749,9 @@ class sevendays(Screen):
                 1
             )
 
-            self._pixmap(name)
+            self._pixmap(
+                name
+            )
 
         return xml
 
@@ -6471,10 +7864,6 @@ class sevendays(Screen):
 
         else:
 
-            # ========================================================
-            # SD 1280x720
-            # ========================================================
-
             x = 144 * hour
 
             bg = (
@@ -6572,7 +7961,9 @@ class sevendays(Screen):
         # HINTERGRUND
         # ============================================================
 
-        name = "vlakuur{}".format(hour)
+        name = "vlakuur{}".format(
+            hour
+        )
 
         xml = self._icon_xml(
             name,
@@ -6590,7 +7981,9 @@ class sevendays(Screen):
             0
         )
 
-        self._pixmap(name)
+        self._pixmap(
+            name
+        )
 
         # ============================================================
         # LABELS
@@ -6611,24 +8004,31 @@ class sevendays(Screen):
             )
 
             if prefix == "dayhour3":
+
                 color = self.COLOR_HOUR
 
             elif prefix == "daytemp3":
+
                 color = self.COLOR_HOURTEMP
 
             elif prefix == "sunpercent3":
+
                 color = self.COLOR_SUNPERCENT
 
             elif prefix == "daypercent3":
+
                 color = self.COLOR_RAIN
 
             elif prefix == "hrdayper3":
+
                 color = self.COLOR_HUMIDITY
 
             elif prefix == "dayspeed3":
+
                 color = self.COLOR_WIND_SPEED
 
             else:
+
                 color = "#00ffffff"
 
             xml += self._label_xml(
@@ -6643,7 +8043,9 @@ class sevendays(Screen):
                 color=color
             )
 
-            self._label(name)
+            self._label(
+                name
+            )
 
         # ============================================================
         # ICONS
@@ -6677,7 +8079,9 @@ class sevendays(Screen):
                 scale
             )
 
-            self._pixmap(name)
+            self._pixmap(
+                name
+            )
 
         return xml
 
@@ -6828,10 +8232,6 @@ class sevendays(Screen):
                 alert_color=self.COLOR_ALERT
             )
 
-        # ============================================================
-        # SD
-        # ============================================================
-
         return """
             <widget name="yellowdot"
                 position="184,307"
@@ -6947,7 +8347,10 @@ class sevendays(Screen):
 
             content += self._build_day_section(
                 day,
-                self._day(data, day),
+                self._day(
+                    data,
+                    day
+                ),
                 True
             )
 
@@ -7063,7 +8466,10 @@ class sevendays(Screen):
 
             content += self._build_day_section(
                 day,
-                self._day(data, day),
+                self._day(
+                    data,
+                    day
+                ),
                 False
             )
 
@@ -7111,10 +8517,6 @@ class sevendays(Screen):
                 alphatest="on"/>
 
             {content}
-
-            <!-- ================================================= -->
-            <!-- MENU + OK                                        -->
-            <!-- ================================================= -->
 
             <ePixmap
                 pixmap="{base}/{pack}/buttons/menubuttonsd.png"
@@ -7228,7 +8630,14 @@ class sevendays(Screen):
         if not has_data:
 
             for name in widgets:
-                self[name].text = ""
+
+                try:
+
+                    self[name].text = ""
+
+                except Exception:
+
+                    pass
 
             try:
 
@@ -7241,9 +8650,14 @@ class sevendays(Screen):
                 ].hide()
 
             except Exception:
+
                 pass
 
             return
+
+        # ============================================================
+        # ICONS EINBLENDEN
+        # ============================================================
 
         try:
 
@@ -7256,6 +8670,7 @@ class sevendays(Screen):
             ].show()
 
         except Exception:
+
             pass
 
         # ============================================================
@@ -7268,15 +8683,15 @@ class sevendays(Screen):
 
             try:
 
-                date = str(
+                date_value = str(
                     data["date"]
                 ).split("T")[0]
 
                 unix = time.mktime(
-                    datetime.datetime(
-                        int(date[:4]),
-                        int(date[5:7]),
-                        int(date[8:10])
+                    datetime(
+                        int(date_value[:4]),
+                        int(date_value[5:7]),
+                        int(date_value[8:10])
                     ).timetuple()
                 )
 
@@ -7299,30 +8714,45 @@ class sevendays(Screen):
             except Exception as e:
 
                 print(
-                    "[speedy_TheWeather] Datum Fehler:",
-                    e
+                    "[speedy_TheWeather] "
+                    "Datum Fehler:",
+                    repr(e)
                 )
 
         # ============================================================
-        # TEMPERATUREN
+        # MINIMUM
         # ============================================================
 
-        mintemp = data.get("mintemp")
+        mintemp = data.get(
+            "mintemp"
+        )
 
         if mintemp is None:
+
             mintemp = data.get(
                 "mintemperature"
             )
 
-        maxtemp = data.get("maxtemp")
+        # ============================================================
+        # MAXIMUM
+        # ============================================================
+
+        maxtemp = data.get(
+            "maxtemp"
+        )
 
         if maxtemp is None:
+
             maxtemp = data.get(
                 "maxtemperature"
             )
 
         info2 = ""
         info3 = ""
+
+        # ============================================================
+        # MINIMUM FORMATIEREN
+        # ============================================================
 
         if mintemp is not None:
 
@@ -7341,6 +8771,10 @@ class sevendays(Screen):
                     safeStr(mintemp)
                     + "\xb0"
                 )
+
+        # ============================================================
+        # MAXIMUM FORMATIEREN
+        # ============================================================
 
         if maxtemp is not None:
 
@@ -7361,7 +8795,7 @@ class sevendays(Screen):
                 )
 
         # ============================================================
-        # ANZEIGEN
+        # WIDGETS SETZEN
         # ============================================================
 
         self[
@@ -7380,7 +8814,9 @@ class sevendays(Screen):
             "weertype2{}".format(day)
         ].text = icontotext(
             str(
-                data.get("iconcode") or "na"
+                data.get(
+                    "iconcode"
+                ) or "na"
             )
         )
 
@@ -7436,7 +8872,7 @@ class sevendays(Screen):
         self._loadSevenDayColors()
 
         # ============================================================
-        # SKIN
+        # SKIN AUFBAUEN
         # ============================================================
 
         self.skin = self._build_skin(
@@ -7469,7 +8905,7 @@ class sevendays(Screen):
             print(
                 "[speedy_TheWeather] "
                 "date format replacement failed:",
-                e
+                repr(e)
             )
 
         # ============================================================
@@ -7525,8 +8961,8 @@ class sevendays(Screen):
             print(
                 "speedy_TheWeather: "
                 "ePicLoad niet beschikbaar, "
-                "standaard achtergrond:",
-                e
+                "standard Hintergrund:",
+                repr(e)
             )
 
             self.picload = None
@@ -7557,44 +8993,21 @@ class sevendays(Screen):
                 )
 
         # ============================================================
-        # SONNE / MOND
-        # ============================================================
-
-        sunrise, sunset = self._sun(data)
-        moonrise, moonset = self._moon(data)
-
-        self._label(
-            "sunriselab",
-            sunrise
-        )
-
-        self._label(
-            "sunsetlab",
-            sunset
-        )
-
-        self._label(
-            "sunsep",
-            "-"
-        )
-
-        self._label(
-            "moonriselab",
-            moonrise
-        )
-
-        self._label(
-            "moonsetlab",
-            moonset
-        )
-
-        self._label(
-            "moonsep",
-            "-"
-        )
-
-        # ============================================================
-        # 7 TAGE
+        # 7 TAGE AUFBAUEN
+        #
+        # WICHTIG:
+        # _set_day() baut dabei auch den Bereich fuer Tag 0 auf.
+        #
+        # Dadurch existieren danach:
+        #
+        # sunriselab
+        # sunsetlab
+        # sunsep
+        # moonriselab
+        # moonsetlab
+        # moonsep
+        #
+        # Erst DANACH werden deren Texte gesetzt.
         # ============================================================
 
         for day in range(7):
@@ -7605,6 +9018,150 @@ class sevendays(Screen):
                     data,
                     day
                 )
+            )
+
+        # ============================================================
+        # SONNE
+        # ============================================================
+
+        sunrise = "--"
+        sunset = "--"
+
+        try:
+
+            sunrise, sunset = self._sun(
+                data
+            )
+
+            if not sunrise or sunrise == "na":
+                sunrise = "--"
+
+            if not sunset or sunset == "na":
+                sunset = "--"
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE: sunrise=%s sunset=%s"
+                % (
+                    str(sunrise),
+                    str(sunset)
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE FEHLER:",
+                repr(e)
+            )
+
+            sunrise = "--"
+            sunset = "--"
+
+        # ============================================================
+        # MOND
+        #
+        # _moon() verwendet:
+        #
+        # HEUTE
+        #   -> Mondaufgang / Monduntergang
+        #
+        # KEIN MONDAUFGANG HEUTE
+        #   -> Vortag pruefen
+        #
+        # KEIN MONDUNTERGANG HEUTE
+        #   -> Folgetag pruefen
+        #
+        # Damit gleiche Logik wie TwoLocations.
+        # ============================================================
+
+        moonrise = "--"
+        moonset = "--"
+
+        try:
+
+            moonrise, moonset = self._moon(
+                data
+            )
+
+            if not moonrise or moonrise == "na":
+                moonrise = "--"
+
+            if not moonset or moonset == "na":
+                moonset = "--"
+
+            print(
+                "[speedy_TheWeather] "
+                "MOND: moonrise=%s moonset=%s"
+                % (
+                    str(moonrise),
+                    str(moonset)
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "MOND FEHLER:",
+                repr(e)
+            )
+
+            moonrise = "--"
+            moonset = "--"
+
+        # ============================================================
+        # SONNE / MOND WIDGET-TEXTE
+        #
+        # WICHTIG:
+        #
+        # HIER KEIN self._label(...) MEHR!
+        #
+        # Die Widgets wurden bereits in
+        # _build_day_section() erzeugt.
+        # ============================================================
+
+        try:
+
+            self["sunriselab"].text = str(
+                sunrise
+            )
+
+            self["sunsetlab"].text = str(
+                sunset
+            )
+
+            self["sunsep"].text = "-"
+
+            self["moonriselab"].text = str(
+                moonrise
+            )
+
+            self["moonsetlab"].text = str(
+                moonset
+            )
+
+            self["moonsep"].text = "-"
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE/MOND Anzeige: "
+                "Sonne=%s - %s | Mond=%s - %s"
+                % (
+                    str(sunrise),
+                    str(sunset),
+                    str(moonrise),
+                    str(moonset)
+                )
+            )
+
+        except Exception as e:
+
+            print(
+                "[speedy_TheWeather] "
+                "SONNE/MOND WIDGET FEHLER:",
+                repr(e)
             )
 
         # ============================================================
@@ -7658,7 +9215,7 @@ class sevendays(Screen):
         self.updateFrameselect()
 
         # ============================================================
-        # TIMER
+        # TIMER - ALERT
         # ============================================================
 
         self.alertFixTimer = eTimer()
@@ -7673,6 +9230,10 @@ class sevendays(Screen):
             True
         )
 
+        # ============================================================
+        # TIMER - AKTUELLES GROSSES WETTERICON
+        # ============================================================
+
         self.currentHourTimer = eTimer()
 
         self._currentHourTimer_conn = safeTimerCallback(
@@ -7684,6 +9245,10 @@ class sevendays(Screen):
             60000,
             False
         )
+
+        # ============================================================
+        # TIMER BEIM SCHLIESSEN STOPPEN
+        # ============================================================
 
         self.onClose.append(
             self._stopCurrentHourTimer
@@ -9261,7 +10826,13 @@ class fourteen(Screen):
                 if day < 14:
 
                     mydate = dagenbefore["date"][:-9]
-                    unixtimecode = time.mktime(datetime.datetime(int(mydate[:4]), int(mydate[5:][:2]), int(mydate[8:][:2])).timetuple())
+                    unixtimecode = time.mktime(
+                    datetime(
+                        int(mydate[:4]),
+                        int(mydate[5:7]),
+                        int(mydate[8:10])
+                    ).timetuple()
+                )
                     unixtimecode = unixtimecode
                     info1 = _(str(strftime("%A", localtime(unixtimecode))).title()[:2])
                     info2 = str(strftime("%d-%m", localtime(unixtimecode)))
@@ -10038,7 +11609,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         self.autoBackgroundDownloadEntry = ConfigNothing()
 
         self.sevenDayColorEntry = ConfigNothing()
-
+        self.twolocationsColorEntry = ConfigNothing()
         # ====================================================
         # CONFIG-LISTE
         # ====================================================
@@ -10130,6 +11701,16 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             getConfigListEntry(
                 _("SevenDay Farben einstellen:"),
                 self.sevenDayColorEntry
+            )
+        )
+        # ====================================================
+        # TWO LOCATIONS FARBEN
+        # ====================================================
+
+        self.list.append(
+            getConfigListEntry(
+                _("Two Locations Farben einstellen:"),
+                self.twolocationsColorEntry
             )
         )
 
@@ -10248,6 +11829,42 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                     MessageBox,
                     _(
                         "Could not open the SevenDay "
+                        "color settings."
+                    ),
+                    MessageBox.TYPE_ERROR
+                )
+
+            return
+
+        # ====================================================
+        # TWO LOCATIONS FARBEN
+        # ====================================================
+
+        if entry is self.twolocationsColorEntry:
+
+            print(
+                "[speedy_TheWeather] "
+                "Two Locations color settings selected."
+            )
+
+            try:
+
+                self.session.open(
+                    twolocationsColorSetup
+                )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not open Two Locations colors: %s"
+                    % e
+                )
+
+                self.session.open(
+                    MessageBox,
+                    _(
+                        "Could not open the Two Locations "
                         "color settings."
                     ),
                     MessageBox.TYPE_ERROR
@@ -10644,27 +12261,98 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
 
 
+
 class sevendayColorSetup(ConfigListScreen, Screen):
     """
     Separates Farbmenü für den SevenDay-Screen.
 
-    Alle Farben sind ConfigSelection-Werte. Damit gibt es keine schweren
-    Zusatzkomponenten und die Einstellungen funktionieren auch auf älteren
-    Enigma2-Boxen.
+    Alle Farben sind ConfigSelection-Werte.
     """
 
     skin = """
-    <screen name="sevendayColorSetup" position="center,center" size="1100,700" title="SevenDay Farben">
-        <widget name="config" position="4,4" size="1070,600" scrollbarMode="showOnDemand" itemHeight="45" itemTextSelectedColor="#ffffff" itemTextUnselectedColor="#ffffff" font="Regular;30" />
-        <ePixmap pixmap="skin_default/buttons/red.png" position="11,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_red" position="36,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" />
-        <ePixmap pixmap="skin_default/buttons/green.png" position="282,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_green" position="308,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="green" />
-        <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_yellow" position="579,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="yellow" />
-        <ePixmap pixmap="skin_default/buttons/blue.png" position="825,650" size="20,40" alphatest="on" zPosition="1" />
-        <widget name="key_blue" position="851,650" size="240,40" zPosition="2" transparent="1" font="Regular; 25" halign="center" valign="center" foregroundColor="blue" />
-    </screen>"""
+    <screen name="sevendayColorSetup"
+        position="center,center"
+        size="1100,700"
+        title="SevenDay Farben">
+
+        <widget name="config"
+            position="4,4"
+            size="1070,600"
+            scrollbarMode="showOnDemand"
+            itemHeight="45"
+            itemTextSelectedColor="#ffffff"
+            itemTextUnselectedColor="#ffffff"
+            font="Regular;30" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/red.png"
+            position="11,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_red"
+            position="36,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/green.png"
+            position="282,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_green"
+            position="308,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="green" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/yellow.png"
+            position="554,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_yellow"
+            position="579,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="yellow" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/blue.png"
+            position="825,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_blue"
+            position="851,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="blue" />
+
+    </screen>
+    """
 
     _ENTRIES = (
         ("Stadt / Ort", "city"),
@@ -10693,15 +12381,34 @@ class sevendayColorSetup(ConfigListScreen, Screen):
     )
 
     def __init__(self, session):
-        Screen.__init__(self, session)
+
+        Screen.__init__(
+            self,
+            session
+        )
+
         self.session = session
-        self["key_red"] = Label(_("Cancel"))
-        self["key_green"] = Label(_("Save"))
-        self["key_yellow"] = Label(_("Default colors"))
-        self["key_blue"] = Label(_("Save & exit"))
+
+        self["key_red"] = Label(
+            _("Cancel")
+        )
+
+        self["key_green"] = Label(
+            _("Save")
+        )
+
+        self["key_yellow"] = Label(
+            _("Default colors")
+        )
+
+        self["key_blue"] = Label(
+            _("Save & exit")
+        )
 
         self.list = []
+
         for label, name in self._ENTRIES:
+
             self.list.append(
                 getConfigListEntry(
                     _(label) + ":",
@@ -10712,9 +12419,17 @@ class sevendayColorSetup(ConfigListScreen, Screen):
                 )
             )
 
-        ConfigListScreen.__init__(self, self.list, session=session)
+        ConfigListScreen.__init__(
+            self,
+            self.list,
+            session=session
+        )
+
         self["actions"] = ActionMap(
-            ["SetupActions", "ColorActions"],
+            [
+                "SetupActions",
+                "ColorActions"
+            ],
             {
                 "green": self.save,
                 "blue": self.save,
@@ -10727,31 +12442,296 @@ class sevendayColorSetup(ConfigListScreen, Screen):
         )
 
     def resetDefaults(self):
+
         for _label, name in self._ENTRIES:
+
             try:
+
                 getattr(
                     config.plugins.speedy_TheWeather,
                     "sevenday_color_" + name
-                ).setValue(_SEVENDAY_COLOR_DEFAULTS[name])
-            except Exception:
-                pass
+                ).setValue(
+                    _SEVENDAY_COLOR_DEFAULTS[name]
+                )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not reset SevenDay color %s: %s"
+                    % (name, e)
+                )
+
         try:
-            self["config"].setList(self.list)
+
+            self["config"].setList(
+                self.list
+            )
+
         except Exception:
+
             pass
 
     def save(self):
-        # Werte dauerhaft speichern. Der nächste sevendays-Screen liest
-        # die aktuellen Werte beim Erzeugen erneut ein.
+
         for x in self["config"].list:
-            x[1].save()
+
+            try:
+
+                x[1].save()
+
+            except Exception:
+
+                pass
+
         configfile.save()
-        self.close(True)
+
+        self.close(
+            True
+        )
 
     def keyCancel(self):
+
         for x in self["config"].list:
-            x[1].cancel()
+
+            try:
+
+                x[1].cancel()
+
+            except Exception:
+
+                pass
+
         self.close()
+
+
+class twolocationsColorSetup(ConfigListScreen, Screen):
+    """
+    Separates Farbmenü für den Two-Locations-Screen.
+
+    Alle Farben sind ConfigSelection-Werte.
+    """
+
+    skin = """
+    <screen name="twolocationsColorSetup"
+        position="center,center"
+        size="1100,700"
+        title="Two Locations Farben">
+
+        <widget name="config"
+            position="4,4"
+            size="1070,600"
+            scrollbarMode="showOnDemand"
+            itemHeight="45"
+            itemTextSelectedColor="#ffffff"
+            itemTextUnselectedColor="#ffffff"
+            font="Regular;30" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/red.png"
+            position="11,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_red"
+            position="36,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/green.png"
+            position="282,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_green"
+            position="308,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="green" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/yellow.png"
+            position="554,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_yellow"
+            position="579,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="yellow" />
+
+        <ePixmap
+            pixmap="skin_default/buttons/blue.png"
+            position="825,650"
+            size="20,40"
+            alphatest="on"
+            zPosition="1" />
+
+        <widget name="key_blue"
+            position="851,650"
+            size="240,40"
+            zPosition="2"
+            transparent="1"
+            font="Regular;25"
+            halign="center"
+            valign="center"
+            foregroundColor="blue" />
+
+    </screen>
+    """
+
+    _ENTRIES = (
+        ("Wetterbeschreibung", "weathertype"),
+        ("Gefühlte Temperatur", "feels"),
+        ("Wind", "wind"),
+        ("Regen", "rain"),
+        ("Sonne", "sun"),
+        ("Mond", "moon"),
+    )
+
+    def __init__(self, session):
+
+        Screen.__init__(
+            self,
+            session
+        )
+
+        self.session = session
+
+        self["key_red"] = Label(
+            _("Cancel")
+        )
+
+        self["key_green"] = Label(
+            _("Save")
+        )
+
+        self["key_yellow"] = Label(
+            _("Default colors")
+        )
+
+        self["key_blue"] = Label(
+            _("Save & exit")
+        )
+
+        self.list = []
+
+        for label, name in self._ENTRIES:
+
+            self.list.append(
+                getConfigListEntry(
+                    _(label) + ":",
+                    getattr(
+                        config.plugins.speedy_TheWeather,
+                        "twoloc_color_" + name
+                    )
+                )
+            )
+
+        ConfigListScreen.__init__(
+            self,
+            self.list,
+            session=session
+        )
+
+        self["actions"] = ActionMap(
+            [
+                "SetupActions",
+                "ColorActions"
+            ],
+            {
+                "green": self.save,
+                "blue": self.save,
+                "red": self.keyCancel,
+                "cancel": self.keyCancel,
+                "save": self.save,
+                "yellow": self.resetDefaults,
+            },
+            -2
+        )
+
+    def resetDefaults(self):
+
+        for _label, name in self._ENTRIES:
+
+            try:
+
+                getattr(
+                    config.plugins.speedy_TheWeather,
+                    "twoloc_color_" + name
+                ).setValue(
+                    _TWOLOCATIONS_COLOR_DEFAULTS[name]
+                )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not reset Two Locations color %s: %s"
+                    % (name, e)
+                )
+
+        try:
+
+            self["config"].setList(
+                self.list
+            )
+
+        except Exception:
+
+            pass
+
+    
+    def save(self):
+
+        for x in self["config"].list:
+
+            try:
+
+                x[1].save()
+
+            except Exception:
+
+                pass
+
+        configfile.save()
+
+        self.close(
+            True
+        )
+
+    def keyCancel(self):
+
+        for x in self["config"].list:
+
+            try:
+
+                x[1].cancel()
+
+            except Exception:
+
+                pass
+
+        self.close()
+
+
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
@@ -11089,18 +13069,35 @@ class twolocations(Screen):
     COMPARE_CFG = CFG_DIR + "/speedy_TheWeather_compare.cfg"
 
     def __init__(self, session):
-        Screen.__init__(self, session)
+
+        Screen.__init__(
+            self,
+            session
+        )
+
         AddNewScreen(self)
-        self.onClose.append(lambda: RemoveScreen(self))
+
+        self.onClose.append(
+            lambda: RemoveScreen(self)
+        )
 
         self.compareCity = ""
 
-        if os.path.exists(self.COMPARE_CFG):
+        if os.path.exists(
+            self.COMPARE_CFG
+        ):
+
             try:
-                with open(self.COMPARE_CFG) as f:
+
+                with open(
+                    self.COMPARE_CFG
+                ) as f:
+
                     val = f.read().strip()
+
                     if val:
                         self.compareCity = val
+
             except Exception:
                 pass
 
@@ -11278,6 +13275,7 @@ class twolocations(Screen):
                     position="320,706"
                     size="600,52"
                     zPosition="3"
+                    noWrap="1"
                     font="Regular;40"
                     foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
@@ -11424,6 +13422,7 @@ class twolocations(Screen):
                     position="1280,706"
                     size="600,52"
                     zPosition="3"
+                    noWrap="1"
                     font="Regular;40"
                     foregroundColor="#00c080ff"
                     backgroundColor="#00202020"
@@ -11570,7 +13569,6 @@ class twolocations(Screen):
                     <convert type="ClockToText">Format:%a %d/%m/%y</convert>
                 </widget>
 
-
                 <!-- ===================== ORT 1 ===================== -->
 
                 <widget name="loc1name"
@@ -11688,6 +13686,7 @@ class twolocations(Screen):
                     position="244,526"
                     size="474,40"
                     zPosition="3"
+                    noWrap="1"
                     font="Regular;32"
                     halign="left"
                     valign="center"
@@ -11837,6 +13836,7 @@ class twolocations(Screen):
                     position="842,526"
                     size="474,40"
                     zPosition="3"
+                    noWrap="1"
                     font="Regular;32"
                     halign="left"
                     valign="center"
@@ -11970,6 +13970,7 @@ class twolocations(Screen):
             "key_red",
             "key_yellow"
         ]:
+
             self[n] = Label("")
 
         for n in [
@@ -11978,6 +13979,7 @@ class twolocations(Screen):
             "loc1alerticon",
             "loc2alerticon"
         ]:
+
             self[n] = Pixmap()
 
         # =========================================================
@@ -11985,7 +13987,10 @@ class twolocations(Screen):
         # =========================================================
 
         self["actions"] = ActionMap(
-            ["WizardActions", "MenuActions"],
+            [
+                "WizardActions",
+                "MenuActions"
+            ],
             {
                 "back": self.exit,
                 "cancel": self.exit
@@ -12004,9 +14009,25 @@ class twolocations(Screen):
             -1
         )
 
-        self["key_red"] = Label(_("Exit"))
-        self["key_yellow"] = Label(_("Choose 2nd location"))
-        self["comp"] = Label(_("Compare Locations"))
+        self["key_red"] = Label(
+            _("Exit")
+        )
+
+        self["key_yellow"] = Label(
+            _("Choose 2nd location")
+        )
+
+        self["comp"] = Label(
+            _("Compare Locations")
+        )
+
+        # =========================================================
+        # Farben anwenden, sobald das Layout fertig ist
+        # =========================================================
+
+        self.onLayoutFinish.append(
+            self._applyWeatherColors
+        )
 
         # =========================================================
         # Daten laden
@@ -12032,6 +14053,10 @@ class twolocations(Screen):
                 _("Press YELLOW to choose a 2nd location.")
             )
 
+        # =========================================================
+        # Icon Timer
+        # =========================================================
+
         self.iconFixTimer = eTimer()
 
         self._iconFixTimer_conn = safeTimerCallback(
@@ -12043,6 +14068,167 @@ class twolocations(Screen):
             300,
             True
         )
+
+    # =============================================================
+    # Konfigurierbare Farben
+    # =============================================================
+
+    def _applyWeatherColors(self):
+
+        print(
+            "[speedy_TheWeather] "
+            "Two Locations Farben anwenden"
+        )
+
+        self._setWeatherColors(
+            "loc1"
+        )
+
+        self._setWeatherColors(
+            "loc2"
+        )
+
+    # =============================================================
+    # Farbwert in Enigma2-gRGB umwandeln
+    # =============================================================
+
+    def _parseColor(self, value):
+        """
+        Wandelt die gespeicherten Config-Farbwerte in gRGB um.
+
+        ConfigSelection verwendet hier Werte im Skin-Format
+        #AARRGGBB. gRGB erwartet dagegen den eigentlichen RGB-Wert
+        ohne den Alpha-Kanal.
+        """
+
+        if value is None:
+            return gRGB(0xffffff)
+
+        value = str(value).strip()
+
+        if not value:
+            return gRGB(0xffffff)
+
+        # Bekannte Enigma2-/Skin-Farbnamen
+        named = {
+            "black": 0x000000,
+            "white": 0xffffff,
+            "red": 0xff0000,
+            "green": 0x00ff00,
+            "blue": 0x0000ff,
+            "yellow": 0xffff00,
+            "cyan": 0x00ffff,
+            "magenta": 0xff00ff,
+            "orange": 0xffa500,
+            "gray": 0x808080,
+            "grey": 0x808080,
+        }
+
+        lower = value.lower()
+        if lower in named:
+            return gRGB(named[lower])
+
+        # #AARRGGBB / #RRGGBB
+        if lower.startswith("#"):
+            value = lower[1:]
+
+        # 0xAARRGGBB / 0xRRGGBB
+        elif lower.startswith("0x"):
+            value = lower[2:]
+
+        try:
+            number = int(value, 16)
+        except (TypeError, ValueError):
+            raise ValueError("Ungültiger Farbwert: %r" % value)
+
+        if len(value) <= 6:
+            rgb = number & 0xffffff
+        elif len(value) == 8:
+            # Enigma2-Skin: AA RR GG BB
+            rgb = number & 0xffffff
+        else:
+            raise ValueError("Ungültige Farblänge: %r" % value)
+
+        return gRGB(rgb)
+
+    # =============================================================
+    # Farben setzen
+    # =============================================================
+
+    def _setWeatherColors(self, prefix):
+
+        colors = {
+            "weertype":
+                config.plugins.speedy_TheWeather.twoloc_color_weathertype,
+
+            "feel":
+                config.plugins.speedy_TheWeather.twoloc_color_feels,
+
+            "wind":
+                config.plugins.speedy_TheWeather.twoloc_color_wind,
+
+            "rain":
+                config.plugins.speedy_TheWeather.twoloc_color_rain,
+
+            "sun":
+                config.plugins.speedy_TheWeather.twoloc_color_sun,
+
+            "moon":
+                config.plugins.speedy_TheWeather.twoloc_color_moon
+        }
+
+        for name, colorConfig in colors.items():
+
+            widgetName = (
+                prefix +
+                name
+            )
+
+            try:
+
+                widget = self[
+                    widgetName
+                ]
+
+                if widget.instance is None:
+
+                    print(
+                        "[speedy_TheWeather] "
+                        "Widget noch nicht bereit: %s"
+                        % widgetName
+                    )
+
+                    continue
+
+                colorValue = colorConfig.value
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Setze %s auf %s"
+                    % (
+                        widgetName,
+                        colorValue
+                    )
+                )
+
+                color = self._parseColor(
+                    colorValue
+                )
+
+                widget.instance.setForegroundColor(
+                    color
+                )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Farbe %s Fehler: %s"
+                    % (
+                        widgetName,
+                        e
+                    )
+                )
 
     # =============================================================
     # Hilfsfunktion Text
@@ -12066,44 +14252,6 @@ class twolocations(Screen):
             )
 
     # =============================================================
-    # Farben ab Wetterbeschreibung
-    # =============================================================
-
-    def _setWeatherColors(self, prefix):
-
-        colors = {
-            "weertype": 0x00ffff,  # Cyan
-            "feel":     0x80c0ff,  # Hellblau
-            "wind":     0xffa500,  # Orange
-            "rain":     0x4080ff,  # Blau
-            "sun":      0xffff00,  # Gelb
-            "moon":     0xc080ff   # Violett
-        }
-
-        for name, color in colors.items():
-
-            try:
-
-                widget = self[
-                    prefix + name
-                ]
-
-                if widget.instance is not None:
-
-                    widget.instance.setForegroundColor(
-                        gRGB(color)
-                    )
-
-            except Exception as e:
-
-                print(
-                    "twolocations: Farbe für",
-                    prefix + name,
-                    "konnte nicht gesetzt werden:",
-                    e
-                )
-
-    # =============================================================
     # Zeit aus verschiedenen API-Formaten lesen
     # =============================================================
 
@@ -12113,8 +14261,13 @@ class twolocations(Screen):
             return ""
 
         try:
-            value = str(value).strip()
+
+            value = str(
+                value
+            ).strip()
+
         except Exception:
+
             return ""
 
         if not value:
@@ -12123,19 +14276,23 @@ class twolocations(Screen):
         if "T" in value:
 
             try:
+
                 value = value.split(
                     "T",
                     1
                 )[1]
 
             except Exception:
+
                 return ""
 
         elif " " in value and len(value) > 5:
 
             try:
 
-                possible = value.split(" ")[-1]
+                possible = value.split(
+                    " "
+                )[-1]
 
                 if ":" in possible:
                     value = possible
@@ -12144,6 +14301,7 @@ class twolocations(Screen):
                 pass
 
         if len(value) >= 5 and ":" in value:
+
             return value[:5]
 
         return value
@@ -12158,7 +14316,9 @@ class twolocations(Screen):
 
             try:
 
-                value = dag.get(name)
+                value = dag.get(
+                    name
+                )
 
                 if value not in (
                     None,
@@ -12183,11 +14343,18 @@ class twolocations(Screen):
     # Standort füllen
     # =============================================================
 
-    def _fillLocation(self, data, naam, prefix):
+    def _fillLocation(
+        self,
+        data,
+        naam,
+        prefix
+    ):
 
         try:
 
-            dag = data["days"][0]
+            dag = data[
+                "days"
+            ][0]
 
         except Exception:
 
@@ -12216,8 +14383,6 @@ class twolocations(Screen):
 
         try:
 
-            from datetime import datetime
-
             now = datetime.now()
 
             best_diff = None
@@ -12245,13 +14410,16 @@ class twolocations(Screen):
                     )
 
                     if "T" in hstr:
+
                         hstr = hstr.split(
                             "T"
                         )[1]
 
                     hstr = hstr[:5]
 
-                    hh, mm = hstr.split(":")
+                    hh, mm = hstr.split(
+                        ":"
+                    )
 
                     hour_minutes = (
                         int(hh) * 60 +
@@ -12277,6 +14445,7 @@ class twolocations(Screen):
                         current_hour = hour
 
                 except Exception:
+
                     continue
 
         except Exception as e:
@@ -12287,7 +14456,11 @@ class twolocations(Screen):
                 e
             )
 
-        if current_hour is None and hours:
+        if (
+            current_hour is None and
+            hours
+        ):
+
             current_hour = hours[0]
 
         # =========================================================
@@ -12302,13 +14475,17 @@ class twolocations(Screen):
             ):
 
                 curtemp = "%.1f\xb0C" % float(
-                    current_hour["temperature"]
+                    current_hour[
+                        "temperature"
+                    ]
                 )
 
             else:
 
                 curtemp = "%.0f\xb0C" % float(
-                    dag["maxtemperature"]
+                    dag[
+                        "maxtemperature"
+                    ]
                 )
 
         except Exception:
@@ -12327,8 +14504,16 @@ class twolocations(Screen):
         try:
 
             mintemp = "%.0f\xb0 / %.0f\xb0" % (
-                float(dag["mintemperature"]),
-                float(dag["maxtemperature"])
+                float(
+                    dag[
+                        "mintemperature"
+                    ]
+                ),
+                float(
+                    dag[
+                        "maxtemperature"
+                    ]
+                )
             )
 
         except Exception:
@@ -12364,7 +14549,9 @@ class twolocations(Screen):
 
             self._setText(
                 prefix + "weertype",
-                icontotext(iconcode)
+                icontotext(
+                    iconcode
+                )
             )
 
         except Exception as e:
@@ -12445,7 +14632,9 @@ class twolocations(Screen):
             self._setText(
                 prefix + "wind",
                 _("Wind: ") +
-                windspeed_with_beaufort(ws)
+                windspeed_with_beaufort(
+                    ws
+                )
             )
 
         except Exception:
@@ -12514,7 +14703,7 @@ class twolocations(Screen):
 
             self._setText(
                 prefix + "sun",
-                _("Sun:") + " " +
+                _("Sun :") + " " +
                 sunrise +
                 "  -  " +
                 sunset
@@ -12527,65 +14716,223 @@ class twolocations(Screen):
                 ""
             )
 
-        # =========================================================
-        # Mond
-        # =========================================================
+            # =========================================================
+            # Mond
+            # =========================================================
 
-        try:
+            try:
 
-            moonrise = self._getMoonTime(
-                dag,
-                [
-                    "moonrise",
-                    "moonriseTime",
-                    "moonrise_time"
-                ]
-            )
+                # SevenScreen und TwoLocations verwenden dieselbe
+                # astronomische Berechnung.
+                location_entry = (
+                    lockaaleStad
+                    if prefix == "loc1"
+                    else self.compareCity
+                )
 
-            moonset = self._getMoonTime(
-                dag,
-                [
-                    "moonset",
-                    "moonsetTime",
-                    "moonset_time"
-                ]
-            )
+                moonrise = "na"
+                moonset = "na"
 
-            if not moonrise:
-                moonrise = "--"
+                lat, lon = getCoordsFromEntry(
+                    location_entry
+                )
 
-            if not moonset:
-                moonset = "--"
+                if lat is not None and lon is not None:
 
-            self._setText(
-                prefix + "moon",
-                _("Moon:") + " " +
-                moonrise +
-                "  -  " +
-                moonset
-            )
+                    lat = float(lat)
+                    lon = float(lon)
 
-        except Exception as e:
+                    today = datetime.datetime.now().date()
 
-            print(
-                "twolocations: "
-                "Mondauf-/untergang Fehler:",
-                e
-            )
+                    # -------------------------------------------------
+                    # Heutiger Tag
+                    # -------------------------------------------------
 
-            self._setText(
-                prefix + "moon",
-                _("Moon:") +
-                " --  -  --"
-            )
+                    moonrise, moonset = (
+                        _moon_rise_set_for_date(
+                            today,
+                            lat,
+                            lon
+                        )
+                    )
 
-        # =========================================================
-        # Farben setzen
-        # =========================================================
+                    print(
+                        "twolocations: %s "
+                        "Mond heute: rise=%s set=%s"
+                        % (
+                            prefix,
+                            moonrise,
+                            moonset
+                        )
+                    )
 
-        self._setWeatherColors(
-            prefix
-        )
+                    # -------------------------------------------------
+                    # Wenn heute kein Mondaufgang gefunden wurde:
+                    # Vortag prüfen.
+                    # -------------------------------------------------
+
+                    if moonrise == "na":
+
+                        previous_day = (
+                            today
+                            - timedelta(days=1)
+                        )
+
+                        previous_rise, previous_set = (
+                            _moon_rise_set_for_date(
+                                previous_day,
+                                lat,
+                                lon
+                            )
+                        )
+
+                        print(
+                            "twolocations: %s "
+                            "Mond Vortag: rise=%s set=%s"
+                            % (
+                                prefix,
+                                previous_rise,
+                                previous_set
+                            )
+                        )
+
+                        if previous_rise != "na":
+
+                            moonrise = previous_rise
+
+                            print(
+                                "twolocations: %s "
+                                "Mondaufgang vom Vortag: %s"
+                                % (
+                                    prefix,
+                                    moonrise
+                                )
+                            )
+
+                    # -------------------------------------------------
+                    # Wenn heute kein Monduntergang gefunden wurde:
+                    # Folgetag prüfen.
+                    # -------------------------------------------------
+
+                    if moonset == "na":
+
+                        next_day = (
+                            today
+                            + timedelta(days=1)
+                        )
+
+                        next_rise, next_set = (
+                            _moon_rise_set_for_date(
+                                next_day,
+                                lat,
+                                lon
+                            )
+                        )
+
+                        print(
+                            "twolocations: %s "
+                            "Mond Folgetag: rise=%s set=%s"
+                            % (
+                                prefix,
+                                next_rise,
+                                next_set
+                            )
+                        )
+
+                        if next_set != "na":
+
+                            moonset = next_set
+
+                            print(
+                                "twolocations: %s "
+                                "Monduntergang Folgetag: %s"
+                                % (
+                                    prefix,
+                                    moonset
+                                )
+                            )
+
+                # -----------------------------------------------------
+                # API-Fallback
+                # -----------------------------------------------------
+
+                if moonrise in (
+                    "",
+                    "na",
+                    None
+                ):
+
+                    api_moonrise = self._getMoonTime(
+                        dag,
+                        [
+                            "moonrise",
+                            "moonriseTime",
+                            "moonrise_time"
+                        ]
+                    )
+
+                    if api_moonrise:
+                        moonrise = api_moonrise
+
+                if moonset in (
+                    "",
+                    "na",
+                    None
+                ):
+
+                    api_moonset = self._getMoonTime(
+                        dag,
+                        [
+                            "moonset",
+                            "moonsetTime",
+                            "moonset_time"
+                        ]
+                    )
+
+                    if api_moonset:
+                        moonset = api_moonset
+
+                # -----------------------------------------------------
+                # Anzeige
+                # -----------------------------------------------------
+
+                if not moonrise or moonrise == "na":
+                    moonrise = "--"
+
+                if not moonset or moonset == "na":
+                    moonset = "--"
+
+                self._setText(
+                    prefix + "moon",
+                    _("Moon :") + " " +
+                    str(moonrise) +
+                    "  -  " +
+                    str(moonset)
+                )
+
+                print(
+                    "twolocations: %s "
+                    "Mond Anzeige: %s - %s"
+                    % (
+                        prefix,
+                        moonrise,
+                        moonset
+                    )
+                )
+
+            except Exception as e:
+
+                print(
+                    "twolocations: "
+                    "Mondauf-/untergang Fehler:",
+                    repr(e)
+                )
+
+                self._setText(
+                    prefix + "moon",
+                    _("Moon :") +
+                    " --  -  --"
+                )
 
         # =========================================================
         # Warnung
@@ -12687,6 +15034,7 @@ class twolocations(Screen):
                 ].hide()
 
         except Exception:
+
             pass
 
         # =========================================================
@@ -12737,7 +15085,7 @@ class twolocations(Screen):
             )
 
     # =============================================================
-    # Icons neu laden
+    # Icons / Wetter neu laden
     # =============================================================
 
     def reloadIcons(self):
@@ -12749,6 +15097,9 @@ class twolocations(Screen):
             self.fillLoc2(
                 self.compareCity
             )
+
+        # Farben nach dem Reload erneut anwenden
+        self._applyWeatherColors()
 
     # =============================================================
     # Ort 1
@@ -12807,6 +15158,11 @@ class twolocations(Screen):
                 self._setText(
                     "statusmsg",
                     ""
+                )
+
+                # Farbe nach dem Laden von Ort 2 erneut setzen
+                self._setWeatherColors(
+                    "loc2"
                 )
 
             else:
@@ -12905,11 +15261,17 @@ class twolocations(Screen):
             self.compareCity
         )
 
+        # Farbe nach Auswahl erneut anwenden
+        self._setWeatherColors(
+            "loc2"
+        )
+
     # =============================================================
     # Beenden
     # =============================================================
 
     def exit(self):
+
         self.close()
 
 class BackgroundPickerScreen(Screen):
