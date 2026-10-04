@@ -17,45 +17,7 @@ DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/$
 # CHANGELOG
 # =========================================================
 
-CHANGELOG='
-v1.9.1
-
-EN:
-Fixed language files and PO/MO file names.
-Added update function.
-Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart.
-Added customizable colors.
-Added automatic weather images based on the time of day and seasonal backgrounds with automatic download and installation.
-Added sunrise and sunset display as well as moonrise and moonset display.
-Added comparison of weather data for two locations including sunrise, sunset, moonrise and moonset times.
-Added themed colors for weather description, feels like temperature, wind, rain, sun and moon information.
-Added improved city search and city selection with a dedicated selection window for matching locations.
-Improved moonrise and moonset calculations with better local time and UTC offset handling.
-Improved date and time handling throughout the plugin.
-Improved weather data handling and display reliability.
-Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling.
-Added Ultra Low-End, Low-End, Auto and Normal performance modes.
-Existing features remain available.
-
-DE:
-Sprachdateien sowie PO-/MO-Dateinamen korrigiert.
-Update-Funktion hinzugefügt.
-Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert.
-Anpassbare Farben hinzugefügt.
-Automatische Wetterbilder passend zur Tageszeit sowie saisonale Hintergründe mit automatischem Download und Installation hinzugefügt.
-Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt.
-Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt.
-Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt.
-Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt.
-Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert.
-Datums- und Zeitverarbeitung im gesamten Plugin verbessert.
-Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht.
-Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert.
-Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt.
-Bestehende Funktionen bleiben erhalten.
-
-Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.
-'
+CHANGELOG='v1.9.1 EN: Fixed language files and PO/MO file names. Added update function. Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart. Added customizable colors. Added automatic weather images based on the time of day and seasonal backgrounds with automatic download and installation. Added sunrise and sunset display as well as moonrise and moonset display. Added comparison of weather data for two locations including sunrise, sunset, moonrise and moonset times. Added themed colors for weather description, feels like temperature, wind, rain, sun and moon information. Added improved city search and city selection with a dedicated selection window for matching locations. Improved moonrise and moonset calculations with better local time and UTC offset handling. Improved date and time handling throughout the plugin. Improved weather data handling and display reliability. Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling. Added Ultra Low-End, Low-End, Auto and Normal performance modes. Existing features remain available. Buy me a coffee if you like this plugin. | DE: Sprachdateien sowie PO-/MO-Dateinamen korrigiert. Update-Funktion hinzugefügt. Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert. Anpassbare Farben hinzugefügt. Automatische Wetterbilder passend zur Tageszeit sowie saisonale Hintergründe mit automatischem Download und Installation hinzugefügt. Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt. Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt. Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt. Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt. Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert. Datums- und Zeitverarbeitung im gesamten Plugin verbessert. Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht. Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert. Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt. Bestehende Funktionen bleiben erhalten. Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
 
 # =========================================================
 # INSTALLATION PATH
