@@ -599,13 +599,16 @@ msgid "Sunset"
 msgstr "Sonnenuntergang"
 
 msgid "Moonrise"
-msgstr "Mondaufgang" 
-
-msgid "Moon: "
-msgstr "Mond: " 
+msgstr "Mondaufgang"
 
 msgid "Moonset"
 msgstr "Monduntergang"
+
+msgid "Moon :"
+msgstr "Mond :"
+
+msgid "Sun :"
+msgstr "Sonne :"
 
 
 
