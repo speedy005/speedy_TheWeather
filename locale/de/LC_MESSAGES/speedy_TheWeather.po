@@ -619,5 +619,55 @@ msgstr "Die ausgewählte Stadt konnte nicht gespeichert werden."
 msgid "Choose a match:"
 msgstr "Stadt auswählen:"
 
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Automatische Hintergründe"
+
+msgid "Download is preparing..."
+msgstr "Download wird vorbereitet..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Automatische Hintergründe werden installiert..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[SCREEN] Installation der automatischen Hintergründe"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[SCREEN] Auflösung: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[SCREEN] Installation wird gestartet..."
+
+msgid "Error starting the download"
+msgstr "Fehler beim Starten des Downloads"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[FEHLER] Worker konnte nicht gestartet werden: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[FEHLER] Worker-Ausnahme: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Automatische Hintergründe erfolgreich installiert"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[ERFOLG] Installation erfolgreich abgeschlossen."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[ERFOLG] Alle AUTO- und EXTRA-Bilder wurden verarbeitet."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[SCREEN] OK oder EXIT zum Schließen."
+
+msgid "[ERROR] Installation failed"
+msgstr "[FEHLER] Installation fehlgeschlagen"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[FEHLER] Installation wurde mit Fehlern beendet."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[FEHLER] Details siehe Log oben."
+
+
+
 
 
