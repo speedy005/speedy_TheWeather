@@ -10826,25 +10826,49 @@ class fourteen(Screen):
                 if day < 14:
 
                     mydate = dagenbefore["date"][:-9]
+
                     unixtimecode = time.mktime(
-                    datetime(
-                        int(mydate[:4]),
-                        int(mydate[5:7]),
-                        int(mydate[8:10])
-                    ).timetuple()
-                )
-                    unixtimecode = unixtimecode
-                    info1 = _(str(strftime("%A", localtime(unixtimecode))).title()[:2])
-                    info2 = str(strftime("%d-%m", localtime(unixtimecode)))
+                        datetime.datetime(
+                            int(mydate[:4]),
+                            int(mydate[5:7]),
+                            int(mydate[8:10])
+                        ).timetuple()
+                    )
+
+                    info1 = _(
+                        str(
+                            strftime(
+                                "%A",
+                                localtime(unixtimecode)
+                            )
+                        ).title()[:2]
+                    )
+
+                    info2 = str(
+                        strftime(
+                            "%d-%m",
+                            localtime(unixtimecode)
+                        )
+                    )
 
                 self["bigWeerIcon1" + str(day)] = Pixmap()
+
                 self["wind" + str(day)] = Pixmap()
+
                 self["city1"] = StaticText()
-                self["city1"].text = str(citynamedisplay)
+                self["city1"].text = str(
+                    citynamedisplay
+                )
+
                 self["dagvandeweek" + str(day)] = StaticText()
-                self["dagvandeweek" + str(day)].text = str(info1).upper()
+                self["dagvandeweek" + str(day)].text = str(
+                    info1
+                ).upper()
+
                 self["datumvandeweek" + str(day)] = StaticText()
-                self["datumvandeweek" + str(day)].text = str(info2)
+                self["datumvandeweek" + str(day)].text = str(
+                    info2
+                )
         else:
             dayinfoblok = ""
             lines_size = {'-1.png': [82, 10], '-2.png': [82, 20], '-3.png': [82, 30], '-4.png': [82, 40], '-5.png': [82, 50], '-6.png': [82, 60], '-7.png': [82, 70], '-8.png': [82, 80], '-9.png': [82, 90], '-10.png': [82, 100], '-11.png': [82, 110], '-12.png': [82, 120], '-13.png': [82, 130], '-14.png': [82, 140], '-15.png': [82, 150], '0.png': [82, 3], '1.png': [82, 10], '2.png': [82, 20], '3.png': [82, 30], '4.png': [82, 40], '5.png': [82, 50], '6.png': [82, 60], '7.png': [82, 70], '8.png': [82, 80], '9.png': [82, 90], '10.png': [82, 100], '11.png': [82, 110], '12.png': [82, 120], '13.png': [82, 130], '14.png': [82, 140], '15.png': [82, 150], 'b-1.png': [82, 10], 'b-2.png': [82, 20], 'b-3.png': [82, 30], 'b-4.png': [82, 40], 'b-5.png': [82, 50], 'b-6.png': [82, 60], 'b-7.png': [82, 70], 'b-8.png': [82, 80], 'b-9.png': [82, 90], 'b-10.png': [82, 110], 'b-11.png': [82, 110], 'b-12.png': [82, 120], 'b-13.png': [82, 130], 'b-14.png': [82, 140], 'b-15.png': [82, 150], 'b0.png': [82, 3], 'b1.png': [82, 10], 'b2.png': [82, 20], 'b3.png': [82, 30], 'b4.png': [82, 40], 'b5.png': [82, 50], 'b6.png': [82, 60], 'b7.png': [82, 70], 'b8.png': [82, 80], 'b9.png': [82, 90], 'b10.png': [82, 100], 'b11.png': [82, 110], 'b12.png': [82, 120], 'b13.png': [82, 130], 'b14.png': [82, 140], 'b15.png': [82, 150]}
