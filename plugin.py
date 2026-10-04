@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.3
+# v.1.9.4
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -214,13 +214,21 @@ _SEVENDAY_COLOR_DEFAULTS = {
 }
 
 _TWOLOCATIONS_COLOR_DEFAULTS = {
-    "weathertype": "#0000ffff",  # Cyan
-    "feels":       "#0080c0ff",  # Hellblau
-    "wind":        "#00ffa500",  # Orange
-    "rain":        "#004080ff",  # Blau
-    "sun":         "#00ffff00",  # Gelb
-    "moon":        "#00ffd27f",  # Mondgold
+    "weathertype":  "#0000ffff",  # Cyan
+    "feels":        "#0080c0ff",  # Light Blue
+    "wind":         "#00ffa500",  # Orange
+    "rain":         "#004080ff",  # Blue
+    "sun":          "#00ffff00",  # Yellow
+    "moon":         "#00ffd27f",  # Moon Gold
+
+    "loc1name":     "#00ffffffff",  # White
+    "loc2name":     "#00ffffffff",  # White
+
+    "loc1maxtemp":  "#00ff0000",  # Red
+    "loc2maxtemp":  "#00ff0000",  # Red
 }
+
+
 
 for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
     setattr(
@@ -1194,7 +1202,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.3"
+__version__ = "1.9.4"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1210,7 +1218,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.3'
+version = '1.9.4'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -14917,12 +14925,11 @@ class sevendayColorSetup(ConfigListScreen, Screen):
 
         self.close()
 
-
 class twolocationsColorSetup(ConfigListScreen, Screen):
     """
-    Separates Farbmenü für den Two-Locations-Screen.
+    Separate color menu for the Two-Locations screen.
 
-    Alle Farben sind ConfigSelection-Werte.
+    All colors are ConfigSelection values.
     """
 
     skin = """
@@ -15011,12 +15018,21 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
     """
 
     _ENTRIES = (
+        # General weather information
         ("Wetterbeschreibung", "weathertype"),
         ("Gefühlte Temperatur", "feels"),
         ("Wind", "wind"),
         ("Regen", "rain"),
         ("Sonne", "sun"),
         ("Mond", "moon"),
+
+        # Location names
+        ("Location 1 Name", "loc1name"),
+        ("Location 2 Name", "loc2name"),
+
+        # Maximum temperatures
+        ("Location 1 Max. Temperatur", "loc1maxtemp"),
+        ("Location 2 Max. Temperatur", "loc2maxtemp"),
     )
 
     def __init__(self, session):
@@ -15048,13 +15064,15 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
 
         for label, name in self._ENTRIES:
 
+            configEntry = getattr(
+                config.plugins.speedy_TheWeather,
+                "twoloc_color_" + name
+            )
+
             self.list.append(
                 getConfigListEntry(
                     _(label) + ":",
-                    getattr(
-                        config.plugins.speedy_TheWeather,
-                        "twoloc_color_" + name
-                    )
+                    configEntry
                 )
             )
 
@@ -15086,10 +15104,12 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
 
             try:
 
-                getattr(
+                configEntry = getattr(
                     config.plugins.speedy_TheWeather,
                     "twoloc_color_" + name
-                ).setValue(
+                )
+
+                configEntry.setValue(
                     _TWOLOCATIONS_COLOR_DEFAULTS[name]
                 )
 
@@ -15111,7 +15131,6 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
 
             pass
 
-    
     def save(self):
 
         for x in self["config"].list:
@@ -15143,6 +15162,9 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
                 pass
 
         self.close()
+
+
+
 
 
 
@@ -16568,7 +16590,12 @@ class twolocations(Screen):
     # Farben setzen
     # =============================================================
 
+    
     def _setWeatherColors(self, prefix):
+
+        # =========================================================
+        # Weather colors
+        # =========================================================
 
         colors = {
             "weertype":
@@ -16587,8 +16614,43 @@ class twolocations(Screen):
                 config.plugins.speedy_TheWeather.twoloc_color_sun,
 
             "moon":
-                config.plugins.speedy_TheWeather.twoloc_color_moon
+                config.plugins.speedy_TheWeather.twoloc_color_moon,
         }
+
+        # =========================================================
+        # Location-specific colors
+        #
+        # loc1name / loc2name
+        # loc1maxtemp / loc2maxtemp
+        # =========================================================
+
+        if prefix == "loc1":
+
+            colors["name"] = (
+                config.plugins.speedy_TheWeather
+                .twoloc_color_loc1name
+            )
+
+            colors["maxtemp"] = (
+                config.plugins.speedy_TheWeather
+                .twoloc_color_loc1maxtemp
+            )
+
+        elif prefix == "loc2":
+
+            colors["name"] = (
+                config.plugins.speedy_TheWeather
+                .twoloc_color_loc2name
+            )
+
+            colors["maxtemp"] = (
+                config.plugins.speedy_TheWeather
+                .twoloc_color_loc2maxtemp
+            )
+
+        # =========================================================
+        # Apply colors
+        # =========================================================
 
         for name, colorConfig in colors.items():
 
@@ -16607,7 +16669,7 @@ class twolocations(Screen):
 
                     print(
                         "[speedy_TheWeather] "
-                        "Widget noch nicht bereit: %s"
+                        "Widget not ready: %s"
                         % widgetName
                     )
 
@@ -16617,7 +16679,7 @@ class twolocations(Screen):
 
                 print(
                     "[speedy_TheWeather] "
-                    "Setze %s auf %s"
+                    "Setting %s to %s"
                     % (
                         widgetName,
                         colorValue
@@ -16636,12 +16698,14 @@ class twolocations(Screen):
 
                 print(
                     "[speedy_TheWeather] "
-                    "Farbe %s Fehler: %s"
+                    "Color %s error: %s"
                     % (
                         widgetName,
                         e
                     )
                 )
+
+
 
     # =============================================================
     # Hilfsfunktion Text
