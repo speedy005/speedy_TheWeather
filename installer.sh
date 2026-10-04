@@ -8,107 +8,10 @@
 VERSION="1.9.1"
 BRANCH="master"
 
-# =========================================================
-# CHANGELOG
-# =========================================================
-
-CHANGELOG='v1.9.1
-
-EN:
-Fixed language files and PO/MO file names.
-Added update function.
-Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart.
-Added customizable colors.
-Added automatic weather images based on the time of day and seasonal backgrounds with automatic download and installation.
-Added sunrise and sunset display as well as moonrise and moonset display.
-Added comparison of weather data for two locations including sunrise, sunset, moonrise and moonset times.
-Added themed colors for weather description, feels like temperature, wind, rain, sun and moon information.
-Added improved city search and city selection with a dedicated selection window for matching locations.
-Improved moonrise and moonset calculations with better local time and UTC offset handling.
-Improved date and time handling throughout the plugin.
-Improved weather data handling and display reliability.
-Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling.
-Added Ultra Low-End, Low-End, Auto and Normal performance modes.
-Existing features remain available.
-Buy me a coffee if you like this plugin.
-
-DE:
-Sprachdateien sowie PO-/MO-Dateinamen korrigiert.
-Update-Funktion hinzugefügt.
-Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert.
-Anpassbare Farben hinzugefügt.
-Automatische Wetterbilder passend zur Tageszeit sowie saisonale Hintergründe mit automatischem Download und Installation hinzugefügt.
-Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt.
-Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt.
-Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt.
-Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt.
-Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert.
-Datums- und Zeitverarbeitung im gesamten Plugin verbessert.
-Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht.
-Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert.
-Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt.
-Bestehende Funktionen bleiben erhalten.
-Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
-
 REPO_OWNER="speedy005"
 REPO_NAME="speedy_TheWeather"
 
 DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${BRANCH}.tar.gz"
-
-# ---------------------------------------------------------
-# Installation path
-# ---------------------------------------------------------
-
-if [ -d "/usr/lib/enigma2/python/Plugins/Extensions" ]; then
-    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
-elif [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
-    PLUGIN_BASE="/usr/lib64/enigma2/python/Plugins/Extensions"
-else
-    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
-fi
-
-PLUGIN_NAME="speedy_TheWeather"
-PLUGINPATH="${PLUGIN_BASE}/${PLUGIN_NAME}"
-
-# ---------------------------------------------------------
-# Temporary files
-# ---------------------------------------------------------
-
-TMPPATH="/tmp/speedy_TheWeather_installer"
-FILEPATH="${TMPPATH}/speedy_TheWeather.tar.gz"
-
-EXTRACTPATH="${TMPPATH}/extract"
-
-OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather_plugin_backup"
-CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
-BACKUP_DIR="/tmp/speedy_TheWeather_config_backup"
-
-AUTO_BG_DIR="${PLUGINPATH}/backgrounds/auto"
-AUTO_BG_BACKUP="/tmp/speedy_TheWeather_auto_backgrounds_backup"
-
-PLUGIN_SOURCE=""
-
-# ---------------------------------------------------------
-# State
-# ---------------------------------------------------------
-
-BACKUP_CREATED=0
-PLUGIN_BACKUP_CREATED=0
-AUTO_BG_BACKUP_CREATED=0
-INSTALL_STARTED=0
-
-OSTYPE="Unknown"
-STATUS=""
-
-PYTHON="Unknown"
-PYTHON_CMD=""
-PYTHON_VERSION="Unknown"
-
-DISTRO="Unknown"
-DISTRO_VERSION="Unknown"
-BOX_TYPE="Unknown"
-
-DOWNLOADER=""
 
 # =========================================================
 # CHANGELOG
@@ -155,6 +58,67 @@ Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.
 '
 
 # =========================================================
+# INSTALLATION PATH
+# =========================================================
+
+if [ -d "/usr/lib/enigma2/python/Plugins/Extensions" ]; then
+
+    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
+
+elif [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
+
+    PLUGIN_BASE="/usr/lib64/enigma2/python/Plugins/Extensions"
+
+else
+
+    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
+
+fi
+
+PLUGIN_NAME="speedy_TheWeather"
+PLUGINPATH="${PLUGIN_BASE}/${PLUGIN_NAME}"
+
+# =========================================================
+# TEMPORARY FILES
+# =========================================================
+
+TMPPATH="/tmp/speedy_TheWeather_installer"
+FILEPATH="${TMPPATH}/speedy_TheWeather.tar.gz"
+EXTRACTPATH="${TMPPATH}/extract"
+
+OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather_plugin_backup"
+
+CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
+BACKUP_DIR="/tmp/speedy_TheWeather_config_backup"
+
+AUTO_BG_DIR="${PLUGINPATH}/backgrounds/auto"
+AUTO_BG_BACKUP="/tmp/speedy_TheWeather_auto_backgrounds_backup"
+
+PLUGIN_SOURCE=""
+
+# =========================================================
+# STATE
+# =========================================================
+
+BACKUP_CREATED=0
+PLUGIN_BACKUP_CREATED=0
+AUTO_BG_BACKUP_CREATED=0
+
+OSTYPE="Unknown"
+STATUS=""
+
+PYTHON="Unknown"
+PYTHON_CMD=""
+PYTHON_VERSION="Unknown"
+
+DISTRO="Unknown"
+DISTRO_VERSION="Unknown"
+BOX_TYPE="Unknown"
+
+DOWNLOADER=""
+FILESIZE=0
+
+# =========================================================
 # LOGGING
 # =========================================================
 
@@ -189,8 +153,11 @@ cleanup()
 {
     log "Cleaning temporary files..."
 
-    if [ -n "$TMPPATH" ] && [ -d "$TMPPATH" ]; then
+    if [ -n "$TMPPATH" ] &&
+       [ -d "$TMPPATH" ]; then
+
         rm -rf "$TMPPATH"
+
     fi
 }
 
@@ -201,13 +168,15 @@ cleanup()
 check_root()
 {
     if [ "$(id -u)" -ne 0 ]; then
+
         error "This installer must be executed as root."
         exit 1
+
     fi
 }
 
 # =========================================================
-# BASIC COMMAND CHECK
+# COMMAND CHECK
 # =========================================================
 
 check_command()
@@ -271,7 +240,9 @@ detect_python()
 
     elif check_command python; then
 
-        if python --version 2>&1 | grep -q "^Python 3\."; then
+        if python --version 2>&1 |
+            grep -q "^Python 3\."
+        then
 
             PYTHON_CMD="python"
             PYTHON="PY3"
@@ -283,13 +254,6 @@ detect_python()
 
         fi
 
-    else
-
-        warning "Python was not found."
-
-        PYTHON="Unknown"
-        PYTHON_CMD=""
-
     fi
 
     if [ -n "$PYTHON_CMD" ]; then
@@ -300,11 +264,15 @@ detect_python()
 
         log "Python: $PYTHON_VERSION"
 
+    else
+
+        warning "Python was not found."
+
     fi
 }
 
 # =========================================================
-# IMAGE DETECTION
+# IMAGE / BOX DETECTION
 # =========================================================
 
 detect_image()
@@ -370,6 +338,74 @@ detect_image()
 
     log "Image: $DISTRO $DISTRO_VERSION"
     log "Box: $BOX_TYPE"
+}
+
+# =========================================================
+# INSTALL CURL
+# =========================================================
+
+install_curl()
+{
+    if check_command curl; then
+
+        log "curl found."
+        return 0
+
+    fi
+
+    log "curl not found."
+
+    case "$OSTYPE" in
+
+        OE)
+
+            if check_command opkg; then
+
+                log "Trying to install curl with opkg..."
+
+                opkg update >/dev/null 2>&1 || true
+
+                if opkg install curl >/dev/null 2>&1; then
+
+                    if check_command curl; then
+
+                        log "curl installed."
+                        return 0
+
+                    fi
+
+                fi
+
+            fi
+
+            ;;
+
+        Debian)
+
+            if check_command apt-get; then
+
+                log "Trying to install curl with apt..."
+
+                apt-get update >/dev/null 2>&1 || true
+
+                if apt-get install -y curl >/dev/null 2>&1; then
+
+                    if check_command curl; then
+
+                        log "curl installed."
+                        return 0
+
+                    fi
+
+                fi
+
+            fi
+
+            ;;
+
+    esac
+
+    return 1
 }
 
 # =========================================================
@@ -441,70 +477,6 @@ install_wget()
 }
 
 # =========================================================
-# INSTALL CURL
-# =========================================================
-
-install_curl()
-{
-    if check_command curl; then
-
-        log "curl found."
-        return 0
-
-    fi
-
-    log "curl not found."
-
-    case "$OSTYPE" in
-
-        OE)
-
-            if check_command opkg; then
-
-                log "Trying to install curl with opkg..."
-
-                opkg update >/dev/null 2>&1 || true
-
-                if opkg install curl >/dev/null 2>&1; then
-
-                    if check_command curl; then
-                        log "curl installed."
-                        return 0
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-        Debian)
-
-            if check_command apt-get; then
-
-                log "Trying to install curl with apt..."
-
-                apt-get update >/dev/null 2>&1 || true
-
-                if apt-get install -y curl >/dev/null 2>&1; then
-
-                    if check_command curl; then
-                        log "curl installed."
-                        return 0
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-    esac
-
-    return 1
-}
-
-# =========================================================
 # SELECT DOWNLOADER
 # =========================================================
 
@@ -512,43 +484,58 @@ select_downloader()
 {
     DOWNLOADER=""
 
-    # Prefer curl because it gives us better HTTP handling.
+    # -----------------------------------------------------
+    # Prefer curl
+    # -----------------------------------------------------
+
     if check_command curl; then
 
         DOWNLOADER="curl"
+
         log "Downloader selected: curl"
-        return 0
 
-    fi
-
-    if check_command wget; then
-
-        DOWNLOADER="wget"
-        log "Downloader selected: wget"
         return 0
 
     fi
 
     # -----------------------------------------------------
-    # Try to install curl first
+    # Then wget
+    # -----------------------------------------------------
+
+    if check_command wget; then
+
+        DOWNLOADER="wget"
+
+        log "Downloader selected: wget"
+
+        return 0
+
+    fi
+
+    # -----------------------------------------------------
+    # Try curl installation
     # -----------------------------------------------------
 
     if install_curl; then
 
         DOWNLOADER="curl"
+
         log "Downloader selected: curl"
+
         return 0
 
     fi
 
     # -----------------------------------------------------
-    # Try wget
+    # Try wget installation
     # -----------------------------------------------------
 
     if install_wget; then
 
         DOWNLOADER="wget"
+
         log "Downloader selected: wget"
+
         return 0
 
     fi
@@ -600,6 +587,7 @@ download_package()
         else
 
             error "GitHub download failed using curl."
+
             return 1
 
         fi
@@ -632,7 +620,11 @@ download_package()
 
                 echo
                 echo "wget output:"
+                echo "---------------------------------------------------------"
+
                 cat "${TMPPATH}/wget.log"
+
+                echo "---------------------------------------------------------"
                 echo
 
             fi
@@ -644,24 +636,31 @@ download_package()
     else
 
         error "No downloader selected."
+
         return 1
 
     fi
 
     # -----------------------------------------------------
-    # Check file
+    # File exists
     # -----------------------------------------------------
 
     if [ ! -f "$FILEPATH" ]; then
 
         error "Download finished but archive file does not exist."
+
         return 1
 
     fi
 
+    # -----------------------------------------------------
+    # File not empty
+    # -----------------------------------------------------
+
     if [ ! -s "$FILEPATH" ]; then
 
         error "Downloaded archive is empty."
+
         return 1
 
     fi
@@ -673,7 +672,7 @@ download_package()
     log "Downloaded size: ${FILESIZE} bytes"
 
     # -----------------------------------------------------
-    # Very small files are normally GitHub error pages.
+    # Check suspiciously small file
     # -----------------------------------------------------
 
     if [ "$FILESIZE" -lt 1000 ]; then
@@ -682,8 +681,12 @@ download_package()
 
         echo
         echo "First bytes of downloaded file:"
+        echo "---------------------------------------------------------"
+
         head -c 500 "$FILEPATH" 2>/dev/null
+
         echo
+        echo "---------------------------------------------------------"
         echo
 
         return 1
@@ -704,6 +707,7 @@ validate_archive()
     if ! check_command gzip; then
 
         error "gzip command not found."
+
         return 1
 
     fi
@@ -711,9 +715,14 @@ validate_archive()
     if ! check_command tar; then
 
         error "tar command not found."
+
         return 1
 
     fi
+
+    # -----------------------------------------------------
+    # gzip
+    # -----------------------------------------------------
 
     if ! gzip -t "$FILEPATH" >/dev/null 2>&1; then
 
@@ -724,6 +733,10 @@ validate_archive()
     fi
 
     log "gzip validation successful."
+
+    # -----------------------------------------------------
+    # tar
+    # -----------------------------------------------------
 
     if ! tar -tzf "$FILEPATH" >/dev/null 2>&1; then
 
@@ -736,7 +749,7 @@ validate_archive()
     log "tar validation successful."
 
     # -----------------------------------------------------
-    # Check archive contains plugin.py
+    # plugin.py
     # -----------------------------------------------------
 
     if ! tar -tzf "$FILEPATH" 2>/dev/null |
@@ -752,8 +765,8 @@ validate_archive()
         tar -tzf "$FILEPATH" 2>/dev/null |
             head -100
 
-        echo
         echo "---------------------------------------------------------"
+        echo
 
         return 1
 
@@ -765,7 +778,7 @@ validate_archive()
 }
 
 # =========================================================
-# EXTRACT
+# EXTRACT PACKAGE
 # =========================================================
 
 extract_package()
@@ -777,6 +790,7 @@ extract_package()
     if ! mkdir -p "$EXTRACTPATH"; then
 
         error "Could not create extraction directory."
+
         return 1
 
     fi
@@ -787,6 +801,7 @@ extract_package()
     then
 
         error "Failed to extract archive."
+
         return 1
 
     fi
@@ -806,14 +821,11 @@ find_plugin_source()
 
     log "Searching extracted archive for plugin..."
 
-    # -----------------------------------------------------
-    # Find plugin.py + __init__.py in same directory.
-    # -----------------------------------------------------
-
     while IFS= read -r FILE
     do
 
-        [ -z "$FILE" ] && continue
+        [ -z "$FILE" ] &&
+            continue
 
         DIR="$(dirname "$FILE")"
 
@@ -821,6 +833,7 @@ find_plugin_source()
            [ -f "$DIR/__init__.py" ]; then
 
             PLUGIN_SOURCE="$DIR"
+
             break
 
         fi
@@ -862,6 +875,7 @@ find_plugin_source()
         echo
 
         return 1
+
     fi
 
     log "Plugin source found:"
@@ -879,6 +893,7 @@ validate_plugin_source()
     if [ ! -d "$PLUGIN_SOURCE" ]; then
 
         error "Plugin source directory does not exist."
+
         return 1
 
     fi
@@ -886,6 +901,7 @@ validate_plugin_source()
     if [ ! -f "$PLUGIN_SOURCE/__init__.py" ]; then
 
         error "__init__.py is missing."
+
         return 1
 
     fi
@@ -893,6 +909,7 @@ validate_plugin_source()
     if [ ! -f "$PLUGIN_SOURCE/plugin.py" ]; then
 
         error "plugin.py is missing."
+
         return 1
 
     fi
@@ -903,7 +920,7 @@ validate_plugin_source()
 }
 
 # =========================================================
-# REMOVE REPOSITORY FILES
+# REMOVE REPOSITORY-ONLY FILES
 # =========================================================
 
 remove_repository_only_files()
@@ -911,7 +928,9 @@ remove_repository_only_files()
     log "Removing repository-only files..."
 
     if [ ! -d "$PLUGIN_SOURCE" ]; then
+
         return 1
+
     fi
 
     # -----------------------------------------------------
@@ -968,6 +987,7 @@ backup_config()
     if [ ! -d "$CONFIG_DIR" ]; then
 
         log "No existing configuration found."
+
         return 0
 
     fi
@@ -982,14 +1002,13 @@ backup_config()
 
         log "Configuration backup successful."
 
-    else
-
-        error "Configuration backup failed."
-        return 1
+        return 0
 
     fi
 
-    return 0
+    error "Configuration backup failed."
+
+    return 1
 }
 
 # =========================================================
@@ -999,12 +1018,17 @@ backup_config()
 restore_config()
 {
     if [ "$BACKUP_CREATED" -ne 1 ]; then
+
         return 0
+
     fi
 
     if [ ! -d "$BACKUP_DIR" ]; then
+
         warning "Configuration backup disappeared."
+
         return 1
+
     fi
 
     log "Restoring configuration..."
@@ -1014,6 +1038,7 @@ restore_config()
     if ! mkdir -p "$CONFIG_DIR"; then
 
         warning "Could not recreate configuration directory."
+
         return 1
 
     fi
@@ -1048,6 +1073,7 @@ backup_existing_plugin()
     if [ ! -d "$PLUGINPATH" ]; then
 
         log "No previous plugin installation found."
+
         return 0
 
     fi
@@ -1070,7 +1096,7 @@ backup_existing_plugin()
 }
 
 # =========================================================
-# RESTORE PLUGIN
+# ROLLBACK PLUGIN
 # =========================================================
 
 rollback_plugin()
@@ -1078,6 +1104,7 @@ rollback_plugin()
     if [ "$PLUGIN_BACKUP_CREATED" -ne 1 ]; then
 
         log "No plugin backup available for rollback."
+
         return 0
 
     fi
@@ -1085,6 +1112,7 @@ rollback_plugin()
     if [ ! -d "$OLD_PLUGIN_BACKUP" ]; then
 
         warning "Plugin backup directory not found."
+
         return 1
 
     fi
@@ -1096,6 +1124,7 @@ rollback_plugin()
     if ! mkdir -p "$PLUGIN_BASE"; then
 
         warning "Could not create plugin base directory."
+
         return 1
 
     fi
@@ -1128,6 +1157,7 @@ backup_auto_backgrounds()
     if [ ! -d "$AUTO_BG_DIR" ]; then
 
         log "No existing automatic background directory."
+
         return 0
 
     fi
@@ -1140,6 +1170,7 @@ backup_auto_backgrounds()
     )" ]; then
 
         log "Automatic background directory is empty."
+
         return 0
 
     fi
@@ -1151,11 +1182,16 @@ backup_auto_backgrounds()
     if ! mkdir -p "$AUTO_BG_BACKUP"; then
 
         warning "Could not create background backup."
+
         return 1
 
     fi
 
-    if cp -a "$AUTO_BG_DIR"/. "$AUTO_BG_BACKUP"/ 2>/dev/null; then
+    if cp -a \
+        "$AUTO_BG_DIR"/. \
+        "$AUTO_BG_BACKUP"/ \
+        2>/dev/null
+    then
 
         AUTO_BG_BACKUP_CREATED=1
 
@@ -1179,16 +1215,17 @@ backup_auto_backgrounds()
 restore_auto_backgrounds()
 {
     if [ "$AUTO_BG_BACKUP_CREATED" -ne 1 ]; then
+
         return 0
+
     fi
 
     if [ ! -d "$AUTO_BG_BACKUP" ]; then
 
         warning "Automatic background backup not found."
 
-        AUTO_BG_BACKUP_CREATED=0
-
         return 1
+
     fi
 
     NEW_AUTO_BG_DIR="${PLUGINPATH}/backgrounds/auto"
@@ -1198,11 +1235,16 @@ restore_auto_backgrounds()
     if ! mkdir -p "$NEW_AUTO_BG_DIR"; then
 
         warning "Could not create automatic background directory."
+
         return 1
 
     fi
 
-    if cp -a "$AUTO_BG_BACKUP"/. "$NEW_AUTO_BG_DIR"/ 2>/dev/null; then
+    if cp -a \
+        "$AUTO_BG_BACKUP"/. \
+        "$NEW_AUTO_BG_DIR"/ \
+        2>/dev/null
+    then
 
         log "Automatic backgrounds restored."
 
@@ -1225,17 +1267,16 @@ restore_auto_backgrounds()
 
 install_plugin()
 {
-    INSTALL_STARTED=1
-
     log "Installing speedy_TheWeather v${VERSION}..."
 
     # -----------------------------------------------------
-    # Make sure target directory exists
+    # Plugin base
     # -----------------------------------------------------
 
     if ! mkdir -p "$PLUGIN_BASE"; then
 
         error "Could not create plugin base directory."
+
         return 1
 
     fi
@@ -1251,6 +1292,7 @@ install_plugin()
         if ! rm -rf "$PLUGINPATH"; then
 
             error "Could not remove old plugin installation."
+
             return 1
 
         fi
@@ -1264,6 +1306,7 @@ install_plugin()
     if ! mkdir -p "$PLUGINPATH"; then
 
         error "Could not create plugin directory."
+
         return 1
 
     fi
@@ -1275,6 +1318,7 @@ install_plugin()
     if ! remove_repository_only_files; then
 
         error "Could not clean repository-only files."
+
         return 1
 
     fi
@@ -1285,9 +1329,13 @@ install_plugin()
 
     log "Copying plugin files..."
 
-    if ! cp -a "$PLUGIN_SOURCE"/. "$PLUGINPATH"/; then
+    if ! cp -a \
+        "$PLUGIN_SOURCE"/. \
+        "$PLUGINPATH"/
+    then
 
         error "Failed to copy plugin files."
+
         return 1
 
     fi
@@ -1301,6 +1349,7 @@ install_plugin()
     if [ ! -f "$PLUGINPATH/__init__.py" ]; then
 
         error "__init__.py missing after installation."
+
         return 1
 
     fi
@@ -1308,6 +1357,7 @@ install_plugin()
     if [ ! -f "$PLUGINPATH/plugin.py" ]; then
 
         error "plugin.py missing after installation."
+
         return 1
 
     fi
@@ -1324,37 +1374,49 @@ install_plugin()
     )" ]; then
 
         error "Plugin installation is empty."
+
         return 1
 
     fi
 
     # -----------------------------------------------------
-    # Verify repository files
+    # Verify README
     # -----------------------------------------------------
 
     if [ -f "$PLUGINPATH/README.md" ]; then
 
         error "README.md was installed unexpectedly."
-        return 1
 
-    fi
-
-    if [ -f "$PLUGINPATH/installer.sh" ]; then
-
-        error "installer.sh was installed unexpectedly."
-        return 1
-
-    fi
-
-    if [ -f "$PLUGINPATH/version.txt" ]; then
-
-        error "version.txt was installed unexpectedly."
         return 1
 
     fi
 
     # -----------------------------------------------------
-    # Verify SVG files
+    # Verify installer
+    # -----------------------------------------------------
+
+    if [ -f "$PLUGINPATH/installer.sh" ]; then
+
+        error "installer.sh was installed unexpectedly."
+
+        return 1
+
+    fi
+
+    # -----------------------------------------------------
+    # Verify version.txt
+    # -----------------------------------------------------
+
+    if [ -f "$PLUGINPATH/version.txt" ]; then
+
+        error "version.txt was installed unexpectedly."
+
+        return 1
+
+    fi
+
+    # -----------------------------------------------------
+    # Verify SVG
     # -----------------------------------------------------
 
     if find "$PLUGINPATH" \
@@ -1367,6 +1429,7 @@ install_plugin()
     then
 
         error "An SVG file was installed unexpectedly."
+
         return 1
 
     fi
@@ -1378,6 +1441,7 @@ install_plugin()
     if [ -d "$PLUGINPATH/converter" ]; then
 
         error "converter/ was installed unexpectedly."
+
         return 1
 
     fi
@@ -1389,6 +1453,7 @@ install_plugin()
     if [ -d "$PLUGINPATH/renderer" ]; then
 
         error "renderer/ was installed unexpectedly."
+
         return 1
 
     fi
@@ -1399,7 +1464,7 @@ install_plugin()
 }
 
 # =========================================================
-# REMOVE OLD BACKUP
+# REMOVE OLD PLUGIN BACKUP
 # =========================================================
 
 remove_old_plugin_backup()
@@ -1407,6 +1472,8 @@ remove_old_plugin_backup()
     if [ -d "$OLD_PLUGIN_BACKUP" ]; then
 
         rm -rf "$OLD_PLUGIN_BACKUP"
+
+        PLUGIN_BACKUP_CREATED=0
 
         log "Old plugin backup removed."
 
@@ -1437,7 +1504,7 @@ cleanup_backups()
 }
 
 # =========================================================
-# INSTALL FAILURE
+# INSTALLATION FAILED
 # =========================================================
 
 installation_failed()
@@ -1447,7 +1514,7 @@ installation_failed()
     log "Starting rollback..."
 
     # -----------------------------------------------------
-    # Restore plugin
+    # Plugin
     # -----------------------------------------------------
 
     if [ "$PLUGIN_BACKUP_CREATED" -eq 1 ]; then
@@ -1457,7 +1524,7 @@ installation_failed()
     fi
 
     # -----------------------------------------------------
-    # Restore config
+    # Configuration
     # -----------------------------------------------------
 
     if [ "$BACKUP_CREATED" -eq 1 ]; then
@@ -1467,7 +1534,7 @@ installation_failed()
     fi
 
     # -----------------------------------------------------
-    # Restore backgrounds
+    # Automatic backgrounds
     # -----------------------------------------------------
 
     if [ "$AUTO_BG_BACKUP_CREATED" -eq 1 ]; then
@@ -1510,7 +1577,7 @@ show_info()
     echo "#  Python:         $PYTHON_VERSION"
     echo "#  Downloader:     $DOWNLOADER"
     echo "#                                                       #"
-    echo "#  GUI was NOT restarted automatically.                 #"
+    echo "#  GUI was NOT restarted automatically.                #"
     echo "#                                                       #"
     echo "#########################################################"
     echo
@@ -1564,147 +1631,198 @@ echo "       speedy_TheWeather Installer v${VERSION}"
 echo "========================================================="
 echo
 
-# ---------------------------------------------------------
-# Root
-# ---------------------------------------------------------
+# =========================================================
+# ROOT
+# =========================================================
 
 check_root
 
-# ---------------------------------------------------------
-# Environment
-# ---------------------------------------------------------
+# =========================================================
+# ENVIRONMENT
+# =========================================================
 
 detect_os
 detect_python
 detect_image
 
-# ---------------------------------------------------------
-# Downloader
-# ---------------------------------------------------------
+# =========================================================
+# DOWNLOADER
+# =========================================================
 
 select_downloader
 
-# ---------------------------------------------------------
-# Temporary directory
-# ---------------------------------------------------------
+# =========================================================
+# TEMPORARY DIRECTORY
+# =========================================================
 
 cleanup
 
 if ! mkdir -p "$TMPPATH"; then
 
     error "Could not create temporary directory: $TMPPATH"
+
     exit 1
 
 fi
 
-# ---------------------------------------------------------
+# =========================================================
+# DOWNLOAD
 # IMPORTANT:
-# Download and validate BEFORE touching installation.
-# ---------------------------------------------------------
+# Do NOT touch the existing installation yet.
+# =========================================================
 
 if ! download_package; then
 
     cleanup
+
     exit 1
 
 fi
+
+# =========================================================
+# VALIDATE ARCHIVE
+# =========================================================
 
 if ! validate_archive; then
 
     cleanup
+
     exit 1
 
 fi
+
+# =========================================================
+# EXTRACT
+# =========================================================
 
 if ! extract_package; then
 
     cleanup
+
     exit 1
 
 fi
+
+# =========================================================
+# FIND PLUGIN
+# =========================================================
 
 if ! find_plugin_source; then
 
     cleanup
+
     exit 1
 
 fi
+
+# =========================================================
+# VALIDATE PLUGIN
+# =========================================================
 
 if ! validate_plugin_source; then
 
     cleanup
+
     exit 1
 
 fi
 
-# ---------------------------------------------------------
-# NOW backup current installation/configuration.
-# ---------------------------------------------------------
+# =========================================================
+# BACKUP CURRENT CONFIGURATION
+# =========================================================
 
 if ! backup_config; then
 
     cleanup
+
     exit 1
 
 fi
+
+# =========================================================
+# BACKUP CURRENT PLUGIN
+# =========================================================
 
 if ! backup_existing_plugin; then
 
     cleanup
+
     exit 1
 
 fi
 
+# =========================================================
+# BACKUP AUTOMATIC BACKGROUNDS
+# =========================================================
+
 if ! backup_auto_backgrounds; then
 
-    warning "Automatic background backup failed."
+    installation_failed \
+        "Automatic weather background backup failed."
+
 fi
 
-# ---------------------------------------------------------
-# Install
-# ---------------------------------------------------------
+# =========================================================
+# INSTALL
+# =========================================================
 
 if ! install_plugin; then
 
-    installation_failed "Plugin installation failed."
+    installation_failed \
+        "Plugin installation failed."
+
 fi
 
-# ---------------------------------------------------------
-# Restore configuration
-# ---------------------------------------------------------
+# =========================================================
+# RESTORE CONFIGURATION
+# =========================================================
 
 if ! restore_config; then
 
-    installation_failed "Configuration restore failed."
+    installation_failed \
+        "Configuration restore failed."
+
 fi
 
-# ---------------------------------------------------------
-# Restore automatic backgrounds
-# ---------------------------------------------------------
+# =========================================================
+# RESTORE AUTOMATIC BACKGROUNDS
+# =========================================================
 
 if ! restore_auto_backgrounds; then
 
-    warning "Automatic weather backgrounds could not be restored."
+    installation_failed \
+        "Automatic weather backgrounds could not be restored."
+
 fi
 
-# ---------------------------------------------------------
-# Remove old plugin backup
-# ---------------------------------------------------------
+# =========================================================
+# REMOVE OLD BACKUP
+# =========================================================
 
 remove_old_plugin_backup
 
-# ---------------------------------------------------------
-# Cleanup
-# ---------------------------------------------------------
+# =========================================================
+# CLEAN BACKUP STATE
+# =========================================================
+
+cleanup_backups
+
+# =========================================================
+# CLEAN TEMPORARY FILES
+# =========================================================
 
 cleanup
 
-# ---------------------------------------------------------
-# Final
-# ---------------------------------------------------------
+# =========================================================
+# SHOW INFORMATION
+# =========================================================
 
 show_info
+
+# =========================================================
+# FINISH
+# =========================================================
+
 finish_install
 
 exit 0
-
