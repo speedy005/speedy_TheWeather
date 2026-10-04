@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.8.7
+# v.1.8.9
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1194,7 +1194,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.8.7"
+__version__ = "1.8.9"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1210,7 +1210,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.8.7'
+version = '1.8.9'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -14407,7 +14407,7 @@ class twolocations(Screen):
 
         try:
 
-            now = datetime.now()
+            now = datetime.datetime.now()
 
             best_diff = None
 
@@ -14733,48 +14733,131 @@ class twolocations(Screen):
                 sunset
             )
 
-        except Exception:
+        except Exception as e:
+
+            print(
+                "twolocations: "
+                "Sonne Fehler:",
+                repr(e)
+            )
 
             self._setText(
                 prefix + "sun",
                 ""
             )
 
-            # =========================================================
-            # Mond
-            # =========================================================
+        # =========================================================
+        # MOND
+        #
+        # WICHTIG:
+        # Dieser Block steht bewusst AUSSERHALB
+        # des Sonne-except!
+        # =========================================================
 
-            try:
+        try:
 
-                # SevenScreen und TwoLocations verwenden dieselbe
-                # astronomische Berechnung.
-                location_entry = (
-                    lockaaleStad
-                    if prefix == "loc1"
-                    else self.compareCity
+            location_entry = (
+                lockaaleStad
+                if prefix == "loc1"
+                else self.compareCity
+            )
+
+            print(
+                "twolocations: %s "
+                "Mond Standort = %s"
+                % (
+                    prefix,
+                    str(location_entry)
+                )
+            )
+
+            moonrise = "na"
+            moonset = "na"
+
+            # =====================================================
+            # Koordinaten holen
+            # =====================================================
+
+            lat, lon = getCoordsFromEntry(
+                location_entry
+            )
+
+            print(
+                "twolocations: %s "
+                "Mond Koordinaten = %s / %s"
+                % (
+                    prefix,
+                    str(lat),
+                    str(lon)
+                )
+            )
+
+            if lat is not None and lon is not None:
+
+                lat = float(lat)
+                lon = float(lon)
+
+                today = (
+                    datetime.datetime
+                    .now()
+                    .date()
                 )
 
-                moonrise = "na"
-                moonset = "na"
-
-                lat, lon = getCoordsFromEntry(
-                    location_entry
+                print(
+                    "twolocations: %s "
+                    "Mond Berechnung fuer %s "
+                    "lat=%.4f lon=%.4f"
+                    % (
+                        prefix,
+                        today.isoformat(),
+                        lat,
+                        lon
+                    )
                 )
 
-                if lat is not None and lon is not None:
+                # =================================================
+                # Heute
+                # =================================================
 
-                    lat = float(lat)
-                    lon = float(lon)
+                moonrise, moonset = (
+                    _moon_rise_set_for_date(
+                        today,
+                        lat,
+                        lon
+                    )
+                )
 
-                    today = datetime.datetime.now().date()
+                print(
+                    "twolocations: %s "
+                    "Mond heute: rise=%s set=%s"
+                    % (
+                        prefix,
+                        str(moonrise),
+                        str(moonset)
+                    )
+                )
 
-                    # -------------------------------------------------
-                    # Heutiger Tag
-                    # -------------------------------------------------
+                # =================================================
+                # Kein Mondaufgang heute
+                # -> Vortag pruefen
+                # =================================================
 
-                    moonrise, moonset = (
+                if (
+                    not moonrise
+                    or
+                    moonrise == "na"
+                ):
+
+                    previous_day = (
+                        today
+                        - datetime.timedelta(
+                            days=1
+                        )
+                    )
+
+                    previous_rise, previous_set = (
                         _moon_rise_set_for_date(
-                            today,
+                            previous_day,
                             lat,
                             lon
                         )
@@ -14782,181 +14865,218 @@ class twolocations(Screen):
 
                     print(
                         "twolocations: %s "
-                        "Mond heute: rise=%s set=%s"
+                        "Mond Vortag: rise=%s set=%s"
                         % (
                             prefix,
-                            moonrise,
+                            str(previous_rise),
+                            str(previous_set)
+                        )
+                    )
+
+                    if (
+                        previous_rise
+                        and
+                        previous_rise != "na"
+                    ):
+
+                        moonrise = previous_rise
+
+                        print(
+                            "twolocations: %s "
+                            "Mondaufgang vom Vortag "
+                            "uebernommen: %s"
+                            % (
+                                prefix,
+                                str(moonrise)
+                            )
+                        )
+
+                # =================================================
+                # Kein Monduntergang heute
+                # -> Folgetag pruefen
+                # =================================================
+
+                if (
+                    not moonset
+                    or
+                    moonset == "na"
+                ):
+
+                    next_day = (
+                        today
+                        + datetime.timedelta(
+                            days=1
+                        )
+                    )
+
+                    next_rise, next_set = (
+                        _moon_rise_set_for_date(
+                            next_day,
+                            lat,
+                            lon
+                        )
+                    )
+
+                    print(
+                        "twolocations: %s "
+                        "Mond Folgetag: rise=%s set=%s"
+                        % (
+                            prefix,
+                            str(next_rise),
+                            str(next_set)
+                        )
+                    )
+
+                    if (
+                        next_set
+                        and
+                        next_set != "na"
+                    ):
+
+                        moonset = next_set
+
+                        print(
+                            "twolocations: %s "
+                            "Monduntergang vom Folgetag "
+                            "uebernommen: %s"
+                            % (
+                                prefix,
+                                str(moonset)
+                            )
+                        )
+
+            else:
+
+                print(
+                    "twolocations: %s "
+                    "Keine Koordinaten fuer Mondberechnung"
+                    % prefix
+                )
+
+            # =====================================================
+            # API-Fallback
+            # =====================================================
+
+            if (
+                not moonrise
+                or
+                moonrise == "na"
+            ):
+
+                api_moonrise = self._getMoonTime(
+                    dag,
+                    [
+                        "moonrise",
+                        "moonriseTime",
+                        "moonrise_time"
+                    ]
+                )
+
+                if api_moonrise:
+
+                    moonrise = api_moonrise
+
+                    print(
+                        "twolocations: %s "
+                        "API-Mondaufgang = %s"
+                        % (
+                            prefix,
+                            moonrise
+                        )
+                    )
+
+            if (
+                not moonset
+                or
+                moonset == "na"
+            ):
+
+                api_moonset = self._getMoonTime(
+                    dag,
+                    [
+                        "moonset",
+                        "moonsetTime",
+                        "moonset_time"
+                    ]
+                )
+
+                if api_moonset:
+
+                    moonset = api_moonset
+
+                    print(
+                        "twolocations: %s "
+                        "API-Monduntergang = %s"
+                        % (
+                            prefix,
                             moonset
                         )
                     )
 
-                    # -------------------------------------------------
-                    # Wenn heute kein Mondaufgang gefunden wurde:
-                    # Vortag prüfen.
-                    # -------------------------------------------------
+            # =====================================================
+            # Anzeige
+            # =====================================================
 
-                    if moonrise == "na":
+            if (
+                not moonrise
+                or
+                moonrise == "na"
+            ):
 
-                        previous_day = (
-                            today
-                            - timedelta(days=1)
-                        )
+                moonrise = "--"
 
-                        previous_rise, previous_set = (
-                            _moon_rise_set_for_date(
-                                previous_day,
-                                lat,
-                                lon
-                            )
-                        )
+            if (
+                not moonset
+                or
+                moonset == "na"
+            ):
 
-                        print(
-                            "twolocations: %s "
-                            "Mond Vortag: rise=%s set=%s"
-                            % (
-                                prefix,
-                                previous_rise,
-                                previous_set
-                            )
-                        )
+                moonset = "--"
 
-                        if previous_rise != "na":
+            moon_text = (
+                _("Moon :") +
+                " " +
+                str(moonrise) +
+                "  -  " +
+                str(moonset)
+            )
 
-                            moonrise = previous_rise
+            self._setText(
+                prefix + "moon",
+                moon_text
+            )
 
-                            print(
-                                "twolocations: %s "
-                                "Mondaufgang vom Vortag: %s"
-                                % (
-                                    prefix,
-                                    moonrise
-                                )
-                            )
-
-                    # -------------------------------------------------
-                    # Wenn heute kein Monduntergang gefunden wurde:
-                    # Folgetag prüfen.
-                    # -------------------------------------------------
-
-                    if moonset == "na":
-
-                        next_day = (
-                            today
-                            + timedelta(days=1)
-                        )
-
-                        next_rise, next_set = (
-                            _moon_rise_set_for_date(
-                                next_day,
-                                lat,
-                                lon
-                            )
-                        )
-
-                        print(
-                            "twolocations: %s "
-                            "Mond Folgetag: rise=%s set=%s"
-                            % (
-                                prefix,
-                                next_rise,
-                                next_set
-                            )
-                        )
-
-                        if next_set != "na":
-
-                            moonset = next_set
-
-                            print(
-                                "twolocations: %s "
-                                "Monduntergang Folgetag: %s"
-                                % (
-                                    prefix,
-                                    moonset
-                                )
-                            )
-
-                # -----------------------------------------------------
-                # API-Fallback
-                # -----------------------------------------------------
-
-                if moonrise in (
-                    "",
-                    "na",
-                    None
-                ):
-
-                    api_moonrise = self._getMoonTime(
-                        dag,
-                        [
-                            "moonrise",
-                            "moonriseTime",
-                            "moonrise_time"
-                        ]
-                    )
-
-                    if api_moonrise:
-                        moonrise = api_moonrise
-
-                if moonset in (
-                    "",
-                    "na",
-                    None
-                ):
-
-                    api_moonset = self._getMoonTime(
-                        dag,
-                        [
-                            "moonset",
-                            "moonsetTime",
-                            "moonset_time"
-                        ]
-                    )
-
-                    if api_moonset:
-                        moonset = api_moonset
-
-                # -----------------------------------------------------
-                # Anzeige
-                # -----------------------------------------------------
-
-                if not moonrise or moonrise == "na":
-                    moonrise = "--"
-
-                if not moonset or moonset == "na":
-                    moonset = "--"
-
-                self._setText(
-                    prefix + "moon",
-                    _("Moon :") + " " +
-                    str(moonrise) +
-                    "  -  " +
-                    str(moonset)
+            print(
+                "twolocations: %s "
+                "MOND ANZEIGE = %s"
+                % (
+                    prefix,
+                    moon_text
                 )
+            )
 
-                print(
-                    "twolocations: %s "
-                    "Mond Anzeige: %s - %s"
-                    % (
-                        prefix,
-                        moonrise,
-                        moonset
-                    )
-                )
+        except Exception as e:
 
-            except Exception as e:
+            print(
+                "twolocations: "
+                "Mondauf-/untergang Fehler:",
+                repr(e)
+            )
 
-                print(
-                    "twolocations: "
-                    "Mondauf-/untergang Fehler:",
-                    repr(e)
-                )
+            try:
 
-                self._setText(
-                    prefix + "moon",
-                    _("Moon :") +
-                    " --  -  --"
-                )
+                import traceback
+                traceback.print_exc()
+
+            except Exception:
+
+                pass
+
+            self._setText(
+                prefix + "moon",
+                _("Moon :") +
+                " --  -  --"
+            )
 
         # =========================================================
         # Warnung
