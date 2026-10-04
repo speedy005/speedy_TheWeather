@@ -6,12 +6,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Polish\n"
-"Language: pl\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,482 +19,604 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "Pn"
+msgstr "Пн"
 
 msgid "Tu"
-msgstr "Wt"
+msgstr "Вт"
 
 msgid "We"
-msgstr "Śr"
+msgstr "Ср"
 
 msgid "Th"
-msgstr "Cz"
+msgstr "Чт"
 
 msgid "Fr"
-msgstr "Pt"
+msgstr "Пт"
 
 msgid "Sa"
-msgstr "So"
+msgstr "Сб"
 
 msgid "Su"
-msgstr "Nd"
+msgstr "Вс"
 
 msgid "Monday"
-msgstr "Poniedziałek"
+msgstr "Понедельник"
 
 msgid "Tuesday"
-msgstr "Wtorek"
+msgstr "Вторник"
 
 msgid "Wednesday"
-msgstr "Środa"
+msgstr "Среда"
 
 msgid "Thursday"
-msgstr "Czwartek"
+msgstr "Четверг"
 
 msgid "Friday"
-msgstr "Piątek"
+msgstr "Пятница"
 
 msgid "Saturday"
-msgstr "Sobota"
+msgstr "Суббота"
 
 msgid "Sunday"
-msgstr "Niedziela"
+msgstr "Воскресенье"
 
 msgid "Belgium"
-msgstr "Belgia"
+msgstr "Бельгия"
 
 msgid "Changeable and chance of mist"
-msgstr "Zmiennie i możliwa mgła"
+msgstr "Переменная погода, возможен туман"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Wskazówka!\nNaciśnij ukryty ŻÓŁTY przycisk w menu głównym, aby otworzyć radar opadów.\n\nNaciśnij ukryty ZIELONY przycisk w menu głównym, aby zmienić odstęp godzinowy.\n\nNaciśnij ukryty NIEBIESKI przycisk w menu głównym, aby porównać dwa miasta.\n\nNaciśnij tutaj OK, aby włączyć lub wyłączyć nakładkę temperatury: %s"
+msgstr "Совет!\nНажмите скрытую ЖЁЛТУЮ кнопку в главном меню, чтобы открыть радар дождя.\n\nНажмите скрытую ЗЕЛЁНУЮ кнопку в главном меню, чтобы изменить интервал часов.\n\nНажмите скрытую СИНЮЮ кнопку в главном меню, чтобы сравнить два города.\n\nНажмите OK здесь, чтобы включить или выключить отображение температуры: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Zmiennie pochmurno, lekkie opady śniegu"
+msgstr "Переменная облачность, небольшой снег"
 
 msgid "Clear and chance of mist"
-msgstr "Bezchmurnie i możliwa mgła"
+msgstr "Ясно, возможен туман"
 
 msgid "Clear night"
-msgstr "Bezchmurna noc"
+msgstr "Ясная ночь"
 
 msgid "Clouds radar"
-msgstr "Radar chmur"
+msgstr "Радар облачности"
 
 msgid "Cloudy"
-msgstr "Pochmurno"
+msgstr "Облачно"
 
 msgid "Cloudy and chance of showers"
-msgstr "Pochmurno i możliwe przelotne opady"
+msgstr "Облачно, возможны ливни"
 
 msgid "Download error: Check spelling."
-msgstr "Błąd pobierania: sprawdź pisownię."
+msgstr "Ошибка загрузки: проверьте написание."
 
 msgid "Drizzle"
-msgstr "Mżawka"
+msgstr "Морось"
 
 msgid "E"
-msgstr "E"
+msgstr "В"
 
 msgid "Europe"
-msgstr "Europa"
+msgstr "Европа"
 
 msgid "Exit"
-msgstr "Wyjście"
+msgstr "Выход"
 
 msgid "Favorite Locations"
-msgstr "Ulubione lokalizacje"
+msgstr "Избранные места"
 
 msgid "Feels Like: "
-msgstr "Odczuwalna: "
+msgstr "Ощущается как: "
 
 msgid "Feels like: "
-msgstr "Odczuwalna: "
+msgstr "Ощущается как: "
 
 msgid "Hail radar"
-msgstr "Radar gradu"
+msgstr "Радар града"
 
 msgid "Heavy clouds"
-msgstr "Duże zachmurzenie"
+msgstr "Сильная облачность"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Duże zachmurzenie, silne opady"
+msgstr "Сильная облачность, сильные ливни"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Duże zachmurzenie, burze"
+msgstr "Сильная облачность, грозовые ливни"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Duże zachmurzenie i intensywne opady śniegu"
+msgstr "Сильная облачность и сильный снегопад"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Duże zachmurzenie, lekkie opady śniegu"
+msgstr "Сильная облачность, небольшой снег"
 
 msgid "Heavy clouds showers possible"
-msgstr "Duże zachmurzenie, możliwe opady"
+msgstr "Сильная облачность, возможны осадки"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Duże zachmurzenie, zimowe opady deszczu"
+msgstr "Сильная облачность, зимние осадки"
 
 msgid "Help"
-msgstr "Pomoc"
+msgstr "Помощь"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "км/ч"
 
 msgid "Light cloudy"
-msgstr "Lekkie zachmurzenie"
+msgstr "Небольшая облачность"
 
 msgid "Local Weather"
-msgstr "Lokalna pogoda"
+msgstr "Местная погода"
 
 msgid "Location +"
-msgstr "Lokalizacja +"
+msgstr "Место +"
 
 msgid "Location -"
-msgstr "Lokalizacja -"
+msgstr "Место -"
 
 msgid "Location:"
-msgstr "Lokalizacja:"
+msgstr "Место:"
 
 msgid "Mist radar"
-msgstr "Radar mgły"
+msgstr "Радар тумана"
 
 msgid "Mostly clear"
-msgstr "Przeważnie bezchmurnie"
+msgstr "Преимущественно ясно"
 
 msgid "Mostly sunny"
-msgstr "Przeważnie słonecznie"
+msgstr "Преимущественно солнечно"
 
 msgid "N"
-msgstr "N"
+msgstr "С"
 
 msgid "NE"
-msgstr "NE"
+msgstr "СВ"
 
 msgid "NW"
-msgstr "NW"
+msgstr "СЗ"
 
 msgid "Rainfall radar"
-msgstr "Radar opadów"
+msgstr "Радар осадков"
 
 msgid "WeatherInfo"
-msgstr "Informacje pogodowe"
+msgstr "Информация о погоде"
 
 msgid "S"
-msgstr "S"
+msgstr "Ю"
 
 msgid "SE"
-msgstr "SE"
+msgstr "ЮВ"
 
 msgid "SW"
-msgstr "SW"
+msgstr "ЮЗ"
 
 msgid "Satellite"
-msgstr "Satelita"
+msgstr "Спутник"
 
 msgid "Showers and chance of thunder"
-msgstr "Przelotne opady i możliwe burze"
+msgstr "Ливни, возможна гроза"
 
 msgid "Snow radar"
-msgstr "Radar śniegu"
+msgstr "Радар снега"
 
 msgid "Sun radar"
-msgstr "Radar słońca"
+msgstr "Радар солнца"
 
 msgid "Sunny / Clear"
-msgstr "Słonecznie / Bezchmurnie"
+msgstr "Солнечно / Ясно"
 
 msgid "Sunny and chance of mist"
-msgstr "Słonecznie i możliwa mgła"
+msgstr "Солнечно, возможен туман"
 
 msgid "Sunny and chance of showers"
-msgstr "Słonecznie i możliwe przelotne opady"
+msgstr "Солнечно, возможны ливни"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Słonecznie i możliwe burze"
+msgstr "Солнечно, возможны грозовые ливни"
 
 msgid "Sunny few clouds"
-msgstr "Słonecznie z niewielkim zachmurzeniem"
+msgstr "Солнечно, небольшая облачность"
 
 msgid "Sunpower-UV"
-msgstr "Indeks UV"
+msgstr "УФ-индекс"
 
 msgid "Temperature"
-msgstr "Temperatura"
+msgstr "Температура"
 
 msgid "The Netherlands"
-msgstr "Holandia"
+msgstr "Нидерланды"
 
 msgid "TheWeather"
-msgstr "Pogoda"
+msgstr "Погода"
 
 msgid "Thunder radar"
-msgstr "Radar burz"
+msgstr "Радар гроз"
 
 msgid "W"
-msgstr "W"
+msgstr "З"
 
 msgid "Weather forecast-nl"
-msgstr "Prognoza pogody - NL"
+msgstr "Прогноз погоды-NL"
 
 msgid "Wind direction: "
-msgstr "Kierunek wiatru: "
+msgstr "Направление ветра: "
 
 msgid "Back"
-msgstr "Wstecz"
+msgstr "Назад"
 
 msgid "Background"
-msgstr "Tło"
+msgstr "Фон"
 
 msgid "Background reset to standard."
-msgstr "Przywrócono standardowe tło."
+msgstr "Фон сброшен на стандартный."
 
 msgid "Choose 2nd location"
-msgstr "Wybierz 2. lokalizację"
+msgstr "Выберите второе место"
 
 msgid "Choose 2nd location:"
-msgstr "Wybierz 2. lokalizację:"
+msgstr "Выберите второе место:"
 
 msgid "Choose background:"
-msgstr "Wybierz tło:"
+msgstr "Выберите фон:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Nie znaleziono miasta. Naciśnij ŻÓŁTY, aby zmienić."
+msgstr "Город не найден. Нажмите ЖЁЛТУЮ кнопку для изменения."
 
 msgid "Compare Two Locations"
-msgstr "Porównaj dwie lokalizacje"
+msgstr "Сравнить два места"
+
+msgid "Compare Locations"
+msgstr "Сравнение мест"
 
 msgid "Data error"
-msgstr "Błąd danych"
+msgstr "Ошибка данных"
 
 msgid "Download error: No response try again"
-msgstr "Błąd pobierania: brak odpowiedzi, spróbuj ponownie"
+msgstr "Ошибка загрузки: нет ответа, попробуйте снова"
 
 msgid "Error fetching data."
-msgstr "Błąd podczas pobierania danych."
+msgstr "Ошибка получения данных."
 
 msgid "Error loading"
-msgstr "Błąd ładowania"
+msgstr "Ошибка загрузки"
 
 msgid "Extra Icons "
-msgstr "Dodatkowe ikony "
+msgstr "Дополнительные значки "
 
 msgid "Extreme cold!"
-msgstr "Ekstremalne zimno!"
+msgstr "Экстремальный холод!"
 
 msgid "Extreme heat!"
-msgstr "Ekstremalny upał!"
+msgstr "Экстремальная жара!"
 
 msgid "h"
-msgstr "g"
+msgstr "ч"
 
 msgid "Heavy rain!"
-msgstr "Intensywne opady deszczu!"
+msgstr "Сильный дождь!"
 
 msgid "Heavy storm!"
-msgstr "Silna burza!"
+msgstr "Сильная буря!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Pakiet ikon został zmieniony.\nWtyczka zostanie uruchomiona ponownie..."
+msgstr "Пакет значков изменён.\nПлагин будет перезапущен..."
 
 msgid "Loading background image, please wait..."
-msgstr "Ładowanie obrazu tła, proszę czekać..."
+msgstr "Загрузка фонового изображения, пожалуйста, подождите..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Ładowanie standardowych ikon, proszę czekać..."
+msgstr "Загрузка стандартных значков, пожалуйста, подождите..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Ładowanie dodatkowych ikon, proszę czekać..."
+msgstr "Загрузка дополнительных значков, пожалуйста, подождите..."
 
 msgid "Loading..."
-msgstr "Ładowanie..."
+msgstr "Загрузка..."
 
 msgid "No 2nd location"
-msgstr "Brak 2. lokalizacji"
+msgstr "Второе место не выбрано"
 
 msgid "No info"
-msgstr "Brak informacji"
+msgstr "Нет информации"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Nie znaleziono zapisanych miast.\nNajpierw dodaj miasta na ekranie lokalizacji."
+msgstr "Сохранённые города не найдены.\nСначала добавьте города на экране выбора места."
 
 msgid "Not found"
-msgstr "Nie znaleziono"
+msgstr "Не найдено"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Naciśnij ŻÓŁTY, aby wybrać 2. lokalizację."
+msgstr "Нажмите ЖЁЛТУЮ кнопку, чтобы выбрать второе место."
 
 msgid "Rain: "
-msgstr "Deszcz: "
+msgstr "Дождь: "
 
 msgid "Select"
-msgstr "Wybierz"
+msgstr "Выбрать"
 
 msgid "Settings"
-msgstr "Ustawienia"
+msgstr "Настройки"
 
 msgid "Severe cold!"
-msgstr "Silny mróz!"
+msgstr "Сильный мороз!"
 
 msgid "Standard"
-msgstr "Standard"
+msgstr "Стандарт"
 
 msgid "Standard (iconpack)"
-msgstr "Standard (pakiet ikon)"
+msgstr "Стандарт (пакет значков)"
 
 msgid "Standard Icons"
-msgstr "Standardowe ikony"
+msgstr "Стандартные значки"
 
 msgid "Strong wind!"
-msgstr "Silny wiatr!"
+msgstr "Сильный ветер!"
 
 msgid "Sun: "
-msgstr "Słońce: "
+msgstr "Солнце: "
 
 msgid "Very heavy rain!"
-msgstr "Bardzo intensywne opady deszczu!"
+msgstr "Очень сильный дождь!"
 
 msgid "Warm weather!"
-msgstr "Ciepła pogoda!"
+msgstr "Тёплая погода!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ups!\nWolne lub brak połączenia z Internetem\nSpróbuj ponownie"
+msgstr "Упс!\nМедленное или отсутствующее интернет-соединение.\nПопробуйте снова"
 
 msgid "Wind: "
-msgstr "Wiatr: "
+msgstr "Ветер: "
 
 msgid "ON"
-msgstr "WŁ."
+msgstr "ВКЛ."
 
 msgid "OFF"
-msgstr "WYŁ."
+msgstr "ВЫКЛ."
 
 msgid "Wind speed:"
-msgstr "Prędkość wiatru:"
+msgstr "Скорость ветра:"
 
 msgid "Cancel"
-msgstr "Anuluj"
+msgstr "Отмена"
 
 msgid "Save"
-msgstr "Zapisz"
+msgstr "Сохранить"
 
 msgid "Show 2 locations"
-msgstr "Pokaż pogodę dla 2 lokalizacji"
+msgstr "Показывать 2 места"
 
 msgid "Radar default zoom:"
-msgstr "Domyślne powiększenie radaru:"
+msgstr "Масштаб радара по умолчанию:"
 
 msgid "Date format:"
-msgstr "Format daty:"
+msgstr "Формат даты:"
 
 msgid "Loading radar..."
-msgstr "Ładowanie radaru..."
+msgstr "Загрузка радара..."
 
 msgid "Please wait..."
-msgstr "Proszę czekać..."
+msgstr "Пожалуйста, подождите..."
 
 msgid "Map zoom: %s"
-msgstr "Powiększenie mapy: %s"
+msgstr "Масштаб карты: %s"
 
 msgid "Select city and:"
-msgstr "Wybierz miasto i:"
+msgstr "Выберите город и:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- Naciśnij OK, aby wyświetlić informacje pogodowe"
+msgstr "- Нажмите OK для информации о погоде"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Naciśnij Menu, aby otworzyć radar opadów"
+msgstr "- Нажмите Menu для открытия радара дождя"
 
 msgid "Appearance"
-msgstr "Wygląd"
+msgstr "Внешний вид"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Город / Место"
+
+msgid "Aktuelle Temperatur"
+msgstr "Текущая температура"
+
+msgid "Wetterbeschreibung"
+msgstr "Описание погоды"
+
+msgid "Gefühlte Temperatur"
+msgstr "Ощущаемая температура"
+
+msgid "Windrichtung"
+msgstr "Направление ветра"
+
+msgid "Wochentag"
+msgstr "День недели"
+
+msgid "Höchsttemperatur"
+msgstr "Максимальная температура"
+
+msgid "Tiefsttemperatur"
+msgstr "Минимальная температура"
+
+msgid "Tages-Wettertext"
+msgstr "Описание погоды за день"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Восход / закат"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Час / Время"
+
+msgid "Stundentemperatur"
+msgstr "Почасовая температура"
+
+msgid "Regen"
+msgstr "Дождь"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Вероятность солнца"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Влажность"
+
+msgid "Windgeschwindigkeit"
+msgstr "Скорость ветра"
+
+msgid "Uhr"
+msgstr "Часы"
+
+msgid "Datum"
+msgstr "Дата"
+
+msgid "Wetterwarnung"
+msgstr "Предупреждение о погоде"
+
+msgid "Default colors"
+msgstr "Цвета по умолчанию"
+
+msgid "Save & exit"
+msgstr "Сохранить и выйти"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
-msgstr "Aktualizacja TheWeather"
+msgstr "Обновление TheWeather"
 
 msgid "Search for update"
-msgstr "Sprawdź aktualizacje"
+msgstr "Проверить обновления"
 
 msgid ""
 "The plugin is already up to date.\n"
 "\n"
 "Version: %s"
 msgstr ""
-"Wtyczka jest już aktualna.\n"
+"Плагин уже обновлён до последней версии.\n"
 "\n"
-"Wersja: %s"
+"Версия: %s"
 
 msgid "Update check failed."
-msgstr "Sprawdzanie aktualizacji nie powiodło się."
+msgstr "Не удалось проверить обновления."
 
 msgid "Changes:"
-msgstr "Zmiany:"
+msgstr "Изменения:"
 
 msgid "Installer version: %s"
-msgstr "Wersja instalatora: %s"
+msgstr "Версия установщика: %s"
 
 msgid "Update information is incomplete."
-msgstr "Informacje o aktualizacji są niekompletne."
+msgstr "Информация об обновлении неполная."
 
 msgid "No changes available."
-msgstr "Brak dostępnych zmian."
+msgstr "Нет доступных изменений."
 
 msgid "A new version of speedy_TheWeather is available."
-msgstr "Dostępna jest nowa wersja speedy_TheWeather."
+msgstr "Доступна новая версия speedy_TheWeather."
 
 msgid "Installed version: %s"
-msgstr "Zainstalowana wersja: %s"
+msgstr "Установленная версия: %s"
 
 msgid "New version: %s"
-msgstr "Nowa wersja: %s"
+msgstr "Новая версия: %s"
 
 msgid "Do you want to install the update?"
-msgstr "Czy chcesz zainstalować aktualizację?"
+msgstr "Установить обновление?"
 
 msgid ""
 "The update is being installed.\n"
 "\n"
 "Please wait."
 msgstr ""
-"Aktualizacja jest instalowana.\n"
+"Обновление устанавливается.\n"
 "\n"
-"Proszę czekać."
+"Пожалуйста, подождите."
 
 msgid ""
 "The update could not be installed.\n"
 "\n"
 "Please check the Internet connection and try again."
 msgstr ""
-"Nie można było zainstalować aktualizacji.\n"
+"Не удалось установить обновление.\n"
 "\n"
-"Sprawdź połączenie z Internetem i spróbuj ponownie."
+"Проверьте интернет-соединение и попробуйте снова."
 
 msgid "Updating..."
-msgstr "Aktualizowanie..."
+msgstr "Обновление..."
 
 msgid ""
 "The update has been installed successfully.\n"
 "\n"
 "Would you like to restart the Enigma2 GUI now?"
 msgstr ""
-"Aktualizacja została pomyślnie zainstalowana.\n"
+"Обновление успешно установлено.\n"
 "\n"
-"Czy chcesz teraz ponownie uruchomić interfejs Enigma2 GUI?"
+"Перезапустить интерфейс Enigma2 сейчас?"
 
 msgid "Hours"
-msgstr "Godziny"
+msgstr "Часы"
 
 msgid "Radar"
-msgstr "Radar"
+msgstr "Радар"
 
 msgid "Locations"
-msgstr "Lokalizacje"
+msgstr "Места"
 
 msgid "RainViewer"
 msgstr "RainViewer"
+
+msgid "speedy_TheWeather Settings"
+msgstr "Настройки speedy_TheWeather"
+
+msgid "Infoscreen"
+msgstr "Информационный экран"
+
+msgid "Auto weather backgrounds:"
+msgstr "Автоматические погодные фоны:"
+
+msgid "Holiday backgrounds:"
+msgstr "Праздничные фоны:"
+
+msgid "Download weather backgrounds"
+msgstr "Загрузить погодные фоны"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Хотите загрузить погодные фоны сейчас?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Погодные фоны успешно загружены."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Не удалось загрузить погодные фоны."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Вы уже используете последнюю версию (%s)."
+
+msgid "Sunrise"
+msgstr "Восход солнца"
+
+msgid "Sunset"
+msgstr "Закат солнца"
+
+msgid "Moonrise"
+msgstr "Восход луны"
+
+msgid "Moonset"
+msgstr "Закат луны"
+
+msgid "Moon :"
+msgstr "Луна :"
+
+msgid "Sun :"
+msgstr "Солнце :"
+
+msgid "No matching cities found."
+msgstr "Подходящие города не найдены."
+
+msgid "Could not save the selected location."
+msgstr "Не удалось сохранить выбранное место."
+
+msgid "Choose a match:"
+msgstr "Выберите город:"
 ```

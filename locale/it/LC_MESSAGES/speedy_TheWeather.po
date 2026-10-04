@@ -19,25 +19,25 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "Lun"
+msgstr "Lu"
 
 msgid "Tu"
-msgstr "Mar"
+msgstr "Ma"
 
 msgid "We"
-msgstr "Mer"
+msgstr "Me"
 
 msgid "Th"
-msgstr "Gio"
+msgstr "Gi"
 
 msgid "Fr"
-msgstr "Ven"
+msgstr "Ve"
 
 msgid "Sa"
-msgstr "Sab"
+msgstr "Sa"
 
 msgid "Su"
-msgstr "Dom"
+msgstr "Do"
 
 msgid "Monday"
 msgstr "Lunedì"
@@ -64,16 +64,16 @@ msgid "Belgium"
 msgstr "Belgio"
 
 msgid "Changeable and chance of mist"
-msgstr "Variabile e possibilità di nebbia"
+msgstr "Variabile con possibilità di nebbia"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Suggerimento!\nPremi il tasto GIALLO nascosto nel menu principale per aprire il radar della pioggia.\n\nPremi il tasto VERDE nascosto nel menu principale per modificare l'intervallo orario.\n\nPremi il tasto BLU nascosto nel menu principale per confrontare due città.\n\nPremi OK qui per attivare/disattivare la sovrapposizione della temperatura: %s"
+msgstr "Suggerimento!\nPremi il tasto GIALLO nascosto nel menu principale per aprire il radar della pioggia.\n\nPremi il tasto VERDE nascosto nel menu principale per modificare l'intervallo orario.\n\nPremi il tasto BLU nascosto nel menu principale per confrontare due città.\n\nPremi OK qui per attivare/disattivare la temperatura visualizzata: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Nuvolosità variabile, deboli nevicate"
+msgstr "Variabile e nuvoloso con deboli nevicate"
 
 msgid "Clear and chance of mist"
-msgstr "Sereno e possibilità di nebbia"
+msgstr "Sereno con possibilità di nebbia"
 
 msgid "Clear night"
 msgstr "Notte serena"
@@ -85,7 +85,7 @@ msgid "Cloudy"
 msgstr "Nuvoloso"
 
 msgid "Cloudy and chance of showers"
-msgstr "Nuvoloso e possibilità di rovesci"
+msgstr "Nuvoloso con possibilità di rovesci"
 
 msgid "Download error: Check spelling."
 msgstr "Errore di download: controlla l'ortografia."
@@ -115,31 +115,31 @@ msgid "Hail radar"
 msgstr "Radar della grandine"
 
 msgid "Heavy clouds"
-msgstr "Nuvolosità intensa"
+msgstr "Molto nuvoloso"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Nuvolosità intensa, forti rovesci"
+msgstr "Molto nuvoloso, forti rovesci"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Nuvolosità intensa, temporali"
+msgstr "Molto nuvoloso, rovesci temporaleschi"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Nuvolosità intensa e forti nevicate"
+msgstr "Molto nuvoloso con forti nevicate"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Nuvolosità intensa, deboli nevicate"
+msgstr "Molto nuvoloso con deboli nevicate"
 
 msgid "Heavy clouds showers possible"
-msgstr "Nuvolosità intensa, possibili rovesci"
+msgstr "Molto nuvoloso, possibili rovesci"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Nuvolosità intensa, piogge invernali"
+msgstr "Molto nuvoloso, precipitazioni invernali"
 
 msgid "Help"
 msgstr "Aiuto"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "Km/h"
 
 msgid "Light cloudy"
 msgstr "Poco nuvoloso"
@@ -193,7 +193,7 @@ msgid "Satellite"
 msgstr "Satellite"
 
 msgid "Showers and chance of thunder"
-msgstr "Rovesci e possibilità di temporali"
+msgstr "Rovesci con possibilità di temporali"
 
 msgid "Snow radar"
 msgstr "Radar della neve"
@@ -205,13 +205,13 @@ msgid "Sunny / Clear"
 msgstr "Soleggiato / Sereno"
 
 msgid "Sunny and chance of mist"
-msgstr "Soleggiato, possibilità di nebbia"
+msgstr "Soleggiato con possibilità di nebbia"
 
 msgid "Sunny and chance of showers"
-msgstr "Soleggiato, possibilità di rovesci"
+msgstr "Soleggiato con possibilità di rovesci"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Soleggiato, possibilità di temporali"
+msgstr "Soleggiato con possibilità di rovesci temporaleschi"
 
 msgid "Sunny few clouds"
 msgstr "Soleggiato con poche nuvole"
@@ -226,7 +226,7 @@ msgid "The Netherlands"
 msgstr "Paesi Bassi"
 
 msgid "TheWeather"
-msgstr "Il Meteo"
+msgstr "Il meteo"
 
 msgid "Thunder radar"
 msgstr "Radar dei temporali"
@@ -235,7 +235,7 @@ msgid "W"
 msgstr "O"
 
 msgid "Weather forecast-nl"
-msgstr "Previsioni meteo - NL"
+msgstr "Previsioni meteo-NL"
 
 msgid "Wind direction: "
 msgstr "Direzione del vento: "
@@ -247,22 +247,25 @@ msgid "Background"
 msgstr "Sfondo"
 
 msgid "Background reset to standard."
-msgstr "Lo sfondo è stato ripristinato a quello standard."
+msgstr "Sfondo ripristinato ai valori predefiniti."
 
 msgid "Choose 2nd location"
-msgstr "Scegli la 2ª località"
+msgstr "Scegli seconda località"
 
 msgid "Choose 2nd location:"
-msgstr "Scegli la 2ª località:"
+msgstr "Scegli seconda località:"
 
 msgid "Choose background:"
-msgstr "Scegli lo sfondo:"
+msgstr "Scegli sfondo:"
 
 msgid "City not found. Press YELLOW to change."
 msgstr "Città non trovata. Premi GIALLO per modificare."
 
 msgid "Compare Two Locations"
 msgstr "Confronta due località"
+
+msgid "Compare Locations"
+msgstr "Confronta località"
 
 msgid "Data error"
 msgstr "Errore dati"
@@ -310,19 +313,19 @@ msgid "Loading..."
 msgstr "Caricamento..."
 
 msgid "No 2nd location"
-msgstr "Nessuna 2ª località"
+msgstr "Nessuna seconda località"
 
 msgid "No info"
 msgstr "Nessuna informazione"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Nessuna città salvata trovata.\nAggiungi prima le città tramite la schermata delle località."
+msgstr "Nessuna città salvata trovata.\nAggiungi prima le città dalla schermata delle località."
 
 msgid "Not found"
 msgstr "Non trovato"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Premi GIALLO per scegliere una 2ª località."
+msgstr "Premi GIALLO per scegliere una seconda località."
 
 msgid "Rain: "
 msgstr "Pioggia: "
@@ -340,7 +343,7 @@ msgid "Standard"
 msgstr "Standard"
 
 msgid "Standard (iconpack)"
-msgstr "Standard (pacchetto di icone)"
+msgstr "Standard (pacchetto icone)"
 
 msgid "Standard Icons"
 msgstr "Icone standard"
@@ -355,10 +358,10 @@ msgid "Very heavy rain!"
 msgstr "Pioggia molto intensa!"
 
 msgid "Warm weather!"
-msgstr "Clima caldo!"
+msgstr "Tempo caldo!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ops!\nConnessione Internet lenta o assente\nRiprova"
+msgstr "Ops!\nConnessione Internet lenta o assente.\nRiprova"
 
 msgid "Wind: "
 msgstr "Vento: "
@@ -379,10 +382,10 @@ msgid "Save"
 msgstr "Salva"
 
 msgid "Show 2 locations"
-msgstr "Mostra il meteo per 2 località"
+msgstr "Mostra 2 località"
 
 msgid "Radar default zoom:"
-msgstr "Zoom predefinito del radar:"
+msgstr "Zoom radar predefinito:"
 
 msgid "Date format:"
 msgstr "Formato data:"
@@ -397,7 +400,7 @@ msgid "Map zoom: %s"
 msgstr "Zoom mappa: %s"
 
 msgid "Select city and:"
-msgstr "Seleziona la città e:"
+msgstr "Seleziona città e:"
 
 msgid "- Press Ok for Weather info"
 msgstr "- Premi OK per le informazioni meteo"
@@ -409,9 +412,74 @@ msgid "Appearance"
 msgstr "Aspetto"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Città / Località"
+
+msgid "Aktuelle Temperatur"
+msgstr "Temperatura attuale"
+
+msgid "Wetterbeschreibung"
+msgstr "Descrizione del tempo"
+
+msgid "Gefühlte Temperatur"
+msgstr "Temperatura percepita"
+
+msgid "Windrichtung"
+msgstr "Direzione del vento"
+
+msgid "Wochentag"
+msgstr "Giorno della settimana"
+
+msgid "Höchsttemperatur"
+msgstr "Temperatura massima"
+
+msgid "Tiefsttemperatur"
+msgstr "Temperatura minima"
+
+msgid "Tages-Wettertext"
+msgstr "Descrizione meteo giornaliera"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Alba / Tramonto"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Ora"
+
+msgid "Stundentemperatur"
+msgstr "Temperatura oraria"
+
+msgid "Regen"
+msgstr "Pioggia"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Probabilità di sole"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Umidità"
+
+msgid "Windgeschwindigkeit"
+msgstr "Velocità del vento"
+
+msgid "Uhr"
+msgstr "Orologio"
+
+msgid "Datum"
+msgstr "Data"
+
+msgid "Wetterwarnung"
+msgstr "Allerta meteo"
+
+msgid "Default colors"
+msgstr "Colori predefiniti"
+
+msgid "Save & exit"
+msgstr "Salva ed esci"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
@@ -484,7 +552,7 @@ msgid ""
 msgstr ""
 "L'aggiornamento è stato installato correttamente.\n"
 "\n"
-"Vuoi riavviare ora la GUI di Enigma2?"
+"Vuoi riavviare ora l'interfaccia grafica di Enigma2?"
 
 msgid "Hours"
 msgstr "Ore"
@@ -497,4 +565,58 @@ msgstr "Località"
 
 msgid "RainViewer"
 msgstr "RainViewer"
+
+msgid "speedy_TheWeather Settings"
+msgstr "Impostazioni speedy_TheWeather"
+
+msgid "Infoscreen"
+msgstr "Schermata informazioni"
+
+msgid "Auto weather backgrounds:"
+msgstr "Sfondi meteo automatici:"
+
+msgid "Holiday backgrounds:"
+msgstr "Sfondi festivi:"
+
+msgid "Download weather backgrounds"
+msgstr "Scarica sfondi meteo"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Vuoi scaricare ora gli sfondi meteo?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Gli sfondi meteo sono stati scaricati correttamente."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Non è stato possibile scaricare gli sfondi meteo."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Stai già utilizzando l'ultima versione (%s)."
+
+msgid "Sunrise"
+msgstr "Alba"
+
+msgid "Sunset"
+msgstr "Tramonto"
+
+msgid "Moonrise"
+msgstr "Alba lunare"
+
+msgid "Moonset"
+msgstr "Tramonto lunare"
+
+msgid "Moon :"
+msgstr "Luna :"
+
+msgid "Sun :"
+msgstr "Sole :"
+
+msgid "No matching cities found."
+msgstr "Nessuna città corrispondente trovata."
+
+msgid "Could not save the selected location."
+msgstr "Impossibile salvare la località selezionata."
+
+msgid "Choose a match:"
+msgstr "Scegli una città:"
 ```

@@ -52,7 +52,7 @@ msgid "Thursday"
 msgstr "Четвер"
 
 msgid "Friday"
-msgstr "П'ятниця"
+msgstr "П’ятниця"
 
 msgid "Saturday"
 msgstr "Субота"
@@ -67,10 +67,10 @@ msgid "Changeable and chance of mist"
 msgstr "Мінлива погода, можливий туман"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Порада!\nНатисніть приховану ЖОВТУ кнопку в головному меню, щоб відкрити радар опадів.\n\nНатисніть приховану ЗЕЛЕНУ кнопку в головному меню, щоб змінити погодинний інтервал.\n\nНатисніть приховану СИНЮ кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть OK, щоб увімкнути або вимкнути відображення температури: %s"
+msgstr "Порада!\nНатисніть приховану ЖОВТУ кнопку в головному меню, щоб відкрити радар дощу.\n\nНатисніть приховану ЗЕЛЕНУ кнопку в головному меню, щоб змінити погодинний інтервал.\n\nНатисніть приховану СИНЮ кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть OK, щоб увімкнути або вимкнути відображення температури: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Мінлива хмарність, невеликий сніг"
+msgstr "Мінлива хмарність, слабкий сніг"
 
 msgid "Clear and chance of mist"
 msgstr "Ясно, можливий туман"
@@ -121,16 +121,16 @@ msgid "Heavy clouds  heavy showers"
 msgstr "Сильна хмарність, сильні зливи"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Сильна хмарність, грози"
+msgstr "Сильна хмарність, грозові зливи"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Сильна хмарність і сильний сніг"
+msgstr "Сильна хмарність і сильний снігопад"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Сильна хмарність, невеликий сніг"
+msgstr "Сильна хмарність, слабкий сніг"
 
 msgid "Heavy clouds showers possible"
-msgstr "Сильна хмарність, можливі зливи"
+msgstr "Сильна хмарність, можливі опади"
 
 msgid "Heavy clouds winter rainfall"
 msgstr "Сильна хмарність, зимові опади"
@@ -193,7 +193,7 @@ msgid "Satellite"
 msgstr "Супутник"
 
 msgid "Showers and chance of thunder"
-msgstr "Зливи, можливі грози"
+msgstr "Зливи, можлива гроза"
 
 msgid "Snow radar"
 msgstr "Радар снігу"
@@ -211,7 +211,7 @@ msgid "Sunny and chance of showers"
 msgstr "Сонячно, можливі зливи"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Сонячно, можливі грози"
+msgstr "Сонячно, можливі грозові зливи"
 
 msgid "Sunny few clouds"
 msgstr "Сонячно, невелика хмарність"
@@ -235,7 +235,7 @@ msgid "W"
 msgstr "Зх"
 
 msgid "Weather forecast-nl"
-msgstr "Прогноз погоди - NL"
+msgstr "Прогноз погоди-NL"
 
 msgid "Wind direction: "
 msgstr "Напрямок вітру: "
@@ -247,13 +247,13 @@ msgid "Background"
 msgstr "Фон"
 
 msgid "Background reset to standard."
-msgstr "Фон відновлено до стандартного."
+msgstr "Фон скинуто до стандартного."
 
 msgid "Choose 2nd location"
-msgstr "Виберіть 2-е місце"
+msgstr "Виберіть друге місце"
 
 msgid "Choose 2nd location:"
-msgstr "Виберіть 2-е місце:"
+msgstr "Виберіть друге місце:"
 
 msgid "Choose background:"
 msgstr "Виберіть фон:"
@@ -263,6 +263,9 @@ msgstr "Місто не знайдено. Натисніть ЖОВТУ кноп
 
 msgid "Compare Two Locations"
 msgstr "Порівняти два місця"
+
+msgid "Compare Locations"
+msgstr "Порівняння місць"
 
 msgid "Data error"
 msgstr "Помилка даних"
@@ -277,7 +280,7 @@ msgid "Error loading"
 msgstr "Помилка завантаження"
 
 msgid "Extra Icons "
-msgstr "Додаткові іконки "
+msgstr "Додаткові значки "
 
 msgid "Extreme cold!"
 msgstr "Екстремальний холод!"
@@ -295,34 +298,34 @@ msgid "Heavy storm!"
 msgstr "Сильна буря!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Пакет іконок змінено.\nПлагін буде перезапущено..."
+msgstr "Пакет значків змінено.\nПлагін буде перезапущено..."
 
 msgid "Loading background image, please wait..."
 msgstr "Завантаження фонового зображення, зачекайте..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Завантаження стандартних іконок, зачекайте..."
+msgstr "Завантаження стандартних значків, зачекайте..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Завантаження додаткових іконок, зачекайте..."
+msgstr "Завантаження додаткових значків, зачекайте..."
 
 msgid "Loading..."
 msgstr "Завантаження..."
 
 msgid "No 2nd location"
-msgstr "Немає 2-го місця"
+msgstr "Друге місце не вибрано"
 
 msgid "No info"
 msgstr "Немає інформації"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Збережених міст не знайдено.\nСпочатку додайте міста через екран місць."
+msgstr "Збережених міст не знайдено.\nСпочатку додайте міста на екрані вибору місця."
 
 msgid "Not found"
 msgstr "Не знайдено"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Натисніть ЖОВТУ кнопку, щоб вибрати 2-е місце."
+msgstr "Натисніть ЖОВТУ кнопку, щоб вибрати друге місце."
 
 msgid "Rain: "
 msgstr "Дощ: "
@@ -337,13 +340,13 @@ msgid "Severe cold!"
 msgstr "Сильний мороз!"
 
 msgid "Standard"
-msgstr "Стандартний"
+msgstr "Стандарт"
 
 msgid "Standard (iconpack)"
-msgstr "Стандартний (пакет іконок)"
+msgstr "Стандарт (пакет значків)"
 
 msgid "Standard Icons"
-msgstr "Стандартні іконки"
+msgstr "Стандартні значки"
 
 msgid "Strong wind!"
 msgstr "Сильний вітер!"
@@ -358,13 +361,13 @@ msgid "Warm weather!"
 msgstr "Тепла погода!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ой!\nПовільне або відсутнє підключення до Інтернету\nСпробуйте ще раз"
+msgstr "Ой!\nПовільне або відсутнє підключення до Інтернету.\nСпробуйте ще раз"
 
 msgid "Wind: "
 msgstr "Вітер: "
 
 msgid "ON"
-msgstr "УВІМК."
+msgstr "УВІМ."
 
 msgid "OFF"
 msgstr "ВИМК."
@@ -379,7 +382,7 @@ msgid "Save"
 msgstr "Зберегти"
 
 msgid "Show 2 locations"
-msgstr "Показати погоду для 2 місць"
+msgstr "Показувати 2 місця"
 
 msgid "Radar default zoom:"
 msgstr "Масштаб радара за замовчуванням:"
@@ -403,22 +406,87 @@ msgid "- Press Ok for Weather info"
 msgstr "- Натисніть OK для інформації про погоду"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Натисніть Menu для радара опадів"
+msgstr "- Натисніть Menu, щоб відкрити радар дощу"
 
 msgid "Appearance"
 msgstr "Вигляд"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Місто / Місце"
+
+msgid "Aktuelle Temperatur"
+msgstr "Поточна температура"
+
+msgid "Wetterbeschreibung"
+msgstr "Опис погоди"
+
+msgid "Gefühlte Temperatur"
+msgstr "Відчутна температура"
+
+msgid "Windrichtung"
+msgstr "Напрямок вітру"
+
+msgid "Wochentag"
+msgstr "День тижня"
+
+msgid "Höchsttemperatur"
+msgstr "Максимальна температура"
+
+msgid "Tiefsttemperatur"
+msgstr "Мінімальна температура"
+
+msgid "Tages-Wettertext"
+msgstr "Денний опис погоди"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Схід / захід сонця"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Година / Час"
+
+msgid "Stundentemperatur"
+msgstr "Погодинна температура"
+
+msgid "Regen"
+msgstr "Дощ"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Ймовірність сонця"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Вологість"
+
+msgid "Windgeschwindigkeit"
+msgstr "Швидкість вітру"
+
+msgid "Uhr"
+msgstr "Годинник"
+
+msgid "Datum"
+msgstr "Дата"
+
+msgid "Wetterwarnung"
+msgstr "Попередження про погоду"
+
+msgid "Default colors"
+msgstr "Кольори за замовчуванням"
+
+msgid "Save & exit"
+msgstr "Зберегти та вийти"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
 msgstr "Оновлення TheWeather"
 
 msgid "Search for update"
-msgstr "Пошук оновлень"
+msgstr "Перевірити оновлення"
 
 msgid ""
 "The plugin is already up to date.\n"
@@ -454,7 +522,7 @@ msgid "New version: %s"
 msgstr "Нова версія: %s"
 
 msgid "Do you want to install the update?"
-msgstr "Хочете встановити оновлення?"
+msgstr "Встановити оновлення?"
 
 msgid ""
 "The update is being installed.\n"
@@ -484,7 +552,7 @@ msgid ""
 msgstr ""
 "Оновлення успішно встановлено.\n"
 "\n"
-"Хочете зараз перезапустити GUI Enigma2?"
+"Перезапустити графічний інтерфейс Enigma2 зараз?"
 
 msgid "Hours"
 msgstr "Години"
@@ -497,4 +565,58 @@ msgstr "Місця"
 
 msgid "RainViewer"
 msgstr "RainViewer"
+
+msgid "speedy_TheWeather Settings"
+msgstr "Налаштування speedy_TheWeather"
+
+msgid "Infoscreen"
+msgstr "Інформаційний екран"
+
+msgid "Auto weather backgrounds:"
+msgstr "Автоматичні погодні фони:"
+
+msgid "Holiday backgrounds:"
+msgstr "Святкові фони:"
+
+msgid "Download weather backgrounds"
+msgstr "Завантажити погодні фони"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Хочете завантажити погодні фони зараз?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Погодні фони успішно завантажено."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Не вдалося завантажити погодні фони."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Ви вже використовуєте останню версію (%s)."
+
+msgid "Sunrise"
+msgstr "Схід сонця"
+
+msgid "Sunset"
+msgstr "Захід сонця"
+
+msgid "Moonrise"
+msgstr "Схід місяця"
+
+msgid "Moonset"
+msgstr "Захід місяця"
+
+msgid "Moon :"
+msgstr "Місяць :"
+
+msgid "Sun :"
+msgstr "Сонце :"
+
+msgid "No matching cities found."
+msgstr "Відповідних міст не знайдено."
+
+msgid "Could not save the selected location."
+msgstr "Не вдалося зберегти вибране місце."
+
+msgid "Choose a match:"
+msgstr "Виберіть місто:"
 ```

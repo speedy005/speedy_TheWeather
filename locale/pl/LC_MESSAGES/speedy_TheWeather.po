@@ -11,7 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -34,7 +34,7 @@ msgid "Fr"
 msgstr "Pt"
 
 msgid "Sa"
-msgstr "Sob"
+msgstr "So"
 
 msgid "Su"
 msgstr "Nd"
@@ -64,16 +64,16 @@ msgid "Belgium"
 msgstr "Belgia"
 
 msgid "Changeable and chance of mist"
-msgstr "Zmiennie i możliwa mgła"
+msgstr "Zmiennie, możliwa mgła"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Wskazówka!\nNaciśnij ukryty ŻÓŁTY przycisk w menu głównym, aby otworzyć radar opadów.\n\nNaciśnij ukryty ZIELONY przycisk w menu głównym, aby zmienić odstęp godzinowy.\n\nNaciśnij ukryty NIEBIESKI przycisk w menu głównym, aby porównać dwa miasta.\n\nNaciśnij tutaj OK, aby włączyć lub wyłączyć nakładkę temperatury: %s"
+msgstr "Wskazówka!\nNaciśnij ukryty ŻÓŁTY przycisk w menu głównym, aby otworzyć radar opadów.\n\nNaciśnij ukryty ZIELONY przycisk w menu głównym, aby zmienić interwał godzinowy.\n\nNaciśnij ukryty NIEBIESKI przycisk w menu głównym, aby porównać dwa miasta.\n\nNaciśnij tutaj OK, aby włączyć lub wyłączyć wyświetlanie temperatury: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Zmiennie pochmurno, lekkie opady śniegu"
+msgstr "Zmiennie pochmurno, słabe opady śniegu"
 
 msgid "Clear and chance of mist"
-msgstr "Bezchmurnie i możliwa mgła"
+msgstr "Bezchmurnie, możliwa mgła"
 
 msgid "Clear night"
 msgstr "Bezchmurna noc"
@@ -85,7 +85,7 @@ msgid "Cloudy"
 msgstr "Pochmurno"
 
 msgid "Cloudy and chance of showers"
-msgstr "Pochmurno i możliwe przelotne opady"
+msgstr "Pochmurno, możliwe przelotne opady"
 
 msgid "Download error: Check spelling."
 msgstr "Błąd pobierania: sprawdź pisownię."
@@ -118,22 +118,22 @@ msgid "Heavy clouds"
 msgstr "Duże zachmurzenie"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Duże zachmurzenie, silne opady"
+msgstr "Duże zachmurzenie, intensywne opady"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Duże zachmurzenie, burze"
+msgstr "Duże zachmurzenie, burze z ulewami"
 
 msgid "Heavy clouds and heavy snowfall"
 msgstr "Duże zachmurzenie i intensywne opady śniegu"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Duże zachmurzenie, lekkie opady śniegu"
+msgstr "Duże zachmurzenie, słabe opady śniegu"
 
 msgid "Heavy clouds showers possible"
 msgstr "Duże zachmurzenie, możliwe opady"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Duże zachmurzenie, zimowe opady deszczu"
+msgstr "Duże zachmurzenie, opady zimowe"
 
 msgid "Help"
 msgstr "Pomoc"
@@ -193,7 +193,7 @@ msgid "Satellite"
 msgstr "Satelita"
 
 msgid "Showers and chance of thunder"
-msgstr "Przelotne opady i możliwe burze"
+msgstr "Przelotne opady, możliwe burze"
 
 msgid "Snow radar"
 msgstr "Radar śniegu"
@@ -205,16 +205,16 @@ msgid "Sunny / Clear"
 msgstr "Słonecznie / Bezchmurnie"
 
 msgid "Sunny and chance of mist"
-msgstr "Słonecznie i możliwa mgła"
+msgstr "Słonecznie, możliwa mgła"
 
 msgid "Sunny and chance of showers"
-msgstr "Słonecznie i możliwe przelotne opady"
+msgstr "Słonecznie, możliwe przelotne opady"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Słonecznie i możliwe burze"
+msgstr "Słonecznie, możliwe burze z ulewami"
 
 msgid "Sunny few clouds"
-msgstr "Słonecznie z niewielkim zachmurzeniem"
+msgstr "Słonecznie, niewielkie zachmurzenie"
 
 msgid "Sunpower-UV"
 msgstr "Indeks UV"
@@ -235,7 +235,7 @@ msgid "W"
 msgstr "W"
 
 msgid "Weather forecast-nl"
-msgstr "Prognoza pogody - NL"
+msgstr "Prognoza pogody-NL"
 
 msgid "Wind direction: "
 msgstr "Kierunek wiatru: "
@@ -247,13 +247,13 @@ msgid "Background"
 msgstr "Tło"
 
 msgid "Background reset to standard."
-msgstr "Przywrócono standardowe tło."
+msgstr "Przywrócono domyślne tło."
 
 msgid "Choose 2nd location"
-msgstr "Wybierz 2. lokalizację"
+msgstr "Wybierz drugą lokalizację"
 
 msgid "Choose 2nd location:"
-msgstr "Wybierz 2. lokalizację:"
+msgstr "Wybierz drugą lokalizację:"
 
 msgid "Choose background:"
 msgstr "Wybierz tło:"
@@ -263,6 +263,9 @@ msgstr "Nie znaleziono miasta. Naciśnij ŻÓŁTY, aby zmienić."
 
 msgid "Compare Two Locations"
 msgstr "Porównaj dwie lokalizacje"
+
+msgid "Compare Locations"
+msgstr "Porównaj lokalizacje"
 
 msgid "Data error"
 msgstr "Błąd danych"
@@ -283,19 +286,19 @@ msgid "Extreme cold!"
 msgstr "Ekstremalne zimno!"
 
 msgid "Extreme heat!"
-msgstr "Ekstremalny upał!"
+msgstr "Ekstremalne upały!"
 
 msgid "h"
 msgstr "g"
 
 msgid "Heavy rain!"
-msgstr "Intensywne opady deszczu!"
+msgstr "Intensywny deszcz!"
 
 msgid "Heavy storm!"
 msgstr "Silna burza!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Pakiet ikon został zmieniony.\nWtyczka zostanie uruchomiona ponownie..."
+msgstr "Zmieniono pakiet ikon.\nWtyczka zostanie uruchomiona ponownie..."
 
 msgid "Loading background image, please wait..."
 msgstr "Ładowanie obrazu tła, proszę czekać..."
@@ -310,7 +313,7 @@ msgid "Loading..."
 msgstr "Ładowanie..."
 
 msgid "No 2nd location"
-msgstr "Brak 2. lokalizacji"
+msgstr "Brak drugiej lokalizacji"
 
 msgid "No info"
 msgstr "Brak informacji"
@@ -322,7 +325,7 @@ msgid "Not found"
 msgstr "Nie znaleziono"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Naciśnij ŻÓŁTY, aby wybrać 2. lokalizację."
+msgstr "Naciśnij ŻÓŁTY, aby wybrać drugą lokalizację."
 
 msgid "Rain: "
 msgstr "Deszcz: "
@@ -352,13 +355,13 @@ msgid "Sun: "
 msgstr "Słońce: "
 
 msgid "Very heavy rain!"
-msgstr "Bardzo intensywne opady deszczu!"
+msgstr "Bardzo intensywny deszcz!"
 
 msgid "Warm weather!"
 msgstr "Ciepła pogoda!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ups!\nWolne lub brak połączenia z Internetem\nSpróbuj ponownie"
+msgstr "Ups!\nWolne lub brak połączenia z Internetem.\nSpróbuj ponownie"
 
 msgid "Wind: "
 msgstr "Wiatr: "
@@ -379,7 +382,7 @@ msgid "Save"
 msgstr "Zapisz"
 
 msgid "Show 2 locations"
-msgstr "Pokaż pogodę dla 2 lokalizacji"
+msgstr "Pokaż 2 lokalizacje"
 
 msgid "Radar default zoom:"
 msgstr "Domyślne powiększenie radaru:"
@@ -400,7 +403,7 @@ msgid "Select city and:"
 msgstr "Wybierz miasto i:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- Naciśnij OK, aby wyświetlić informacje pogodowe"
+msgstr "- Naciśnij OK, aby zobaczyć informacje pogodowe"
 
 msgid "- Press Menu for RainRadar"
 msgstr "- Naciśnij Menu, aby otworzyć radar opadów"
@@ -409,9 +412,74 @@ msgid "Appearance"
 msgstr "Wygląd"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Miasto / Miejsce"
+
+msgid "Aktuelle Temperatur"
+msgstr "Aktualna temperatura"
+
+msgid "Wetterbeschreibung"
+msgstr "Opis pogody"
+
+msgid "Gefühlte Temperatur"
+msgstr "Temperatura odczuwalna"
+
+msgid "Windrichtung"
+msgstr "Kierunek wiatru"
+
+msgid "Wochentag"
+msgstr "Dzień tygodnia"
+
+msgid "Höchsttemperatur"
+msgstr "Temperatura maksymalna"
+
+msgid "Tiefsttemperatur"
+msgstr "Temperatura minimalna"
+
+msgid "Tages-Wettertext"
+msgstr "Dzienny opis pogody"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Wschód / zachód słońca"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Godzina / Czas"
+
+msgid "Stundentemperatur"
+msgstr "Temperatura godzinowa"
+
+msgid "Regen"
+msgstr "Deszcz"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Prawdopodobieństwo słońca"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Wilgotność"
+
+msgid "Windgeschwindigkeit"
+msgstr "Prędkość wiatru"
+
+msgid "Uhr"
+msgstr "Zegar"
+
+msgid "Datum"
+msgstr "Data"
+
+msgid "Wetterwarnung"
+msgstr "Ostrzeżenie pogodowe"
+
+msgid "Default colors"
+msgstr "Kolory domyślne"
+
+msgid "Save & exit"
+msgstr "Zapisz i wyjdź"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
@@ -484,7 +552,7 @@ msgid ""
 msgstr ""
 "Aktualizacja została pomyślnie zainstalowana.\n"
 "\n"
-"Czy chcesz teraz ponownie uruchomić interfejs Enigma2 GUI?"
+"Czy chcesz teraz ponownie uruchomić interfejs Enigma2?"
 
 msgid "Hours"
 msgstr "Godziny"
@@ -497,4 +565,58 @@ msgstr "Lokalizacje"
 
 msgid "RainViewer"
 msgstr "RainViewer"
+
+msgid "speedy_TheWeather Settings"
+msgstr "Ustawienia speedy_TheWeather"
+
+msgid "Infoscreen"
+msgstr "Ekran informacji"
+
+msgid "Auto weather backgrounds:"
+msgstr "Automatyczne tła pogodowe:"
+
+msgid "Holiday backgrounds:"
+msgstr "Tła świąteczne:"
+
+msgid "Download weather backgrounds"
+msgstr "Pobierz tła pogodowe"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Czy chcesz teraz pobrać tła pogodowe?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Tła pogodowe zostały pomyślnie pobrane."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Nie można było pobrać teł pogodowych."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Korzystasz już z najnowszej wersji (%s)."
+
+msgid "Sunrise"
+msgstr "Wschód słońca"
+
+msgid "Sunset"
+msgstr "Zachód słońca"
+
+msgid "Moonrise"
+msgstr "Wschód księżyca"
+
+msgid "Moonset"
+msgstr "Zachód księżyca"
+
+msgid "Moon :"
+msgstr "Księżyc :"
+
+msgid "Sun :"
+msgstr "Słońce :"
+
+msgid "No matching cities found."
+msgstr "Nie znaleziono pasujących miast."
+
+msgid "Could not save the selected location."
+msgstr "Nie można zapisać wybranej lokalizacji."
+
+msgid "Choose a match:"
+msgstr "Wybierz miasto:"
 ```

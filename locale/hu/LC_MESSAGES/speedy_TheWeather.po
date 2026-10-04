@@ -64,32 +64,16 @@ msgid "Belgium"
 msgstr "Belgium"
 
 msgid "Changeable and chance of mist"
-msgstr "Változékony idő, ködképződés esélyével"
+msgstr "Változékony, köd kialakulhat"
 
-msgid ""
-"Tip!\n"
-"Press the hidden Yellow button in the main menu to open the RainRadar.\n"
-"\n"
-"Press the hidden Green button in the main menu to change the hour interval.\n"
-"\n"
-"Press the hidden Blue button in the main menu to compare two cities.\n"
-"\n"
-"Press OK here to toggle the temperature overlay: %s"
-msgstr ""
-"Tipp!\n"
-"A csapadékradar megnyitásához nyomja meg a főmenüben található rejtett SÁRGA gombot.\n"
-"\n"
-"Az óraintervallum módosításához nyomja meg a főmenüben található rejtett ZÖLD gombot.\n"
-"\n"
-"Két város összehasonlításához nyomja meg a főmenüben található rejtett KÉK gombot.\n"
-"\n"
-"A hőmérséklet kijelzésének be- vagy kikapcsolásához nyomja meg itt az OK gombot: %s"
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Tipp!\nA főmenüben nyomja meg a rejtett SÁRGA gombot az esőradar megnyitásához.\n\nA főmenüben nyomja meg a rejtett ZÖLD gombot az óraintervallum módosításához.\n\nA főmenüben nyomja meg a rejtett KÉK gombot két város összehasonlításához.\n\nNyomja meg itt az OK gombot a hőmérséklet-kijelzés be- vagy kikapcsolásához: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Változóan felhős, gyenge havazás"
+msgstr "Változékony, felhős, gyenge havazás"
 
 msgid "Clear and chance of mist"
-msgstr "Derült, ködképződés esélyével"
+msgstr "Derült, köd kialakulhat"
 
 msgid "Clear night"
 msgstr "Derült éjszaka"
@@ -101,10 +85,10 @@ msgid "Cloudy"
 msgstr "Felhős"
 
 msgid "Cloudy and chance of showers"
-msgstr "Felhős, záporok kialakulásának esélyével"
+msgstr "Felhős, záporok kialakulhatnak"
 
 msgid "Download error: Check spelling."
-msgstr "Letöltési hiba: Ellenőrizze a helyesírást."
+msgstr "Letöltési hiba: ellenőrizze a helyesírást."
 
 msgid "Drizzle"
 msgstr "Szitálás"
@@ -128,7 +112,7 @@ msgid "Feels like: "
 msgstr "Hőérzet: "
 
 msgid "Hail radar"
-msgstr "Jégradar"
+msgstr "Jégesőradar"
 
 msgid "Heavy clouds"
 msgstr "Erősen felhős"
@@ -137,7 +121,7 @@ msgid "Heavy clouds  heavy showers"
 msgstr "Erősen felhős, heves záporok"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Erősen felhős, zivatarok"
+msgstr "Erősen felhős, zivataros záporok"
 
 msgid "Heavy clouds and heavy snowfall"
 msgstr "Erősen felhős, intenzív havazás"
@@ -209,25 +193,25 @@ msgid "Satellite"
 msgstr "Műhold"
 
 msgid "Showers and chance of thunder"
-msgstr "Záporok, zivatarok kialakulásának esélyével"
+msgstr "Záporok, zivatar kialakulhat"
 
 msgid "Snow radar"
-msgstr "Hó-radar"
+msgstr "Hóradar"
 
 msgid "Sun radar"
-msgstr "Napradar"
+msgstr "Napsugárzás-radar"
 
 msgid "Sunny / Clear"
 msgstr "Napos / Derült"
 
 msgid "Sunny and chance of mist"
-msgstr "Napos, ködképződés esélyével"
+msgstr "Napos, köd kialakulhat"
 
 msgid "Sunny and chance of showers"
-msgstr "Napos, záporok kialakulásának esélyével"
+msgstr "Napos, záporok kialakulhatnak"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Napos, zivatarok kialakulásának esélyével"
+msgstr "Napos, zivataros záporok kialakulhatnak"
 
 msgid "Sunny few clouds"
 msgstr "Napos, kevés felhővel"
@@ -242,16 +226,16 @@ msgid "The Netherlands"
 msgstr "Hollandia"
 
 msgid "TheWeather"
-msgstr "TheWeather"
+msgstr "Időjárás"
 
 msgid "Thunder radar"
-msgstr "Zivatarradar"
+msgstr "Zivatar-radar"
 
 msgid "W"
 msgstr "Ny"
 
 msgid "Weather forecast-nl"
-msgstr "Időjárás-előrejelzés - NL"
+msgstr "Időjárás-előrejelzés-NL"
 
 msgid "Wind direction: "
 msgstr "Szélirány: "
@@ -280,11 +264,14 @@ msgstr "A város nem található. A módosításhoz nyomja meg a SÁRGA gombot."
 msgid "Compare Two Locations"
 msgstr "Két hely összehasonlítása"
 
+msgid "Compare Locations"
+msgstr "Helyek összehasonlítása"
+
 msgid "Data error"
 msgstr "Adathiba"
 
 msgid "Download error: No response try again"
-msgstr "Letöltési hiba: Nincs válasz, próbálja újra"
+msgstr "Letöltési hiba: nincs válasz, próbálja újra"
 
 msgid "Error fetching data."
 msgstr "Hiba az adatok lekérésekor."
@@ -299,28 +286,28 @@ msgid "Extreme cold!"
 msgstr "Extrém hideg!"
 
 msgid "Extreme heat!"
-msgstr "Extrém hőség!"
+msgstr "Extrém meleg!"
 
 msgid "h"
 msgstr "ó"
 
 msgid "Heavy rain!"
-msgstr "Heves esőzés!"
+msgstr "Heves eső!"
 
 msgid "Heavy storm!"
 msgstr "Heves vihar!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Az ikoncsomag megváltozott.\nA plugin újraindul..."
+msgstr "Az ikoncsomag megváltozott.\nA bővítmény újraindul..."
 
 msgid "Loading background image, please wait..."
-msgstr "Háttérkép betöltése, kérjük, várjon..."
+msgstr "Háttérkép betöltése, kérjük várjon..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Alapértelmezett ikonok betöltése, kérjük, várjon..."
+msgstr "Alapértelmezett ikonok betöltése, kérjük várjon..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Extra ikonok betöltése, kérjük, várjon..."
+msgstr "Extra ikonok betöltése, kérjük várjon..."
 
 msgid "Loading..."
 msgstr "Betöltés..."
@@ -368,13 +355,13 @@ msgid "Sun: "
 msgstr "Nap: "
 
 msgid "Very heavy rain!"
-msgstr "Nagyon heves esőzés!"
+msgstr "Nagyon heves eső!"
 
 msgid "Warm weather!"
 msgstr "Meleg idő!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Hoppá!\nLassú vagy nincs internetkapcsolat\nKérjük, próbálja újra"
+msgstr "Hoppá!\nLassú vagy nincs internetkapcsolat.\nKérjük, próbálja újra"
 
 msgid "Wind: "
 msgstr "Szél: "
@@ -413,21 +400,86 @@ msgid "Map zoom: %s"
 msgstr "Térkép nagyítása: %s"
 
 msgid "Select city and:"
-msgstr "Válasszon várost és:"
+msgstr "Város kiválasztása és:"
 
 msgid "- Press Ok for Weather info"
 msgstr "- Nyomja meg az OK gombot az időjárási információkhoz"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Nyomja meg a Menu gombot a csapadékradarhoz"
+msgstr "- Nyomja meg a Menü gombot az esőradarhoz"
 
 msgid "Appearance"
 msgstr "Megjelenés"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Város / Hely"
+
+msgid "Aktuelle Temperatur"
+msgstr "Aktuális hőmérséklet"
+
+msgid "Wetterbeschreibung"
+msgstr "Időjárás leírása"
+
+msgid "Gefühlte Temperatur"
+msgstr "Hőérzet"
+
+msgid "Windrichtung"
+msgstr "Szélirány"
+
+msgid "Wochentag"
+msgstr "A hét napja"
+
+msgid "Höchsttemperatur"
+msgstr "Legmagasabb hőmérséklet"
+
+msgid "Tiefsttemperatur"
+msgstr "Legalacsonyabb hőmérséklet"
+
+msgid "Tages-Wettertext"
+msgstr "Napi időjárás-leírás"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Napkelte / Napnyugta"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Óra / Idő"
+
+msgid "Stundentemperatur"
+msgstr "Óránkénti hőmérséklet"
+
+msgid "Regen"
+msgstr "Eső"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Napsütés valószínűsége"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Páratartalom"
+
+msgid "Windgeschwindigkeit"
+msgstr "Szélsebesség"
+
+msgid "Uhr"
+msgstr "Óra"
+
+msgid "Datum"
+msgstr "Dátum"
+
+msgid "Wetterwarnung"
+msgstr "Időjárási riasztás"
+
+msgid "Default colors"
+msgstr "Alapértelmezett színek"
+
+msgid "Save & exit"
+msgstr "Mentés és kilépés"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
@@ -441,7 +493,7 @@ msgid ""
 "\n"
 "Version: %s"
 msgstr ""
-"A plugin már naprakész.\n"
+"A bővítmény már naprakész.\n"
 "\n"
 "Verzió: %s"
 
@@ -470,7 +522,7 @@ msgid "New version: %s"
 msgstr "Új verzió: %s"
 
 msgid "Do you want to install the update?"
-msgstr "Szeretné telepíteni a frissítést?"
+msgstr "Telepíteni szeretné a frissítést?"
 
 msgid ""
 "The update is being installed.\n"
@@ -513,4 +565,58 @@ msgstr "Helyek"
 
 msgid "RainViewer"
 msgstr "RainViewer"
+
+msgid "speedy_TheWeather Settings"
+msgstr "speedy_TheWeather beállításai"
+
+msgid "Infoscreen"
+msgstr "Információs képernyő"
+
+msgid "Auto weather backgrounds:"
+msgstr "Automatikus időjárási hátterek:"
+
+msgid "Holiday backgrounds:"
+msgstr "Ünnepi hátterek:"
+
+msgid "Download weather backgrounds"
+msgstr "Időjárási hátterek letöltése"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Szeretné most letölteni az időjárási háttereket?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Az időjárási hátterek sikeresen letöltve."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Az időjárási háttereket nem sikerült letölteni."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Már a legújabb verziót használja (%s)."
+
+msgid "Sunrise"
+msgstr "Napkelte"
+
+msgid "Sunset"
+msgstr "Napnyugta"
+
+msgid "Moonrise"
+msgstr "Holdkelte"
+
+msgid "Moonset"
+msgstr "Holdnyugta"
+
+msgid "Moon :"
+msgstr "Hold :"
+
+msgid "Sun :"
+msgstr "Nap :"
+
+msgid "No matching cities found."
+msgstr "Nem találhatók megfelelő városok."
+
+msgid "Could not save the selected location."
+msgstr "A kiválasztott helyet nem sikerült menteni."
+
+msgid "Choose a match:"
+msgstr "Válasszon a találatok közül:"
 ```

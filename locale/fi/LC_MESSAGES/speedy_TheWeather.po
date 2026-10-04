@@ -64,29 +64,13 @@ msgid "Belgium"
 msgstr "Belgia"
 
 msgid "Changeable and chance of mist"
-msgstr "Vaihtelevan pilvistä, sumun mahdollisuus"
+msgstr "Vaihtelevaa, sumun mahdollisuus"
 
-msgid ""
-"Tip!\n"
-"Press the hidden Yellow button in the main menu to open the RainRadar.\n"
-"\n"
-"Press the hidden Green button in the main menu to change the hour interval.\n"
-"\n"
-"Press the hidden Blue button in the main menu to compare two cities.\n"
-"\n"
-"Press OK here to toggle the temperature overlay: %s"
-msgstr ""
-"Vinkki!\n"
-"Avaa sadetutka painamalla päävalikon piilotettua KELTAISTA painiketta.\n"
-"\n"
-"Muuta tuntiväliä painamalla päävalikon piilotettua VIHREÄÄ painiketta.\n"
-"\n"
-"Vertaa kahta kaupunkia painamalla päävalikon piilotettua SINISTÄ painiketta.\n"
-"\n"
-"Ota lämpötilanäyttö käyttöön tai pois käytöstä painamalla tässä OK: %s"
+msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
+msgstr "Vinkki!\nAvaa sadetutka painamalla päävalikon piilotettua KELTAISTA painiketta.\n\nMuuta tuntiväliä painamalla päävalikon piilotettua VIHREÄÄ painiketta.\n\nVertaa kahta kaupunkia painamalla päävalikon piilotettua SINISTÄ painiketta.\n\nVaihda lämpötilanäyttöä painamalla OK: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Vaihtelevan pilvistä, kevyttä lumisadetta"
+msgstr "Vaihtelevaa pilvisyyttä, heikkoa lumisadetta"
 
 msgid "Clear and chance of mist"
 msgstr "Selkeää, sumun mahdollisuus"
@@ -107,7 +91,7 @@ msgid "Download error: Check spelling."
 msgstr "Latausvirhe: Tarkista kirjoitusasu."
 
 msgid "Drizzle"
-msgstr "Tihkusadetta"
+msgstr "Tihkusade"
 
 msgid "E"
 msgstr "I"
@@ -119,7 +103,7 @@ msgid "Exit"
 msgstr "Poistu"
 
 msgid "Favorite Locations"
-msgstr "Suosikkisijainnit"
+msgstr "Suosikkipaikat"
 
 msgid "Feels Like: "
 msgstr "Tuntuu kuin: "
@@ -131,34 +115,34 @@ msgid "Hail radar"
 msgstr "Raetutka"
 
 msgid "Heavy clouds"
-msgstr "Paksu pilvipeite"
+msgstr "Runsaasti pilviä"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Paksu pilvipeite, voimakkaita sadekuuroja"
+msgstr "Runsaasti pilviä, voimakkaita sadekuuroja"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Paksu pilvipeite, ukkoskuuroja"
+msgstr "Runsaasti pilviä, ukkoskuuroja"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Paksu pilvipeite ja voimakasta lumisadetta"
+msgstr "Runsaasti pilviä ja voimakasta lumisadetta"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Paksu pilvipeite, kevyttä lumisadetta"
+msgstr "Runsaasti pilviä, heikkoa lumisadetta"
 
 msgid "Heavy clouds showers possible"
-msgstr "Paksu pilvipeite, sadekuurojen mahdollisuus"
+msgstr "Runsaasti pilviä, sadekuuroja mahdollisesti"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Paksu pilvipeite, talvisadetta"
+msgstr "Runsaasti pilviä, talvisia sateita"
 
 msgid "Help"
 msgstr "Ohje"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "Km/h"
 
 msgid "Light cloudy"
-msgstr "Vähän pilvistä"
+msgstr "Puolipilvistä"
 
 msgid "Local Weather"
 msgstr "Paikallinen sää"
@@ -188,7 +172,7 @@ msgid "NE"
 msgstr "KO"
 
 msgid "NW"
-msgstr "LU"
+msgstr "LO"
 
 msgid "Rainfall radar"
 msgstr "Sadetutka"
@@ -203,16 +187,16 @@ msgid "SE"
 msgstr "KA"
 
 msgid "SW"
-msgstr "LO"
+msgstr "LÄ"
 
 msgid "Satellite"
 msgstr "Satelliitti"
 
 msgid "Showers and chance of thunder"
-msgstr "Sadekuuroja ja ukkosen mahdollisuus"
+msgstr "Sadekuuroja, ukkosen mahdollisuus"
 
 msgid "Snow radar"
-msgstr "Lumisadetutka"
+msgstr "Lumitutka"
 
 msgid "Sun radar"
 msgstr "Aurinkotutka"
@@ -233,7 +217,7 @@ msgid "Sunny few clouds"
 msgstr "Aurinkoista, vähän pilviä"
 
 msgid "Sunpower-UV"
-msgstr "Auringon UV-säteily"
+msgstr "UV-indeksi"
 
 msgid "Temperature"
 msgstr "Lämpötila"
@@ -242,7 +226,7 @@ msgid "The Netherlands"
 msgstr "Alankomaat"
 
 msgid "TheWeather"
-msgstr "TheWeather"
+msgstr "Sää"
 
 msgid "Thunder radar"
 msgstr "Ukkostutka"
@@ -251,7 +235,7 @@ msgid "W"
 msgstr "L"
 
 msgid "Weather forecast-nl"
-msgstr "Sääennuste - NL"
+msgstr "Sääennuste-NL"
 
 msgid "Wind direction: "
 msgstr "Tuulen suunta: "
@@ -275,10 +259,13 @@ msgid "Choose background:"
 msgstr "Valitse tausta:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Kaupunkia ei löytynyt. Paina KELTAISTA vaihtaaksesi."
+msgstr "Kaupunkia ei löytynyt. Paina KELTAISTA muuttaaksesi."
 
 msgid "Compare Two Locations"
-msgstr "Vertaile kahta sijaintia"
+msgstr "Vertaa kahta sijaintia"
+
+msgid "Compare Locations"
+msgstr "Vertaa sijainteja"
 
 msgid "Data error"
 msgstr "Tietovirhe"
@@ -296,22 +283,22 @@ msgid "Extra Icons "
 msgstr "Lisäkuvakkeet "
 
 msgid "Extreme cold!"
-msgstr "Äärimmäisen kylmää!"
+msgstr "Äärimmäinen kylmyys!"
 
 msgid "Extreme heat!"
-msgstr "Äärimmäisen kuumaa!"
+msgstr "Äärimmäinen kuumuus!"
 
 msgid "h"
-msgstr "t"
+msgstr "h"
 
 msgid "Heavy rain!"
-msgstr "Voimakasta sadetta!"
+msgstr "Voimakas sade!"
 
 msgid "Heavy storm!"
 msgstr "Voimakas myrsky!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Kuvakepaketti vaihdettu.\nLisäosa käynnistyy uudelleen..."
+msgstr "Kuvakepaketti vaihdettu.\nLisäosa käynnistetään uudelleen..."
 
 msgid "Loading background image, please wait..."
 msgstr "Ladataan taustakuvaa, odota..."
@@ -326,7 +313,7 @@ msgid "Loading..."
 msgstr "Ladataan..."
 
 msgid "No 2nd location"
-msgstr "2. sijaintia ei ole"
+msgstr "Ei 2. sijaintia"
 
 msgid "No info"
 msgstr "Ei tietoja"
@@ -338,7 +325,7 @@ msgid "Not found"
 msgstr "Ei löytynyt"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Paina KELTAISTA valitaksesi 2. sijainnin."
+msgstr "Valitse 2. sijainti painamalla KELTAISTA."
 
 msgid "Rain: "
 msgstr "Sade: "
@@ -368,13 +355,13 @@ msgid "Sun: "
 msgstr "Aurinko: "
 
 msgid "Very heavy rain!"
-msgstr "Erittäin voimakasta sadetta!"
+msgstr "Erittäin voimakas sade!"
 
 msgid "Warm weather!"
-msgstr "Lämmintä säätä!"
+msgstr "Lämmin sää!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Hups!\nHidas tai puuttuva Internet-yhteys\nYritä uudelleen"
+msgstr "Hups!\nHidas tai puuttuva Internet-yhteys.\nYritä uudelleen"
 
 msgid "Wind: "
 msgstr "Tuuli: "
@@ -395,10 +382,10 @@ msgid "Save"
 msgstr "Tallenna"
 
 msgid "Show 2 locations"
-msgstr "Näytä 2 sijaintia"
+msgstr "Näytä 2 sääsijaintia"
 
 msgid "Radar default zoom:"
-msgstr "Tutkan oletuszoomaus:"
+msgstr "Tutkan oletuszoom:"
 
 msgid "Date format:"
 msgstr "Päivämäärän muoto:"
@@ -425,16 +412,81 @@ msgid "Appearance"
 msgstr "Ulkoasu"
 
 # ============================================================
+# SevenDay Farben
+# ============================================================
 
+msgid "Stadt / Ort"
+msgstr "Kaupunki / Sijainti"
+
+msgid "Aktuelle Temperatur"
+msgstr "Nykyinen lämpötila"
+
+msgid "Wetterbeschreibung"
+msgstr "Sään kuvaus"
+
+msgid "Gefühlte Temperatur"
+msgstr "Tuntuu kuin"
+
+msgid "Windrichtung"
+msgstr "Tuulen suunta"
+
+msgid "Wochentag"
+msgstr "Viikonpäivä"
+
+msgid "Höchsttemperatur"
+msgstr "Ylin lämpötila"
+
+msgid "Tiefsttemperatur"
+msgstr "Alin lämpötila"
+
+msgid "Tages-Wettertext"
+msgstr "Päivän sääkuvaus"
+
+msgid "Sonnenaufgang / Sonnenuntergang"
+msgstr "Auringonnousu / auringonlasku"
+
+msgid "Stunde / Uhrzeit"
+msgstr "Tunti / kellonaika"
+
+msgid "Stundentemperatur"
+msgstr "Tuntikohtainen lämpötila"
+
+msgid "Regen"
+msgstr "Sade"
+
+msgid "Sonnenwahrscheinlichkeit"
+msgstr "Auringonpaisteen todennäköisyys"
+
+msgid "Luftfeuchtigkeit"
+msgstr "Ilmankosteus"
+
+msgid "Windgeschwindigkeit"
+msgstr "Tuulen nopeus"
+
+msgid "Uhr"
+msgstr "Kello"
+
+msgid "Datum"
+msgstr "Päivämäärä"
+
+msgid "Wetterwarnung"
+msgstr "Säävaroitus"
+
+msgid "Default colors"
+msgstr "Oletusvärit"
+
+msgid "Save & exit"
+msgstr "Tallenna ja poistu"
+
+# ============================================================
 # Update
-
 # ============================================================
 
 msgid "TheWeather update"
 msgstr "TheWeather-päivitys"
 
 msgid "Search for update"
-msgstr "Etsi päivityksiä"
+msgstr "Etsi päivitystä"
 
 msgid ""
 "The plugin is already up to date.\n"
@@ -446,13 +498,13 @@ msgstr ""
 "Versio: %s"
 
 msgid "Update check failed."
-msgstr "Päivitysten tarkistus epäonnistui."
+msgstr "Päivityksen tarkistus epäonnistui."
 
 msgid "Changes:"
 msgstr "Muutokset:"
 
 msgid "Installer version: %s"
-msgstr "Asentajan versio: %s"
+msgstr "Asennusohjelman versio: %s"
 
 msgid "Update information is incomplete."
 msgstr "Päivitystiedot ovat puutteelliset."
@@ -461,7 +513,7 @@ msgid "No changes available."
 msgstr "Muutoksia ei ole saatavilla."
 
 msgid "A new version of speedy_TheWeather is available."
-msgstr "speedy_TheWeather-lisäosasta on saatavilla uusi versio."
+msgstr "Uusi speedy_TheWeather-versio on saatavilla."
 
 msgid "Installed version: %s"
 msgstr "Asennettu versio: %s"
@@ -479,7 +531,7 @@ msgid ""
 msgstr ""
 "Päivitystä asennetaan.\n"
 "\n"
-"Odota..."
+"Odota."
 
 msgid ""
 "The update could not be installed.\n"
@@ -506,11 +558,65 @@ msgid "Hours"
 msgstr "Tunnit"
 
 msgid "Radar"
-msgstr "Tutka"
+msgstr "Sadetutka"
 
 msgid "Locations"
 msgstr "Sijainnit"
 
 msgid "RainViewer"
-msgstr "RainViewer"
+msgstr "Sadetutka"
+
+msgid "speedy_TheWeather Settings"
+msgstr "speedy_TheWeather-asetukset"
+
+msgid "Infoscreen"
+msgstr "Tietonäyttö"
+
+msgid "Auto weather backgrounds:"
+msgstr "Automaattiset säätaustat:"
+
+msgid "Holiday backgrounds:"
+msgstr "Juhlapyhien taustat:"
+
+msgid "Download weather backgrounds"
+msgstr "Lataa säätaustat"
+
+msgid "Do you want to download the weather backgrounds now?"
+msgstr "Haluatko ladata säätaustat nyt?"
+
+msgid "The weather backgrounds were downloaded successfully."
+msgstr "Säätaustat ladattiin onnistuneesti."
+
+msgid "The weather backgrounds could not be downloaded."
+msgstr "Säätaustojen lataaminen epäonnistui."
+
+msgid "You are already using the latest version (%s)."
+msgstr "Käytät jo uusinta versiota (%s)."
+
+msgid "Sunrise"
+msgstr "Auringonnousu"
+
+msgid "Sunset"
+msgstr "Auringonlasku"
+
+msgid "Moonrise"
+msgstr "Kuun nousu"
+
+msgid "Moonset"
+msgstr "Kuun lasku"
+
+msgid "Moon :"
+msgstr "Kuu :"
+
+msgid "Sun :"
+msgstr "Aurinko :"
+
+msgid "No matching cities found."
+msgstr "Sopivia kaupunkeja ei löytynyt."
+
+msgid "Could not save the selected location."
+msgstr "Valittua sijaintia ei voitu tallentaa."
+
+msgid "Choose a match:"
+msgstr "Valitse sopiva kaupunki:"
 ```
