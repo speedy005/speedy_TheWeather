@@ -997,6 +997,20 @@ msgstr "[BEREINIGUNG] ZIP nach Fehler gelöscht"
 msgid "[CLEANUP] Marker removed after error"
 msgstr "[BEREINIGUNG] Marker nach Fehler entfernt"
 
+msgid "Location 1 Name"
+msgstr "Name Ort 1"
+
+msgid "Location 2 Name"
+msgstr "Name Ort 2"
+
+msgid "Location 1 Max. Temperatur"
+msgstr "Max. Temperatur Ort 1"
+
+msgid "Location 2 Max. Temperatur"
+msgstr "Max. Temperatur Ort 2"
+
+
+
 
 
 
