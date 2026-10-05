@@ -997,17 +997,41 @@ msgstr "[BEREINIGUNG] ZIP nach Fehler gelöscht"
 msgid "[CLEANUP] Marker removed after error"
 msgstr "[BEREINIGUNG] Marker nach Fehler entfernt"
 
-msgid "Location 1 Name"
-msgstr "Name Ort 1"
+msgid "Location 1 - Weather description"
+msgstr "Ort 1 - Wetterbeschreibung"
 
-msgid "Location 2 Name"
-msgstr "Name Ort 2"
+msgid "Location 1 - Feels like temperature"
+msgstr "Ort 1 - Gefühlte Temperatur"
 
-msgid "Location 1 Max. Temperatur"
-msgstr "Max. Temperatur Ort 1"
+msgid "Location 1 - Wind"
+msgstr "Ort 1 - Wind"
 
-msgid "Location 2 Max. Temperatur"
-msgstr "Max. Temperatur Ort 2"
+msgid "Location 1 - Rain"
+msgstr "Ort 1 - Regen"
+
+msgid "Location 1 - Sun :"
+msgstr "Ort 1 - Sonne :"
+
+msgid "Location 1 - Moon :"
+msgstr "Ort 1 - Mond :"
+
+msgid "Location 2 - Weather description"
+msgstr "Ort 2 - Wetterbeschreibung"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Ort 2 - Gefühlte Temperatur"
+
+msgid "Location 2 - Wind"
+msgstr "Ort 2 - Wind"
+
+msgid "Location 2 - Rain"
+msgstr "Ort 2 - Regen"
+
+msgid "Location 2 - Sun :"
+msgstr "Ort 2 - Sonne :"
+
+msgid "Location 2 - Moon :"
+msgstr "Ort 2 - Mond :"
 
 
 
