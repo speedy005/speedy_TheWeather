@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.5
+# v.1.9.6
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -134,6 +134,9 @@ config.plugins.speedy_TheWeather.holidayBackgrounds = ConfigYesNo(
 # ConfigSelection aufgebaut: kein externer ColorPicker, keine Zusatz-Plugins
 # und damit auch auf schwachen Boxen sehr leichtgewichtig.
 SEVENDAY_COLOR_CHOICES = [
+    # =========================
+    # ORIGINAL-FARBEN (51)
+    # =========================
     ("#00ff0000", _("Rot")),
     ("#0000ff00", _("Grün")),
     ("#000000ff", _("Blau")),
@@ -185,7 +188,100 @@ SEVENDAY_COLOR_CHOICES = [
     ("#00c0c0c0", _("Hellgrau")),
     ("#00404040", _("Dunkelgrau")),
     ("#00e0e0e0", _("Sehr hellgrau")),
+
+    # =========================
+    # NEUE FARBEN (49)
+    # =========================
+
+    # Rot / Pink
+    ("#00e02020", _("Kirschrot")),
+    ("#00e04040", _("Rubinrot")),
+    ("#00a00020", _("Bordeaux")),
+    ("#00c02040", _("Himbeerrot")),
+    ("#00ff2060", _("Neonpink")),
+    ("#00e02080", _("Fuchsia")),
+    ("#00c04080", _("Beerenton")),
+    ("#00ff60a0", _("Candy Pink")),
+
+    # Orange / Gelb
+    ("#00e06020", _("Mandarine")),
+    ("#00ff6020", _("Aprikose")),
+    ("#00e08040", _("Pfirsich")),
+    ("#00e0a020", _("Bernstein")),
+    ("#00ffc040", _("Safran")),
+    ("#00ffe040", _("Zitronengelb")),
+    ("#00e0c040", _("Honig")),
+    ("#00ffb020", _("Neonorange")),
+
+    # Grün
+    ("#0040a040", _("Waldgrün")),
+    ("#0060a040", _("Smaragdgrün")),
+    ("#0020c080", _("Jadegrün")),
+    ("#00408040", _("Tannengrün")),
+    ("#00a0c060", _("Mintgrün")),
+    ("#0060e080", _("Mint")),
+    ("#0020ff40", _("Neongrün")),
+    ("#0080e040", _("Apfelgrün")),
+
+    # Cyan / Türkis
+    ("#0040c0c0", _("Teal")),
+    ("#0060d0d0", _("Aquamarin")),
+    ("#0020e0e0", _("Neoncyan")),
+    ("#00a0e0c0", _("Meeresgrün")),
+    ("#0060a0a0", _("Lagune")),
+
+    # Blau
+    ("#0040a0ff", _("Kobaltblau")),
+    ("#0000a0ff", _("Royalblau")),
+    ("#0020e0ff", _("Electric Blue")),
+    ("#0060ffff", _("Neonblau")),
+    ("#0080e0ff", _("Azure")),
+    ("#0060a0ff", _("Saphirblau")),
+    ("#002080ff", _("Ozeanblau")),
+    ("#00206080", _("Nachtblau")),
+
+    # Violett / Lila
+    ("#006020ff", _("Indigo")),
+    ("#006040ff", _("Deep Purple")),
+    ("#00a020ff", _("Royal Purple")),
+    ("#00c040ff", _("Amethyst")),
+    ("#00a060ff", _("Lavendel")),
+    ("#00d080ff", _("Flieder")),
+    ("#00e020ff", _("Neonviolett")),
+    ("#008060ff", _("Pflaume")),
+
+    # Braun / Metallic / besondere Farben
+    ("#00a06020", _("Karamell")),
+    ("#00c06020", _("Terrakotta")),
+    ("#00a08040", _("Bronze")),
+   
+	# =========================
+	# 20 WEITERE COOLE FARBEN
+	# =========================
+
+	("##00ff1493", _("Cyber Pink")),
+	("##00b026ff", _("Galaxy Purple")),
+	("##005c00ff", _("Cosmic Violet")),
+	("##0000d9ff", _("Deep Electric Blue")),
+	("##0000f5ff", _("Laser Blue")),
+	("##0000ffc0", _("Holographic Cyan")),
+	("##00ff00c0", _("Neon Cyan")),
+	("##00b0ff40", _("Toxic Mint")),
+	("##0020ff80", _("Acid Green")),
+	("##00c0ff20", _("Lime Neon")),
+	("##00ff6000", _("Solar Orange")),
+	("##00ff2060", _("Sunset Pink")),
+	("##00ff4060", _("Hot Coral")),
+	("##00ff80e0", _("Bubblegum")),
+	("##00e060e0", _("Candy Purple")),
+	("##00a020e0", _("Electric Violet")),
+	("##0040e0a0", _("Emerald Glow")),
+	("##00e0a040", _("Golden Amber")),
+	("##00c080ff", _("Mystic Lavender")),
+	("##0040ffff", _("Arctic Blue")),
 ]
+
+
 
 _SEVENDAY_COLOR_DEFAULTS = {
     "city": "#0000ff00",
@@ -214,25 +310,16 @@ _SEVENDAY_COLOR_DEFAULTS = {
 }
 
 _TWOLOCATIONS_COLOR_DEFAULTS = {
-    # Jeder Ort besitzt einen eigenen Farbsatz.
-    # Die Defaults sind zunächst identisch, können aber getrennt geändert werden.
-    "loc1": {
-        "weathertype": "#0000ffff",  # Cyan
-        "feels":       "#0080c0ff",  # Hellblau
-        "wind":        "#00ffa500",  # Orange
-        "rain":        "#004080ff",  # Blau
-        "sun":         "#00ffff00",  # Gelb
-        "moon":        "#00ffd27f",  # Mondgold
-    },
-    "loc2": {
-        "weathertype": "#0000ffff",  # Cyan
-        "feels":       "#0080c0ff",  # Hellblau
-        "wind":        "#00ffa500",  # Orange
-        "rain":        "#004080ff",  # Blau
-        "sun":         "#00ffff00",  # Gelb
-        "moon":        "#00ffd27f",  # Mondgold
-    },
+    "weathertype": "#0000ffff",  # Cyan
+    "feels":       "#0080c0ff",  # Hellblau
+    "wind":        "#00ffa500",  # Orange
+    "rain":        "#004080ff",  # Blau
+    "sun":         "#00ffff00",  # Gelb
+    "moon":        "#00ffd27f",  # Mondgold
 }
+
+# Two-Locations: jeder Standort besitzt seine eigene Farbpalette.
+_TWOLocations_LEGACY_COLOR_DEFAULTS = dict(_TWOLOCATIONS_COLOR_DEFAULTS)
 
 for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
     setattr(
@@ -243,8 +330,9 @@ for _sd_color_name, _sd_color_default in _SEVENDAY_COLOR_DEFAULTS.items():
             choices=SEVENDAY_COLOR_CHOICES
         )
     )
-for _tl_location, _tl_colors in _TWOLOCATIONS_COLOR_DEFAULTS.items():
-    for _tl_color_name, _tl_color_default in _tl_colors.items():
+# Neue getrennte Farben für Standort 1 und Standort 2.
+for _tl_location in ("loc1", "loc2"):
+    for _tl_color_name, _tl_color_default in _TWOLOCATIONS_COLOR_DEFAULTS.items():
         setattr(
             config.plugins.speedy_TheWeather,
             "twoloc_%s_color_%s" % (_tl_location, _tl_color_name),
@@ -254,7 +342,18 @@ for _tl_location, _tl_colors in _TWOLOCATIONS_COLOR_DEFAULTS.items():
             )
         )
 
-del _tl_location, _tl_colors, _tl_color_name, _tl_color_default
+# Legacy-Werte bleiben für die Migration alter Einstellungen erhalten.
+for _tl_color_name, _tl_color_default in _TWOLocations_LEGACY_COLOR_DEFAULTS.items():
+    setattr(
+        config.plugins.speedy_TheWeather,
+        "twoloc_color_" + _tl_color_name,
+        ConfigSelection(
+            default=_tl_color_default,
+            choices=SEVENDAY_COLOR_CHOICES
+        )
+    )
+
+del _tl_location, _tl_color_name, _tl_color_default
 del _sd_color_name, _sd_color_default
 
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
@@ -1207,7 +1306,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.5"
+__version__ = "1.9.6"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1223,7 +1322,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.5'
+version = '1.9.6'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -12780,9 +12879,9 @@ class sevendayColorSetup(ConfigListScreen, Screen):
 
 class twolocationsColorSetup(ConfigListScreen, Screen):
     """
-    Separates Farbmenü für den Two-Locations-Screen.
+    Getrenntes Farbmenü für den Two-Locations-Screen.
 
-    Alle Farben sind ConfigSelection-Werte.
+    Standort 1 und Standort 2 besitzen jeweils eine eigene Palette.
     """
 
     skin = """
@@ -12800,141 +12899,58 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
             itemTextUnselectedColor="#ffffff"
             font="Regular;30" />
 
-        <ePixmap
-            pixmap="skin_default/buttons/red.png"
-            position="11,650"
-            size="20,40"
-            alphatest="on"
-            zPosition="1" />
-
-        <widget name="key_red"
-            position="36,650"
-            size="240,40"
-            zPosition="2"
-            transparent="1"
-            font="Regular;25"
-            halign="center"
-            valign="center" />
-
-        <ePixmap
-            pixmap="skin_default/buttons/green.png"
-            position="282,650"
-            size="20,40"
-            alphatest="on"
-            zPosition="1" />
-
-        <widget name="key_green"
-            position="308,650"
-            size="240,40"
-            zPosition="2"
-            transparent="1"
-            font="Regular;25"
-            halign="center"
-            valign="center"
-            foregroundColor="green" />
-
-        <ePixmap
-            pixmap="skin_default/buttons/yellow.png"
-            position="554,650"
-            size="20,40"
-            alphatest="on"
-            zPosition="1" />
-
-        <widget name="key_yellow"
-            position="579,650"
-            size="240,40"
-            zPosition="2"
-            transparent="1"
-            font="Regular;25"
-            halign="center"
-            valign="center"
-            foregroundColor="yellow" />
-
-        <ePixmap
-            pixmap="skin_default/buttons/blue.png"
-            position="825,650"
-            size="20,40"
-            alphatest="on"
-            zPosition="1" />
-
-        <widget name="key_blue"
-            position="851,650"
-            size="240,40"
-            zPosition="2"
-            transparent="1"
-            font="Regular;25"
-            halign="center"
-            valign="center"
-            foregroundColor="blue" />
+        <ePixmap pixmap="skin_default/buttons/red.png" position="11,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_red" position="36,650" size="240,40" zPosition="2" transparent="1" font="Regular;25" halign="center" valign="center" />
+        <ePixmap pixmap="skin_default/buttons/green.png" position="282,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_green" position="308,650" size="240,40" zPosition="2" transparent="1" font="Regular;25" halign="center" valign="center" foregroundColor="green" />
+        <ePixmap pixmap="skin_default/buttons/yellow.png" position="554,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_yellow" position="579,650" size="240,40" zPosition="2" transparent="1" font="Regular;25" halign="center" valign="center" foregroundColor="yellow" />
+        <ePixmap pixmap="skin_default/buttons/blue.png" position="825,650" size="20,40" alphatest="on" zPosition="1" />
+        <widget name="key_blue" position="851,650" size="240,40" zPosition="2" transparent="1" font="Regular;25" halign="center" valign="center" foregroundColor="blue" />
 
     </screen>
     """
 
     _ENTRIES = (
-        ("Ort 1 - Wetterbeschreibung", "loc1", "weathertype"),
-        ("Ort 1 - Gefühlte Temperatur", "loc1", "feels"),
-        ("Ort 1 - Wind", "loc1", "wind"),
-        ("Ort 1 - Regen", "loc1", "rain"),
-        ("Ort 1 - Sonne", "loc1", "sun"),
-        ("Ort 1 - Mond", "loc1", "moon"),
-        ("Ort 2 - Wetterbeschreibung", "loc2", "weathertype"),
-        ("Ort 2 - Gefühlte Temperatur", "loc2", "feels"),
-        ("Ort 2 - Wind", "loc2", "wind"),
-        ("Ort 2 - Regen", "loc2", "rain"),
-        ("Ort 2 - Sonne", "loc2", "sun"),
-        ("Ort 2 - Mond", "loc2", "moon"),
+        ("Wetterbeschreibung", "weathertype"),
+        ("Gefühlte Temperatur", "feels"),
+        ("Wind", "wind"),
+        ("Regen", "rain"),
+        ("Sonne", "sun"),
+        ("Mond", "moon"),
     )
 
     def __init__(self, session):
 
-        Screen.__init__(
-            self,
-            session
-        )
-
+        Screen.__init__(self, session)
         self.session = session
 
-        self["key_red"] = Label(
-            _("Cancel")
-        )
+        self["key_red"] = Label(_("Cancel"))
+        self["key_green"] = Label(_("Save"))
+        self["key_yellow"] = Label(_("Default colors"))
+        self["key_blue"] = Label(_("Save & exit"))
 
-        self["key_green"] = Label(
-            _("Save")
-        )
+        # Einmalige Migration der alten gemeinsamen Palette:
+        # alte Werte werden auf beide Standorte übernommen, solange die
+        # neuen Standortwerte noch auf ihren Standardwerten stehen.
+        self._migrateLegacyColors()
 
-        self["key_yellow"] = Label(
-            _("Default colors")
-        )
-
-        self["key_blue"] = Label(
-            _("Save & exit")
-        )
-
+        self.location1Header = ConfigNothing()
+        self.location2Header = ConfigNothing()
         self.list = []
 
-        for label, location, name in self._ENTRIES:
+        self.list.append(getConfigListEntry(_("=== Standort 1 Farben ==="), self.location1Header))
+        for label, name in self._ENTRIES:
+            self.list.append(getConfigListEntry(_(label) + ":", getattr(config.plugins.speedy_TheWeather, "twoloc_loc1_color_" + name)))
 
-            self.list.append(
-                getConfigListEntry(
-                    _(label) + ":",
-                    getattr(
-                        config.plugins.speedy_TheWeather,
-                        "twoloc_%s_color_%s" % (location, name)
-                    )
-                )
-            )
+        self.list.append(getConfigListEntry(_("=== Standort 2 Farben ==="), self.location2Header))
+        for label, name in self._ENTRIES:
+            self.list.append(getConfigListEntry(_(label) + ":", getattr(config.plugins.speedy_TheWeather, "twoloc_loc2_color_" + name)))
 
-        ConfigListScreen.__init__(
-            self,
-            self.list,
-            session=session
-        )
+        ConfigListScreen.__init__(self, self.list, session=session)
 
         self["actions"] = ActionMap(
-            [
-                "SetupActions",
-                "ColorActions"
-            ],
+            ["SetupActions", "ColorActions"],
             {
                 "green": self.save,
                 "blue": self.save,
@@ -12946,68 +12962,64 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
             -2
         )
 
+    def _migrateLegacyColors(self):
+        """Übernimmt alte gemeinsame Two-Locations-Farben auf beide Orte."""
+        try:
+            legacy_changed = False
+            for _label, name in self._ENTRIES:
+                legacy = getattr(config.plugins.speedy_TheWeather, "twoloc_color_" + name)
+                if legacy.value != _TWOLocations_LEGACY_COLOR_DEFAULTS[name]:
+                    legacy_changed = True
+                    break
+
+            if not legacy_changed:
+                return
+
+            for _label, name in self._ENTRIES:
+                legacy = getattr(config.plugins.speedy_TheWeather, "twoloc_color_" + name)
+                for location in ("loc1", "loc2"):
+                    target = getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_%s" % (location, name))
+                    if target.value == _TWOLOCATIONS_COLOR_DEFAULTS[name]:
+                        target.setValue(legacy.value)
+
+            print("[speedy_TheWeather] Legacy Two Locations Farben auf beide Standorte migriert.")
+        except Exception as e:
+            print("[speedy_TheWeather] Two Locations Farb-Migration fehlgeschlagen: %s" % e)
+
     def resetDefaults(self):
-
-        for _label, location, name in self._ENTRIES:
-
-            try:
-
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_%s" % (location, name)
-                ).setValue(
-                    _TWOLOCATIONS_COLOR_DEFAULTS[location][name]
-                )
-
-            except Exception as e:
-
-                print(
-                    "[speedy_TheWeather] "
-                    "Could not reset Two Locations color %s: %s"
-                    % (name, e)
-                )
+        for _label, name in self._ENTRIES:
+            for location in ("loc1", "loc2"):
+                try:
+                    getattr(
+                        config.plugins.speedy_TheWeather,
+                        "twoloc_%s_color_%s" % (location, name)
+                    ).setValue(_TWOLOCATIONS_COLOR_DEFAULTS[name])
+                except Exception as e:
+                    print(
+                        "[speedy_TheWeather] Could not reset Two Locations %s color %s: %s"
+                        % (location, name, e)
+                    )
 
         try:
-
-            self["config"].setList(
-                self.list
-            )
-
+            self["config"].setList(self.list)
         except Exception:
-
             pass
 
-    
     def save(self):
-
         for x in self["config"].list:
-
             try:
-
                 x[1].save()
-
             except Exception:
-
                 pass
-
         configfile.save()
-
-        self.close(
-            True
-        )
+        self.close(True)
 
     def keyCancel(self):
-
         for x in self["config"].list:
-
             try:
-
                 x[1].cancel()
-
             except Exception:
-
                 pass
-
         self.close()
 
 
@@ -14436,46 +14448,28 @@ class twolocations(Screen):
 
     def _setWeatherColors(self, prefix):
 
-        # prefix ist "loc1" oder "loc2" und bestimmt damit den
-        # jeweils eigenen Farbsatz.
-        location = "loc2" if prefix == "loc2" else "loc1"
+        # prefix entspricht dem Widget-Präfix (loc1 / loc2).
+        # Dadurch bekommt jeder Standort ausschließlich seine eigene Palette.
+        location = "loc1" if prefix == "loc1" else "loc2"
 
         colors = {
             "weertype":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_weathertype" % location
-                ),
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_weathertype" % location),
 
             "feel":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_feels" % location
-                ),
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_feels" % location),
 
             "wind":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_wind" % location
-                ),
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_wind" % location),
 
             "rain":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_rain" % location
-                ),
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_rain" % location),
 
             "sun":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_sun" % location
-                ),
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_sun" % location),
 
             "moon":
-                getattr(
-                    config.plugins.speedy_TheWeather,
-                    "twoloc_%s_color_moon" % location
-                )
+                getattr(config.plugins.speedy_TheWeather, "twoloc_%s_color_moon" % location)
         }
 
         for name, colorConfig in colors.items():
