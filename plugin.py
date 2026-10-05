@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.7
+# v.1.9.8
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1306,7 +1306,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.7"
+__version__ = "1.9.8"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1322,7 +1322,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.7'
+version = '1.9.8'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -2990,13 +2990,14 @@ def _update_extract_plugin_version(source):
 # ============================================================================
 
 def _update_extract_installer_info(source):
-
     """
     Liest Version und Changelog aus installer.sh.
 
-    Unterstützte Struktur:
+    Unterstützte Strukturen:
 
-        VERSION="1.9.7"
+        VERSION="1.9.8"
+
+    Neues Format:
 
         changelog_EN='
         • Change one.
@@ -3007,6 +3008,10 @@ def _update_extract_installer_info(source):
         • Änderung eins.
         • Änderung zwei.
         '
+
+    Altes Format:
+
+        changelog='v1.9.8 EN: ... | DE: ...'
     """
 
     result = {
@@ -3017,12 +3022,11 @@ def _update_extract_installer_info(source):
     }
 
     try:
-
         import re
 
-        # --------------------------------------------------------------------
+        # ====================================================================
         # VERSION
-        # --------------------------------------------------------------------
+        # ====================================================================
 
         match = re.search(
             r'^\s*VERSION\s*=\s*["\']([^"\']+)["\']',
@@ -3031,14 +3035,11 @@ def _update_extract_installer_info(source):
         )
 
         if match:
+            result["version"] = match.group(1).strip()
 
-            result["version"] = (
-                match.group(1).strip()
-            )
-
-        # --------------------------------------------------------------------
-        # CHANGELOG ENGLISH
-        # --------------------------------------------------------------------
+        # ====================================================================
+        # CHANGELOG_EN
+        # ====================================================================
 
         match = re.search(
             r"^\s*changelog_EN\s*=\s*'([\s\S]*?)'",
@@ -3047,14 +3048,11 @@ def _update_extract_installer_info(source):
         )
 
         if match:
+            result["changelog_EN"] = match.group(1).strip()
 
-            result["changelog_EN"] = (
-                match.group(1).strip()
-            )
-
-        # --------------------------------------------------------------------
-        # CHANGELOG GERMAN
-        # --------------------------------------------------------------------
+        # ====================================================================
+        # CHANGELOG_DE
+        # ====================================================================
 
         match = re.search(
             r"^\s*changelog_DE\s*=\s*'([\s\S]*?)'",
@@ -3063,18 +3061,74 @@ def _update_extract_installer_info(source):
         )
 
         if match:
+            result["changelog_DE"] = match.group(1).strip()
 
-            result["changelog_DE"] = (
-                match.group(1).strip()
+        # ====================================================================
+        # ALTES CHANGELOG-FORMAT
+        #
+        # changelog='v1.9.8 EN: ... | DE: ...'
+        #
+        # Falls kein changelog_EN/changelog_DE vorhanden ist,
+        # lesen wir die alte Variable "changelog".
+        # ====================================================================
+
+        if not result["changelog_EN"] and not result["changelog_DE"]:
+
+            match = re.search(
+                r"^\s*changelog\s*=\s*'([\s\S]*?)'",
+                source,
+                re.MULTILINE
             )
 
-        # --------------------------------------------------------------------
+            if match:
+
+                legacy_changelog = (
+                    match.group(1).strip()
+                )
+
+                # ------------------------------------------------------------
+                # EN / DE trennen
+                # ------------------------------------------------------------
+
+                en_match = re.search(
+                    r"(?:^|\s)EN:\s*(.*?)(?=\s*\|\s*DE:|$)",
+                    legacy_changelog,
+                    re.DOTALL
+                )
+
+                de_match = re.search(
+                    r"(?:^|\s)DE:\s*(.*)$",
+                    legacy_changelog,
+                    re.DOTALL
+                )
+
+                if en_match:
+
+                    result["changelog_EN"] = (
+                        en_match.group(1).strip()
+                    )
+
+                if de_match:
+
+                    result["changelog_DE"] = (
+                        de_match.group(1).strip()
+                    )
+
+                # ------------------------------------------------------------
+                # Falls das alte Format nicht EN/DE enthält,
+                # kompletten Changelog übernehmen.
+                # ------------------------------------------------------------
+
+                if (
+                    not result["changelog_EN"]
+                    and not result["changelog_DE"]
+                ):
+
+                    result["changelog"] = legacy_changelog
+
+        # ====================================================================
         # DEFAULT CHANGELOG
-        #
-        # Falls späterer Code weiterhin nur "changelog" erwartet,
-        # verwenden wir abhängig von der verfügbaren Sprache einen
-        # sinnvollen Fallback.
-        # --------------------------------------------------------------------
+        # ====================================================================
 
         if result["changelog_DE"]:
 
@@ -3087,6 +3141,30 @@ def _update_extract_installer_info(source):
             result["changelog"] = (
                 result["changelog_EN"]
             )
+
+        # ====================================================================
+        # DEBUG
+        # ====================================================================
+
+        # Bei Bedarf zum Testen aktivieren:
+        #
+        # print(
+        #     "[speedy_TheWeather] "
+        #     "Installer version: %s"
+        #     % result["version"]
+        # )
+        #
+        # print(
+        #     "[speedy_TheWeather] "
+        #     "Changelog EN: %s"
+        #     % result["changelog_EN"]
+        # )
+        #
+        # print(
+        #     "[speedy_TheWeather] "
+        #     "Changelog DE: %s"
+        #     % result["changelog_DE"]
+        # )
 
     except Exception as e:
 
@@ -3104,7 +3182,6 @@ def _update_extract_installer_info(source):
 # ============================================================================
 
 def _update_changes_text(changes):
-    import re
     """
     Formatiert Changelog-Daten für die Anzeige.
 
@@ -3114,11 +3191,14 @@ def _update_changes_text(changes):
         - mehrzeiligen String
         - Bulletpoints mit •
         - Bulletpoints mit -
+        - Bulletpoints mit *
     """
 
-    # ------------------------------------------------------------------------
+    import re
+
+    # ========================================================================
     # LIST / TUPLE
-    # ------------------------------------------------------------------------
+    # ========================================================================
 
     if isinstance(
         changes,
@@ -3136,7 +3216,10 @@ def _update_changes_text(changes):
             if not text:
                 continue
 
-            # Bereits vorhandene Bulletpoints entfernen.
+            # ---------------------------------------------------------------
+            # Bulletpoint entfernen
+            # ---------------------------------------------------------------
+
             text = re.sub(
                 r"^\s*(?:•|-|\*)\s*",
                 "",
@@ -3155,9 +3238,9 @@ def _update_changes_text(changes):
                 items
             )
 
-    # ------------------------------------------------------------------------
+    # ========================================================================
     # STRING
-    # ------------------------------------------------------------------------
+    # ========================================================================
 
     text = safeStr(
         changes
@@ -3165,10 +3248,10 @@ def _update_changes_text(changes):
 
     if text:
 
-        # Mehrzeiligen Changelog in einzelne Einträge zerlegen.
         lines = text.splitlines()
 
         items = []
+        current_item = ""
 
         for line in lines:
 
@@ -3177,36 +3260,81 @@ def _update_changes_text(changes):
             if not line:
                 continue
 
-            # •, - oder * am Anfang entfernen.
-            line = re.sub(
-                r"^\s*(?:•|-|\*)\s*",
-                "",
+            # ---------------------------------------------------------------
+            # Neue Bullet-Zeile
+            # ---------------------------------------------------------------
+
+            bullet_match = re.match(
+                r"^\s*(?:•|-|\*)\s*(.*)$",
                 line
-            ).strip()
+            )
 
-            if line:
+            if bullet_match:
 
-                items.append(
-                    "- " + _(line)
+                # Vorherigen Eintrag abschließen
+                if current_item:
+
+                    items.append(
+                        current_item.strip()
+                    )
+
+                current_item = (
+                    bullet_match.group(1).strip()
                 )
+
+            # ---------------------------------------------------------------
+            # Normale Zeile
+            #
+            # Das ist wichtig für:
+            #
+            # • Fixed Rain Radar, Seven Day Weather, weather icons
+            #   and detached GUI restart.
+            #
+            # Die zweite Zeile wird an den ersten Eintrag angehängt.
+            # ---------------------------------------------------------------
+
+            else:
+
+                if current_item:
+
+                    current_item += " " + line
+
+                else:
+
+                    current_item = line
+
+        # Letzten Eintrag übernehmen
+        if current_item:
+
+            items.append(
+                current_item.strip()
+            )
+
+        # ---------------------------------------------------------------
+        # Formatieren
+        # ---------------------------------------------------------------
 
         if items:
 
             return "\n".join(
-                items
+                "- " + _(item)
+                for item in items
+                if item
             )
 
         return _(
             text
         )
 
-    # ------------------------------------------------------------------------
+    # ========================================================================
     # FALLBACK
-    # ------------------------------------------------------------------------
+    # ========================================================================
 
     return _(
         "No changes available."
     )
+
+
 
 
 
