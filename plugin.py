@@ -2989,7 +2989,7 @@ def _update_extract_plugin_version(source):
 # EXTRACT INSTALLER INFORMATION
 # ============================================================================
 
-def _update_extract_installer_info(source):
+def _update_extract_installer_info(source, language=None):
     """
     Liest Version und mehrsprachige Changelogs aus installer.sh.
 
@@ -2998,7 +2998,7 @@ def _update_extract_installer_info(source):
 
     Unterstützte Formate:
 
-        VERSION="1.9.7"
+        VERSION="1.9.8"
 
         changelog_EN='
         • Change one.
@@ -3012,7 +3012,13 @@ def _update_extract_installer_info(source):
 
     Zusätzlich weiterhin altes Format:
 
-        changelog='v1.9.7 EN: ... | DE: ...'
+        changelog='v1.9.8 EN: ... | DE: ...'
+
+    Parameter:
+        language:
+            Optional gewünschte Sprache, z.B. "DE", "EN", "EL".
+            Wenn keine Sprache angegeben wird:
+                DE -> EN -> erste vorhandene Sprache
     """
 
     result = {
@@ -3039,6 +3045,18 @@ def _update_extract_installer_info(source):
         import re
 
         # ---------------------------------------------------------
+        # SOURCE ABSICHERN
+        # ---------------------------------------------------------
+        if source is None:
+            source = ""
+
+        if not isinstance(source, str):
+            try:
+                source = source.decode("utf-8", "replace")
+            except Exception:
+                source = safeStr(source)
+
+        # ---------------------------------------------------------
         # VERSION
         # ---------------------------------------------------------
         match = re.search(
@@ -3051,7 +3069,7 @@ def _update_extract_installer_info(source):
             result["version"] = match.group(1).strip()
 
         # ---------------------------------------------------------
-        # MULTI LANGUAGE CHANGELOGS
+        # UNTERSTÜTZTE SPRACHEN
         # ---------------------------------------------------------
         languages = (
             "EN",
@@ -3071,79 +3089,173 @@ def _update_extract_installer_info(source):
             "ZH"
         )
 
+        # ---------------------------------------------------------
+        # MULTI LANGUAGE CHANGELOGS
+        #
+        # Unterstützt:
+        #
+        # changelog_EN='...'
+        #
+        # sowie:
+        #
+        # changelog_EN="..."
+        #
+        # Multiline wird ebenfalls unterstützt.
+        # ---------------------------------------------------------
         for lang in languages:
+
             key = "changelog_" + lang
 
+            pattern = (
+                r"^\s*" +
+                re.escape(key) +
+                r"\s*=\s*(?P<quote>['\"])(?P<text>[\s\S]*?)(?P=quote)"
+            )
+
             match = re.search(
-                r"^\s*" + re.escape(key) +
-                r"\s*=\s*'([\s\S]*?)'",
+                pattern,
                 source,
                 re.MULTILINE
             )
 
             if match:
-                result[key] = match.group(1).strip()
+                value = match.group("text")
+
+                if value:
+                    value = value.strip()
+
+                result[key] = value
 
         # ---------------------------------------------------------
         # LEGACY CHANGELOG
+        #
+        # Nur verwenden, wenn kein moderner mehrsprachiger
+        # Changelog gefunden wurde.
         # ---------------------------------------------------------
         if not any(
             result["changelog_" + lang]
             for lang in languages
         ):
+
+            pattern = (
+                r"^\s*changelog\s*=\s*"
+                r"(?P<quote>['\"])(?P<text>[\s\S]*?)(?P=quote)"
+            )
+
             match = re.search(
-                r"^\s*changelog\s*=\s*'([\s\S]*?)'",
+                pattern,
                 source,
                 re.MULTILINE
             )
 
             if match:
-                legacy = match.group(1).strip()
+                legacy = match.group("text").strip()
 
-                # EN
+                # -------------------------------------------------
+                # LEGACY EN
+                # -------------------------------------------------
                 match_en = re.search(
                     r"(?:^|\s)EN:\s*(.*?)(?=\s*\|\s*DE:|$)",
                     legacy,
-                    re.IGNORECASE
+                    re.IGNORECASE | re.DOTALL
                 )
 
                 if match_en:
-                    result["changelog_EN"] = match_en.group(1).strip()
+                    result["changelog_EN"] = (
+                        match_en.group(1).strip()
+                    )
 
-                # DE
+                # -------------------------------------------------
+                # LEGACY DE
+                # -------------------------------------------------
                 match_de = re.search(
                     r"(?:^|\s)DE:\s*(.*)$",
                     legacy,
-                    re.IGNORECASE
+                    re.IGNORECASE | re.DOTALL
                 )
 
                 if match_de:
-                    result["changelog_DE"] = match_de.group(1).strip()
+                    result["changelog_DE"] = (
+                        match_de.group(1).strip()
+                    )
 
-                # Fallback
-                if not result["changelog_EN"] and not result["changelog_DE"]:
+                # -------------------------------------------------
+                # FALLBACK
+                # -------------------------------------------------
+                if (
+                    not result["changelog_EN"]
+                    and not result["changelog_DE"]
+                ):
                     result["changelog"] = legacy
 
         # ---------------------------------------------------------
-        # DEFAULT CHANGELOG
-        # DE zuerst, danach EN
+        # GEWÜNSCHTE SPRACHE BESTIMMEN
         # ---------------------------------------------------------
-        if result["changelog_DE"]:
-            result["changelog"] = result["changelog_DE"]
+        selected_language = ""
 
-        elif result["changelog_EN"]:
-            result["changelog"] = result["changelog_EN"]
+        if language:
+            try:
+                selected_language = safeStr(
+                    language
+                ).strip().upper()
+            except Exception:
+                selected_language = ""
 
-        else:
-            # Erste vorhandene Sprache als Fallback
-            for lang in languages:
-                value = result["changelog_" + lang]
+        # ---------------------------------------------------------
+        # GEWÜNSCHTE SPRACHE
+        # ---------------------------------------------------------
+        if selected_language in languages:
 
-                if value:
-                    result["changelog"] = value
-                    break
+            selected_key = (
+                "changelog_" +
+                selected_language
+            )
+
+            if result[selected_key]:
+                result["changelog"] = (
+                    result[selected_key]
+                )
+
+        # ---------------------------------------------------------
+        # STANDARD:
+        # DE -> EN -> erste vorhandene Sprache
+        # ---------------------------------------------------------
+        if not result["changelog"]:
+
+            if result["changelog_DE"]:
+                result["changelog"] = (
+                    result["changelog_DE"]
+                )
+
+            elif result["changelog_EN"]:
+                result["changelog"] = (
+                    result["changelog_EN"]
+                )
+
+            else:
+                # Erste vorhandene Sprache als Fallback
+                for lang in languages:
+
+                    value = result[
+                        "changelog_" + lang
+                    ]
+
+                    if value:
+                        result["changelog"] = value
+                        break
+
+        # ---------------------------------------------------------
+        # SPRACHEN-METADATEN
+        # ---------------------------------------------------------
+        result["changelog_languages"] = []
+
+        for lang in languages:
+
+            if result["changelog_" + lang]:
+                result["changelog_languages"].append(lang)
 
     except Exception as e:
+
         print(
             "[speedy_TheWeather] "
             "Could not read installer information: %s"
@@ -3151,6 +3263,7 @@ def _update_extract_installer_info(source):
         )
 
     return result
+
 
 def _update_changes_text(changes):
     """
@@ -3163,14 +3276,28 @@ def _update_changes_text(changes):
         - Bulletpoints mit -
         - Bulletpoints mit *
         - Fortsetzungszeilen
+
+    Unicode-Sprachen wie:
+        Deutsch
+        Ελληνικά
+        Русский
+        العربية
+        中文
+        Українська
+    werden unverändert unterstützt.
     """
 
     import re
 
+    # ---------------------------------------------------------
+    # LIST / TUPLE
+    # ---------------------------------------------------------
     if isinstance(changes, (list, tuple)):
+
         items = []
 
         for item in changes:
+
             text = safeStr(item).strip()
 
             if not text:
@@ -3183,55 +3310,86 @@ def _update_changes_text(changes):
             ).strip()
 
             if text:
-                items.append("- " + _(text))
+                items.append(
+                    "- " + _(text)
+                )
 
         if items:
             return "\n".join(items)
 
+        return _("No changes available.")
+
+    # ---------------------------------------------------------
+    # STRING
+    # ---------------------------------------------------------
     text = safeStr(changes).strip()
 
-    if text:
-        lines = text.splitlines()
-        items = []
-        current = ""
+    if not text:
+        return _("No changes available.")
 
-        for line in lines:
-            line = line.strip()
+    lines = text.splitlines()
 
-            if not line:
-                continue
+    items = []
+    current = ""
 
-            # Neuer Bulletpoint
-            if re.match(r"^\s*(?:•|-|\*)\s+", line):
-                if current:
-                    items.append(current)
+    for line in lines:
 
-                current = re.sub(
-                    r"^\s*(?:•|-|\*)\s*",
-                    "",
-                    line
-                ).strip()
+        line = line.strip()
+
+        if not line:
+            continue
+
+        # -----------------------------------------------------
+        # NEUER BULLETPOINT
+        # -----------------------------------------------------
+        if re.match(
+            r"^\s*(?:•|-|\*)\s+",
+            line
+        ):
+
+            if current:
+                items.append(current)
+
+            current = re.sub(
+                r"^\s*(?:•|-|\*)\s*",
+                "",
+                line
+            ).strip()
+
+        else:
+
+            # -------------------------------------------------
+            # FORTSETZUNGSZEILE
+            # -------------------------------------------------
+            if current:
+                current += " " + line
 
             else:
-                # Fortsetzungszeile
-                if current:
-                    current += " " + line
-                else:
-                    current = line
+                current = line
 
-        if current:
-            items.append(current)
+    # ---------------------------------------------------------
+    # LETZTEN EINTRAG ÜBERNEHMEN
+    # ---------------------------------------------------------
+    if current:
+        items.append(current)
 
-        if items:
-            return "\n".join(
-                "- " + _(item)
-                for item in items
-                if item.strip()
-            )
+    # ---------------------------------------------------------
+    # FORMATIERT AUSGEBEN
+    # ---------------------------------------------------------
+    if items:
 
-        return _(text)
+        return "\n".join(
+            "- " + _(item)
+            for item in items
+            if item.strip()
+        )
 
-    return _("No changes available.")
+    # ---------------------------------------------------------
+    # NORMALER EINZEILIGER TEXT
+    # ---------------------------------------------------------
+    return _(text)
+
+
 
 # ============================================================================
 # UPDATE CHECK WORKER
