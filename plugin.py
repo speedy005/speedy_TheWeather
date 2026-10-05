@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.1.9.6
+# v.1.9.7
 # Original work by Caught
 # https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
@@ -1306,7 +1306,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "1.9.6"
+__version__ = "1.9.7"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1322,7 +1322,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '1.9.6'
+version = '1.9.7'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
