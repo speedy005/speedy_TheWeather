@@ -30,7 +30,7 @@ PLUGIN_NAME="speedy_TheWeather"
 
 # Number of seconds the Enigma2 Console remains visible after completion.
 # Increase this if your receiver is very fast.
-FINISH_DELAY=20
+FINISH_DELAY=10
 
 ###############################################################################
 # Paths
