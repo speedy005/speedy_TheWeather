@@ -2993,11 +2993,27 @@ def _update_extract_installer_info(source):
 
     """
     Liest Version und Changelog aus installer.sh.
+
+    Unterstützte Struktur:
+
+        VERSION="1.9.7"
+
+        changelog_EN='
+        • Change one.
+        • Change two.
+        '
+
+        changelog_DE='
+        • Änderung eins.
+        • Änderung zwei.
+        '
     """
 
     result = {
         "version": "",
-        "changelog": ""
+        "changelog": "",
+        "changelog_EN": "",
+        "changelog_DE": ""
     }
 
     try:
@@ -3009,7 +3025,7 @@ def _update_extract_installer_info(source):
         # --------------------------------------------------------------------
 
         match = re.search(
-            r"^\s*version\s*=\s*['\"]([^'\"]+)['\"]",
+            r'^\s*VERSION\s*=\s*["\']([^"\']+)["\']',
             source,
             re.MULTILINE
         )
@@ -3021,19 +3037,55 @@ def _update_extract_installer_info(source):
             )
 
         # --------------------------------------------------------------------
-        # CHANGELOG
+        # CHANGELOG ENGLISH
         # --------------------------------------------------------------------
 
         match = re.search(
-            r"^\s*(?:changelog|hangelog)\s*=\s*['\"](.*?)['\"]",
+            r"^\s*changelog_EN\s*=\s*'([\s\S]*?)'",
             source,
             re.MULTILINE
         )
 
         if match:
 
-            result["changelog"] = (
+            result["changelog_EN"] = (
                 match.group(1).strip()
+            )
+
+        # --------------------------------------------------------------------
+        # CHANGELOG GERMAN
+        # --------------------------------------------------------------------
+
+        match = re.search(
+            r"^\s*changelog_DE\s*=\s*'([\s\S]*?)'",
+            source,
+            re.MULTILINE
+        )
+
+        if match:
+
+            result["changelog_DE"] = (
+                match.group(1).strip()
+            )
+
+        # --------------------------------------------------------------------
+        # DEFAULT CHANGELOG
+        #
+        # Falls späterer Code weiterhin nur "changelog" erwartet,
+        # verwenden wir abhängig von der verfügbaren Sprache einen
+        # sinnvollen Fallback.
+        # --------------------------------------------------------------------
+
+        if result["changelog_DE"]:
+
+            result["changelog"] = (
+                result["changelog_DE"]
+            )
+
+        elif result["changelog_EN"]:
+
+            result["changelog"] = (
+                result["changelog_EN"]
             )
 
     except Exception as e:
@@ -3046,43 +3098,117 @@ def _update_extract_installer_info(source):
 
     return result
 
+
 # ============================================================================
 # CHANGELOG TEXT
 # ============================================================================
 
 def _update_changes_text(changes):
+    import re
+    """
+    Formatiert Changelog-Daten für die Anzeige.
+
+    Unterstützt:
+
+        - Liste / Tuple
+        - mehrzeiligen String
+        - Bulletpoints mit •
+        - Bulletpoints mit -
+    """
+
+    # ------------------------------------------------------------------------
+    # LIST / TUPLE
+    # ------------------------------------------------------------------------
 
     if isinstance(
         changes,
         (list, tuple)
     ):
 
-        items = [
-            safeStr(item).strip()
-            for item in changes
-            if safeStr(item).strip()
-        ]
+        items = []
+
+        for item in changes:
+
+            text = safeStr(
+                item
+            ).strip()
+
+            if not text:
+                continue
+
+            # Bereits vorhandene Bulletpoints entfernen.
+            text = re.sub(
+                r"^\s*(?:•|-|\*)\s*",
+                "",
+                text
+            ).strip()
+
+            if text:
+
+                items.append(
+                    "- " + _(text)
+                )
 
         if items:
 
             return "\n".join(
-                "- " + _(item)
-                for item in items
+                items
             )
 
-    if safeStr(
+    # ------------------------------------------------------------------------
+    # STRING
+    # ------------------------------------------------------------------------
+
+    text = safeStr(
         changes
-    ).strip():
+    ).strip()
+
+    if text:
+
+        # Mehrzeiligen Changelog in einzelne Einträge zerlegen.
+        lines = text.splitlines()
+
+        items = []
+
+        for line in lines:
+
+            line = line.strip()
+
+            if not line:
+                continue
+
+            # •, - oder * am Anfang entfernen.
+            line = re.sub(
+                r"^\s*(?:•|-|\*)\s*",
+                "",
+                line
+            ).strip()
+
+            if line:
+
+                items.append(
+                    "- " + _(line)
+                )
+
+        if items:
+
+            return "\n".join(
+                items
+            )
 
         return _(
-            safeStr(
-                changes
-            ).strip()
+            text
         )
+
+    # ------------------------------------------------------------------------
+    # FALLBACK
+    # ------------------------------------------------------------------------
 
     return _(
         "No changes available."
     )
+
+
 
 # ============================================================================
 # UPDATE CHECK WORKER
