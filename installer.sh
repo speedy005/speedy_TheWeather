@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.0.0
+# Version: 2.0.1
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -15,7 +15,7 @@
 # - The plugin updater reads the changelog directly from installer.sh.
 ###############################################################################
 
-VERSION="2.0.0"
+VERSION="2.0.1"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -985,6 +985,13 @@ finish_install()
     echo
     echo "========================================================="
     echo
+    echo "Installation finished."
+    echo
+    echo "The installer will close in 20 seconds."
+    echo
+    echo "========================================================="
+
+    sleep 20
 }
 
 ###############################################################################
