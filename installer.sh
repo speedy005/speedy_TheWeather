@@ -8,11 +8,10 @@
 #   https://github.com/speedy005/speedy_TheWeather
 #
 # IMPORTANT:
-# - installer.sh is UTF-8
-# - Multilingual changelog is intentionally NOT printed to stdout.
-#   Enigma2 Screens.Console.py can crash when receiving invalid/mixed
-#   UTF-8 byte sequences.
-# - The plugin updater reads the changelog directly from installer.sh.
+# - This file MUST be saved as UTF-8 without BOM.
+# - Multilingual changelog is NOT printed to stdout.
+# - The Python updater reads the changelog directly from installer.sh.
+# - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
 VERSION="2.0.1"
@@ -24,6 +23,14 @@ REPO_NAME="speedy_TheWeather"
 DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${BRANCH}.tar.gz"
 
 PLUGIN_NAME="speedy_TheWeather"
+
+###############################################################################
+# Console behaviour
+###############################################################################
+
+# Number of seconds the Enigma2 Console remains visible after completion.
+# Increase this if your receiver is very fast.
+FINISH_DELAY=20
 
 ###############################################################################
 # Paths
@@ -39,7 +46,6 @@ if [ -d "$PLUGIN_BASE_32" ]; then
 elif [ -d "$PLUGIN_BASE_64" ]; then
     PLUGINPATH="${PLUGIN_BASE_64}/${PLUGIN_NAME}"
 else
-    # Prefer the normal 32-bit Enigma2 path on a fresh installation.
     PLUGINPATH="${PLUGIN_BASE_32}/${PLUGIN_NAME}"
 fi
 
@@ -60,8 +66,8 @@ EXTRACT_DIR="${TMP_DIR}/extract"
 # Multilingual changelog
 #
 # IMPORTANT:
-# Do NOT print these variables from this installer.
-# They are read by the Python updater directly from installer.sh.
+# Do NOT echo these variables.
+# They are read by the Python updater.
 ###############################################################################
 
 changelog_EN='
@@ -350,7 +356,7 @@ changelog_ZH='
 '
 
 ###############################################################################
-# Helper functions
+# Generic helpers
 ###############################################################################
 
 print_line()
@@ -399,28 +405,10 @@ show_info()
     echo
 }
 
-die()
-{
-    echo
-    echo "ERROR:"
-    echo "$1"
-    echo
-    echo "Installation aborted."
-    echo
-
-    cleanup_temp
-
-    exit 1
-}
-
 command_exists()
 {
     command -v "$1" >/dev/null 2>&1
 }
-
-###############################################################################
-# Cleanup
-###############################################################################
 
 cleanup_temp()
 {
@@ -428,7 +416,110 @@ cleanup_temp()
 }
 
 ###############################################################################
-# Detect system
+# Console finish handling
+###############################################################################
+
+console_pause()
+{
+    DELAY="${1:-$FINISH_DELAY}"
+
+    case "$DELAY" in
+        ''|*[!0-9]*)
+            DELAY=20
+            ;;
+    esac
+
+    echo
+    echo "---------------------------------------------------------"
+    echo
+    echo "This window will close in ${DELAY} seconds."
+    echo
+    echo "Please wait..."
+    echo
+
+    while [ "$DELAY" -gt 0 ]; do
+        printf "\rClosing in %2s seconds..." "$DELAY"
+        sleep 1
+        DELAY=$((DELAY - 1))
+    done
+
+    printf "\rClosing installer...                    \n"
+}
+
+finish_success()
+{
+    echo
+    echo
+    echo "========================================================="
+    echo "       INSTALLATION COMPLETED SUCCESSFULLY"
+    echo "========================================================="
+    echo
+    echo "Plugin:"
+    echo "  ${PLUGIN_NAME}"
+    echo
+    echo "Version:"
+    echo "  ${VERSION}"
+    echo
+    echo "Installed to:"
+    echo "  ${PLUGINPATH}"
+    echo
+    echo "Configuration:"
+    echo "  ${CONFIG_DIR}"
+    echo
+    echo "Automatic backgrounds:"
+    echo "  Preserved"
+    echo
+    echo "---------------------------------------------------------"
+    echo
+    echo "IMPORTANT"
+    echo
+    echo "Please restart Enigma2 manually."
+    echo
+    echo "The installer does NOT restart the GUI automatically."
+    echo
+    echo "---------------------------------------------------------"
+    echo
+    echo "Installation finished successfully."
+    echo
+
+    console_pause "$FINISH_DELAY"
+}
+
+finish_error()
+{
+    ERROR_MESSAGE="$1"
+
+    echo
+    echo
+    echo "========================================================="
+    echo "              INSTALLATION FAILED"
+    echo "========================================================="
+    echo
+    echo "Error:"
+    echo "  ${ERROR_MESSAGE}"
+    echo
+    echo "The installer has stopped."
+    echo
+    echo "If a previous installation existed, rollback was attempted."
+    echo
+    echo "---------------------------------------------------------"
+
+    console_pause "$FINISH_DELAY"
+}
+
+die()
+{
+    ERROR_MESSAGE="$1"
+
+    finish_error "$ERROR_MESSAGE"
+
+    cleanup_temp
+
+    exit 1
+}
+
+###############################################################################
+# System detection
 ###############################################################################
 
 detect_system()
@@ -482,7 +573,7 @@ detect_system()
 }
 
 ###############################################################################
-# Install download tool
+# Package installation
 ###############################################################################
 
 install_package()
@@ -575,7 +666,8 @@ download_file()
 
 download_archive()
 {
-    mkdir -p "$TMP_DIR" || die "Could not create temporary directory."
+    mkdir -p "$TMP_DIR" || \
+        die "Could not create temporary directory."
 
     rm -f "$ARCHIVE_FILE"
 
@@ -593,9 +685,11 @@ download_archive()
         fi
 
         echo "Download failed."
+
         rm -f "$ARCHIVE_FILE"
 
         ATTEMPT=$((ATTEMPT + 1))
+
         sleep 2
     done
 
@@ -603,7 +697,7 @@ download_archive()
 }
 
 ###############################################################################
-# Validate archive
+# Archive validation
 ###############################################################################
 
 validate_archive()
@@ -611,7 +705,8 @@ validate_archive()
     echo
     echo "Validating downloaded archive..."
 
-    [ -f "$ARCHIVE_FILE" ] || die "Downloaded archive does not exist."
+    [ -f "$ARCHIVE_FILE" ] || \
+        die "Downloaded archive does not exist."
 
     if command_exists gzip; then
         gzip -t "$ARCHIVE_FILE" >/dev/null 2>&1 || \
@@ -630,7 +725,7 @@ validate_archive()
 }
 
 ###############################################################################
-# Extract archive
+# Extraction
 ###############################################################################
 
 extract_archive()
@@ -639,7 +734,9 @@ extract_archive()
     echo "Extracting archive..."
 
     rm -rf "$EXTRACT_DIR"
-    mkdir -p "$EXTRACT_DIR" || die "Could not create extraction directory."
+
+    mkdir -p "$EXTRACT_DIR" || \
+        die "Could not create extraction directory."
 
     tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_DIR" || \
         die "Could not extract downloaded archive."
@@ -647,6 +744,7 @@ extract_archive()
     SOURCE_PATH=""
 
     for DIR in "$EXTRACT_DIR"/*; do
+
         if [ -f "$DIR/plugin.py" ]; then
             SOURCE_PATH="$DIR"
             break
@@ -661,16 +759,24 @@ extract_archive()
             SOURCE_PATH="$DIR/usr/lib/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
             break
         fi
+
+        if [ -f "$DIR/usr/lib64/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}/plugin.py" ]; then
+            SOURCE_PATH="$DIR/usr/lib64/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
+            break
+        fi
+
     done
 
-    [ -n "$SOURCE_PATH" ] || die "Could not locate plugin source directory."
+    [ -n "$SOURCE_PATH" ] || \
+        die "Could not locate plugin source directory."
 
+    echo
     echo "Source:"
     echo "$SOURCE_PATH"
 }
 
 ###############################################################################
-# Remove repository-only files
+# Repository-only files
 ###############################################################################
 
 remove_repository_files()
@@ -686,7 +792,10 @@ remove_repository_files()
 
     find "$SOURCE_PATH" \
         -type f \
-        \( -name "*.svg" -o -name "*backgrounds_auto.zip" \) \
+        \( \
+            -name "*.svg" \
+            -o -name "*backgrounds_auto.zip" \
+        \) \
         -delete \
         2>/dev/null || true
 
@@ -698,7 +807,7 @@ remove_repository_files()
 }
 
 ###############################################################################
-# Validate source
+# Source validation
 ###############################################################################
 
 validate_source()
@@ -729,7 +838,7 @@ validate_source()
 }
 
 ###############################################################################
-# Backup config
+# Config backup
 ###############################################################################
 
 backup_config()
@@ -750,7 +859,7 @@ backup_config()
 }
 
 ###############################################################################
-# Backup plugin
+# Plugin backup
 ###############################################################################
 
 backup_plugin()
@@ -771,7 +880,7 @@ backup_plugin()
 }
 
 ###############################################################################
-# Backup automatic backgrounds
+# Automatic backgrounds backup
 ###############################################################################
 
 backup_auto_backgrounds()
@@ -792,7 +901,7 @@ backup_auto_backgrounds()
 }
 
 ###############################################################################
-# Restore configuration
+# Restore config
 ###############################################################################
 
 restore_config()
@@ -801,13 +910,18 @@ restore_config()
     echo "Restoring configuration..."
 
     if [ -d "$CONFIG_BACKUP" ]; then
+
         rm -rf "$CONFIG_DIR"
+
         cp -a "$CONFIG_BACKUP" "$CONFIG_DIR" || \
             die "Could not restore configuration."
 
         echo "Configuration restored."
+
     else
+
         echo "No configuration backup found."
+
     fi
 }
 
@@ -821,6 +935,7 @@ restore_auto_backgrounds()
     echo "Restoring automatic backgrounds..."
 
     if [ -d "$AUTO_BACKGROUNDS_BACKUP" ]; then
+
         mkdir -p "$(dirname "$AUTO_BACKGROUNDS_DIR")"
 
         rm -rf "$AUTO_BACKGROUNDS_DIR"
@@ -829,13 +944,16 @@ restore_auto_backgrounds()
             die "Could not restore automatic backgrounds."
 
         echo "Automatic backgrounds restored."
+
     else
+
         echo "No automatic backgrounds backup found."
+
     fi
 }
 
 ###############################################################################
-# Restore plugin
+# Restore previous plugin
 ###############################################################################
 
 restore_plugin()
@@ -846,19 +964,23 @@ restore_plugin()
     rm -rf "$PLUGINPATH"
 
     if [ -d "$PLUGIN_BACKUP" ]; then
+
         mkdir -p "$(dirname "$PLUGINPATH")"
 
         cp -a "$PLUGIN_BACKUP" "$PLUGINPATH" || \
             die "Could not restore previous plugin."
 
         echo "Previous plugin restored."
+
     else
+
         echo "No previous plugin installation existed."
+
     fi
 }
 
 ###############################################################################
-# Install plugin
+# Install
 ###############################################################################
 
 install_plugin()
@@ -871,20 +993,23 @@ install_plugin()
 
     rm -rf "$PLUGINPATH"
 
-    cp -a "$SOURCE_PATH" "$PLUGINPATH" || {
+    if ! cp -a "$SOURCE_PATH" "$PLUGINPATH"; then
+
         echo
         echo "Plugin installation failed."
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "Could not copy plugin files."
-    }
+    fi
 
     echo "Plugin installed."
 }
 
 ###############################################################################
-# Validate installation
+# Installation validation
 ###############################################################################
 
 validate_installation()
@@ -893,44 +1018,56 @@ validate_installation()
     echo "Validating installed plugin..."
 
     [ -d "$PLUGINPATH" ] || {
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "Installed plugin directory does not exist."
     }
 
     [ -f "$PLUGINPATH/plugin.py" ] || {
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "Installed plugin.py is missing."
     }
 
     if [ -f "$PLUGINPATH/installer.sh" ]; then
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "installer.sh was accidentally installed."
     fi
 
     if [ -f "$PLUGINPATH/version.txt" ]; then
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "version.txt was accidentally installed."
     fi
 
     if [ -d "$PLUGINPATH/converter" ]; then
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "converter directory was accidentally installed."
     fi
 
     if [ -d "$PLUGINPATH/renderer" ]; then
+
         restore_plugin
         restore_config
         restore_auto_backgrounds
+
         die "renderer directory was accidentally installed."
     fi
 
@@ -938,7 +1075,7 @@ validate_installation()
 }
 
 ###############################################################################
-# Cleanup old backups
+# Cleanup backups
 ###############################################################################
 
 cleanup_backups()
@@ -954,53 +1091,13 @@ cleanup_backups()
 }
 
 ###############################################################################
-# Finish
-###############################################################################
-
-finish_install()
-{
-    echo
-    echo "========================================================="
-    echo "       Installation completed successfully"
-    echo "========================================================="
-    echo
-    echo "Plugin:"
-    echo "${PLUGIN_NAME}"
-    echo
-    echo "Version:"
-    echo "${VERSION}"
-    echo
-    echo "Installed to:"
-    echo "${PLUGINPATH}"
-    echo
-    echo "Configuration preserved:"
-    echo "${CONFIG_DIR}"
-    echo
-    echo "Automatic backgrounds preserved."
-    echo
-    echo "IMPORTANT:"
-    echo "Please restart Enigma2 manually."
-    echo
-    echo "The installer does NOT automatically restart the GUI."
-    echo
-    echo "========================================================="
-    echo
-    echo "Installation finished."
-    echo
-    echo "The installer will close in 20 seconds."
-    echo
-    echo "========================================================="
-
-    sleep 20
-}
-
-###############################################################################
 # Main
 ###############################################################################
 
 main()
 {
     show_header
+
     show_info
 
     detect_system
@@ -1012,8 +1109,9 @@ main()
     echo
     echo "Using download tool: ${DOWNLOAD_TOOL}"
 
-    download_archive || \
+    if ! download_archive; then
         die "Could not download the GitHub archive."
+    fi
 
     validate_archive
 
@@ -1041,9 +1139,18 @@ main()
 
     cleanup_temp
 
-    finish_install
+    finish_success
+
+    return 0
 }
 
-main "$@"
+###############################################################################
+# Run
+###############################################################################
 
-exit 0
+main "$?"
+
+INSTALL_RESULT=$?
+
+exit "$INSTALL_RESULT"
+
