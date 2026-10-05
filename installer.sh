@@ -1,9 +1,19 @@
 #!/bin/bash
 
-# =========================================================
-# speedy_TheWeather Installer
-# Version 2.0.0
-# =========================================================
+###############################################################################
+# speedy_TheWeather installer
+# Version: 2.0.0
+#
+# GitHub:
+#   https://github.com/speedy005/speedy_TheWeather
+#
+# IMPORTANT:
+# - installer.sh is UTF-8
+# - Multilingual changelog is intentionally NOT printed to stdout.
+#   Enigma2 Screens.Console.py can crash when receiving invalid/mixed
+#   UTF-8 byte sequences.
+# - The plugin updater reads the changelog directly from installer.sh.
+###############################################################################
 
 VERSION="2.0.0"
 BRANCH="master"
@@ -13,18 +23,46 @@ REPO_NAME="speedy_TheWeather"
 
 DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${BRANCH}.tar.gz"
 
-# =========================================================
-# CHANGELOG
+PLUGIN_NAME="speedy_TheWeather"
+
+###############################################################################
+# Paths
+###############################################################################
+
+PLUGIN_BASE_32="/usr/lib/enigma2/python/Plugins/Extensions"
+PLUGIN_BASE_64="/usr/lib64/enigma2/python/Plugins/Extensions"
+
+PLUGINPATH=""
+
+if [ -d "$PLUGIN_BASE_32" ]; then
+    PLUGINPATH="${PLUGIN_BASE_32}/${PLUGIN_NAME}"
+elif [ -d "$PLUGIN_BASE_64" ]; then
+    PLUGINPATH="${PLUGIN_BASE_64}/${PLUGIN_NAME}"
+else
+    # Prefer the normal 32-bit Enigma2 path on a fresh installation.
+    PLUGINPATH="${PLUGIN_BASE_32}/${PLUGIN_NAME}"
+fi
+
+CONFIG_DIR="/etc/enigma2/${PLUGIN_NAME}"
+
+TMP_DIR="/tmp/${PLUGIN_NAME}_installer"
+
+CONFIG_BACKUP="/tmp/${PLUGIN_NAME}_config_backup"
+PLUGIN_BACKUP="/tmp/${PLUGIN_NAME}_plugin_backup"
+AUTO_BACKGROUNDS_BACKUP="/tmp/${PLUGIN_NAME}_auto_backgrounds_backup"
+
+AUTO_BACKGROUNDS_DIR="${PLUGINPATH}/backgrounds/auto"
+
+ARCHIVE_FILE="${TMP_DIR}/${PLUGIN_NAME}.tar.gz"
+EXTRACT_DIR="${TMP_DIR}/extract"
+
+###############################################################################
+# Multilingual changelog
 #
 # IMPORTANT:
-# The changelogs are stored in UTF-8.
-# They are NOT printed to the Enigma2 console because
-# older Enigma2 Console.py implementations can crash on
-# non-ASCII output.
-#
-# Supported languages:
-# EN DE AR CS EL FI FR HU IT NL PL RU SK UA ZH
-# =========================================================
+# Do NOT print these variables from this installer.
+# They are read by the Python updater directly from installer.sh.
+###############################################################################
 
 changelog_EN='
 • Fixed language files and PO/MO file names.
@@ -67,83 +105,83 @@ changelog_DE='
 changelog_AR='
 • تم إصلاح ملفات اللغات وأسماء ملفات PO/MO.
 • تمت إضافة وظيفة التحديث.
-• تم إصلاح رادار المطر والطقس لسبعة أيام وأيقونات الطقس وإعادة تشغيل الواجهة الرسومية المنفصلة.
+• تم إصلاح رادار المطر والطقس لمدة سبعة أيام وأيقونات الطقس وإعادة تشغيل الواجهة الرسومية المنفصلة.
 • تمت إضافة ألوان قابلة للتخصيص.
 • تمت إضافة صور طقس تلقائية حسب وقت اليوم وخلفيات موسمية مع التنزيل والتثبيت التلقائي.
-• تمت إضافة عرض شروق الشمس وغروبها وشروق القمر وغروبه.
+• تمت إضافة عرض شروق وغروب الشمس وكذلك شروق وغروب القمر.
 • تمت إضافة مقارنة بيانات الطقس لموقعين بما في ذلك أوقات شروق وغروب الشمس والقمر.
 • تمت إضافة ألوان مخصصة لوصف الطقس ودرجة الحرارة المحسوسة والرياح والأمطار ومعلومات الشمس والقمر.
-• تم تحسين البحث عن المدن واختيار المدينة من خلال نافذة مخصصة للنتائج المطابقة.
-• تم تحسين حسابات شروق وغروب القمر مع معالجة أفضل للتوقيت المحلي وفارق UTC.
-• تم تحسين معالجة التاريخ والوقت في جميع أنحاء الإضافة.
-• تم تحسين معالجة بيانات الطقس وموثوقية العرض.
+• تم تحسين البحث عن المدن واختيار المدينة من خلال نافذة مخصصة لعرض المواقع المطابقة.
+• تم تحسين حسابات شروق وغروب القمر مع معالجة أفضل للتوقيت المحلي وفارق التوقيت العالمي UTC.
+• تم تحسين التعامل مع التاريخ والوقت في جميع أنحاء الإضافة.
+• تم تحسين معالجة بيانات الطقس وعرضها بشكل أكثر موثوقية.
 • تم تحسين الأداء على أجهزة Enigma2 الضعيفة من خلال تحسين تحميل الرادار وفك الترميز والتخزين المؤقت ومعالجة الرسوم المتحركة.
 • تمت إضافة أوضاع أداء Ultra Low-End وLow-End وAuto وNormal.
-• جميع الوظائف الحالية لا تزال متاحة.
+• تبقى الميزات الحالية متاحة.
 • إذا أعجبك هذا البرنامج، يمكنك دعمي بفنجان قهوة.
 '
 
 changelog_CS='
 • Opraveny jazykové soubory a názvy souborů PO/MO.
 • Přidána funkce aktualizace.
-• Opraven radar srážek, sedmidenní předpověď, ikony počasí a restart odděleného GUI.
+• Opraven radar deště, předpověď na sedm dní, ikony počasí a restart odděleného GUI.
 • Přidány přizpůsobitelné barvy.
 • Přidány automatické obrázky počasí podle denní doby a sezónní pozadí s automatickým stažením a instalací.
 • Přidáno zobrazení východu a západu slunce a také východu a západu Měsíce.
 • Přidáno porovnání údajů o počasí pro dvě lokality včetně časů východu a západu Slunce a Měsíce.
 • Přidány tematické barvy pro popis počasí, pocitovou teplotu, vítr, déšť a informace o Slunci a Měsíci.
 • Vylepšeno vyhledávání měst a výběr města pomocí samostatného okna s odpovídajícími lokalitami.
-• Vylepšeny výpočty východu a západu Měsíce s lepším zpracováním místního času a posunu UTC.
+• Vylepšeny výpočty východu a západu Měsíce s lepším zpracováním místního času a UTC offsetu.
 • Vylepšeno zpracování data a času v celém pluginu.
-• Vylepšeno zpracování a spolehlivost zobrazení údajů o počasí.
+• Vylepšeno zpracování a zobrazování údajů o počasí.
 • Vylepšen výkon na slabších přijímačích Enigma2 optimalizací načítání radaru, dekódování, cache a animací.
-• Přidány režimy výkonu Ultra Low-End, Low-End, Auto a Normal.
-• Stávající funkce zůstávají k dispozici.
-• Pokud se vám plugin líbí, můžete mě podpořit kávou.
+• Přidány výkonnostní režimy Ultra Low-End, Low-End, Auto a Normal.
+• Stávající funkce zůstávají zachovány.
+• Pokud se vám plugin líbí, můžete mě pozvat na kávu.
 '
 
 changelog_EL='
-• Διορθώθηκαν τα αρχεία γλώσσας και τα ονόματα αρχείων PO/MO.
+• Διορθώθηκαν τα αρχεία γλώσσας και τα ονόματα των αρχείων PO/MO.
 • Προστέθηκε λειτουργία ενημέρωσης.
-• Διορθώθηκαν το Rain Radar, η πρόγνωση επτά ημερών, τα εικονίδια και η επανεκκίνηση του αποσπασμένου GUI.
+• Διορθώθηκαν το Rain Radar, η πρόγνωση επτά ημερών, τα εικονίδια καιρού και η επανεκκίνηση του αποσυνδεδεμένου GUI.
 • Προστέθηκαν προσαρμόσιμα χρώματα.
 • Προστέθηκαν αυτόματες εικόνες καιρού ανάλογα με την ώρα της ημέρας και εποχιακά φόντα με αυτόματη λήψη και εγκατάσταση.
 • Προστέθηκε εμφάνιση ανατολής και δύσης του ήλιου καθώς και ανατολής και δύσης της σελήνης.
 • Προστέθηκε σύγκριση δεδομένων καιρού για δύο τοποθεσίες, συμπεριλαμβανομένων των ωρών ανατολής και δύσης ήλιου και σελήνης.
-• Προστέθηκαν θεματικά χρώματα για την περιγραφή του καιρού, την αισθητή θερμοκρασία, τον άνεμο, τη βροχή και τις πληροφορίες ήλιου και σελήνης.
+• Προστέθηκαν θεματικά χρώματα για την περιγραφή καιρού, την αισθητή θερμοκρασία, τον άνεμο, τη βροχή και τις πληροφορίες ήλιου και σελήνης.
 • Βελτιώθηκε η αναζήτηση πόλεων και η επιλογή πόλης με ειδικό παράθυρο επιλογής για τις αντίστοιχες τοποθεσίες.
-• Βελτιώθηκαν οι υπολογισμοί ανατολής και δύσης της σελήνης με καλύτερη διαχείριση τοπικής ώρας και μετατόπισης UTC.
+• Βελτιώθηκαν οι υπολογισμοί ανατολής και δύσης της σελήνης με καλύτερη διαχείριση της τοπικής ώρας και της διαφοράς UTC.
 • Βελτιώθηκε η διαχείριση ημερομηνίας και ώρας σε ολόκληρο το plugin.
-• Βελτιώθηκε η επεξεργασία και η αξιοπιστία εμφάνισης των δεδομένων καιρού.
-• Βελτιώθηκε η απόδοση σε αδύναμους δέκτες Enigma2 με βελτιστοποίηση φόρτωσης ραντάρ, αποκωδικοποίησης, cache και κινούμενων εικόνων.
+• Βελτιώθηκε η επεξεργασία και εμφάνιση των δεδομένων καιρού.
+• Βελτιώθηκε η απόδοση σε αδύναμους δέκτες Enigma2 με βελτιστοποιημένη φόρτωση, αποκωδικοποίηση, cache και animation του radar.
 • Προστέθηκαν λειτουργίες απόδοσης Ultra Low-End, Low-End, Auto και Normal.
 • Οι υπάρχουσες λειτουργίες παραμένουν διαθέσιμες.
-• Αν σας αρέσει το plugin, μπορείτε να με κεράσετε έναν καφέ.
+• Αν σας αρέσει αυτό το plugin, μπορείτε να με κεράσετε έναν καφέ.
 '
 
 changelog_FI='
-• Korjattu kielitiedostot ja PO/MO-tiedostojen nimet.
-• Lisätty päivitystoiminto.
-• Korjattu sade-tutka, seitsemän päivän sääennuste, sääkuvakkeet ja irrotetun graafisen käyttöliittymän uudelleenkäynnistys.
-• Lisätty mukautettavat värit.
-• Lisätty automaattiset sääkuvat vuorokaudenajan mukaan sekä vuodenaikojen taustakuvat automaattisella latauksella ja asennuksella.
-• Lisätty auringonnousun ja -laskun sekä kuunnousun ja -laskun näyttö.
-• Lisätty kahden sijainnin säädatan vertailu, mukaan lukien auringon ja kuun nousu- ja laskuajat.
-• Lisätty teemavärit sääkuvaukselle, koetulle lämpötilalle, tuulelle, sateelle sekä aurinko- ja kuutiedoille.
-• Parannettu kaupunkien hakua ja valintaa erillisellä valintaikkunalla.
-• Parannettu kuunnousun ja -laskun laskentaa paremman paikallisajan ja UTC-siirtymän käsittelyn avulla.
-• Parannettu päivämäärän ja ajan käsittelyä koko pluginissa.
-• Parannettu säätietojen käsittelyä ja näytön luotettavuutta.
-• Parannettu suorituskykyä heikoilla Enigma2-vastaanottimilla optimoimalla tutkan latausta, dekoodausta, välimuistia ja animaatioita.
-• Lisätty Ultra Low-End-, Low-End-, Auto- ja Normal-suorituskykytilat.
-• Nykyiset ominaisuudet ovat edelleen käytettävissä.
-• Jos pidät pluginista, voit tarjota minulle kahvin.
+• Kielitiedostot sekä PO/MO-tiedostojen nimet korjattu.
+• Päivitystoiminto lisätty.
+• Rain Radar, seitsemän päivän sääennuste, sääkuvakkeet ja erillisen käyttöliittymän uudelleenkäynnistys korjattu.
+• Mukautettavat värit lisätty.
+• Automaattiset sääkuvat vuorokaudenajan mukaan sekä vuodenaikojen taustakuvat automaattisella latauksella ja asennuksella lisätty.
+• Auringonnousun ja -laskun sekä kuun nousun ja laskun näyttäminen lisätty.
+• Kahden sijainnin säätietojen vertailu, mukaan lukien auringon ja kuun nousu- ja laskuajat, lisätty.
+• Teemavärit sääkuvaukselle, tuntulämpötilalle, tuulelle, sateelle sekä aurinko- ja kuutiedoille lisätty.
+• Kaupunkihakua ja kaupungin valintaa parannettu erillisellä valintaikkunalla vastaaville sijainneille.
+• Kuun nousu- ja laskulaskelmia parannettu paremman paikallisen ajan ja UTC-poikkeaman käsittelyn avulla.
+• Päivämäärän ja ajan käsittelyä parannettu koko pluginissa.
+• Säätietojen käsittelyä ja näyttöä parannettu luotettavuuden lisäämiseksi.
+• Suorituskykyä heikoilla Enigma2-vastaanottimilla parannettu optimoimalla tutkan latausta, dekoodausta, välimuistia ja animaatioiden käsittelyä.
+• Ultra Low-End-, Low-End-, Auto- ja Normal-suorituskykytilat lisätty.
+• Nykyiset ominaisuudet säilyvät.
+• Jos pidät tästä pluginista, voit tarjota minulle kahvin.
 '
 
 changelog_FR='
 • Correction des fichiers de langue et des noms de fichiers PO/MO.
 • Ajout de la fonction de mise à jour.
-• Correction du radar de pluie, des prévisions sur sept jours, des icônes météo et du redémarrage du GUI détaché.
+• Correction du Rain Radar, de la météo sur sept jours, des icônes météo et du redémarrage du GUI séparé.
 • Ajout de couleurs personnalisables.
 • Ajout d’images météo automatiques selon l’heure de la journée et de fonds saisonniers avec téléchargement et installation automatiques.
 • Ajout de l’affichage du lever et du coucher du soleil ainsi que du lever et du coucher de la lune.
@@ -152,8 +190,8 @@ changelog_FR='
 • Amélioration de la recherche et de la sélection des villes avec une fenêtre dédiée aux emplacements correspondants.
 • Amélioration des calculs du lever et du coucher de la lune avec une meilleure gestion de l’heure locale et du décalage UTC.
 • Amélioration de la gestion de la date et de l’heure dans tout le plugin.
-• Amélioration du traitement et de la fiabilité de l’affichage des données météo.
-• Amélioration des performances sur les récepteurs Enigma2 peu puissants grâce à l’optimisation du chargement du radar, du décodage, du cache et des animations.
+• Amélioration de la gestion et de l’affichage des données météo.
+• Amélioration des performances sur les récepteurs Enigma2 peu puissants grâce à l’optimisation du chargement, du décodage, du cache et des animations du radar.
 • Ajout des modes de performance Ultra Low-End, Low-End, Auto et Normal.
 • Les fonctions existantes restent disponibles.
 • Si vous aimez ce plugin, vous pouvez m’offrir un café.
@@ -162,18 +200,18 @@ changelog_FR='
 changelog_HU='
 • Javítva a nyelvi fájlok és a PO/MO fájlnevek kezelése.
 • Hozzáadva a frissítési funkció.
-• Javítva az esőradar, a hétnapos időjárás-előrejelzés, az időjárásikonok és a leválasztott GUI újraindítása.
+• Javítva az esőradar, a hétnapos időjárás, az időjárásikonok és a leválasztott GUI újraindítása.
 • Hozzáadható színek kerültek bevezetésre.
-• Automatikus időjárási képek kerültek hozzáadásra napszak szerint, valamint évszakos hátterek automatikus letöltéssel és telepítéssel.
-• Megjelent a napkelte és napnyugta, valamint a holdkelte és holdnyugta kijelzése.
-• Hozzáadásra került két hely időjárási adatainak összehasonlítása, beleértve a nap és a hold kelési és nyugvási idejét.
-• Témaszínek kerültek hozzáadásra az időjárás leírásához, a hőérzethez, a szélhez, az esőhöz, valamint a nap- és holdinformációkhoz.
-• Javult a városkeresés és a városkiválasztás külön ablak segítségével.
+• Automatikus időjárási képek kerültek hozzáadásra a napszak alapján, valamint szezonális hátterek automatikus letöltéssel és telepítéssel.
+• Hozzáadva a napkelte és napnyugta, valamint a holdkelte és holdnyugta megjelenítése.
+• Két hely időjárási adatainak összehasonlítása került hozzáadásra, beleértve a nap- és holdkelte, illetve nyugta időpontjait.
+• Témázott színek kerültek hozzáadásra az időjárás leírásához, a hőérzethez, a szélhez, az esőhöz, valamint a nap- és holdinformációkhoz.
+• Javult a városkeresés és a városválasztás külön kiválasztó ablakkal.
 • Javultak a holdkelte- és holdnyugta-számítások a helyi idő és az UTC-eltolás jobb kezelésével.
-• Javult a dátum- és időkezelés az egész pluginban.
+• Javult a dátum- és időkezelés a plugin egészében.
 • Megbízhatóbb lett az időjárási adatok feldolgozása és megjelenítése.
-• Javult a teljesítmény gyengébb Enigma2 vevőkészülékeken a radarbetöltés, dekódolás, gyorsítótárazás és animációk optimalizálásával.
-• Hozzáadásra kerültek az Ultra Low-End, Low-End, Auto és Normal teljesítménymódok.
+• Javult a teljesítmény gyengébb Enigma2 vevőkészülékeken a radar betöltésének, dekódolásának, gyorsítótárazásának és animációinak optimalizálásával.
+• Hozzáadva az Ultra Low-End, Low-End, Auto és Normal teljesítménymód.
 • A meglévő funkciók továbbra is elérhetők.
 • Ha tetszik a plugin, meghívhatsz egy kávéra.
 '
@@ -181,17 +219,17 @@ changelog_HU='
 changelog_IT='
 • Corretti i file delle lingue e i nomi dei file PO/MO.
 • Aggiunta la funzione di aggiornamento.
-• Corretto il Rain Radar, le previsioni a sette giorni, le icone meteo e il riavvio della GUI separata.
+• Corretti Rain Radar, previsioni a sette giorni, icone meteo e riavvio della GUI separata.
 • Aggiunti colori personalizzabili.
 • Aggiunte immagini meteo automatiche in base all’ora del giorno e sfondi stagionali con download e installazione automatici.
-• Aggiunta la visualizzazione di alba e tramonto e di levata e tramonto della luna.
-• Aggiunto il confronto dei dati meteo per due località, inclusi gli orari di alba, tramonto, levata e tramonto della luna.
-• Aggiunti colori tematici per la descrizione del tempo, la temperatura percepita, il vento, la pioggia e le informazioni su sole e luna.
-• Migliorate la ricerca delle città e la selezione della città con una finestra dedicata alle località corrispondenti.
-• Migliorati i calcoli di levata e tramonto della luna con una migliore gestione dell’ora locale e dell’offset UTC.
+• Aggiunta la visualizzazione di alba e tramonto del sole e di alba e tramonto della luna.
+• Aggiunto il confronto dei dati meteo per due località, inclusi gli orari di alba e tramonto del sole e della luna.
+• Aggiunti colori tematici per descrizione meteo, temperatura percepita, vento, pioggia e informazioni su sole e luna.
+• Migliorata la ricerca delle città e la selezione della città con una finestra dedicata alle località corrispondenti.
+• Migliorati i calcoli dell’alba e del tramonto della luna con una migliore gestione dell’ora locale e dell’offset UTC.
 • Migliorata la gestione di data e ora in tutto il plugin.
-• Migliorata la gestione e l’affidabilità della visualizzazione dei dati meteo.
-• Migliorate le prestazioni sui ricevitori Enigma2 meno potenti ottimizzando il caricamento del radar, la decodifica, la cache e le animazioni.
+• Migliorata l’affidabilità nella gestione e visualizzazione dei dati meteo.
+• Migliorate le prestazioni sui ricevitori Enigma2 meno potenti ottimizzando caricamento, decodifica, cache e animazioni del radar.
 • Aggiunte le modalità di prestazioni Ultra Low-End, Low-End, Auto e Normal.
 • Le funzioni esistenti rimangono disponibili.
 • Se ti piace questo plugin, puoi offrirmi un caffè.
@@ -200,36 +238,36 @@ changelog_IT='
 changelog_NL='
 • Taalbestanden en PO/MO-bestandsnamen gecorrigeerd.
 • Updatefunctie toegevoegd.
-• Regenradar, zevendaagse weersverwachting, weericonen en herstart van de losgekoppelde GUI verbeterd.
+• Rain Radar, zevendaags weer, weericonen en herstart van de losgekoppelde GUI gecorrigeerd.
 • Aanpasbare kleuren toegevoegd.
-• Automatische weerafbeeldingen op basis van het tijdstip van de dag en seizoensachtergronden met automatische download en installatie toegevoegd.
-• Weergave van zonsopkomst en zonsondergang en maanopkomst en maansondergang toegevoegd.
-• Vergelijking van weergegevens voor twee locaties toegevoegd, inclusief tijden van zonsopkomst, zonsondergang, maanopkomst en maansondergang.
-• Thematische kleuren toegevoegd voor weerbeschrijving, gevoelstemperatuur, wind, regen en zonne- en maangegevens.
-• Zoeken naar steden en selecteren van steden verbeterd met een speciaal selectievenster voor overeenkomende locaties.
-• Berekeningen van maanopkomst en maansondergang verbeterd met betere verwerking van lokale tijd en UTC-verschuiving.
+• Automatische weerafbeeldingen op basis van het tijdstip en seizoensachtergronden met automatische download en installatie toegevoegd.
+• Weergave van zonsopkomst en zonsondergang en maansopkomst en maanondergang toegevoegd.
+• Vergelijking van weergegevens voor twee locaties toegevoegd, inclusief tijden van zonsopkomst, zonsondergang, maansopkomst en maanondergang.
+• Thematische kleuren toegevoegd voor weersbeschrijving, gevoelstemperatuur, wind, regen en zon- en maaninformatie.
+• Verbeterde stadszoekfunctie en stadsselectie met een speciaal selectievenster voor overeenkomende locaties.
+• Berekeningen van maansopkomst en maanondergang verbeterd met betere verwerking van lokale tijd en UTC-offset.
 • Datum- en tijdverwerking in de hele plugin verbeterd.
 • Verwerking en weergave van weergegevens betrouwbaarder gemaakt.
-• Prestaties op minder krachtige Enigma2-ontvangers verbeterd door radar laden, decodering, cache en animaties te optimaliseren.
+• Prestaties op zwakke Enigma2-ontvangers verbeterd door geoptimaliseerd laden, decoderen, cachen en animeren van radar.
 • Ultra Low-End-, Low-End-, Auto- en Normal-prestatiemodi toegevoegd.
 • Bestaande functies blijven beschikbaar.
-• Als je deze plugin leuk vindt, kun je me trakteren op een kop koffie.
+• Als je deze plugin leuk vindt, kun je me op een koffie trakteren.
 '
 
 changelog_PL='
 • Naprawiono pliki językowe oraz nazwy plików PO/MO.
 • Dodano funkcję aktualizacji.
-• Naprawiono radar opadów, prognozę na siedem dni, ikony pogody oraz restart odłączonego GUI.
+• Naprawiono Rain Radar, pogodę na siedem dni, ikony pogody oraz restart odłączonego GUI.
 • Dodano konfigurowalne kolory.
-• Dodano automatyczne obrazy pogody zależne od pory dnia oraz sezonowe tła z automatycznym pobieraniem i instalacją.
+• Dodano automatyczne obrazy pogodowe zależne od pory dnia oraz sezonowe tła z automatycznym pobieraniem i instalacją.
 • Dodano wyświetlanie wschodu i zachodu słońca oraz wschodu i zachodu księżyca.
-• Dodano porównanie danych pogodowych dla dwóch lokalizacji, w tym godzin wschodu i zachodu słońca oraz księżyca.
+• Dodano porównanie danych pogodowych dla dwóch lokalizacji, w tym czasów wschodu i zachodu słońca oraz księżyca.
 • Dodano kolorystykę tematyczną dla opisu pogody, temperatury odczuwalnej, wiatru, deszczu oraz informacji o słońcu i księżycu.
-• Ulepszono wyszukiwanie i wybór miast za pomocą dedykowanego okna wyboru pasujących lokalizacji.
-• Ulepszono obliczenia wschodu i zachodu księżyca dzięki lepszemu przetwarzaniu czasu lokalnego i przesunięcia UTC.
+• Ulepszono wyszukiwanie miast i wybór miasta dzięki osobnemu oknu wyboru pasujących lokalizacji.
+• Ulepszono obliczenia wschodu i zachodu księżyca dzięki lepszej obsłudze czasu lokalnego i przesunięcia UTC.
 • Ulepszono obsługę daty i czasu w całym pluginie.
-• Poprawiono przetwarzanie i niezawodność wyświetlania danych pogodowych.
-• Poprawiono wydajność na słabszych odbiornikach Enigma2 poprzez optymalizację ładowania radaru, dekodowania, cache i animacji.
+• Ulepszono przetwarzanie i wyświetlanie danych pogodowych.
+• Poprawiono wydajność na słabszych odbiornikach Enigma2 poprzez optymalizację ładowania radaru, dekodowania, pamięci podręcznej i animacji.
 • Dodano tryby wydajności Ultra Low-End, Low-End, Auto i Normal.
 • Istniejące funkcje pozostają dostępne.
 • Jeśli podoba Ci się ten plugin, możesz postawić mi kawę.
@@ -238,17 +276,17 @@ changelog_PL='
 changelog_RU='
 • Исправлены языковые файлы и имена файлов PO/MO.
 • Добавлена функция обновления.
-• Исправлены радар дождя, прогноз на семь дней, погодные значки и перезапуск отдельного GUI.
+• Исправлены Rain Radar, прогноз на семь дней, погодные иконки и перезапуск отдельного GUI.
 • Добавлены настраиваемые цвета.
 • Добавлены автоматические изображения погоды в зависимости от времени суток и сезонные фоны с автоматической загрузкой и установкой.
-• Добавлено отображение восхода и захода солнца, а также восхода и захода луны.
-• Добавлено сравнение погодных данных для двух мест, включая время восхода и захода солнца и луны.
-• Добавлены тематические цвета для описания погоды, ощущаемой температуры, ветра, дождя, а также информации о солнце и луне.
-• Улучшен поиск городов и выбор города с отдельным окном для подходящих местоположений.
-• Улучшены расчёты восхода и захода луны с более точной обработкой местного времени и смещения UTC.
+• Добавлено отображение восхода и заката солнца, а также восхода и захода луны.
+• Добавлено сравнение погодных данных для двух мест, включая время восхода и заката солнца и луны.
+• Добавлены тематические цвета для описания погоды, ощущаемой температуры, ветра, дождя и информации о солнце и луне.
+• Улучшен поиск городов и выбор города с отдельным окном выбора подходящих мест.
+• Улучшены расчёты восхода и захода луны благодаря улучшенной обработке местного времени и смещения UTC.
 • Улучшена обработка даты и времени во всём плагине.
-• Улучшена обработка и надёжность отображения погодных данных.
-• Улучшена производительность на слабых ресиверах Enigma2 благодаря оптимизации загрузки радара, декодирования, кэширования и анимации.
+• Улучшена обработка и отображение погодных данных.
+• Улучшена производительность на слабых ресиверах Enigma2 благодаря оптимизации загрузки радара, декодирования, кэширования и обработки анимаций.
 • Добавлены режимы производительности Ultra Low-End, Low-End, Auto и Normal.
 • Существующие функции остаются доступными.
 • Если вам нравится этот плагин, можете угостить меня чашкой кофе.
@@ -257,17 +295,17 @@ changelog_RU='
 changelog_SK='
 • Opravené jazykové súbory a názvy súborov PO/MO.
 • Pridaná funkcia aktualizácie.
-• Opravený radar zrážok, sedemdňová predpoveď počasia, ikony počasia a reštart oddeleného GUI.
+• Opravený Rain Radar, sedemdňová predpoveď počasia, ikony počasia a reštart oddeleného GUI.
 • Pridané nastaviteľné farby.
 • Pridané automatické obrázky počasia podľa dennej doby a sezónne pozadia s automatickým stiahnutím a inštaláciou.
-• Pridané zobrazenie východu a západu slnka a tiež východu a západu Mesiaca.
-• Pridané porovnanie údajov o počasí pre dve lokality vrátane časov východu a západu Slnka a Mesiaca.
-• Pridané tematické farby pre popis počasia, pocitovú teplotu, vietor, dážď a informácie o Slnku a Mesiaci.
+• Pridané zobrazenie východu a západu slnka a tiež východu a západu mesiaca.
+• Pridané porovnanie údajov o počasí pre dve lokality vrátane časov východu a západu slnka a mesiaca.
+• Pridané tematické farby pre popis počasia, pocitovú teplotu, vietor, dážď a informácie o slnku a mesiaci.
 • Vylepšené vyhľadávanie miest a výber mesta pomocou samostatného okna pre zodpovedajúce lokality.
-• Vylepšené výpočty východu a západu Mesiaca s lepšou správou miestneho času a posunu UTC.
+• Vylepšené výpočty východu a západu mesiaca s lepším spracovaním miestneho času a UTC posunu.
 • Vylepšené spracovanie dátumu a času v celom plugine.
-• Vylepšené spracovanie a spoľahlivosť zobrazovania údajov o počasí.
-• Zlepšený výkon na slabších prijímačoch Enigma2 optimalizáciou načítania radaru, dekódovania, cache a animácií.
+• Vylepšené spracovanie a zobrazovanie údajov o počasí.
+• Vylepšený výkon na slabších prijímačoch Enigma2 optimalizáciou načítania radaru, dekódovania, cache a animácií.
 • Pridané režimy výkonu Ultra Low-End, Low-End, Auto a Normal.
 • Existujúce funkcie zostávajú dostupné.
 • Ak sa vám plugin páči, môžete ma pozvať na kávu.
@@ -276,1649 +314,729 @@ changelog_SK='
 changelog_UA='
 • Виправлено мовні файли та назви файлів PO/MO.
 • Додано функцію оновлення.
-• Виправлено радар опадів, прогноз на сім днів, погодні піктограми та перезапуск окремого GUI.
+• Виправлено Rain Radar, прогноз погоди на сім днів, іконки погоди та перезапуск окремого GUI.
 • Додано налаштовувані кольори.
 • Додано автоматичні зображення погоди відповідно до часу доби та сезонні фони з автоматичним завантаженням і встановленням.
 • Додано відображення сходу та заходу сонця, а також сходу та заходу місяця.
-• Додано порівняння погодних даних для двох місць, включаючи час сходу та заходу сонця і місяця.
+• Додано порівняння погодних даних для двох місць, включно з часом сходу та заходу сонця і місяця.
 • Додано тематичні кольори для опису погоди, відчутної температури, вітру, дощу та інформації про сонце і місяць.
 • Покращено пошук міст і вибір міста за допомогою окремого вікна вибору відповідних місць.
-• Покращено розрахунок сходу та заходу місяця з кращою обробкою місцевого часу та зміщення UTC.
-• Покращено роботу з датою та часом у всьому плагіні.
-• Покращено обробку та надійність відображення погодних даних.
-• Покращено продуктивність на слабких приймачах Enigma2 завдяки оптимізації завантаження радара, декодування, кешування та анімацій.
+• Покращено розрахунки сходу та заходу місяця завдяки кращій обробці місцевого часу та зміщення UTC.
+• Покращено обробку дати та часу в усьому плагіні.
+• Покращено обробку та відображення погодних даних.
+• Покращено продуктивність на слабких приймачах Enigma2 завдяки оптимізації завантаження радара, декодування, кешування та анімації.
 • Додано режими продуктивності Ultra Low-End, Low-End, Auto та Normal.
 • Існуючі функції залишаються доступними.
 • Якщо вам подобається цей плагін, можете пригостити мене кавою.
 '
 
 changelog_ZH='
-• 修复了语言文件以及 PO/MO 文件名问题。
-• 添加了更新功能。
-• 修复了降雨雷达、七天天气预报、天气图标以及独立 GUI 重启问题。
-• 添加了可自定义颜色。
-• 添加了根据一天中不同时间自动显示天气图片以及自动下载和安装季节性背景的功能。
-• 添加了日出、日落以及月出、月落显示。
-• 添加了两个地点之间的天气数据比较，包括太阳和月亮的升起及落下时间。
-• 为天气描述、体感温度、风、雨以及太阳和月亮信息添加了主题颜色。
-• 改进了城市搜索和城市选择，并增加了专用匹配地点选择窗口。
-• 改进了月出和月落计算，并优化了本地时间和 UTC 偏移处理。
-• 改进了整个插件中的日期和时间处理。
-• 提高了天气数据处理和显示的可靠性。
-• 通过优化雷达加载、解码、缓存和动画处理，提高了低端 Enigma2 接收机上的性能。
-• 添加了 Ultra Low-End、Low-End、Auto 和 Normal 性能模式。
-• 现有功能保持可用。
-• 如果您喜欢这个插件，欢迎请我喝杯咖啡。
+• 修复语言文件以及 PO/MO 文件名。
+• 添加更新功能。
+• 修复 Rain Radar、七天天气、天气图标以及独立 GUI 重启。
+• 添加可自定义颜色。
+• 添加根据一天时间自动显示天气图片，以及自动下载和安装季节性背景。
+• 添加日出、日落以及月出、月落显示。
+• 添加两个地点之间的天气数据比较，包括日出、日落、月出和月落时间。
+• 为天气描述、体感温度、风、雨、太阳和月亮信息添加主题颜色。
+• 改进城市搜索和城市选择，并使用独立选择窗口显示匹配地点。
+• 改进月出和月落计算，更好地处理本地时间和 UTC 偏移。
+• 改进整个插件中的日期和时间处理。
+• 改进天气数据处理和显示的可靠性。
+• 通过优化雷达加载、解码、缓存和动画处理，提高低端 Enigma2 接收机上的性能。
+• 添加 Ultra Low-End、Low-End、Auto 和 Normal 性能模式。
+• 现有功能继续保留。
+• 如果你喜欢这个插件，可以请我喝杯咖啡。
 '
 
-# Legacy compatibility:
-# The Python updater can also work with a normal "changelog"
-# variable. Keep English as the default legacy value.
-changelog="$changelog_EN"
+###############################################################################
+# Helper functions
+###############################################################################
 
-# =========================================================
-# INSTALLATION PATH
-# =========================================================
-
-if [ -d "/usr/lib/enigma2/python/Plugins/Extensions" ]; then
-
-    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
-
-elif [ -d "/usr/lib64/enigma2/python/Plugins/Extensions" ]; then
-
-    PLUGIN_BASE="/usr/lib64/enigma2/python/Plugins/Extensions"
-
-else
-
-    PLUGIN_BASE="/usr/lib/enigma2/python/Plugins/Extensions"
-
-fi
-
-PLUGIN_NAME="speedy_TheWeather"
-PLUGINPATH="${PLUGIN_BASE}/${PLUGIN_NAME}"
-
-# =========================================================
-# TEMPORARY FILES
-# =========================================================
-
-TMPPATH="/tmp/speedy_TheWeather_installer"
-FILEPATH="${TMPPATH}/speedy_TheWeather.tar.gz"
-EXTRACTPATH="${TMPPATH}/extract"
-
-OLD_PLUGIN_BACKUP="/tmp/speedy_TheWeather_plugin_backup"
-
-CONFIG_DIR="/etc/enigma2/speedy_TheWeather"
-BACKUP_DIR="/tmp/speedy_TheWeather_config_backup"
-
-AUTO_BG_DIR="${PLUGINPATH}/backgrounds/auto"
-AUTO_BG_BACKUP="/tmp/speedy_TheWeather_auto_backgrounds_backup"
-
-PLUGIN_SOURCE=""
-
-# =========================================================
-# STATE
-# =========================================================
-
-BACKUP_CREATED=0
-PLUGIN_BACKUP_CREATED=0
-AUTO_BG_BACKUP_CREATED=0
-
-OSTYPE="Unknown"
-STATUS=""
-
-PYTHON="Unknown"
-PYTHON_CMD=""
-PYTHON_VERSION="Unknown"
-
-DISTRO="Unknown"
-DISTRO_VERSION="Unknown"
-BOX_TYPE="Unknown"
-
-DOWNLOADER=""
-FILESIZE=0
-
-# =========================================================
-# LOGGING
-# =========================================================
-
-log()
+print_line()
 {
-    echo "[speedy_TheWeather] $1"
+    echo "---------------------------------------------------------"
 }
 
-warning()
+show_header()
 {
+    clear 2>/dev/null || true
+
     echo
-    echo "WARNING: $1"
+    echo "========================================================="
+    echo "       speedy_TheWeather installer ${VERSION}"
+    echo "========================================================="
+    echo
+    echo "Repository:"
+    echo "https://github.com/${REPO_OWNER}/${REPO_NAME}"
     echo
 }
 
-error()
+show_info()
 {
     echo
-    echo "========================================================="
-    echo "ERROR"
-    echo "========================================================="
+    echo "Plugin:"
+    echo "${PLUGIN_NAME}"
+
+    echo
+    echo "Version:"
+    echo "${VERSION}"
+
+    echo
+    echo "Branch:"
+    echo "${BRANCH}"
+
+    echo
+    echo "Install path:"
+    echo "${PLUGINPATH}"
+
+    echo
+    echo "Changelog:"
+    print_line
+    echo "Multilingual changelog stored in installer.sh."
+    echo "The changelog is displayed by the plugin updater."
+    print_line
+    echo
+}
+
+die()
+{
+    echo
+    echo "ERROR:"
     echo "$1"
-    echo "========================================================="
     echo
-}
+    echo "Installation aborted."
+    echo
 
-# =========================================================
-# CLEANUP
-# =========================================================
-
-cleanup()
-{
-    log "Cleaning temporary files..."
-
-    if [ -n "$TMPPATH" ] &&
-       [ -d "$TMPPATH" ]; then
-
-        rm -rf "$TMPPATH"
-
-    fi
-}
-
-# =========================================================
-# ROOT CHECK
-# =========================================================
-
-check_root()
-{
-    if [ "$(id -u)" -ne 0 ]; then
-
-        error "This installer must be executed as root."
-        exit 1
-
-    fi
-}
-
-# =========================================================
-# COMMAND CHECK
-# =========================================================
-
-check_command()
-{
-    command -v "$1" >/dev/null 2>&1
-}
-
-# =========================================================
-# OS DETECTION
-# =========================================================
-
-detect_os()
-{
-    if check_command opkg; then
-
-        OSTYPE="OE"
-        STATUS="/var/lib/opkg/status"
-
-    elif check_command apt-get &&
-         [ -f "/var/lib/dpkg/status" ]; then
-
-        OSTYPE="Debian"
-        STATUS="/var/lib/dpkg/status"
-
-    elif [ -f "/var/lib/opkg/status" ] ||
-         [ -f "/etc/opkg/opkg.conf" ]; then
-
-        OSTYPE="OE"
-        STATUS="/var/lib/opkg/status"
-
-    elif [ -f "/etc/debian_version" ] &&
-         [ -f "/var/lib/dpkg/status" ]; then
-
-        OSTYPE="Debian"
-        STATUS="/var/lib/dpkg/status"
-
-    else
-
-        OSTYPE="Unknown"
-        STATUS=""
-
-    fi
-
-    log "Detected OS: $OSTYPE"
-}
-
-# =========================================================
-# PYTHON DETECTION
-# =========================================================
-
-detect_python()
-{
-    PYTHON_CMD=""
-    PYTHON="Unknown"
-    PYTHON_VERSION="Unknown"
-
-    if check_command python3; then
-
-        PYTHON_CMD="python3"
-        PYTHON="PY3"
-
-    elif check_command python; then
-
-        if python --version 2>&1 |
-            grep -q "^Python 3\."
-        then
-
-            PYTHON_CMD="python"
-            PYTHON="PY3"
-
-        else
-
-            PYTHON_CMD="python"
-            PYTHON="PY2"
-
-        fi
-
-    fi
-
-    if [ -n "$PYTHON_CMD" ]; then
-
-        PYTHON_VERSION=$(
-            "$PYTHON_CMD" --version 2>&1
-        )
-
-        log "Python: $PYTHON_VERSION"
-
-    else
-
-        warning "Python was not found."
-
-    fi
-}
-
-# =========================================================
-# IMAGE / BOX DETECTION
-# =========================================================
-
-detect_image()
-{
-    BOX_TYPE=$(
-        head -n 1 /etc/hostname 2>/dev/null
-    )
-
-    [ -z "$BOX_TYPE" ] &&
-        BOX_TYPE="Unknown"
-
-    if [ -f "/usr/lib/enigma.info" ]; then
-
-        DISTRO=$(
-            grep "^distro=" \
-                /usr/lib/enigma.info \
-                2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-        DISTRO_VERSION=$(
-            grep "^imageversion=" \
-                /usr/lib/enigma.info \
-                2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-    elif [ -f "/etc/image-version" ]; then
-
-        DISTRO=$(
-            grep "^distro=" \
-                /etc/image-version \
-                2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-        DISTRO_VERSION=$(
-            grep "^version=" \
-                /etc/image-version \
-                2>/dev/null |
-            head -n 1 |
-            cut -d "=" -f 2-
-        )
-
-    fi
-
-    [ -z "$DISTRO" ] &&
-        DISTRO="Unknown"
-
-    [ -z "$DISTRO_VERSION" ] &&
-        DISTRO_VERSION="Unknown"
-
-    log "Image: $DISTRO $DISTRO_VERSION"
-    log "Box: $BOX_TYPE"
-}
-
-# =========================================================
-# INSTALL CURL
-# =========================================================
-
-install_curl()
-{
-    if check_command curl; then
-
-        log "curl found."
-        return 0
-
-    fi
-
-    log "curl not found."
-
-    case "$OSTYPE" in
-
-        OE)
-
-            if check_command opkg; then
-
-                log "Trying to install curl with opkg..."
-
-                opkg update >/dev/null 2>&1 || true
-
-                if opkg install curl >/dev/null 2>&1; then
-
-                    if check_command curl; then
-
-                        log "curl installed."
-                        return 0
-
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-        Debian)
-
-            if check_command apt-get; then
-
-                log "Trying to install curl with apt..."
-
-                apt-get update >/dev/null 2>&1 || true
-
-                if apt-get install -y curl >/dev/null 2>&1; then
-
-                    if check_command curl; then
-
-                        log "curl installed."
-                        return 0
-
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-    esac
-
-    return 1
-}
-
-# =========================================================
-# INSTALL WGET
-# =========================================================
-
-install_wget()
-{
-    if check_command wget; then
-
-        log "wget found."
-        return 0
-
-    fi
-
-    log "wget not found."
-
-    case "$OSTYPE" in
-
-        OE)
-
-            if check_command opkg; then
-
-                log "Trying to install wget with opkg..."
-
-                opkg update >/dev/null 2>&1 || true
-
-                if opkg install wget >/dev/null 2>&1; then
-
-                    if check_command wget; then
-
-                        log "wget installed."
-                        return 0
-
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-        Debian)
-
-            if check_command apt-get; then
-
-                log "Trying to install wget with apt..."
-
-                apt-get update >/dev/null 2>&1 || true
-
-                if apt-get install -y wget >/dev/null 2>&1; then
-
-                    if check_command wget; then
-
-                        log "wget installed."
-                        return 0
-
-                    fi
-
-                fi
-
-            fi
-
-            ;;
-
-    esac
-
-    return 1
-}
-
-# =========================================================
-# SELECT DOWNLOADER
-# =========================================================
-
-select_downloader()
-{
-    DOWNLOADER=""
-
-    if check_command curl; then
-
-        DOWNLOADER="curl"
-
-        log "Downloader selected: curl"
-
-        return 0
-
-    fi
-
-    if check_command wget; then
-
-        DOWNLOADER="wget"
-
-        log "Downloader selected: wget"
-
-        return 0
-
-    fi
-
-    if install_curl; then
-
-        DOWNLOADER="curl"
-
-        log "Downloader selected: curl"
-
-        return 0
-
-    fi
-
-    if install_wget; then
-
-        DOWNLOADER="wget"
-
-        log "Downloader selected: wget"
-
-        return 0
-
-    fi
-
-    error "Neither curl nor wget is available and neither could be installed."
+    cleanup_temp
 
     exit 1
 }
 
-# =========================================================
-# DOWNLOAD
-# =========================================================
-
-download_package()
+command_exists()
 {
-    log "Preparing download..."
-    log "Version: $VERSION"
-    log "Repository: ${REPO_OWNER}/${REPO_NAME}"
-    log "Branch: $BRANCH"
-    log "URL: $DOWNLOAD_URL"
+    command -v "$1" >/dev/null 2>&1
+}
 
-    mkdir -p "$TMPPATH"
+###############################################################################
+# Cleanup
+###############################################################################
 
-    rm -f "$FILEPATH"
+cleanup_temp()
+{
+    rm -rf "$TMP_DIR" >/dev/null 2>&1 || true
+}
 
-    if [ "$DOWNLOADER" = "curl" ]; then
+###############################################################################
+# Detect system
+###############################################################################
 
-        log "Downloading with curl..."
+detect_system()
+{
+    echo
+    echo "Detecting system..."
 
-        if curl \
+    if [ -f /etc/opkg/version ]; then
+        PACKAGE_MANAGER="opkg"
+        SYSTEM_TYPE="OE/Enigma2"
+    elif command_exists apt-get; then
+        PACKAGE_MANAGER="apt-get"
+        SYSTEM_TYPE="Debian"
+    else
+        PACKAGE_MANAGER=""
+        SYSTEM_TYPE="Unknown"
+    fi
+
+    if command_exists python3; then
+        PYTHON_BIN="python3"
+        PYTHON_VERSION="$(python3 --version 2>&1)"
+    elif command_exists python; then
+        PYTHON_BIN="python"
+        PYTHON_VERSION="$(python --version 2>&1)"
+    else
+        PYTHON_BIN=""
+        PYTHON_VERSION="not found"
+    fi
+
+    if [ -f /etc/image-version ]; then
+        IMAGE_NAME="$(grep -E '^imagename=' /etc/image-version 2>/dev/null | head -n 1 | cut -d '=' -f 2-)"
+        IMAGE_VERSION="$(grep -E '^version=' /etc/image-version 2>/dev/null | head -n 1 | cut -d '=' -f 2-)"
+    else
+        IMAGE_NAME=""
+        IMAGE_VERSION=""
+    fi
+
+    if [ -f /etc/issue ]; then
+        BOX_INFO="$(head -n 1 /etc/issue 2>/dev/null)"
+    else
+        BOX_INFO="$(uname -a 2>/dev/null)"
+    fi
+
+    echo "System type : ${SYSTEM_TYPE}"
+    echo "Package mgr : ${PACKAGE_MANAGER:-not found}"
+    echo "Python      : ${PYTHON_VERSION}"
+    echo "Image       : ${IMAGE_NAME:-unknown}"
+    echo "Image ver.  : ${IMAGE_VERSION:-unknown}"
+    echo "Box         : ${BOX_INFO}"
+    echo
+}
+
+###############################################################################
+# Install download tool
+###############################################################################
+
+install_package()
+{
+    PACKAGE="$1"
+
+    [ -z "$PACKAGE_MANAGER" ] && return 1
+
+    echo "Trying to install ${PACKAGE}..."
+
+    if [ "$PACKAGE_MANAGER" = "opkg" ]; then
+        opkg update >/dev/null 2>&1 || true
+        opkg install "$PACKAGE" >/dev/null 2>&1
+    elif [ "$PACKAGE_MANAGER" = "apt-get" ]; then
+        apt-get update >/dev/null 2>&1 || true
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "$PACKAGE" >/dev/null 2>&1
+    else
+        return 1
+    fi
+}
+
+find_download_tool()
+{
+    if command_exists curl; then
+        DOWNLOAD_TOOL="curl"
+        return 0
+    fi
+
+    if command_exists wget; then
+        DOWNLOAD_TOOL="wget"
+        return 0
+    fi
+
+    echo "curl/wget not found."
+
+    if [ "$PACKAGE_MANAGER" = "opkg" ]; then
+        install_package curl || install_package wget || true
+    elif [ "$PACKAGE_MANAGER" = "apt-get" ]; then
+        install_package curl || install_package wget || true
+    fi
+
+    if command_exists curl; then
+        DOWNLOAD_TOOL="curl"
+        return 0
+    fi
+
+    if command_exists wget; then
+        DOWNLOAD_TOOL="wget"
+        return 0
+    fi
+
+    return 1
+}
+
+###############################################################################
+# Download
+###############################################################################
+
+download_file()
+{
+    URL="$1"
+    OUTPUT="$2"
+
+    echo
+    echo "Downloading:"
+    echo "$URL"
+    echo
+
+    if [ "$DOWNLOAD_TOOL" = "curl" ]; then
+        curl \
             -L \
             --fail \
             --silent \
             --show-error \
             --connect-timeout 20 \
-            --max-time 120 \
-            --retry 3 \
-            --retry-delay 2 \
-            "$DOWNLOAD_URL" \
-            -o "$FILEPATH"
-        then
-
-            log "curl download completed."
-
-        else
-
-            error "GitHub download failed using curl."
-
-            return 1
-
-        fi
-
-    elif [ "$DOWNLOADER" = "wget" ]; then
-
-        log "Downloading with wget..."
-
-        if wget \
+            --max-time 300 \
+            -o "$OUTPUT" \
+            "$URL"
+    elif [ "$DOWNLOAD_TOOL" = "wget" ]; then
+        wget \
             -q \
-            --server-response \
-            --timeout=30 \
+            --timeout=20 \
             --tries=3 \
-            "$DOWNLOAD_URL" \
-            -O "$FILEPATH" \
-            2>"${TMPPATH}/wget.log"
-        then
-
-            log "wget download completed."
-
-        else
-
-            error "GitHub download failed using wget."
-
-            if [ -f "${TMPPATH}/wget.log" ]; then
-
-                echo
-                echo "wget output:"
-                echo "---------------------------------------------------------"
-
-                cat "${TMPPATH}/wget.log"
-
-                echo "---------------------------------------------------------"
-                echo
-
-            fi
-
-            return 1
-
-        fi
-
+            -O "$OUTPUT" \
+            "$URL"
     else
-
-        error "No downloader selected."
-
         return 1
-
     fi
-
-    if [ ! -f "$FILEPATH" ]; then
-
-        error "Download finished but archive file does not exist."
-
-        return 1
-
-    fi
-
-    if [ ! -s "$FILEPATH" ]; then
-
-        error "Downloaded archive is empty."
-
-        return 1
-
-    fi
-
-    FILESIZE=$(
-        wc -c < "$FILEPATH" 2>/dev/null
-    )
-
-    log "Downloaded size: ${FILESIZE} bytes"
-
-    if [ "$FILESIZE" -lt 1000 ]; then
-
-        warning "Downloaded file is suspiciously small."
-
-        echo
-        echo "First bytes of downloaded file:"
-        echo "---------------------------------------------------------"
-
-        head -c 500 "$FILEPATH" 2>/dev/null
-
-        echo
-        echo "---------------------------------------------------------"
-        echo
-
-        return 1
-
-    fi
-
-    return 0
 }
 
-# =========================================================
-# VALIDATE ARCHIVE
-# =========================================================
+download_archive()
+{
+    mkdir -p "$TMP_DIR" || die "Could not create temporary directory."
+
+    rm -f "$ARCHIVE_FILE"
+
+    ATTEMPT=1
+    MAX_ATTEMPTS=3
+
+    while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
+        echo "Download attempt ${ATTEMPT}/${MAX_ATTEMPTS}..."
+
+        if download_file "$DOWNLOAD_URL" "$ARCHIVE_FILE"; then
+            if [ -s "$ARCHIVE_FILE" ]; then
+                echo "Download successful."
+                return 0
+            fi
+        fi
+
+        echo "Download failed."
+        rm -f "$ARCHIVE_FILE"
+
+        ATTEMPT=$((ATTEMPT + 1))
+        sleep 2
+    done
+
+    return 1
+}
+
+###############################################################################
+# Validate archive
+###############################################################################
 
 validate_archive()
 {
-    log "Validating downloaded archive..."
+    echo
+    echo "Validating downloaded archive..."
 
-    if ! check_command gzip; then
+    [ -f "$ARCHIVE_FILE" ] || die "Downloaded archive does not exist."
 
-        error "gzip command not found."
-
-        return 1
-
+    if command_exists gzip; then
+        gzip -t "$ARCHIVE_FILE" >/dev/null 2>&1 || \
+            die "Downloaded file is not a valid gzip archive."
     fi
 
-    if ! check_command tar; then
-
-        error "tar command not found."
-
-        return 1
-
+    if ! tar -tzf "$ARCHIVE_FILE" >/dev/null 2>&1; then
+        die "Downloaded file is not a valid tar.gz archive."
     fi
 
-    if ! gzip -t "$FILEPATH" >/dev/null 2>&1; then
-
-        error "Downloaded file is not a valid gzip archive."
-
-        return 1
-
+    if ! tar -tzf "$ARCHIVE_FILE" | grep -q '/plugin.py$'; then
+        die "Downloaded archive does not contain plugin.py."
     fi
 
-    log "gzip validation successful."
-
-    if ! tar -tzf "$FILEPATH" >/dev/null 2>&1; then
-
-        error "Downloaded file is not a valid tar archive."
-
-        return 1
-
-    fi
-
-    log "tar validation successful."
-
-    if ! tar -tzf "$FILEPATH" 2>/dev/null |
-        grep -q "/plugin.py$"
-    then
-
-        error "Archive does not contain plugin.py."
-
-        echo
-        echo "Archive contents:"
-        echo "---------------------------------------------------------"
-
-        tar -tzf "$FILEPATH" 2>/dev/null |
-            head -100
-
-        echo "---------------------------------------------------------"
-        echo
-
-        return 1
-
-    fi
-
-    log "Archive contains plugin.py."
-
-    return 0
+    echo "Archive validation successful."
 }
 
-# =========================================================
-# EXTRACT PACKAGE
-# =========================================================
+###############################################################################
+# Extract archive
+###############################################################################
 
-extract_package()
+extract_archive()
 {
-    log "Extracting package..."
+    echo
+    echo "Extracting archive..."
 
-    rm -rf "$EXTRACTPATH"
+    rm -rf "$EXTRACT_DIR"
+    mkdir -p "$EXTRACT_DIR" || die "Could not create extraction directory."
 
-    if ! mkdir -p "$EXTRACTPATH"; then
+    tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_DIR" || \
+        die "Could not extract downloaded archive."
 
-        error "Could not create extraction directory."
+    SOURCE_PATH=""
 
-        return 1
-
-    fi
-
-    if ! tar \
-        -xzf "$FILEPATH" \
-        -C "$EXTRACTPATH"
-    then
-
-        error "Failed to extract archive."
-
-        return 1
-
-    fi
-
-    log "Archive extracted successfully."
-
-    return 0
-}
-
-# =========================================================
-# FIND PLUGIN SOURCE
-# =========================================================
-
-find_plugin_source()
-{
-    PLUGIN_SOURCE=""
-
-    log "Searching extracted archive for plugin..."
-
-    while IFS= read -r FILE
-    do
-
-        [ -z "$FILE" ] &&
-            continue
-
-        DIR="$(dirname "$FILE")"
-
-        if [ -f "$DIR/plugin.py" ] &&
-           [ -f "$DIR/__init__.py" ]; then
-
-            PLUGIN_SOURCE="$DIR"
-
+    for DIR in "$EXTRACT_DIR"/*; do
+        if [ -f "$DIR/plugin.py" ]; then
+            SOURCE_PATH="$DIR"
             break
-
         fi
 
-    done < <(
-        find "$EXTRACTPATH" \
-            -type f \
-            -name "plugin.py" \
-            2>/dev/null
-    )
+        if [ -f "$DIR/Plugins/Extensions/${PLUGIN_NAME}/plugin.py" ]; then
+            SOURCE_PATH="$DIR/Plugins/Extensions/${PLUGIN_NAME}"
+            break
+        fi
 
-    if [ -z "$PLUGIN_SOURCE" ]; then
+        if [ -f "$DIR/usr/lib/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}/plugin.py" ]; then
+            SOURCE_PATH="$DIR/usr/lib/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
+            break
+        fi
+    done
 
-        error "Could not find speedy_TheWeather plugin files."
+    [ -n "$SOURCE_PATH" ] || die "Could not locate plugin source directory."
 
-        return 1
-
-    fi
-
-    log "Plugin source found:"
-    log "$PLUGIN_SOURCE"
-
-    return 0
+    echo "Source:"
+    echo "$SOURCE_PATH"
 }
 
-# =========================================================
-# VALIDATE PLUGIN SOURCE
-# =========================================================
+###############################################################################
+# Remove repository-only files
+###############################################################################
 
-validate_plugin_source()
+remove_repository_files()
 {
-    if [ ! -d "$PLUGIN_SOURCE" ]; then
+    echo
+    echo "Removing repository-only files..."
 
-        error "Plugin source directory does not exist."
+    rm -f \
+        "$SOURCE_PATH/README.md" \
+        "$SOURCE_PATH/README" \
+        "$SOURCE_PATH/installer.sh" \
+        "$SOURCE_PATH/version.txt"
 
-        return 1
-
-    fi
-
-    if [ ! -f "$PLUGIN_SOURCE/__init__.py" ]; then
-
-        error "__init__.py is missing."
-
-        return 1
-
-    fi
-
-    if [ ! -f "$PLUGIN_SOURCE/plugin.py" ]; then
-
-        error "plugin.py is missing."
-
-        return 1
-
-    fi
-
-    log "Plugin source validation successful."
-
-    return 0
-}
-
-# =========================================================
-# REMOVE REPOSITORY-ONLY FILES
-# =========================================================
-
-remove_repository_only_files()
-{
-    log "Removing repository-only files..."
-
-    if [ ! -d "$PLUGIN_SOURCE" ]; then
-
-        return 1
-
-    fi
-
-    find "$PLUGIN_SOURCE" \
+    find "$SOURCE_PATH" \
         -type f \
-        \( \
-            -name "README.md" \
-            -o -name "README" \
-            -o -name "installer.sh" \
-            -o -name "version.txt" \
-            -o -name "*.svg" \
-            -o -name "*backgrounds_auto.zip" \
-        \) \
-        -print \
+        \( -name "*.svg" -o -name "*backgrounds_auto.zip" \) \
         -delete \
-        2>/dev/null
+        2>/dev/null || true
 
-    if [ -d "$PLUGIN_SOURCE/converter" ]; then
+    rm -rf \
+        "$SOURCE_PATH/converter" \
+        "$SOURCE_PATH/renderer"
 
-        rm -rf "$PLUGIN_SOURCE/converter"
-
-        log "Removed converter/"
-
-    fi
-
-    if [ -d "$PLUGIN_SOURCE/renderer" ]; then
-
-        rm -rf "$PLUGIN_SOURCE/renderer"
-
-        log "Removed renderer/"
-
-    fi
-
-    log "Repository-only files removed."
-
-    return 0
+    echo "Repository-only files removed."
 }
 
-# =========================================================
-# CONFIG BACKUP
-# =========================================================
+###############################################################################
+# Validate source
+###############################################################################
+
+validate_source()
+{
+    echo
+    echo "Validating plugin source..."
+
+    [ -f "$SOURCE_PATH/plugin.py" ] || \
+        die "plugin.py is missing from source."
+
+    if [ -f "$SOURCE_PATH/installer.sh" ]; then
+        die "Repository installer.sh was not removed."
+    fi
+
+    if [ -f "$SOURCE_PATH/version.txt" ]; then
+        die "Repository version.txt was not removed."
+    fi
+
+    if [ -d "$SOURCE_PATH/converter" ]; then
+        die "Repository converter directory was not removed."
+    fi
+
+    if [ -d "$SOURCE_PATH/renderer" ]; then
+        die "Repository renderer directory was not removed."
+    fi
+
+    echo "Source validation successful."
+}
+
+###############################################################################
+# Backup config
+###############################################################################
 
 backup_config()
 {
-    BACKUP_CREATED=0
+    echo
+    echo "Backing up configuration..."
 
-    if [ ! -d "$CONFIG_DIR" ]; then
+    rm -rf "$CONFIG_BACKUP"
 
-        log "No existing configuration found."
+    if [ -d "$CONFIG_DIR" ]; then
+        cp -a "$CONFIG_DIR" "$CONFIG_BACKUP" || \
+            die "Could not backup configuration."
 
-        return 0
-
+        echo "Configuration backup created."
+    else
+        echo "No existing configuration found."
     fi
-
-    log "Backing up configuration..."
-
-    rm -rf "$BACKUP_DIR"
-
-    if cp -a "$CONFIG_DIR" "$BACKUP_DIR"; then
-
-        BACKUP_CREATED=1
-
-        log "Configuration backup successful."
-
-        return 0
-
-    fi
-
-    error "Configuration backup failed."
-
-    return 1
 }
 
-# =========================================================
-# CONFIG RESTORE
-# =========================================================
+###############################################################################
+# Backup plugin
+###############################################################################
 
-restore_config()
+backup_plugin()
 {
-    if [ "$BACKUP_CREATED" -ne 1 ]; then
+    echo
+    echo "Backing up existing plugin..."
 
-        return 0
+    rm -rf "$PLUGIN_BACKUP"
 
+    if [ -d "$PLUGINPATH" ]; then
+        cp -a "$PLUGINPATH" "$PLUGIN_BACKUP" || \
+            die "Could not backup existing plugin."
+
+        echo "Plugin backup created."
+    else
+        echo "No existing plugin installation found."
     fi
-
-    if [ ! -d "$BACKUP_DIR" ]; then
-
-        warning "Configuration backup disappeared."
-
-        return 1
-
-    fi
-
-    log "Restoring configuration..."
-
-    rm -rf "$CONFIG_DIR"
-
-    if ! mkdir -p "$CONFIG_DIR"; then
-
-        warning "Could not recreate configuration directory."
-
-        return 1
-
-    fi
-
-    if cp -a "$BACKUP_DIR"/. "$CONFIG_DIR"/; then
-
-        log "Configuration restored."
-
-        rm -rf "$BACKUP_DIR"
-
-        BACKUP_CREATED=0
-
-        return 0
-
-    fi
-
-    warning "Configuration restore failed."
-
-    return 1
 }
 
-# =========================================================
-# PLUGIN BACKUP
-# =========================================================
-
-backup_existing_plugin()
-{
-    PLUGIN_BACKUP_CREATED=0
-
-    rm -rf "$OLD_PLUGIN_BACKUP"
-
-    if [ ! -d "$PLUGINPATH" ]; then
-
-        log "No previous plugin installation found."
-
-        return 0
-
-    fi
-
-    log "Backing up existing plugin..."
-
-    if cp -a "$PLUGINPATH" "$OLD_PLUGIN_BACKUP"; then
-
-        PLUGIN_BACKUP_CREATED=1
-
-        log "Existing plugin backup created."
-
-        return 0
-
-    fi
-
-    error "Could not backup existing plugin."
-
-    return 1
-}
-
-# =========================================================
-# ROLLBACK PLUGIN
-# =========================================================
-
-rollback_plugin()
-{
-    if [ "$PLUGIN_BACKUP_CREATED" -ne 1 ]; then
-
-        log "No plugin backup available for rollback."
-
-        return 0
-
-    fi
-
-    if [ ! -d "$OLD_PLUGIN_BACKUP" ]; then
-
-        warning "Plugin backup directory not found."
-
-        return 1
-
-    fi
-
-    log "Rolling back previous plugin..."
-
-    rm -rf "$PLUGINPATH"
-
-    if ! mkdir -p "$PLUGIN_BASE"; then
-
-        warning "Could not create plugin base directory."
-
-        return 1
-
-    fi
-
-    if cp -a "$OLD_PLUGIN_BACKUP" "$PLUGINPATH"; then
-
-        log "Plugin rollback successful."
-
-        rm -rf "$OLD_PLUGIN_BACKUP"
-
-        PLUGIN_BACKUP_CREATED=0
-
-        return 0
-
-    fi
-
-    warning "Plugin rollback failed."
-
-    return 1
-}
-
-# =========================================================
-# AUTOMATIC BACKGROUND BACKUP
-# =========================================================
+###############################################################################
+# Backup automatic backgrounds
+###############################################################################
 
 backup_auto_backgrounds()
 {
-    AUTO_BG_BACKUP_CREATED=0
+    echo
+    echo "Backing up automatic backgrounds..."
 
-    if [ ! -d "$AUTO_BG_DIR" ]; then
+    rm -rf "$AUTO_BACKGROUNDS_BACKUP"
 
-        log "No existing automatic background directory."
+    if [ -d "$AUTO_BACKGROUNDS_DIR" ]; then
+        cp -a "$AUTO_BACKGROUNDS_DIR" "$AUTO_BACKGROUNDS_BACKUP" || \
+            die "Could not backup automatic backgrounds."
 
-        return 0
-
+        echo "Automatic backgrounds backup created."
+    else
+        echo "No existing automatic backgrounds found."
     fi
-
-    if [ -z "$(
-        find "$AUTO_BG_DIR" \
-            -type f \
-            2>/dev/null |
-        head -n 1
-    )" ]; then
-
-        log "Automatic background directory is empty."
-
-        return 0
-
-    fi
-
-    log "Backing up automatic weather backgrounds..."
-
-    rm -rf "$AUTO_BG_BACKUP"
-
-    if ! mkdir -p "$AUTO_BG_BACKUP"; then
-
-        warning "Could not create background backup."
-
-        return 1
-
-    fi
-
-    if cp -a \
-        "$AUTO_BG_DIR"/. \
-        "$AUTO_BG_BACKUP"/ \
-        2>/dev/null
-    then
-
-        AUTO_BG_BACKUP_CREATED=1
-
-        log "Automatic background backup successful."
-
-        return 0
-
-    fi
-
-    rm -rf "$AUTO_BG_BACKUP"
-
-    warning "Automatic background backup failed."
-
-    return 1
 }
 
-# =========================================================
-# RESTORE AUTOMATIC BACKGROUNDS
-# =========================================================
+###############################################################################
+# Restore configuration
+###############################################################################
+
+restore_config()
+{
+    echo
+    echo "Restoring configuration..."
+
+    if [ -d "$CONFIG_BACKUP" ]; then
+        rm -rf "$CONFIG_DIR"
+        cp -a "$CONFIG_BACKUP" "$CONFIG_DIR" || \
+            die "Could not restore configuration."
+
+        echo "Configuration restored."
+    else
+        echo "No configuration backup found."
+    fi
+}
+
+###############################################################################
+# Restore automatic backgrounds
+###############################################################################
 
 restore_auto_backgrounds()
 {
-    if [ "$AUTO_BG_BACKUP_CREATED" -ne 1 ]; then
+    echo
+    echo "Restoring automatic backgrounds..."
 
-        return 0
+    if [ -d "$AUTO_BACKGROUNDS_BACKUP" ]; then
+        mkdir -p "$(dirname "$AUTO_BACKGROUNDS_DIR")"
 
+        rm -rf "$AUTO_BACKGROUNDS_DIR"
+
+        cp -a "$AUTO_BACKGROUNDS_BACKUP" "$AUTO_BACKGROUNDS_DIR" || \
+            die "Could not restore automatic backgrounds."
+
+        echo "Automatic backgrounds restored."
+    else
+        echo "No automatic backgrounds backup found."
     fi
-
-    if [ ! -d "$AUTO_BG_BACKUP" ]; then
-
-        warning "Automatic background backup not found."
-
-        return 1
-
-    fi
-
-    NEW_AUTO_BG_DIR="${PLUGINPATH}/backgrounds/auto"
-
-    log "Restoring automatic weather backgrounds..."
-
-    if ! mkdir -p "$NEW_AUTO_BG_DIR"; then
-
-        warning "Could not create automatic background directory."
-
-        return 1
-
-    fi
-
-    if cp -a \
-        "$AUTO_BG_BACKUP"/. \
-        "$NEW_AUTO_BG_DIR"/ \
-        2>/dev/null
-    then
-
-        log "Automatic backgrounds restored."
-
-        rm -rf "$AUTO_BG_BACKUP"
-
-        AUTO_BG_BACKUP_CREATED=0
-
-        return 0
-
-    fi
-
-    warning "Automatic background restore failed."
-
-    return 1
 }
 
-# =========================================================
-# INSTALL PLUGIN
-# =========================================================
+###############################################################################
+# Restore plugin
+###############################################################################
+
+restore_plugin()
+{
+    echo
+    echo "Rolling back plugin installation..."
+
+    rm -rf "$PLUGINPATH"
+
+    if [ -d "$PLUGIN_BACKUP" ]; then
+        mkdir -p "$(dirname "$PLUGINPATH")"
+
+        cp -a "$PLUGIN_BACKUP" "$PLUGINPATH" || \
+            die "Could not restore previous plugin."
+
+        echo "Previous plugin restored."
+    else
+        echo "No previous plugin installation existed."
+    fi
+}
+
+###############################################################################
+# Install plugin
+###############################################################################
 
 install_plugin()
 {
-    log "Installing speedy_TheWeather v${VERSION}..."
+    echo
+    echo "Installing plugin..."
 
-    if ! mkdir -p "$PLUGIN_BASE"; then
+    mkdir -p "$(dirname "$PLUGINPATH")" || \
+        die "Could not create plugin base directory."
 
-        error "Could not create plugin base directory."
+    rm -rf "$PLUGINPATH"
 
-        return 1
+    cp -a "$SOURCE_PATH" "$PLUGINPATH" || {
+        echo
+        echo "Plugin installation failed."
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "Could not copy plugin files."
+    }
 
-    fi
+    echo "Plugin installed."
+}
 
-    if [ -d "$PLUGINPATH" ]; then
+###############################################################################
+# Validate installation
+###############################################################################
 
-        log "Removing old plugin installation..."
+validate_installation()
+{
+    echo
+    echo "Validating installed plugin..."
 
-        if ! rm -rf "$PLUGINPATH"; then
+    [ -d "$PLUGINPATH" ] || {
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "Installed plugin directory does not exist."
+    }
 
-            error "Could not remove old plugin installation."
-
-            return 1
-
-        fi
-
-    fi
-
-    if ! mkdir -p "$PLUGINPATH"; then
-
-        error "Could not create plugin directory."
-
-        return 1
-
-    fi
-
-    if ! remove_repository_only_files; then
-
-        error "Could not clean repository-only files."
-
-        return 1
-
-    fi
-
-    log "Copying plugin files..."
-
-    if ! cp -a \
-        "$PLUGIN_SOURCE"/. \
-        "$PLUGINPATH"/
-    then
-
-        error "Failed to copy plugin files."
-
-        return 1
-
-    fi
-
-    log "Plugin files copied."
-
-    if [ ! -f "$PLUGINPATH/__init__.py" ]; then
-
-        error "__init__.py missing after installation."
-
-        return 1
-
-    fi
-
-    if [ ! -f "$PLUGINPATH/plugin.py" ]; then
-
-        error "plugin.py missing after installation."
-
-        return 1
-
-    fi
-
-    if [ -z "$(
-        find "$PLUGINPATH" \
-            -type f \
-            2>/dev/null |
-        head -n 1
-    )" ]; then
-
-        error "Plugin installation is empty."
-
-        return 1
-
-    fi
-
-    if [ -f "$PLUGINPATH/README.md" ]; then
-
-        error "README.md was installed unexpectedly."
-
-        return 1
-
-    fi
+    [ -f "$PLUGINPATH/plugin.py" ] || {
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "Installed plugin.py is missing."
+    }
 
     if [ -f "$PLUGINPATH/installer.sh" ]; then
-
-        error "installer.sh was installed unexpectedly."
-
-        return 1
-
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "installer.sh was accidentally installed."
     fi
 
     if [ -f "$PLUGINPATH/version.txt" ]; then
-
-        error "version.txt was installed unexpectedly."
-
-        return 1
-
-    fi
-
-    if find "$PLUGINPATH" \
-        -type f \
-        -name "*.svg" \
-        -print \
-        -quit \
-        2>/dev/null |
-        grep -q .
-    then
-
-        error "An SVG file was installed unexpectedly."
-
-        return 1
-
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "version.txt was accidentally installed."
     fi
 
     if [ -d "$PLUGINPATH/converter" ]; then
-
-        error "converter/ was installed unexpectedly."
-
-        return 1
-
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "converter directory was accidentally installed."
     fi
 
     if [ -d "$PLUGINPATH/renderer" ]; then
-
-        error "renderer/ was installed unexpectedly."
-
-        return 1
-
+        restore_plugin
+        restore_config
+        restore_auto_backgrounds
+        die "renderer directory was accidentally installed."
     fi
 
-    log "Plugin installation verified."
-
-    return 0
+    echo "Installation validation successful."
 }
 
-# =========================================================
-# REMOVE OLD PLUGIN BACKUP
-# =========================================================
-
-remove_old_plugin_backup()
-{
-    if [ -d "$OLD_PLUGIN_BACKUP" ]; then
-
-        rm -rf "$OLD_PLUGIN_BACKUP"
-
-        PLUGIN_BACKUP_CREATED=0
-
-        log "Old plugin backup removed."
-
-    fi
-}
-
-# =========================================================
-# CLEAN BACKUP STATE
-# =========================================================
+###############################################################################
+# Cleanup old backups
+###############################################################################
 
 cleanup_backups()
 {
-    if [ "$BACKUP_CREATED" -eq 1 ]; then
+    echo
+    echo "Cleaning up backups..."
 
-        rm -rf "$BACKUP_DIR"
+    rm -rf "$CONFIG_BACKUP"
+    rm -rf "$PLUGIN_BACKUP"
+    rm -rf "$AUTO_BACKGROUNDS_BACKUP"
 
-        BACKUP_CREATED=0
-
-    fi
-
-    if [ "$AUTO_BG_BACKUP_CREATED" -eq 1 ]; then
-
-        rm -rf "$AUTO_BG_BACKUP"
-
-        AUTO_BG_BACKUP_CREATED=0
-
-    fi
+    echo "Backups cleaned."
 }
 
-# =========================================================
-# INSTALLATION FAILED
-# =========================================================
-
-installation_failed()
-{
-    error "$1"
-
-    log "Starting rollback..."
-
-    if [ "$PLUGIN_BACKUP_CREATED" -eq 1 ]; then
-
-        rollback_plugin
-
-    fi
-
-    if [ "$BACKUP_CREATED" -eq 1 ]; then
-
-        restore_config
-
-    fi
-
-    if [ "$AUTO_BG_BACKUP_CREATED" -eq 1 ]; then
-
-        restore_auto_backgrounds
-
-    fi
-
-    cleanup
-
-    echo
-    echo "========================================================="
-    echo " speedy_TheWeather installation FAILED"
-    echo "========================================================="
-    echo
-
-    exit 1
-}
-
-# =========================================================
-# SHOW INFO
-#
-# IMPORTANT:
-# DO NOT echo the multilingual changelog here.
-# Enigma2 Console.py may decode stdout as UTF-8 and can
-# crash when shell output contains unsupported bytes.
-# The updater reads the changelog directly from installer.sh.
-# =========================================================
-
-show_info()
-{
-    echo
-    echo "#########################################################"
-    echo "#                                                       #"
-    echo "#          speedy_TheWeather INSTALLED                 #"
-    echo "#                                                       #"
-    echo "#########################################################"
-    echo "#                                                       #"
-    echo "#  Version:       $VERSION"
-    echo "#  Plugin path:   $PLUGINPATH"
-    echo "#  Branch:        $BRANCH"
-    echo "#  OS:            $OSTYPE"
-    echo "#  Image:         $DISTRO"
-    echo "#  Image version: $DISTRO_VERSION"
-    echo "#  Box:            $BOX_TYPE"
-    echo "#  Python:         $PYTHON_VERSION"
-    echo "#  Downloader:     $DOWNLOADER"
-    echo "#                                                       #"
-    echo "#  GUI was NOT restarted automatically.                #"
-    echo "#                                                       #"
-    echo "#########################################################"
-    echo
-
-    echo "Repository-only content excluded:"
-    echo "---------------------------------------------------------"
-    echo "README.md"
-    echo "installer.sh"
-    echo "version.txt"
-    echo "*.svg"
-    echo "converter/"
-    echo "renderer/"
-    echo "*backgrounds_auto.zip"
-    echo "---------------------------------------------------------"
-    echo
-
-    echo "Changelog:"
-    echo "---------------------------------------------------------"
-    echo "Multilingual changelog stored in installer.sh."
-    echo "The changelog is displayed by the plugin updater."
-    echo "---------------------------------------------------------"
-    echo
-}
-
-# =========================================================
-# FINAL
-# =========================================================
+###############################################################################
+# Finish
+###############################################################################
 
 finish_install()
 {
-    sync >/dev/null 2>&1 || true
-
     echo
     echo "========================================================="
-    echo " speedy_TheWeather v${VERSION} installed successfully."
+    echo "       Installation completed successfully"
     echo "========================================================="
     echo
-    echo "The Enigma2 GUI was NOT restarted automatically."
+    echo "Plugin:"
+    echo "${PLUGIN_NAME}"
+    echo
+    echo "Version:"
+    echo "${VERSION}"
+    echo
+    echo "Installed to:"
+    echo "${PLUGINPATH}"
+    echo
+    echo "Configuration preserved:"
+    echo "${CONFIG_DIR}"
+    echo
+    echo "Automatic backgrounds preserved."
+    echo
+    echo "IMPORTANT:"
     echo "Please restart Enigma2 manually."
     echo
-
-    return 0
+    echo "The installer does NOT automatically restart the GUI."
+    echo
+    echo "========================================================="
+    echo
 }
 
-# =========================================================
-# MAIN
-# =========================================================
+###############################################################################
+# Main
+###############################################################################
 
-echo
-echo "========================================================="
-echo "       speedy_TheWeather Installer v${VERSION}"
-echo "========================================================="
-echo
+main()
+{
+    show_header
+    show_info
 
-check_root
+    detect_system
 
-detect_os
-detect_python
-detect_image
+    if ! find_download_tool; then
+        die "Neither curl nor wget is available and could not be installed."
+    fi
 
-select_downloader
+    echo
+    echo "Using download tool: ${DOWNLOAD_TOOL}"
 
-cleanup
+    download_archive || \
+        die "Could not download the GitHub archive."
 
-if ! mkdir -p "$TMPPATH"; then
+    validate_archive
 
-    error "Could not create temporary directory: $TMPPATH"
+    extract_archive
 
-    exit 1
+    remove_repository_files
 
-fi
+    validate_source
 
-# =========================================================
-# DOWNLOAD
-# =========================================================
+    backup_config
 
-if ! download_package; then
+    backup_plugin
 
-    cleanup
+    backup_auto_backgrounds
 
-    exit 1
+    install_plugin
 
-fi
+    validate_installation
 
-# =========================================================
-# VALIDATE
-# =========================================================
+    restore_config
 
-if ! validate_archive; then
+    restore_auto_backgrounds
 
-    cleanup
+    cleanup_backups
 
-    exit 1
+    cleanup_temp
 
-fi
+    finish_install
+}
 
-# =========================================================
-# EXTRACT
-# =========================================================
-
-if ! extract_package; then
-
-    cleanup
-
-    exit 1
-
-fi
-
-# =========================================================
-# FIND PLUGIN
-# =========================================================
-
-if ! find_plugin_source; then
-
-    cleanup
-
-    exit 1
-
-fi
-
-# =========================================================
-# VALIDATE PLUGIN
-# =========================================================
-
-if ! validate_plugin_source; then
-
-    cleanup
-
-    exit 1
-
-fi
-
-# =========================================================
-# BACKUP CONFIG
-# =========================================================
-
-if ! backup_config; then
-
-    cleanup
-
-    exit 1
-
-fi
-
-# =========================================================
-# BACKUP PLUGIN
-# =========================================================
-
-if ! backup_existing_plugin; then
-
-    cleanup
-
-    exit 1
-
-fi
-
-# =========================================================
-# BACKUP AUTOMATIC BACKGROUNDS
-# =========================================================
-
-if ! backup_auto_backgrounds; then
-
-    installation_failed \
-        "Automatic weather background backup failed."
-
-fi
-
-# =========================================================
-# INSTALL
-# =========================================================
-
-if ! install_plugin; then
-
-    installation_failed \
-        "Plugin installation failed."
-
-fi
-
-# =========================================================
-# RESTORE CONFIG
-# =========================================================
-
-if ! restore_config; then
-
-    installation_failed \
-        "Configuration restore failed."
-
-fi
-
-# =========================================================
-# RESTORE AUTOMATIC BACKGROUNDS
-# =========================================================
-
-if ! restore_auto_backgrounds; then
-
-    installation_failed \
-        "Automatic weather backgrounds could not be restored."
-
-fi
-
-# =========================================================
-# REMOVE OLD BACKUP
-# =========================================================
-
-remove_old_plugin_backup
-
-# =========================================================
-# CLEAN BACKUP STATE
-# =========================================================
-
-cleanup_backups
-
-# =========================================================
-# CLEAN TEMP
-# =========================================================
-
-cleanup
-
-# =========================================================
-# INFORMATION
-# =========================================================
-
-show_info
-
-# =========================================================
-# FINISH
-# =========================================================
-
-finish_install
+main "$@"
 
 exit 0
-
