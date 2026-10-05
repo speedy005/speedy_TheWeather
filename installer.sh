@@ -1,11 +1,12 @@
+```bash
 #!/bin/bash
 
 # =========================================================
 # speedy_TheWeather Installer
-# Version 1.9.6
+# Version 1.9.7
 # =========================================================
 
-VERSION="1.9.6"
+VERSION="1.9.7"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -14,10 +15,64 @@ REPO_NAME="speedy_TheWeather"
 DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${BRANCH}.tar.gz"
 
 # =========================================================
-# CHANGELOG
+# changelog
 # =========================================================
 
-changelog='v1.9.6 EN: Fixed language files and PO/MO file names. Added update function. Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart. Added customizable colors. Added automatic weather images based on the time of day and seasonal backgrounds with automatic download and installation. Added sunrise and sunset display as well as moonrise and moonset display. Added comparison of weather data for two locations including sunrise, sunset, moonrise and moonset times. Added themed colors for weather description, feels like temperature, wind, rain, sun and moon information. Added improved city search and city selection with a dedicated selection window for matching locations. Improved moonrise and moonset calculations with better local time and UTC offset handling. Improved date and time handling throughout the plugin. Improved weather data handling and display reliability. Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling. Added Ultra Low-End, Low-End, Auto and Normal performance modes. Existing features remain available. Buy me a coffee if you like this plugin. | DE: Sprachdateien sowie PO-/MO-Dateinamen korrigiert. Update-Funktion hinzugefügt. Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert. Anpassbare Farben hinzugefügt. Automatische Wetterbilder passend zur Tageszeit sowie saisonale Hintergründe mit automatischem Download und Installation hinzugefügt. Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt. Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt. Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt. Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt. Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert. Datums- und Zeitverarbeitung im gesamten Plugin verbessert. Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht. Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert. Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt. Bestehende Funktionen bleiben erhalten. Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.'
+changelog_EN='
+• Fixed language files and PO/MO file names.
+• Added update function.
+• Fixed Rain Radar, Seven Day Weather, weather icons
+  and detached GUI restart.
+• Added customizable colors.
+• Added automatic weather images based on the time of day
+  and seasonal backgrounds with automatic download and installation.
+• Added sunrise and sunset display.
+• Added moonrise and moonset display.
+• Added comparison of weather data for two locations,
+  including sunrise, sunset, moonrise and moonset times.
+• Added themed colors for weather description,
+  feels like temperature, wind, rain, sun and moon information.
+• Improved city search and city selection with a dedicated
+  selection window for matching locations.
+• Improved moonrise and moonset calculations with better
+  local time and UTC offset handling.
+• Improved date and time handling throughout the plugin.
+• Improved weather data handling and display reliability.
+• Improved performance on low-end Enigma2 receivers with
+  optimized radar loading, decoding, caching and animation handling.
+• Added Ultra Low-End, Low-End, Auto and Normal performance modes.
+• Existing features remain available.
+• Buy me a coffee if you like this plugin.
+'
+
+changelog_DE='
+• Sprachdateien sowie PO-/MO-Dateinamen korrigiert.
+• Update-Funktion hinzugefügt.
+• Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart
+  der getrennten GUI korrigiert.
+• Anpassbare Farben hinzugefügt.
+• Automatische Wetterbilder passend zur Tageszeit sowie saisonale
+  Hintergründe mit automatischem Download und Installation hinzugefügt.
+• Anzeige von Sonnenaufgang und Sonnenuntergang hinzugefügt.
+• Anzeige von Mondaufgang und Monduntergang hinzugefügt.
+• Vergleich der Wetterdaten für zwei Orte mit Anzeige von
+  Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang
+  hinzugefügt.
+• Thematische Farben für Wetterbeschreibung, gefühlte Temperatur,
+  Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt.
+• Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen
+  Auswahlfenster für passende Orte hinzugefügt.
+• Mondaufgangs- und Monduntergangsberechnung mit verbesserter
+  Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert.
+• Datums- und Zeitverarbeitung im gesamten Plugin verbessert.
+• Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht.
+• Performance auf schwachen Enigma2-Receivern durch optimiertes
+  Radar-Laden, Decoding, Caching und Animationen verbessert.
+• Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt.
+• Bestehende Funktionen bleiben erhalten.
+• Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen
+  Kaffee einladen.
+'
 
 # =========================================================
 # INSTALLATION PATH
@@ -246,10 +301,6 @@ detect_image()
     [ -z "$BOX_TYPE" ] &&
         BOX_TYPE="Unknown"
 
-    # -----------------------------------------------------
-    # /usr/lib/enigma.info
-    # -----------------------------------------------------
-
     if [ -f "/usr/lib/enigma.info" ]; then
 
         DISTRO=$(
@@ -267,10 +318,6 @@ detect_image()
             head -n 1 |
             cut -d "=" -f 2-
         )
-
-    # -----------------------------------------------------
-    # /etc/image-version
-    # -----------------------------------------------------
 
     elif [ -f "/etc/image-version" ]; then
 
@@ -446,10 +493,6 @@ select_downloader()
 {
     DOWNLOADER=""
 
-    # -----------------------------------------------------
-    # Prefer curl
-    # -----------------------------------------------------
-
     if check_command curl; then
 
         DOWNLOADER="curl"
@@ -459,10 +502,6 @@ select_downloader()
         return 0
 
     fi
-
-    # -----------------------------------------------------
-    # Then wget
-    # -----------------------------------------------------
 
     if check_command wget; then
 
@@ -474,10 +513,6 @@ select_downloader()
 
     fi
 
-    # -----------------------------------------------------
-    # Try curl installation
-    # -----------------------------------------------------
-
     if install_curl; then
 
         DOWNLOADER="curl"
@@ -487,10 +522,6 @@ select_downloader()
         return 0
 
     fi
-
-    # -----------------------------------------------------
-    # Try wget installation
-    # -----------------------------------------------------
 
     if install_wget; then
 
@@ -523,10 +554,6 @@ download_package()
 
     rm -f "$FILEPATH"
 
-    # -----------------------------------------------------
-    # CURL
-    # -----------------------------------------------------
-
     if [ "$DOWNLOADER" = "curl" ]; then
 
         log "Downloading with curl..."
@@ -553,10 +580,6 @@ download_package()
             return 1
 
         fi
-
-    # -----------------------------------------------------
-    # WGET
-    # -----------------------------------------------------
 
     elif [ "$DOWNLOADER" = "wget" ]; then
 
@@ -603,10 +626,6 @@ download_package()
 
     fi
 
-    # -----------------------------------------------------
-    # File exists
-    # -----------------------------------------------------
-
     if [ ! -f "$FILEPATH" ]; then
 
         error "Download finished but archive file does not exist."
@@ -614,10 +633,6 @@ download_package()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # File not empty
-    # -----------------------------------------------------
 
     if [ ! -s "$FILEPATH" ]; then
 
@@ -632,10 +647,6 @@ download_package()
     )
 
     log "Downloaded size: ${FILESIZE} bytes"
-
-    # -----------------------------------------------------
-    # Check suspiciously small file
-    # -----------------------------------------------------
 
     if [ "$FILESIZE" -lt 1000 ]; then
 
@@ -682,10 +693,6 @@ validate_archive()
 
     fi
 
-    # -----------------------------------------------------
-    # gzip
-    # -----------------------------------------------------
-
     if ! gzip -t "$FILEPATH" >/dev/null 2>&1; then
 
         error "Downloaded file is not a valid gzip archive."
@@ -696,10 +703,6 @@ validate_archive()
 
     log "gzip validation successful."
 
-    # -----------------------------------------------------
-    # tar
-    # -----------------------------------------------------
-
     if ! tar -tzf "$FILEPATH" >/dev/null 2>&1; then
 
         error "Downloaded file is not a valid tar archive."
@@ -709,10 +712,6 @@ validate_archive()
     fi
 
     log "tar validation successful."
-
-    # -----------------------------------------------------
-    # plugin.py
-    # -----------------------------------------------------
 
     if ! tar -tzf "$FILEPATH" 2>/dev/null |
         grep -q "/plugin.py$"
@@ -895,10 +894,6 @@ remove_repository_only_files()
 
     fi
 
-    # -----------------------------------------------------
-    # Files
-    # -----------------------------------------------------
-
     find "$PLUGIN_SOURCE" \
         -type f \
         \( \
@@ -912,10 +907,6 @@ remove_repository_only_files()
         -print \
         -delete \
         2>/dev/null
-
-    # -----------------------------------------------------
-    # Repository folders
-    # -----------------------------------------------------
 
     if [ -d "$PLUGIN_SOURCE/converter" ]; then
 
@@ -1231,10 +1222,6 @@ install_plugin()
 {
     log "Installing speedy_TheWeather v${VERSION}..."
 
-    # -----------------------------------------------------
-    # Plugin base
-    # -----------------------------------------------------
-
     if ! mkdir -p "$PLUGIN_BASE"; then
 
         error "Could not create plugin base directory."
@@ -1242,10 +1229,6 @@ install_plugin()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # Remove old installation
-    # -----------------------------------------------------
 
     if [ -d "$PLUGINPATH" ]; then
 
@@ -1261,10 +1244,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Create target
-    # -----------------------------------------------------
-
     if ! mkdir -p "$PLUGINPATH"; then
 
         error "Could not create plugin directory."
@@ -1273,10 +1252,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Clean repository-only files
-    # -----------------------------------------------------
-
     if ! remove_repository_only_files; then
 
         error "Could not clean repository-only files."
@@ -1284,10 +1259,6 @@ install_plugin()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # Copy plugin
-    # -----------------------------------------------------
 
     log "Copying plugin files..."
 
@@ -1303,10 +1274,6 @@ install_plugin()
     fi
 
     log "Plugin files copied."
-
-    # -----------------------------------------------------
-    # Verify core files
-    # -----------------------------------------------------
 
     if [ ! -f "$PLUGINPATH/__init__.py" ]; then
 
@@ -1324,10 +1291,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Verify plugin isn't empty
-    # -----------------------------------------------------
-
     if [ -z "$(
         find "$PLUGINPATH" \
             -type f \
@@ -1341,10 +1304,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Verify README
-    # -----------------------------------------------------
-
     if [ -f "$PLUGINPATH/README.md" ]; then
 
         error "README.md was installed unexpectedly."
@@ -1352,10 +1311,6 @@ install_plugin()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # Verify installer
-    # -----------------------------------------------------
 
     if [ -f "$PLUGINPATH/installer.sh" ]; then
 
@@ -1365,10 +1320,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Verify version.txt
-    # -----------------------------------------------------
-
     if [ -f "$PLUGINPATH/version.txt" ]; then
 
         error "version.txt was installed unexpectedly."
@@ -1376,10 +1327,6 @@ install_plugin()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # Verify SVG
-    # -----------------------------------------------------
 
     if find "$PLUGINPATH" \
         -type f \
@@ -1396,10 +1343,6 @@ install_plugin()
 
     fi
 
-    # -----------------------------------------------------
-    # Verify converter
-    # -----------------------------------------------------
-
     if [ -d "$PLUGINPATH/converter" ]; then
 
         error "converter/ was installed unexpectedly."
@@ -1407,10 +1350,6 @@ install_plugin()
         return 1
 
     fi
-
-    # -----------------------------------------------------
-    # Verify renderer
-    # -----------------------------------------------------
 
     if [ -d "$PLUGINPATH/renderer" ]; then
 
@@ -1475,29 +1414,17 @@ installation_failed()
 
     log "Starting rollback..."
 
-    # -----------------------------------------------------
-    # Plugin
-    # -----------------------------------------------------
-
     if [ "$PLUGIN_BACKUP_CREATED" -eq 1 ]; then
 
         rollback_plugin
 
     fi
 
-    # -----------------------------------------------------
-    # Configuration
-    # -----------------------------------------------------
-
     if [ "$BACKUP_CREATED" -eq 1 ]; then
 
         restore_config
 
     fi
-
-    # -----------------------------------------------------
-    # Automatic backgrounds
-    # -----------------------------------------------------
 
     if [ "$AUTO_BG_BACKUP_CREATED" -eq 1 ]; then
 
@@ -1556,10 +1483,29 @@ show_info()
     echo "---------------------------------------------------------"
     echo
 
-    echo "Changelog:"
+    # =====================================================
+    # FORMATTED changelog
+    # =====================================================
+
+    echo
+    echo "========================================================="
+    echo " changelog - v${VERSION}"
+    echo "========================================================="
+    echo
+
+    echo "ENGLISH"
     echo "---------------------------------------------------------"
-    echo "$CHANGELOG"
+    printf '%s\n' "$changelog_EN"
     echo "---------------------------------------------------------"
+    echo
+
+    echo "DEUTSCH"
+    echo "---------------------------------------------------------"
+    printf '%s\n' "$changelog_DE"
+    echo "---------------------------------------------------------"
+    echo
+
+    echo "========================================================="
     echo
 }
 
@@ -1788,3 +1734,4 @@ show_info
 finish_install
 
 exit 0
+```
