@@ -1,7 +1,8 @@
 #-----------------------------------------------------------------------------
 # v.2.0.1
 # Original work by Caught
-# https://www.linuxsat-support.com/cms/user/40812-caught/
+# https://www.linuxsat-support.com/cms/user/40812-caught/ 
+# https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Modified by speedy005
 # Copyright © Caught. All rights reserved.
 # Modifications and improvements © speedy005.
