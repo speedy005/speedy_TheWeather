@@ -1,8 +1,7 @@
 #-----------------------------------------------------------------------------
-# v.2.0.1
+# v.2.0.2
 # Original work by Caught
-# https://www.linuxsat-support.com/cms/user/40812-caught/ 
-# https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
+# https://www.linuxsat-support.com/cms/user/40812-caught/
 # Modified by speedy005
 # Copyright © Caught. All rights reserved.
 # Modifications and improvements © speedy005.
@@ -1307,7 +1306,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1323,7 +1322,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '2.0.1'
+version = '2.0.2'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -8714,21 +8713,21 @@ class sevendays(Screen):
                     pixmap="{base}/{path}/windhd/{winddir}.png"/>
 
                 <widget name="weatheralertbg1"
-                    position="1322,240"
+                    position="1295,240"
                     size="588,72"
                     zPosition="2"
-                    pixmap="{base}/{pack}/alert/vlak_alert.png"
+                    pixmap="{base}/{pack}/alert/vlak_alert_2.png"
                     alphatest="on"/>
 
                 <widget name="weatheralerticon1"
-                    position="1332,244"
+                    position="1425,244"
                     size="64,64"
                     zPosition="4"
                     alphatest="blend"
                     transparent="1"/>
 
                 <widget name="weatheralert1"
-                    position="1440,244"
+                    position="1490,244"
                     size="576,64"
                     zPosition="3"
                     valign="center"
@@ -8813,9 +8812,9 @@ class sevendays(Screen):
 
             <widget name="weatheralertbg1"
                 position="877,162"
-                size="398,48"
+                size="378,48"
                 zPosition="2"
-                pixmap="{base}/{pack}/alert/vlak_alertsd.png"
+                pixmap="{base}/{pack}/alert/vlak_alertsd_2.png"
                 alphatest="on"/>
 
             <widget name="weatheralerticon1"
