@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.0.1
+# Version: 2.0.2
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.0.1"
+VERSION="2.0.2"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
