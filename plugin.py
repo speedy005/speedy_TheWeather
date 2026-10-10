@@ -8814,7 +8814,7 @@ class sevendays(Screen):
                 position="877,162"
                 size="378,48"
                 zPosition="2"
-                pixmap="{base}/{pack}/alert/vlak_alertsd_2.png"
+                pixmap="{base}/{pack}/alert/vlak_alertsd.png"
                 alphatest="on"/>
 
             <widget name="weatheralerticon1"
