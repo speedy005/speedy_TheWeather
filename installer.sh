@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.0.2
+# Version: 2.0.3
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.0.2"
+VERSION="2.0.3"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -83,6 +83,7 @@ changelog_EN='
 • Improved moonrise and moonset calculations with better local time and UTC offset handling.
 • Improved date and time handling throughout the plugin.
 • Improved weather data handling and display reliability.
+• Added display of the time of the last successful weather update.
 • Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling.
 • Added Ultra Low-End, Low-End, Auto and Normal performance modes.
 • Existing features remain available.
@@ -102,6 +103,7 @@ changelog_DE='
 • Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert.
 • Datums- und Zeitverarbeitung im gesamten Plugin verbessert.
 • Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht.
+• Anzeige der Uhrzeit der letzten erfolgreichen Wetteraktualisierung hinzugefügt.
 • Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert.
 • Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt.
 • Bestehende Funktionen bleiben erhalten.
@@ -121,6 +123,7 @@ changelog_AR='
 • تم تحسين حسابات شروق وغروب القمر مع معالجة أفضل للتوقيت المحلي وفارق التوقيت العالمي UTC.
 • تم تحسين التعامل مع التاريخ والوقت في جميع أنحاء الإضافة.
 • تم تحسين معالجة بيانات الطقس وعرضها بشكل أكثر موثوقية.
+• تمت إضافة عرض وقت آخر تحديث ناجح للطقس.
 • تم تحسين الأداء على أجهزة Enigma2 الضعيفة من خلال تحسين تحميل الرادار وفك الترميز والتخزين المؤقت ومعالجة الرسوم المتحركة.
 • تمت إضافة أوضاع أداء Ultra Low-End وLow-End وAuto وNormal.
 • تبقى الميزات الحالية متاحة.
@@ -140,6 +143,7 @@ changelog_CS='
 • Vylepšeny výpočty východu a západu Měsíce s lepším zpracováním místního času a UTC offsetu.
 • Vylepšeno zpracování data a času v celém pluginu.
 • Vylepšeno zpracování a zobrazování údajů o počasí.
+• Přidáno zobrazení času poslední úspěšné aktualizace počasí.
 • Vylepšen výkon na slabších přijímačích Enigma2 optimalizací načítání radaru, dekódování, cache a animací.
 • Přidány výkonnostní režimy Ultra Low-End, Low-End, Auto a Normal.
 • Stávající funkce zůstávají zachovány.
@@ -159,6 +163,7 @@ changelog_EL='
 • Βελτιώθηκαν οι υπολογισμοί ανατολής και δύσης της σελήνης με καλύτερη διαχείριση της τοπικής ώρας και της διαφοράς UTC.
 • Βελτιώθηκε η διαχείριση ημερομηνίας και ώρας σε ολόκληρο το plugin.
 • Βελτιώθηκε η επεξεργασία και εμφάνιση των δεδομένων καιρού.
+• Προστέθηκε εμφάνιση της ώρας της τελευταίας επιτυχούς ενημέρωσης καιρού.
 • Βελτιώθηκε η απόδοση σε αδύναμους δέκτες Enigma2 με βελτιστοποιημένη φόρτωση, αποκωδικοποίηση, cache και animation του radar.
 • Προστέθηκαν λειτουργίες απόδοσης Ultra Low-End, Low-End, Auto και Normal.
 • Οι υπάρχουσες λειτουργίες παραμένουν διαθέσιμες.
@@ -178,6 +183,7 @@ changelog_FI='
 • Kuun nousu- ja laskulaskelmia parannettu paremman paikallisen ajan ja UTC-poikkeaman käsittelyn avulla.
 • Päivämäärän ja ajan käsittelyä parannettu koko pluginissa.
 • Säätietojen käsittelyä ja näyttöä parannettu luotettavuuden lisäämiseksi.
+• Viimeisimmän onnistuneen sääpäivityksen kellonajan näyttö lisätty.
 • Suorituskykyä heikoilla Enigma2-vastaanottimilla parannettu optimoimalla tutkan latausta, dekoodausta, välimuistia ja animaatioiden käsittelyä.
 • Ultra Low-End-, Low-End-, Auto- ja Normal-suorituskykytilat lisätty.
 • Nykyiset ominaisuudet säilyvät.
@@ -197,6 +203,7 @@ changelog_FR='
 • Amélioration des calculs du lever et du coucher de la lune avec une meilleure gestion de l’heure locale et du décalage UTC.
 • Amélioration de la gestion de la date et de l’heure dans tout le plugin.
 • Amélioration de la gestion et de l’affichage des données météo.
+• Ajout de l’affichage de l’heure de la dernière mise à jour météo réussie.
 • Amélioration des performances sur les récepteurs Enigma2 peu puissants grâce à l’optimisation du chargement, du décodage, du cache et des animations du radar.
 • Ajout des modes de performance Ultra Low-End, Low-End, Auto et Normal.
 • Les fonctions existantes restent disponibles.
@@ -216,6 +223,7 @@ changelog_HU='
 • Javultak a holdkelte- és holdnyugta-számítások a helyi idő és az UTC-eltolás jobb kezelésével.
 • Javult a dátum- és időkezelés a plugin egészében.
 • Megbízhatóbb lett az időjárási adatok feldolgozása és megjelenítése.
+• Hozzáadva az utolsó sikeres időjárás-frissítés időpontjának megjelenítése.
 • Javult a teljesítmény gyengébb Enigma2 vevőkészülékeken a radar betöltésének, dekódolásának, gyorsítótárazásának és animációinak optimalizálásával.
 • Hozzáadva az Ultra Low-End, Low-End, Auto és Normal teljesítménymód.
 • A meglévő funkciók továbbra is elérhetők.
@@ -235,6 +243,7 @@ changelog_IT='
 • Migliorati i calcoli dell’alba e del tramonto della luna con una migliore gestione dell’ora locale e dell’offset UTC.
 • Migliorata la gestione di data e ora in tutto il plugin.
 • Migliorata l’affidabilità nella gestione e visualizzazione dei dati meteo.
+• Aggiunta la visualizzazione dell’ora dell’ultimo aggiornamento meteo riuscito.
 • Migliorate le prestazioni sui ricevitori Enigma2 meno potenti ottimizzando caricamento, decodifica, cache e animazioni del radar.
 • Aggiunte le modalità di prestazioni Ultra Low-End, Low-End, Auto e Normal.
 • Le funzioni esistenti rimangono disponibili.
@@ -254,6 +263,7 @@ changelog_NL='
 • Berekeningen van maansopkomst en maanondergang verbeterd met betere verwerking van lokale tijd en UTC-offset.
 • Datum- en tijdverwerking in de hele plugin verbeterd.
 • Verwerking en weergave van weergegevens betrouwbaarder gemaakt.
+• Weergave van het tijdstip van de laatste geslaagde weerupdate toegevoegd.
 • Prestaties op zwakke Enigma2-ontvangers verbeterd door geoptimaliseerd laden, decoderen, cachen en animeren van radar.
 • Ultra Low-End-, Low-End-, Auto- en Normal-prestatiemodi toegevoegd.
 • Bestaande functies blijven beschikbaar.
@@ -273,6 +283,7 @@ changelog_PL='
 • Ulepszono obliczenia wschodu i zachodu księżyca dzięki lepszej obsłudze czasu lokalnego i przesunięcia UTC.
 • Ulepszono obsługę daty i czasu w całym pluginie.
 • Ulepszono przetwarzanie i wyświetlanie danych pogodowych.
+• Dodano wyświetlanie godziny ostatniej udanej aktualizacji pogody.
 • Poprawiono wydajność na słabszych odbiornikach Enigma2 poprzez optymalizację ładowania radaru, dekodowania, pamięci podręcznej i animacji.
 • Dodano tryby wydajności Ultra Low-End, Low-End, Auto i Normal.
 • Istniejące funkcje pozostają dostępne.
@@ -292,6 +303,7 @@ changelog_RU='
 • Улучшены расчёты восхода и захода луны благодаря улучшенной обработке местного времени и смещения UTC.
 • Улучшена обработка даты и времени во всём плагине.
 • Улучшена обработка и отображение погодных данных.
+• Добавлено отображение времени последнего успешного обновления погоды.
 • Улучшена производительность на слабых ресиверах Enigma2 благодаря оптимизации загрузки радара, декодирования, кэширования и обработки анимаций.
 • Добавлены режимы производительности Ultra Low-End, Low-End, Auto и Normal.
 • Существующие функции остаются доступными.
@@ -311,6 +323,7 @@ changelog_SK='
 • Vylepšené výpočty východu a západu mesiaca s lepším spracovaním miestneho času a UTC posunu.
 • Vylepšené spracovanie dátumu a času v celom plugine.
 • Vylepšené spracovanie a zobrazovanie údajov o počasí.
+• Pridané zobrazenie času poslednej úspešnej aktualizácie počasia.
 • Vylepšený výkon na slabších prijímačoch Enigma2 optimalizáciou načítania radaru, dekódovania, cache a animácií.
 • Pridané režimy výkonu Ultra Low-End, Low-End, Auto a Normal.
 • Existujúce funkcie zostávajú dostupné.
@@ -330,6 +343,7 @@ changelog_UA='
 • Покращено розрахунки сходу та заходу місяця завдяки кращій обробці місцевого часу та зміщення UTC.
 • Покращено обробку дати та часу в усьому плагіні.
 • Покращено обробку та відображення погодних даних.
+• Додано відображення часу останнього успішного оновлення погоди.
 • Покращено продуктивність на слабких приймачах Enigma2 завдяки оптимізації завантаження радара, декодування, кешування та анімації.
 • Додано режими продуктивності Ultra Low-End, Low-End, Auto та Normal.
 • Існуючі функції залишаються доступними.
@@ -349,6 +363,7 @@ changelog_ZH='
 • 改进月出和月落计算，更好地处理本地时间和 UTC 偏移。
 • 改进整个插件中的日期和时间处理。
 • 改进天气数据处理和显示的可靠性。
+• 添加最后一次成功天气更新的时间显示。
 • 通过优化雷达加载、解码、缓存和动画处理，提高低端 Enigma2 接收机上的性能。
 • 添加 Ultra Low-End、Low-End、Auto 和 Normal 性能模式。
 • 现有功能继续保留。
