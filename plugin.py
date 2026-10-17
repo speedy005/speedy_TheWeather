@@ -1309,17 +1309,69 @@ __version__ = "2.0.3"
 VERSION = __version__
 
 def iconToBgCategory(icon):
-    icon = (icon or "").strip().lower()
-    base = icon[0] if icon else ""
+    """Mappt Buienradar-Iconcodes auf die vorhandenen automatischen Hintergründe.
+
+    Insbesondere bb (leicht bewölkt), c/cc/r/rr (bewölkt) werden immer
+    cloudy zugeordnet, nicht rain.
+    """
+    try:
+        icon = str(icon or "").strip().lower()
+    except Exception:
+        return ""
+
+    # Buienradar-Codes aus icontotext() in diesem Plugin:
     mapping = {
-        "a": "sunny", "j": "sunny",
-        "b": "cloudy", "c": "cloudy", "r": "cloudy",
-        "d": "mist", "n": "mist",
-        "f": "rain", "m": "rain", "q": "rain", "w": "rain",
-        "g": "thunder", "s": "thunder",
-        "t": "snow", "u": "snow", "v": "snow",
+        "a": "sunny", "aa": "clear",
+        "j": "sunny", "jj": "clear",
+        "b": "sunny", "bb": "cloudy",
+        "c": "cloudy", "cc": "cloudy",
+        "r": "cloudy", "rr": "cloudy",
+        "d": "mist", "dd": "mist",
+        "n": "mist", "nn": "mist",
+        # f/ff bedeuten nur mögliche Schauer: tagsüber Sonne bzw. Wolken,
+        # nicht automatisch einen Regenhintergrund.
+        "f": "sunny", "ff": "cloudy",
+        "m": "rain", "mm": "rain",
+        "q": "rain", "qq": "rain",
+        "w": "rain", "ww": "rain",
+        "g": "thunder", "gg": "thunder",
+        "s": "thunder", "ss": "thunder",
+        "t": "snow", "tt": "snow",
+        "u": "snow", "uu": "snow",
+        "v": "snow", "vv": "snow",
+        # Textwerte aus möglichen API-/Lokalisierungsvarianten:
+        "light cloudy": "cloudy", "lightcloudy": "cloudy",
+        "leicht bewölkt": "cloudy", "leicht bewoelkt": "cloudy",
+        "lightly cloudy": "cloudy", "partly cloudy": "cloudy",
+        "cloudy": "cloudy", "bewölkt": "cloudy", "bewoelkt": "cloudy",
+        "few clouds": "sunny", "fewclouds": "sunny",
+        "sunny": "sunny", "sonnig": "sunny",
+        "clear": "clear", "clear night": "clear",
+        "rain": "rain", "regen": "rain", "showers": "rain",
+        "rain showers": "rain", "heavy rain": "rain",
+        "mist": "mist", "fog": "mist", "nebel": "mist",
+        "thunder": "thunder", "thunderstorm": "thunder", "gewitter": "thunder",
+        "snow": "snow", "snowfall": "snow", "schnee": "snow",
     }
-    return mapping.get(base, "")
+    if icon in mapping:
+        return mapping[icon]
+
+    # Falls der API-Wert ein beschreibender Satz ist, auf klare Schlüsselwörter
+    # prüfen. Bewölkung hat Vorrang vor einem allgemeinen "chance of showers"-Text
+    # nur dann, wenn es explizit "light cloudy" / "partly cloudy" heißt.
+    if "thunder" in icon or "gewitter" in icon:
+        return "thunder"
+    if "snow" in icon or "schnee" in icon or "snowfall" in icon:
+        return "snow"
+    if "rain" in icon or "shower" in icon or "regen" in icon or "schauer" in icon:
+        return "rain"
+    if "mist" in icon or "fog" in icon or "nebel" in icon:
+        return "mist"
+    if "cloud" in icon or "bewölkt" in icon or "bewoelkt" in icon:
+        return "cloudy"
+    if "sun" in icon or "sonnig" in icon or "clear" in icon:
+        return "sunny"
+    return ""
 
 version = '2.0.3'
 
@@ -1394,14 +1446,23 @@ AUTO_BG_MARKER = os.path.join(
 
 _AUTO_BG_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp")
 _AUTO_BG_ALIASES = {
-    "clear": ("sunny", "clear", "sun"),
-    "cloudy": ("cloudy", "cloud"),
-    "mist": ("mist", "fog", "haze"),
-    "rain": ("rain", "rainy", "shower", "drizzle"),
-    "storm": ("thunder", "storm", "thunderstorm"),
-    "snow": ("snow", "snowy", "winter"),
+    # Namen entsprechen den tatsächlich vorhandenen Dateien im auto-Ordner.
+    "sunny": ("sunny",),
+    "clear": ("clear", "sunny"),
+    "cloudy": ("cloudy",),
+    "cloudy_night": ("cloudy_night", "cloudy"),
+    "clear_night": ("clear_night", "sunny"),
+    "mist": ("mist",),
+    "mist_night": ("mist_night", "mist"),
+    "rain": ("rain",),
+    "rain_night": ("rain_night", "rain"),
+    "thunder": ("thunder",),
+    "thunder_night": ("thunder_night", "thunder"),
+    "storm": ("thunder",),
+    "snow": ("snow",),
+    "snow_night": ("snow_night", "snow"),
     "halloween": ("halloween",),
-    "christmas": ("christmas", "kerst", "weihnachten", "xmas"),
+    "christmas": ("kerst", "christmas", "weihnachten", "xmas"),
     "newyear": ("newyear", "new_year", "neujahr", "silvester"),
     "easter": ("easter", "ostern"),
 }
@@ -1534,6 +1595,16 @@ def ensureAutoBackgrounds():
             "halloween.jpg",
             "kerst.jpg",
             "newyear.jpg",
+
+            # Gesetzliche Feiertage NRW
+            "goodfriday.jpg",
+            "easter.jpg",
+            "labourday.jpg",
+            "ascension.jpg",
+            "whitmonday.jpg",
+            "corpuschristi.jpg",
+            "germany.jpg",
+            "allsaints.jpg",
         )
 
         # ====================================================
@@ -2079,17 +2150,55 @@ def isNightTime():
     except Exception:
         return False
 
+
+from datetime import date, timedelta
+
+
+def getEasterSunday(year):
+    """Berechnet den Ostersonntag für Python 2 und Python 3."""
+    a = year % 19
+    b = year // 100
+    c = year % 100
+    d = b // 4
+    e = b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i = c // 4
+    k = c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+
+    month = (h + l - 7 * m + 114) // 31
+    day = (h + l - 7 * m + 114) % 31 + 1
+
+    return date(year, month, day)
+
+
+def getNRWHolidays(year):
+    """Gesetzliche Feiertage in NRW: Datum -> Hintergrundkategorie."""
+    easter = getEasterSunday(year)
+
+    return {
+        date(year, 1, 1): "newyear",
+        easter - timedelta(days=2): "goodfriday",
+        easter + timedelta(days=1): "easter",
+        date(year, 5, 1): "labourday",
+        easter + timedelta(days=39): "ascension",
+        easter + timedelta(days=50): "whitmonday",
+        easter + timedelta(days=60): "corpuschristi",
+        date(year, 10, 3): "germany",
+        date(year, 11, 1): "allsaints",
+        date(year, 12, 25): "christmas",
+        date(year, 12, 26): "christmas",
+    }
+
+
+
 def getHolidayBgCategory():
     """
-    Ermittelt die aktuelle Feiertags-Kategorie.
-
-    Gibt z.B. zurück:
-        halloween
-        christmas
-        newyear
-        easter
-
-    oder None, wenn aktuell kein Feiertagszeitraum aktiv ist.
+    Feiertagshintergrund nur am tatsächlichen Feiertag.
+    Saisonale Zeiträume bleiben zusätzlich aktiv.
     """
 
     global holidayBackgroundsEnabled
@@ -2098,65 +2207,48 @@ def getHolidayBgCategory():
         return None
 
     now = time.localtime()
+    today = date(now.tm_year, now.tm_mon, now.tm_mday)
+
+    # -----------------------------------------------
+    # Gesetzliche Feiertage in NRW
+    # -----------------------------------------------
+
+    holidays = getNRWHolidays(now.tm_year)
+
+    if today in holidays:
+        return holidays[today]
+
+    # -----------------------------------------------
+    # Saisonale Hintergründe
+    # Halloween, Weihnachten, Silvester usw.
+    # -----------------------------------------------
 
     month = now.tm_mon
     day = now.tm_mday
 
     for sm, sd, em, ed, cat in HOLIDAY_BACKGROUNDS:
 
-        # ----------------------------------------------------
-        # Zeitraum innerhalb desselben Monats
-        # ----------------------------------------------------
-
         if sm == em:
-
-            if (
-                month == sm
-                and sd <= day <= ed
-            ):
+            if month == sm and sd <= day <= ed:
                 return cat
-
-        # ----------------------------------------------------
-        # Zeitraum über den Jahreswechsel
-        #
-        # Beispiel:
-        # 20.12. - 05.01.
-        # ----------------------------------------------------
 
         elif sm > em:
-
             if (
                 (month == sm and day >= sd)
-                or
-                (month == em and day <= ed)
-                or
-                (month > sm)
-                or
-                (month < em)
+                or (month == em and day <= ed)
             ):
                 return cat
 
-        # ----------------------------------------------------
-        # Normaler Zeitraum über mehrere Monate
-        #
-        # Beispiel:
-        # 01.03. - 31.03.
-        # oder
-        # 15.03. - 15.04.
-        # ----------------------------------------------------
-
         else:
-
             if (
                 (month == sm and day >= sd)
-                or
-                (month == em and day <= ed)
-                or
-                (sm < month < em)
+                or (month == em and day <= ed)
+                or (sm < month < em)
             ):
                 return cat
 
     return None
+
 
 def getAutoWeatherBackground():
     global weatherData
@@ -2268,127 +2360,67 @@ def getAutoWeatherBackground():
         ):
             hours = []
 
-        icon = None
+        # -------------------------------------------------
+        # ZUERST DAS ICON DES AKTUELLEN TAGES VERWENDEN
+        # -------------------------------------------------
+        # Das ist auch das Icon, das die SevenDay-Tagesübersicht anzeigt.
+        # Das Stunden-Icon kann eine spätere Schauerphase enthalten und würde
+        # sonst z.B. bei "leicht bewölkt" fälschlich den Regenhintergrund wählen.
+        icon = day.get("iconcode")
+        if icon is None:
+            icon = day.get("icon")
+
+        print(
+            "[speedy_TheWeather] AUTO: Tages-Icon zuerst=%r" % icon
+        )
 
         # -------------------------------------------------
-        # AKTUELLE STUNDE
+        # STUNDEN-ICON NUR ALS FALLBACK, WENN TAGES-ICON FEHLT
         # -------------------------------------------------
-
-        now_hour = time.localtime().tm_hour
-
-        for hour in hours:
-
-            if not isinstance(
-                hour,
-                dict
-            ):
-                continue
-
-            try:
-
-                h = hour.get("hour")
-
-                if h is None:
-                    h = hour.get("time")
-
-                if isinstance(
-                    h,
-                    str
-                ):
-
-                    h = h.strip()
-
-                    if ":" in h:
-                        h = h.split(
-                            ":",
-                            1
-                        )[0]
-
-                    elif "T" in h:
-
-                        h = h.split(
-                            "T",
-                            1
-                        )[-1]
-
+        if not icon:
+            now_hour = time.localtime().tm_hour
+            for hour in hours:
+                if not isinstance(hour, dict):
+                    continue
+                try:
+                    h = hour.get("hour")
+                    if h is None:
+                        h = hour.get("time")
+                    if isinstance(h, str):
+                        h = h.strip()
+                        if "T" in h:
+                            h = h.split("T", 1)[1]
+                        if "+" in h:
+                            h = h.split("+", 1)[0]
+                        if "Z" in h:
+                            h = h.split("Z", 1)[0]
                         if ":" in h:
-                            h = h.split(
-                                ":",
-                                1
-                            )[0]
-
-                if h is not None:
-
-                    if int(h) == now_hour:
-
-                        icon = hour.get(
-                            "iconcode"
-                        )
-
+                            h = h.split(":", 1)[0]
+                        if not h.isdigit():
+                            continue
+                    if h is not None and int(h) == now_hour:
+                        icon = hour.get("iconcode")
                         if icon is None:
-                            icon = hour.get(
-                                "icon"
-                            )
-
+                            icon = hour.get("icon")
                         print(
-                            "[speedy_TheWeather] "
-                            "AUTO: aktuelles Stunden-Icon=%r"
-                            % icon
+                            "[speedy_TheWeather] AUTO: Stunden-Fallback-Icon=%r" % icon
                         )
-
                         if icon:
                             break
-
-            except Exception:
-                continue
-
-        # -------------------------------------------------
-        # FALLBACK TAGES-ICON
-        # -------------------------------------------------
-
-        if not icon:
-
-            icon = day.get(
-                "iconcode"
-            )
-
-            if icon is None:
-                icon = day.get(
-                    "icon"
-                )
-
-            print(
-                "[speedy_TheWeather] "
-                "AUTO: Tages-Icon=%r"
-                % icon
-            )
+                except Exception:
+                    continue
 
         # -------------------------------------------------
-        # FALLBACK ERSTE STUNDE
+        # LETZTER FALLBACK: ERSTE STUNDE
         # -------------------------------------------------
-
         if not icon and hours:
-
-            firstHour = hours[0]
-
-            if isinstance(
-                firstHour,
-                dict
-            ):
-
-                icon = firstHour.get(
-                    "iconcode"
-                )
-
+            first_hour = hours[0]
+            if isinstance(first_hour, dict):
+                icon = first_hour.get("iconcode")
                 if icon is None:
-                    icon = firstHour.get(
-                        "icon"
-                    )
-
+                    icon = first_hour.get("icon")
                 print(
-                    "[speedy_TheWeather] "
-                    "AUTO: erstes Stunden-Icon=%r"
-                    % icon
+                    "[speedy_TheWeather] AUTO: erstes Stunden-Icon=%r" % icon
                 )
 
     except Exception as e:
@@ -6940,6 +6972,16 @@ class sevendays(Screen):
 
             self.loadBackground()
 
+            # Hintergrund und Wetterdaten während SevenDay aktuell halten.
+            # 15 Minuten: regelmäßig neu laden, ohne unnötig oft die API anzufragen.
+            self.backgroundRefreshTimer = eTimer()
+            self._backgroundRefreshTimer_conn = safeTimerCallback(
+                self.backgroundRefreshTimer,
+                self.refreshWeatherBackground
+            )
+            self.backgroundRefreshTimer.start(15 * 60 * 1000, True)
+            self.onClose.append(self._stopBackgroundRefreshTimer)
+
         except Exception as e:
 
             print(
@@ -7234,6 +7276,37 @@ class sevendays(Screen):
     def _stopUpdateTimeTimer(self):
         try:
             self.updateTimeTimer.stop()
+        except Exception:
+            pass
+
+    def _stopBackgroundRefreshTimer(self):
+        try:
+            if hasattr(self, "backgroundRefreshTimer"):
+                self.backgroundRefreshTimer.stop()
+        except Exception:
+            pass
+
+    def refreshWeatherBackground(self):
+        """Refresh weather data and reselect the SevenDay background."""
+        global lockaaleStad
+
+        try:
+            location = lockaaleStad
+            if location:
+                # Wetterabruf aktualisiert weatherData; Overlay bleibt unangetastet.
+                getLocWeer(location, update_overlay=False)
+        except Exception as e:
+            print("[speedy_TheWeather] SevenDay Hintergrund-Wetterupdate: %s" % e)
+
+        try:
+            self.loadBackground()
+        except Exception as e:
+            print("[speedy_TheWeather] SevenDay Hintergrund-Reload: %s" % e)
+
+        # Timer ist als wiederkehrender Timer gestartet; erneuter Start als Fallback.
+        try:
+            if hasattr(self, "backgroundRefreshTimer"):
+                self.backgroundRefreshTimer.start(15 * 60 * 1000, True)
         except Exception:
             pass
     
