@@ -1033,6 +1033,12 @@ msgstr "Ort 2 - Sonne :"
 msgid "Location 2 - Moon :"
 msgstr "Ort 2 - Mond :"
 
+msgid "Updated: "
+msgstr "Aktualisiert: "
+
+msgid "Updated: --:--"
+msgstr "Aktualisiert: --:--"
+
 
 
 
