@@ -1,8 +1,7 @@
 #-----------------------------------------------------------------------------
-# v.2.0.2
+# v.2.0.3
 # Original work by Caught
-# https://www.linuxsat-support.com/cms/user/40812-caught/
-# Modified by speedy005
+# https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
 # Modifications and improvements © speedy005.
 # This software is based on the original work of Caught.
@@ -73,7 +72,7 @@ def localeInit():
 
 localeInit()
 language.addCallback(localeInit)
-
+_weatherFetchTime = None
 _translation_cache = {}
 _translation_cache_lang = None
 
@@ -1306,7 +1305,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1322,7 +1321,7 @@ def iconToBgCategory(icon):
     }
     return mapping.get(base, "")
 
-version = '2.0.2'
+version = '2.0.3'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -6472,12 +6471,17 @@ def _search_city(query):
 
         return None, None
 
+
+
 def getLocWeer(iscity=None, update_overlay=True):
-    global weatherData, lockaaleStad, citynamedisplay
+    global weatherData, lockaaleStad, citynamedisplay, _weatherFetchTime
+
     lockaaleStad = iscity
     if not iscity:
         return False
+
     entry = stripCoords(iscity)
+
     try:
         parts = entry.rsplit('-', 1)
         if len(parts) == 2:
@@ -6485,19 +6489,29 @@ def getLocWeer(iscity=None, update_overlay=True):
             if data is not None:
                 weatherData = data
                 citynamedisplay = safeStr(parts[0])
+                _weatherFetchTime = time.time()
+
                 if update_overlay:
                     _updateOverlayFromWeatherData()
+
                 return True
+
     except Exception as e:
         print('[speedy_TheWeather] city-id lookup failed:', e)
+
     data, name = _search_city(entry)
     if data is None:
         return False
+
     weatherData = data
     citynamedisplay = safeStr(name)
+    _weatherFetchTime = time.time()
+
     if update_overlay:
         _updateOverlayFromWeatherData()
+
     return True
+
 
 def getLocWeerFor(inputCity):
     """Return actual weather data and display name for a saved city."""
@@ -6894,9 +6908,21 @@ class sevendays(Screen):
             self[name] = Pixmap()
 
         self["weatheralert1"] = Label("")
+        
+        
+        # Letzte erfolgreiche Wetteraktualisierung
+        self["updateTime"] = Label("")
+        self.updateWeatherTime()
+
+        self.updateTimeTimer = eTimer()
+        self._updateTimeTimer_conn = safeTimerCallback(
+            self.updateTimeTimer,
+            self.updateWeatherTime
+        )
+        self.updateTimeTimer.start(10000, False)
+        self.onClose.append(self._stopUpdateTimeTimer)
 
         self["yellowdot"] = MovingPixmap()
-
         self["bgpic"] = Pixmap()
 
         # ============================================================
@@ -7177,7 +7203,20 @@ class sevendays(Screen):
     # ================================================================
     # ALLGEMEIN
     # ================================================================
+    def updateWeatherTime(self):
+            global _weatherFetchTime
 
+            if _weatherFetchTime is not None:
+                self["updateTime"].setText(
+                    _("Updated: ") +
+                    time.strftime(
+                        "%H:%M",
+                        time.localtime(_weatherFetchTime)
+                    )
+                )
+            else:
+                self["updateTime"].setText(_("Updated: --:--"))
+    
     def _path(self, *parts):
 
         return "/".join(
@@ -7192,6 +7231,12 @@ class sevendays(Screen):
             else {}
         )
 
+    def _stopUpdateTimeTimer(self):
+        try:
+            self.updateTimeTimer.stop()
+        except Exception:
+            pass
+    
     def _wind(self, day):
 
         try:
@@ -8926,6 +8971,7 @@ class sevendays(Screen):
             size="1920,1080"
             backgroundColor="#ff000000">
 
+            <widget name="updateTime" position="1619,1050" size="240,36" zPosition="3" font="Regular;30" halign="right" valign="center" foregroundColor="#ff0000" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
             <widget name="bgpic"
                 position="0,0"
                 size="1920,1080"
@@ -9043,12 +9089,16 @@ class sevendays(Screen):
             flags="wfNoBorder"
             position="center,center"
             size="1280,720">
-
-            <widget name="bgpic"
-                position="0,0"
-                size="1280,720"
-                zPosition="-1"
-                alphatest="blend"/>
+            <widget name="updateTime"
+                position="1060,680"
+                size="200,28"
+                zPosition="3"
+                font="Regular;20"
+                halign="right"
+                valign="center"
+                foregroundColor="#ffff0000"
+                backgroundColor="#00202020"
+                transparent="1"/>
 
             <ePixmap
                 pixmap="{base}/{pack}/backgroundhd_2.png"
@@ -9494,9 +9544,14 @@ class sevendays(Screen):
 
             self[name] = Pixmap()
 
+        
         self["weatheralert1"] = Label("")
 
+        self["updateTime"] = Label("")
+        self.updateWeatherTime()
+
         self["yellowdot"] = MovingPixmap()
+
 
         self["bgpic"] = Pixmap()
 
@@ -12902,6 +12957,10 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         self.close(
             True
         )
+
+ 
+    
+
 
     # ========================================================
     # CANCEL
