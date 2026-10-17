@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.3
+# v.2.0.4
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -1305,7 +1305,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1373,7 +1373,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.0.3'
+version = '2.0.4'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
