@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.4
+# v.2.0.5
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -1305,7 +1305,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.4"
+__version__ = "2.0.5"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1356,24 +1356,28 @@ def iconToBgCategory(icon):
     if icon in mapping:
         return mapping[icon]
 
-    # Falls der API-Wert ein beschreibender Satz ist, auf klare Schlüsselwörter
-    # prüfen. Bewölkung hat Vorrang vor einem allgemeinen "chance of showers"-Text
-    # nur dann, wenn es explizit "light cloudy" / "partly cloudy" heißt.
+    # Beschreibende Wettertexte robust auswerten. Bei "wechselhaft, Nebel
+    # möglich" soll der Nebel-/Wolkenhintergrund Vorrang vor einer allgemeinen
+    # Schauer-/Regen-Erkennung haben.
+    if ("wechselhaft" in icon or "changeable" in icon) and (
+        "nebel" in icon or "mist" in icon or "fog" in icon
+    ):
+        return "mist"
     if "thunder" in icon or "gewitter" in icon:
         return "thunder"
     if "snow" in icon or "schnee" in icon or "snowfall" in icon:
         return "snow"
-    if "rain" in icon or "shower" in icon or "regen" in icon or "schauer" in icon:
-        return "rain"
     if "mist" in icon or "fog" in icon or "nebel" in icon:
         return "mist"
+    if "rain" in icon or "shower" in icon or "regen" in icon or "schauer" in icon:
+        return "rain"
     if "cloud" in icon or "bewölkt" in icon or "bewoelkt" in icon:
         return "cloudy"
     if "sun" in icon or "sonnig" in icon or "clear" in icon:
         return "sunny"
     return ""
 
-version = '2.0.4'
+version = '2.0.5'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -2361,54 +2365,55 @@ def getAutoWeatherBackground():
             hours = []
 
         # -------------------------------------------------
-        # ZUERST DAS ICON DES AKTUELLEN TAGES VERWENDEN
+        # ZUERST DAS ICON DER AKTUELLEN STUNDE VERWENDEN
         # -------------------------------------------------
-        # Das ist auch das Icon, das die SevenDay-Tagesübersicht anzeigt.
-        # Das Stunden-Icon kann eine spätere Schauerphase enthalten und würde
-        # sonst z.B. bei "leicht bewölkt" fälschlich den Regenhintergrund wählen.
-        icon = day.get("iconcode")
-        if icon is None:
-            icon = day.get("icon")
-
-        print(
-            "[speedy_TheWeather] AUTO: Tages-Icon zuerst=%r" % icon
-        )
+        # Der Hintergrund soll zur aktuell angezeigten Wetterbeschreibung passen.
+        # Das Tages-Icon kann z.B. Regen ankündigen, obwohl die aktuelle Stunde
+        # "Wechselhaft und Nebel möglich" meldet.
+        icon = None
+        now_hour = time.localtime().tm_hour
+        for hour in hours:
+            if not isinstance(hour, dict):
+                continue
+            try:
+                h = hour.get("hour")
+                if h is None:
+                    h = hour.get("time")
+                if isinstance(h, str):
+                    h = h.strip()
+                    if "T" in h:
+                        h = h.split("T", 1)[1]
+                    if "+" in h:
+                        h = h.split("+", 1)[0]
+                    if "Z" in h:
+                        h = h.split("Z", 1)[0]
+                    if ":" in h:
+                        h = h.split(":", 1)[0]
+                    if not h.isdigit():
+                        continue
+                if h is not None and int(h) == now_hour:
+                    icon = hour.get("iconcode")
+                    if icon is None:
+                        icon = hour.get("icon")
+                    print(
+                        "[speedy_TheWeather] AUTO: aktuelles Stunden-Icon=%r" % icon
+                    )
+                    if icon:
+                        break
+                    icon = None
+            except Exception:
+                continue
 
         # -------------------------------------------------
-        # STUNDEN-ICON NUR ALS FALLBACK, WENN TAGES-ICON FEHLT
+        # TAGES-ICON ALS FALLBACK
         # -------------------------------------------------
         if not icon:
-            now_hour = time.localtime().tm_hour
-            for hour in hours:
-                if not isinstance(hour, dict):
-                    continue
-                try:
-                    h = hour.get("hour")
-                    if h is None:
-                        h = hour.get("time")
-                    if isinstance(h, str):
-                        h = h.strip()
-                        if "T" in h:
-                            h = h.split("T", 1)[1]
-                        if "+" in h:
-                            h = h.split("+", 1)[0]
-                        if "Z" in h:
-                            h = h.split("Z", 1)[0]
-                        if ":" in h:
-                            h = h.split(":", 1)[0]
-                        if not h.isdigit():
-                            continue
-                    if h is not None and int(h) == now_hour:
-                        icon = hour.get("iconcode")
-                        if icon is None:
-                            icon = hour.get("icon")
-                        print(
-                            "[speedy_TheWeather] AUTO: Stunden-Fallback-Icon=%r" % icon
-                        )
-                        if icon:
-                            break
-                except Exception:
-                    continue
+            icon = day.get("iconcode")
+            if icon is None:
+                icon = day.get("icon")
+            print(
+                "[speedy_TheWeather] AUTO: Tages-Fallback-Icon=%r" % icon
+            )
 
         # -------------------------------------------------
         # LETZTER FALLBACK: ERSTE STUNDE
@@ -2466,11 +2471,25 @@ def getAutoWeatherBackground():
 
         return defaultBg
 
+    # Die Hintergrundkategorie zusätzlich gegen denselben Beschreibungstext
+    # prüfen, der für den Wetter-Iconcode angezeigt wird. So bleibt
+    # "Wechselhaft und Nebel möglich" zuverlässig bei mist statt rain.
+    try:
+        icon_description = str(icontotext(str(icon)) or "").strip().lower()
+        if icon_description and (
+            ("changeable" in icon_description or "wechselhaft" in icon_description)
+            and ("mist" in icon_description or "fog" in icon_description or "nebel" in icon_description)
+        ):
+            category = "mist"
+    except Exception:
+        pass
+
     print(
         "[speedy_TheWeather] "
-        "AUTO: icon=%r category=%r"
+        "AUTO: icon=%r description=%r category=%r"
         % (
             icon,
+            icon_description if 'icon_description' in locals() else "",
             category
         )
     )
