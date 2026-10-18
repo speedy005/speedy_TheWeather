@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Dutch\n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -64,31 +63,31 @@ msgid "Belgium"
 msgstr "België"
 
 msgid "Changeable and chance of mist"
-msgstr "Wisselvallig met kans op mist"
+msgstr "Wisselend en kans op mist"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Tip!\nDruk op de verborgen GELE knop in het hoofdmenu om de regenradar te openen.\n\nDruk op de verborgen GROENE knop in het hoofdmenu om het uurinterval te wijzigen.\n\nDruk op de verborgen BLAUWE knop in het hoofdmenu om twee steden te vergelijken.\n\nDruk hier op OK om de temperatuurweergave in of uit te schakelen: %s"
+msgstr "Tip!\nDruk op de verborgen Gele knop in het hoofdmenu om de buienradar te openen.\n\nDruk op de verborgen Groene knop in het hoofdmenu om het uurinterval te wijzigen.\n\nDruk op de verborgen Blauwe knop in het hoofdmenu om twee steden te vergelijken.\n\nDruk hier op OK om de temperatuurweergave om te schakelen: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Wisselend bewolkt met lichte sneeuwval"
+msgstr "Wisselend bewolkt, lichte sneeuwval"
 
 msgid "Clear and chance of mist"
-msgstr "Helder met kans op mist"
+msgstr "Helder en kans op mist"
 
 msgid "Clear night"
 msgstr "Heldere nacht"
 
 msgid "Clouds radar"
-msgstr "Wolkenradar"
+msgstr "Wolkendarar"
 
 msgid "Cloudy"
 msgstr "Bewolkt"
 
 msgid "Cloudy and chance of showers"
-msgstr "Bewolkt met kans op buien"
+msgstr "Bewolkt en kans op buien"
 
 msgid "Download error: Check spelling."
-msgstr "Downloadfout: controleer de spelling."
+msgstr "Downloadfout: Controleer de spelling."
 
 msgid "Drizzle"
 msgstr "Motregen"
@@ -106,46 +105,46 @@ msgid "Favorite Locations"
 msgstr "Favoriete locaties"
 
 msgid "Feels Like: "
-msgstr "Voelt als: "
+msgstr "Voelt aan als: "
 
 msgid "Feels like: "
-msgstr "Voelt als: "
+msgstr "Voelt aan als: "
 
 msgid "Hail radar"
 msgstr "Hagelradar"
 
 msgid "Heavy clouds"
-msgstr "Zwaar bewolkt"
+msgstr "Zware bewolking"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Zwaar bewolkt, zware buien"
+msgstr "Zware bewolking, zware buien"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Zwaar bewolkt, onweersbuien"
+msgstr "Zware bewolking, onweersbuien"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Zwaar bewolkt met zware sneeuwval"
+msgstr "Zware bewolking en zware sneeuwval"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Zwaar bewolkt met lichte sneeuwval"
+msgstr "Zware bewolking, lichte sneeuwval"
 
 msgid "Heavy clouds showers possible"
-msgstr "Zwaar bewolkt, buien mogelijk"
+msgstr "Zware bewolking, buien mogelijk"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Zwaar bewolkt, winterse neerslag"
+msgstr "Zware bewolking, winterse neerslag"
 
 msgid "Help"
 msgstr "Help"
 
 msgid "Km/h"
-msgstr "Km/u"
+msgstr "km/h"
 
 msgid "Light cloudy"
 msgstr "Licht bewolkt"
 
 msgid "Local Weather"
-msgstr "Lokaal weer"
+msgstr "Plaatselijk weer"
 
 msgid "Location +"
 msgstr "Locatie +"
@@ -178,7 +177,7 @@ msgid "Rainfall radar"
 msgstr "Neerslagradar"
 
 msgid "WeatherInfo"
-msgstr "Weersinformatie"
+msgstr "WeerInfo"
 
 msgid "S"
 msgstr "Z"
@@ -193,28 +192,28 @@ msgid "Satellite"
 msgstr "Satelliet"
 
 msgid "Showers and chance of thunder"
-msgstr "Buien met kans op onweer"
+msgstr "Buien en kans op onweer"
 
 msgid "Snow radar"
 msgstr "Sneeuwradar"
 
 msgid "Sun radar"
-msgstr "Zonneradar"
+msgstr "Zonradar"
 
 msgid "Sunny / Clear"
 msgstr "Zonnig / Helder"
 
 msgid "Sunny and chance of mist"
-msgstr "Zonnig met kans op mist"
+msgstr "Zonnig en kans op mist"
 
 msgid "Sunny and chance of showers"
-msgstr "Zonnig met kans op buien"
+msgstr "Zonnig en kans op buien"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Zonnig met kans op onweersbuien"
+msgstr "Zonnig en kans op onweersbuien"
 
 msgid "Sunny few clouds"
-msgstr "Zonnig met enkele wolken"
+msgstr "Zonnig, enkele wolken"
 
 msgid "Sunpower-UV"
 msgstr "UV-index"
@@ -226,16 +225,16 @@ msgid "The Netherlands"
 msgstr "Nederland"
 
 msgid "TheWeather"
-msgstr "Het weer"
+msgstr "HetWeer"
 
 msgid "Thunder radar"
-msgstr "Onweerradar"
+msgstr "Onweersradar"
 
 msgid "W"
 msgstr "W"
 
 msgid "Weather forecast-nl"
-msgstr "Weersverwachting-NL"
+msgstr "Weersverwachting-nl"
 
 msgid "Wind direction: "
 msgstr "Windrichting: "
@@ -247,22 +246,22 @@ msgid "Background"
 msgstr "Achtergrond"
 
 msgid "Background reset to standard."
-msgstr "Achtergrond teruggezet naar standaard."
+msgstr "Achtergrond gereset naar standaard."
 
 msgid "Choose 2nd location"
-msgstr "2e locatie kiezen"
+msgstr "Kies 2e locatie"
 
 msgid "Choose 2nd location:"
-msgstr "2e locatie kiezen:"
+msgstr "Kies 2e locatie:"
 
 msgid "Choose background:"
-msgstr "Achtergrond kiezen:"
+msgstr "Kies achtergrond:"
 
 msgid "City not found. Press YELLOW to change."
 msgstr "Stad niet gevonden. Druk op GEEL om te wijzigen."
 
 msgid "Compare Two Locations"
-msgstr "Twee locaties vergelijken"
+msgstr "Vergelijk twee locaties"
 
 msgid "Compare Locations"
 msgstr "Locaties vergelijken"
@@ -271,22 +270,22 @@ msgid "Data error"
 msgstr "Gegevensfout"
 
 msgid "Download error: No response try again"
-msgstr "Downloadfout: geen antwoord, probeer opnieuw"
+msgstr "Downloadfout: Geen antwoord, probeer het opnieuw"
 
 msgid "Error fetching data."
-msgstr "Fout bij ophalen van gegevens."
+msgstr "Fout bij het ophalen van gegevens."
 
 msgid "Error loading"
-msgstr "Laadfout"
+msgstr "Fout bij het laden"
 
 msgid "Extra Icons "
 msgstr "Extra pictogrammen "
 
 msgid "Extreme cold!"
-msgstr "Extreme kou!"
+msgstr "Extreem koude!"
 
 msgid "Extreme heat!"
-msgstr "Extreme hitte!"
+msgstr "Extreem warme!"
 
 msgid "h"
 msgstr "u"
@@ -298,13 +297,13 @@ msgid "Heavy storm!"
 msgstr "Zware storm!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Pictogrampakket gewijzigd.\nDe plug-in wordt opnieuw gestart..."
+msgstr "Pictogrammenpakket gewijzigd.\nDe plugin wordt herstart..."
 
 msgid "Loading background image, please wait..."
 msgstr "Achtergrondafbeelding laden, even geduld..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Standaardpictogrammen laden, even geduld..."
+msgstr "Standaard pictogrammen laden, even geduld..."
 
 msgid "Loading extra icons, please wait..."
 msgstr "Extra pictogrammen laden, even geduld..."
@@ -337,16 +336,16 @@ msgid "Settings"
 msgstr "Instellingen"
 
 msgid "Severe cold!"
-msgstr "Ernstige kou!"
+msgstr "Streng koude!"
 
 msgid "Standard"
 msgstr "Standaard"
 
 msgid "Standard (iconpack)"
-msgstr "Standaard (pictogrampakket)"
+msgstr "Standaard (pictogrammenpakket)"
 
 msgid "Standard Icons"
-msgstr "Standaardpictogrammen"
+msgstr "Standaard pictogrammen"
 
 msgid "Strong wind!"
 msgstr "Sterke wind!"
@@ -361,7 +360,7 @@ msgid "Warm weather!"
 msgstr "Warm weer!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Oeps!\nTrage of geen internetverbinding.\nProbeer het opnieuw"
+msgstr "Oeps!\nTrage of geen internetverbinding\nProbeer het opnieuw"
 
 msgid "Wind: "
 msgstr "Wind: "
@@ -382,13 +381,13 @@ msgid "Save"
 msgstr "Opslaan"
 
 msgid "Show 2 locations"
-msgstr "2 locaties weergeven"
+msgstr "Toon 2 locaties"
 
 msgid "Radar default zoom:"
 msgstr "Standaard zoomniveau radar:"
 
 msgid "Date format:"
-msgstr "Datumformaat:"
+msgstr "Datumnotatie:"
 
 msgid "Loading radar..."
 msgstr "Radar laden..."
@@ -403,80 +402,80 @@ msgid "Select city and:"
 msgstr "Selecteer stad en:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- Druk op OK voor weersinformatie"
+msgstr "- Druk op OK voor weerinfo"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Druk op Menu voor de regenradar"
+msgstr "- Druk op Menu voor Buienradar"
 
 msgid "Appearance"
-msgstr "Uiterlijk"
+msgstr "Weergave"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
-msgstr "Stad / Plaats"
+msgid "City / Location"
+msgstr "Stad / Locatie"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Huidige temperatuur"
 
-msgid "Wetterbeschreibung"
-msgstr "Weersbeschrijving"
+msgid "Weather description"
+msgstr "Weerbeschrijving"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "Gevoelstemperatuur"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Windrichting"
 
-msgid "Wochentag"
-msgstr "Weekdag"
+msgid "Day of the week"
+msgstr "Dag van de week"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "Maximumtemperatuur"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Minimumtemperatuur"
 
-msgid "Tages-Wettertext"
-msgstr "Dagelijkse weersbeschrijving"
+msgid "Daily weather text"
+msgstr "Dagelijkse weertekst"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Zonsopkomst / zonsondergang"
+msgid "Sunrise / Sunset"
+msgstr "Zonsopgang / Zonsondergang"
 
-msgid "Stunde / Uhrzeit"
+msgid "Hour / Time"
 msgstr "Uur / Tijd"
 
-msgid "Stundentemperatur"
-msgstr "Uurtemperatuur"
+msgid "Hourly temperature"
+msgstr "Uurlijkse temperatuur"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Regen"
 
-msgid "Sonnenwahrscheinlichkeit"
-msgstr "Kans op zon"
+msgid "Sunshine probability"
+msgstr "Zonkans"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "Luchtvochtigheid"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Windsnelheid"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Klok"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Datum"
 
-msgid "Wetterwarnung"
-msgstr "Weerswaarschuwing"
+msgid "Weather warning"
+msgstr "Weerwaarschuwing"
 
 msgid "Default colors"
 msgstr "Standaardkleuren"
 
 msgid "Save & exit"
-msgstr "Opslaan en afsluiten"
+msgstr "Opslaan & afsluiten"
 
 # ============================================================
 # Update
@@ -486,14 +485,14 @@ msgid "TheWeather update"
 msgstr "TheWeather-update"
 
 msgid "Search for update"
-msgstr "Zoeken naar update"
+msgstr "Zoeken naar updates"
 
 msgid ""
 "The plugin is already up to date.\n"
 "\n"
 "Version: %s"
 msgstr ""
-"De plug-in is al up-to-date.\n"
+"De plugin is al up-to-date.\n"
 "\n"
 "Versie: %s"
 
@@ -504,10 +503,10 @@ msgid "Changes:"
 msgstr "Wijzigingen:"
 
 msgid "Installer version: %s"
-msgstr "Installerversie: %s"
+msgstr "Installatieprogrammaversie: %s"
 
 msgid "Update information is incomplete."
-msgstr "De update-informatie is onvolledig."
+msgstr "Update-informatie is incompleet."
 
 msgid "No changes available."
 msgstr "Geen wijzigingen beschikbaar."
@@ -550,12 +549,12 @@ msgid ""
 "\n"
 "Would you like to restart the Enigma2 GUI now?"
 msgstr ""
-"De update is succesvol geïnstalleerd.\n"
+"De update is met succes geïnstalleerd.\n"
 "\n"
-"Wilt u de Enigma2-GUI nu opnieuw starten?"
+"Wilt u de Enigma2 GUI nu herstarten?"
 
 msgid "Hours"
-msgstr "Uren"
+msgstr "Uur"
 
 msgid "Radar"
 msgstr "Radar"
@@ -567,7 +566,7 @@ msgid "RainViewer"
 msgstr "RainViewer"
 
 msgid "speedy_TheWeather Settings"
-msgstr "speedy_TheWeather-instellingen"
+msgstr "speedy_TheWeather Instellingen"
 
 msgid "Infoscreen"
 msgstr "Informatiescherm"
@@ -576,7 +575,7 @@ msgid "Auto weather backgrounds:"
 msgstr "Automatische weerachtergronden:"
 
 msgid "Holiday backgrounds:"
-msgstr "Feestdagachtergronden:"
+msgstr "Vakantieachtergronden:"
 
 msgid "Download weather backgrounds"
 msgstr "Weerachtergronden downloaden"
@@ -594,7 +593,7 @@ msgid "You are already using the latest version (%s)."
 msgstr "U gebruikt al de nieuwste versie (%s)."
 
 msgid "Sunrise"
-msgstr "Zonsopkomst"
+msgstr "Zonsopgang"
 
 msgid "Sunset"
 msgstr "Zonsondergang"
@@ -615,8 +614,427 @@ msgid "No matching cities found."
 msgstr "Geen overeenkomende steden gevonden."
 
 msgid "Could not save the selected location."
-msgstr "De geselecteerde locatie kon niet worden opgeslagen."
+msgstr "Kon de geselecteerde locatie niet opslaan."
 
 msgid "Choose a match:"
-msgstr "Kies een stad:"
-```
+msgstr "Kies een overeenkomst:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Auto-achtergronden"
+
+msgid "Download is preparing..."
+msgstr "Download wordt voorbereid..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Automatische achtergronden installeren..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[SCHERM] Automatische achtergrondinstallatie"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[SCHERM] Resolutie: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[SCHERM] Installatie start..."
+
+msgid "Error starting the download"
+msgstr "Fout bij het starten van de download"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[FOUT] Worker kon niet worden gestart: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[FOUT] Worker-uitzondering: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Automatische achtergronden succesvol geïnstalleerd"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[SUCCES] Installatie succesvol voltooid."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[SUCCES] Alle AUTO- en EXTRA-afbeeldingen zijn verwerkt."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[SCHERM] Druk op OK of EXIT om te sluiten."
+
+msgid "[ERROR] Installation failed"
+msgstr "[FOUT] Installatie mislukt"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[FOUT] Installatie is voltooid met fouten."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[FOUT] Zie het logboek hierboven voor details."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "START INSTALLATIE AUTO-ACHTERGRONDEN"
+
+msgid "Log file: %s"
+msgstr "Logboekbestand: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[INFO] Automatische achtergronden zijn uitgeschakeld"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "CONTROLE AUTO-ACHTERGRONDEN"
+
+msgid "[STEP] Checking background directories"
+msgstr "[STAP] Achtergrondmappen controleren"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[AANMAKEN] Hoofdmap achtergronden: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Hoofdmap achtergronden bestaat: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[AANMAKEN] Automap: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Automap bestaat: %s"
+
+msgid "Background root: %s"
+msgstr "Hoofdmap achtergronden: %s"
+
+msgid "Auto directory: %s"
+msgstr "Automap: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[INFO] Installatiemarkering bestaat: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[INFO] Geen installatiemarkering gevonden"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[STAP] Oude ZIP controleren: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[VERWIJDEREN] Oude ZIP wordt verwijderd"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Oude ZIP verwijderd"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[INFO] Geen oude ZIP gevonden"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[WAARSCHUWING] Oude ZIP kon niet worden verwijderd: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[DOWNLOAD] DOWNLOAD START"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[DOWNLOAD] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[DOWNLOAD] Doel: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[FOUT] wget is niet gevonden!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[DOWNLOAD] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[DOWNLOAD] wget uitvoeren..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[DOWNLOAD] wget-retourcode: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[FOUT] DOWNLOAD MISLUKT"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[OPRUIMEN] Ongeldige ZIP verwijderd"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] DOWNLOAD GESLAAGD"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[STAP] Gedownloade ZIP controleren"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[FOUT] ZIP is niet aangemaakt!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Grootte: %s bytes"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[FOUT] ZIP is leeg!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] ZIP-bestand bestaat"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] ZIP-formaat controleren..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[FOUT] Ongeldig ZIP-bestand!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] ZIP is geldig"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] ZIP openen..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Bestanden in ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[OVERSLAAN] AUTO is geen JPG-bestand: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[OVERSLAAN] EXTRA is geen JPG-bestand: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[GEVONDEN] AUTO JPG-bestanden in ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[GEVONDEN] EXTRA JPG-bestanden in ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[FOUT] Geen AUTO JPG-bestanden gevonden in ZIP!"
+
+msgid "No AUTO files found"
+msgstr "Geen AUTO-bestanden gevonden"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[WAARSCHUWING] Geen EXTRA JPG-bestanden gevonden in ZIP!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[INSTALLATIE] AUTO-INSTALLATIE START"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[INSTALLATIE] AUTO-bestanden: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[INSTALLATIE] AUTO-bron: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[INSTALLATIE] AUTO-doel: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[INSTALLATIE] AUTO gelezen: %s bytes"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[FOUT] AUTO-bestand is leeg: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[FOUT] Tijdelijk AUTO-bestand is leeg: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[INSTALLATIE] Oude AUTO-bestand vervangen: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[FOUT] AUTO-doelbestand bestaat niet: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[FOUT] AUTO-doelbestand is leeg: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] AUTO GEÏNSTALLEERD: %s (%s bytes)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[FOUT] AUTO-fout %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[INSTALLATIE] AUTO KLAAR: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[INSTALLATIE] EXTRA-INSTALLATIE START"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[INSTALLATIE] EXTRA-bestanden: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[INSTALLATIE] EXTRA-bron: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[INSTALLATIE] EXTRA-doel: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[INSTALLATIE] EXTRA gelezen: %s bytes"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[FOUT] EXTRA-bestand is leeg: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[FOUT] Tijdelijk EXTRA-bestand is leeg: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[INSTALLATIE] Oude EXTRA-bestand vervangen: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[FOUT] EXTRA-doelbestand bestaat niet: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[FOUT] EXTRA-doelbestand is leeg: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] EXTRA GEÏNSTALLEERD: %s (%s bytes)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[FOUT] EXTRA-fout %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[INSTALLATIE] EXTRA KLAAR: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP gesloten"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[VERIFICATIE] DEFINITIEVE CONTROLE"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[VERIFICATIE] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[MISLUKT] AUTO ONTBREEKT: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[MISLUKT] AUTO LEEG: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] AUTO GECONTROLEERD: %s (%s bytes)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[VERIFICATIE] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[MISLUKT] EXTRA ONTBREEKT: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[MISLUKT] EXTRA LEEG: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] EXTRA GECONTROLEERD: %s (%s bytes)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[RESULTAAT] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[RESULTAAT] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[RESULTAAT] AUTO-fouten: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[RESULTAAT] EXTRA-fouten: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[RESULTAAT] Verificatiefouten: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[FOUT] Geen AUTO-bestanden gevonden!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[FOUT] AUTO-INSTALLATIE ONVOLLEDIG"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[FOUT] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[OPRUIMEN] Oude markering verwijderd"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[WAARSCHUWING] Markering kon niet worden verwijderd: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[FOUT] EXTRA-INSTALLATIE ONVOLLEDIG"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[FOUT] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[FOUT] DEFINITIEVE CONTROLE MISLUKT"
+
+msgid "[ERROR] %s"
+msgstr "[FOUT] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[MARKERING] Installatiemarkering schrijven..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Markering geschreven: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[FOUT] Markeringfout: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[OPRUIMEN] ZIP controleren op verwijdering..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] ZIP verwijderd: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[INFO] ZIP is al afwezig"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[WAARSCHUWING] ZIP kon niet worden verwijderd: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[SUCCES] AUTO-ACHTERGRONDEN SUCCESVOL GEÏNSTALLEERD"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[SUCCES] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[SUCCES] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[SUCCES] INSTALLATIE VOLTOOID"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[FATALE FOUT] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[OPRUIMEN] ZIP verwijderd na fout"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[OPRUIMEN] Markering verwijderd na fout"
+
+msgid "Location 1 - Weather description"
+msgstr "Locatie 1 - Weerbeschrijving"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Locatie 1 - Gevoelstemperatuur"
+
+msgid "Location 1 - Wind"
+msgstr "Locatie 1 - Wind"
+
+msgid "Location 1 - Rain"
+msgstr "Locatie 1 - Regen"
+
+msgid "Location 1 - Sun :"
+msgstr "Locatie 1 - Zon :"
+
+msgid "Location 1 - Moon :"
+msgstr "Locatie 1 - Maan :"
+
+msgid "Location 2 - Weather description"
+msgstr "Locatie 2 - Weerbeschrijving"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Locatie 2 - Gevoelstemperatuur"
+
+msgid "Location 2 - Wind"
+msgstr "Locatie 2 - Wind"
+
+msgid "Location 2 - Rain"
+msgstr "Locatie 2 - Regen"
+
+msgid "Location 2 - Sun :"
+msgstr "Locatie 2 - Zon :"
+
+msgid "Location 2 - Moon :"
+msgstr "Locatie 2 - Maan :"
+
+msgid "Updated: "
+msgstr "Bijgewerkt: "
+
+msgid "Updated: --:--"
+msgstr "Bijgewerkt: --:--"

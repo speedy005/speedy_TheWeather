@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Polish\n"
-"Language: pl\n"
+"Language-Team: \n"
+"Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,7 +18,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "Pn"
+msgstr "Pon"
 
 msgid "Tu"
 msgstr "Wt"
@@ -28,16 +27,16 @@ msgid "We"
 msgstr "Śr"
 
 msgid "Th"
-msgstr "Cz"
+msgstr "Czw"
 
 msgid "Fr"
 msgstr "Pt"
 
 msgid "Sa"
-msgstr "So"
+msgstr "Sob"
 
 msgid "Su"
-msgstr "Nd"
+msgstr "Ndz"
 
 msgid "Monday"
 msgstr "Poniedziałek"
@@ -67,34 +66,34 @@ msgid "Changeable and chance of mist"
 msgstr "Zmiennie, możliwa mgła"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Wskazówka!\nNaciśnij ukryty ŻÓŁTY przycisk w menu głównym, aby otworzyć radar opadów.\n\nNaciśnij ukryty ZIELONY przycisk w menu głównym, aby zmienić interwał godzinowy.\n\nNaciśnij ukryty NIEBIESKI przycisk w menu głównym, aby porównać dwa miasta.\n\nNaciśnij tutaj OK, aby włączyć lub wyłączyć wyświetlanie temperatury: %s"
+msgstr "Wskazówka!\nNaciśnij ukryty żółty przycisk w menu głównym, aby otworzyć radar deszczu.\n\nNaciśnij ukryty zielony przycisk w menu głównym, aby zmienić interwał godzinowy.\n\nNaciśnij ukryty niebieski przycisk w menu głównym, aby porównać dwa miasta.\n\nNaciśnij tutaj OK, aby przełączyć nakładkę temperatury: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Zmiennie pochmurno, słabe opady śniegu"
+msgstr "Zmiennie zachmurzone, lekkie opady śniegu"
 
 msgid "Clear and chance of mist"
 msgstr "Bezchmurnie, możliwa mgła"
 
 msgid "Clear night"
-msgstr "Bezchmurna noc"
+msgstr "Jasna noc"
 
 msgid "Clouds radar"
 msgstr "Radar chmur"
 
 msgid "Cloudy"
-msgstr "Pochmurno"
+msgstr "Zachmurzenie"
 
 msgid "Cloudy and chance of showers"
-msgstr "Pochmurno, możliwe przelotne opady"
+msgstr "Zachmurzenie, możliwe przelotne opady"
 
 msgid "Download error: Check spelling."
-msgstr "Błąd pobierania: sprawdź pisownię."
+msgstr "Błąd pobierania: Sprawdź pisownię."
 
 msgid "Drizzle"
 msgstr "Mżawka"
 
 msgid "E"
-msgstr "E"
+msgstr "W"
 
 msgid "Europe"
 msgstr "Europa"
@@ -112,22 +111,22 @@ msgid "Feels like: "
 msgstr "Odczuwalna: "
 
 msgid "Hail radar"
-msgstr "Radar gradu"
+msgstr "Radar gradowy"
 
 msgid "Heavy clouds"
 msgstr "Duże zachmurzenie"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Duże zachmurzenie, intensywne opady"
+msgstr "Duże zachmurzenie, silne opady"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Duże zachmurzenie, burze z ulewami"
+msgstr "Duże zachmurzenie, burze"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Duże zachmurzenie i intensywne opady śniegu"
+msgstr "Duże zachmurzenie i obfite opady śniegu"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Duże zachmurzenie, słabe opady śniegu"
+msgstr "Duże zachmurzenie, lekkie opady śniegu"
 
 msgid "Heavy clouds showers possible"
 msgstr "Duże zachmurzenie, możliwe opady"
@@ -139,13 +138,13 @@ msgid "Help"
 msgstr "Pomoc"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "Km/h"
 
 msgid "Light cloudy"
 msgstr "Lekkie zachmurzenie"
 
 msgid "Local Weather"
-msgstr "Lokalna pogoda"
+msgstr "Pogoda lokalna"
 
 msgid "Location +"
 msgstr "Lokalizacja +"
@@ -157,7 +156,7 @@ msgid "Location:"
 msgstr "Lokalizacja:"
 
 msgid "Mist radar"
-msgstr "Radar mgły"
+msgstr "Radar mgieł"
 
 msgid "Mostly clear"
 msgstr "Przeważnie bezchmurnie"
@@ -178,7 +177,7 @@ msgid "Rainfall radar"
 msgstr "Radar opadów"
 
 msgid "WeatherInfo"
-msgstr "Informacje pogodowe"
+msgstr "Informacje o pogodzie"
 
 msgid "S"
 msgstr "S"
@@ -193,13 +192,13 @@ msgid "Satellite"
 msgstr "Satelita"
 
 msgid "Showers and chance of thunder"
-msgstr "Przelotne opady, możliwe burze"
+msgstr "Przelotne opady, możliwość burz"
 
 msgid "Snow radar"
-msgstr "Radar śniegu"
+msgstr "Radar śniegowy"
 
 msgid "Sun radar"
-msgstr "Radar słońca"
+msgstr "Radar słoneczny"
 
 msgid "Sunny / Clear"
 msgstr "Słonecznie / Bezchmurnie"
@@ -208,13 +207,13 @@ msgid "Sunny and chance of mist"
 msgstr "Słonecznie, możliwa mgła"
 
 msgid "Sunny and chance of showers"
-msgstr "Słonecznie, możliwe przelotne opady"
+msgstr "Słonecznie, możliwe opady"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Słonecznie, możliwe burze z ulewami"
+msgstr "Słonecznie, możliwe burze"
 
 msgid "Sunny few clouds"
-msgstr "Słonecznie, niewielkie zachmurzenie"
+msgstr "Słonecznie, małe zachmurzenie"
 
 msgid "Sunpower-UV"
 msgstr "Indeks UV"
@@ -226,13 +225,13 @@ msgid "The Netherlands"
 msgstr "Holandia"
 
 msgid "TheWeather"
-msgstr "Pogoda"
+msgstr "TheWeather"
 
 msgid "Thunder radar"
-msgstr "Radar burz"
+msgstr "Radar burzowy"
 
 msgid "W"
-msgstr "W"
+msgstr "Z"
 
 msgid "Weather forecast-nl"
 msgstr "Prognoza pogody-NL"
@@ -250,10 +249,10 @@ msgid "Background reset to standard."
 msgstr "Przywrócono domyślne tło."
 
 msgid "Choose 2nd location"
-msgstr "Wybierz drugą lokalizację"
+msgstr "Wybierz 2. lokalizację"
 
 msgid "Choose 2nd location:"
-msgstr "Wybierz drugą lokalizację:"
+msgstr "Wybierz 2. lokalizację:"
 
 msgid "Choose background:"
 msgstr "Wybierz tło:"
@@ -271,10 +270,10 @@ msgid "Data error"
 msgstr "Błąd danych"
 
 msgid "Download error: No response try again"
-msgstr "Błąd pobierania: brak odpowiedzi, spróbuj ponownie"
+msgstr "Błąd pobierania: Brak odpowiedzi, spróbuj ponownie"
 
 msgid "Error fetching data."
-msgstr "Błąd podczas pobierania danych."
+msgstr "Błąd pobierania danych."
 
 msgid "Error loading"
 msgstr "Błąd ładowania"
@@ -283,22 +282,22 @@ msgid "Extra Icons "
 msgstr "Dodatkowe ikony "
 
 msgid "Extreme cold!"
-msgstr "Ekstremalne zimno!"
+msgstr "Ekstremalny mróz!"
 
 msgid "Extreme heat!"
-msgstr "Ekstremalne upały!"
+msgstr "Ekstremalny upał!"
 
 msgid "h"
-msgstr "g"
+msgstr "godz."
 
 msgid "Heavy rain!"
-msgstr "Intensywny deszcz!"
+msgstr "Ulewny deszcz!"
 
 msgid "Heavy storm!"
 msgstr "Silna burza!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Zmieniono pakiet ikon.\nWtyczka zostanie uruchomiona ponownie..."
+msgstr "Zmieniono zestaw ikon.\nWtyczka zostanie uruchomiona ponownie..."
 
 msgid "Loading background image, please wait..."
 msgstr "Ładowanie obrazu tła, proszę czekać..."
@@ -313,19 +312,19 @@ msgid "Loading..."
 msgstr "Ładowanie..."
 
 msgid "No 2nd location"
-msgstr "Brak drugiej lokalizacji"
+msgstr "Brak 2. lokalizacji"
 
 msgid "No info"
 msgstr "Brak informacji"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Nie znaleziono zapisanych miast.\nNajpierw dodaj miasta na ekranie lokalizacji."
+msgstr "Nie znaleziono zapisanych miast.\nNajpierw dodaj miasta w ekranie lokalizacji."
 
 msgid "Not found"
 msgstr "Nie znaleziono"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Naciśnij ŻÓŁTY, aby wybrać drugą lokalizację."
+msgstr "Naciśnij ŻÓŁTY, aby wybrać 2. lokalizację."
 
 msgid "Rain: "
 msgstr "Deszcz: "
@@ -340,10 +339,10 @@ msgid "Severe cold!"
 msgstr "Silny mróz!"
 
 msgid "Standard"
-msgstr "Standard"
+msgstr "Standardowy"
 
 msgid "Standard (iconpack)"
-msgstr "Standard (pakiet ikon)"
+msgstr "Standardowy (zestaw ikon)"
 
 msgid "Standard Icons"
 msgstr "Standardowe ikony"
@@ -355,13 +354,13 @@ msgid "Sun: "
 msgstr "Słońce: "
 
 msgid "Very heavy rain!"
-msgstr "Bardzo intensywny deszcz!"
+msgstr "Bardzo ulewny deszcz!"
 
 msgid "Warm weather!"
 msgstr "Ciepła pogoda!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ups!\nWolne lub brak połączenia z Internetem.\nSpróbuj ponownie"
+msgstr "Ups!\nWolne lub brak połączenia z internetem\nSpróbuj ponownie"
 
 msgid "Wind: "
 msgstr "Wiatr: "
@@ -385,7 +384,7 @@ msgid "Show 2 locations"
 msgstr "Pokaż 2 lokalizacje"
 
 msgid "Radar default zoom:"
-msgstr "Domyślne powiększenie radaru:"
+msgstr "Domyślny zoom radaru:"
 
 msgid "Date format:"
 msgstr "Format daty:"
@@ -397,83 +396,83 @@ msgid "Please wait..."
 msgstr "Proszę czekać..."
 
 msgid "Map zoom: %s"
-msgstr "Powiększenie mapy: %s"
+msgstr "Zoom mapy: %s"
 
 msgid "Select city and:"
 msgstr "Wybierz miasto i:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- Naciśnij OK, aby zobaczyć informacje pogodowe"
+msgstr "- Naciśnij OK, aby uzyskać informacje pogodowe"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Naciśnij Menu, aby otworzyć radar opadów"
+msgstr "- Naciśnij Menu, aby włączyć radar deszczu"
 
 msgid "Appearance"
 msgstr "Wygląd"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
-msgstr "Miasto / Miejsce"
+msgid "City / Location"
+msgstr "Miasto / Lokalizacja"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Aktualna temperatura"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "Opis pogody"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "Temperatura odczuwalna"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Kierunek wiatru"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "Dzień tygodnia"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "Temperatura maksymalna"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Temperatura minimalna"
 
-msgid "Tages-Wettertext"
-msgstr "Dzienny opis pogody"
+msgid "Daily weather text"
+msgstr "Codzienny tekst pogodowy"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Wschód / zachód słońca"
+msgid "Sunrise / Sunset"
+msgstr "Wschód / Zachód słońca"
 
-msgid "Stunde / Uhrzeit"
+msgid "Hour / Time"
 msgstr "Godzina / Czas"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Temperatura godzinowa"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Deszcz"
 
-msgid "Sonnenwahrscheinlichkeit"
-msgstr "Prawdopodobieństwo słońca"
+msgid "Sunshine probability"
+msgstr "Prawdopodobieństwo usłonecznienia"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "Wilgotność"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Prędkość wiatru"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Zegar"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Data"
 
-msgid "Wetterwarnung"
+msgid "Weather warning"
 msgstr "Ostrzeżenie pogodowe"
 
 msgid "Default colors"
-msgstr "Kolory domyślne"
+msgstr "Domyślne kolory"
 
 msgid "Save & exit"
 msgstr "Zapisz i wyjdź"
@@ -486,7 +485,7 @@ msgid "TheWeather update"
 msgstr "Aktualizacja TheWeather"
 
 msgid "Search for update"
-msgstr "Sprawdź aktualizacje"
+msgstr "Szukaj aktualizacji"
 
 msgid ""
 "The plugin is already up to date.\n"
@@ -529,7 +528,7 @@ msgid ""
 "\n"
 "Please wait."
 msgstr ""
-"Aktualizacja jest instalowana.\n"
+"Trwa instalacja aktualizacji.\n"
 "\n"
 "Proszę czekać."
 
@@ -538,9 +537,9 @@ msgid ""
 "\n"
 "Please check the Internet connection and try again."
 msgstr ""
-"Nie można było zainstalować aktualizacji.\n"
+"Nie można zainstalować aktualizacji.\n"
 "\n"
-"Sprawdź połączenie z Internetem i spróbuj ponownie."
+"Sprawdź połączenie z internetem i spróbuj ponownie."
 
 msgid "Updating..."
 msgstr "Aktualizowanie..."
@@ -552,7 +551,7 @@ msgid ""
 msgstr ""
 "Aktualizacja została pomyślnie zainstalowana.\n"
 "\n"
-"Czy chcesz teraz ponownie uruchomić interfejs Enigma2?"
+"Czy chcesz teraz zrestartować interfejs Enigma2?"
 
 msgid "Hours"
 msgstr "Godziny"
@@ -570,13 +569,13 @@ msgid "speedy_TheWeather Settings"
 msgstr "Ustawienia speedy_TheWeather"
 
 msgid "Infoscreen"
-msgstr "Ekran informacji"
+msgstr "Ekran informacyjny"
 
 msgid "Auto weather backgrounds:"
 msgstr "Automatyczne tła pogodowe:"
 
 msgid "Holiday backgrounds:"
-msgstr "Tła świąteczne:"
+msgstr "Świąteczne tła:"
 
 msgid "Download weather backgrounds"
 msgstr "Pobierz tła pogodowe"
@@ -585,13 +584,13 @@ msgid "Do you want to download the weather backgrounds now?"
 msgstr "Czy chcesz teraz pobrać tła pogodowe?"
 
 msgid "The weather backgrounds were downloaded successfully."
-msgstr "Tła pogodowe zostały pomyślnie pobrane."
+msgstr "Pomyślnie pobrano tła pogodowe."
 
 msgid "The weather backgrounds could not be downloaded."
-msgstr "Nie można było pobrać teł pogodowych."
+msgstr "Nie udało się pobrać tła pogodowego."
 
 msgid "You are already using the latest version (%s)."
-msgstr "Korzystasz już z najnowszej wersji (%s)."
+msgstr "Używasz już najnowszej wersji (%s)."
 
 msgid "Sunrise"
 msgstr "Wschód słońca"
@@ -618,5 +617,424 @@ msgid "Could not save the selected location."
 msgstr "Nie można zapisać wybranej lokalizacji."
 
 msgid "Choose a match:"
-msgstr "Wybierz miasto:"
-```
+msgstr "Wybierz dopasowanie:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Automatyczne tła"
+
+msgid "Download is preparing..."
+msgstr "Przygotowywanie pobierania..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Instalowanie automatycznych tł..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[EKRAN] Instalacja automatycznych tł"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[EKRAN] Rozdzielczość: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[EKRAN] Rozpoczynanie instalacji..."
+
+msgid "Error starting the download"
+msgstr "Błąd podczas rozpoczynania pobierania"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[BŁĄD] Nie można uruchomić procesu roboczego: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[BŁĄD] Wyjątek procesu roboczego: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Pomyślnie zainstalowano automatyczne tła"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[SUKCES] Instalacja zakończona pomyślnie."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[SUKCES] Przetworzono wszystkie obrazy AUTO i EXTRA."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[EKRAN] Naciśnij OK lub EXIT, aby zamknąć."
+
+msgid "[ERROR] Installation failed"
+msgstr "[BŁĄD] Instalacja nie powiodła się"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[BŁĄD] Instalacja została zakończona błędami."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[BŁĄD] Szczegóły znajdziesz w logu powyżej."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "START INSTALACJI AUTOMATYCZNYCH TŁ"
+
+msgid "Log file: %s"
+msgstr "Plik dziennika: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[INFO] Automatyczne tła są wyłączone"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "SPRAWDZANIE AUTOMATYCZNYCH TŁ"
+
+msgid "[STEP] Checking background directories"
+msgstr "[KROK] Sprawdzanie katalogów tła"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[UTWÓRZ] Katalog główny tła: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Katalog główny tła istnieje: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[UTWÓRZ] Katalog auto: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Katalog auto istnieje: %s"
+
+msgid "Background root: %s"
+msgstr "Katalog główny tła: %s"
+
+msgid "Auto directory: %s"
+msgstr "Katalog auto: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[INFO] Znacznik instalacji istnieje: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[INFO] Nie znaleziono znacznika instalacji"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[KROK] Sprawdzanie starego pliku ZIP: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[USUŃ] Stary plik ZIP zostanie usunięty"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Stary plik ZIP usunięty"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[INFO] Nie znaleziono starego pliku ZIP"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[OSTRZEŻENIE] Nie udało się usunąć starego pliku ZIP: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[POBIERANIE] START POBIERANIA"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[POBIERANIE] Adres URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[POBIERANIE] Cel: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[BŁĄD] Nie znaleziono narzędzia wget!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[POBIERANIE] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[POBIERANIE] Uruchamianie wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[POBIERANIE] Kod zwrotny wget: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[BŁĄD] POBIERANIE NIE POWIODŁO SIĘ"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[CZYSZCZENIE] Usunięto nieprawidłowy plik ZIP"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] POBIERANIE UDANE"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[KROK] Sprawdzanie pobranego pliku ZIP"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[BŁĄD] Plik ZIP nie został utworzony!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Rozmiar: %s bajtów"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[BŁĄD] Plik ZIP jest pusty!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] Plik ZIP istnieje"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] Sprawdzanie formatu ZIP..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[BŁĄD] Nieprawidłowy plik ZIP!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] Plik ZIP jest prawidłowy"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] Otwieranie pliku ZIP..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Pliki w ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[POMINIĘTO] AUTO nie jest plikiem JPG: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[POMINIĘTO] EXTRA nie jest plikiem JPG: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[ZNALEZIONO] Pliki JPG AUTO w ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[ZNALEZIONO] Pliki JPG EXTRA w ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[BŁĄD] Nie znaleziono plików JPG AUTO w pliku ZIP!"
+
+msgid "No AUTO files found"
+msgstr "Nie znaleziono plików AUTO"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[OSTRZEŻENIE] Nie znaleziono plików JPG EXTRA w pliku ZIP!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[INSTALACJA] START INSTALACJI AUTO"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[INSTALACJA] Pliki AUTO: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[INSTALACJA] Źródło AUTO: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[INSTALACJA] Cel AUTO: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[INSTALACJA] Odczytano AUTO: %s bajtów"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[BŁĄD] Plik AUTO jest pusty: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[BŁĄD] Tymczasowy plik AUTO jest pusty: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[INSTALACJA] Zastępowanie starego pliku AUTO: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[BŁĄD] Docelowy plik AUTO nie istnieje: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[BŁĄD] Docelowy plik AUTO jest pusty: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] ZAINSTALOWANO AUTO: %s (%s bajtów)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[BŁĄD] Błąd AUTO %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[INSTALACJA] ZAKOŃCZONO AUTO: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[INSTALACJA] START INSTALACJI EXTRA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[INSTALACJA] Pliki EXTRA: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[INSTALACJA] Źródło EXTRA: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[INSTALACJA] Cel EXTRA: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[INSTALACJA] Odczytano EXTRA: %s bajtów"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[BŁĄD] Plik EXTRA jest pusty: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[BŁĄD] Tymczasowy plik EXTRA jest pusty: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[INSTALACJA] Zastępowanie starego pliku EXTRA: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[BŁĄD] Docelowy plik EXTRA nie istnieje: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[BŁĄD] Docelowy plik EXTRA jest pusty: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] ZAINSTALOWANO EXTRA: %s (%s bajtów)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[BŁĄD] Błąd EXTRA %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[INSTALACJA] ZAKOŃCZONO EXTRA: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] Zamknięto plik ZIP"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[WERYFIKACJA] WERYFIKACJA KOŃCOWA"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[WERYFIKACJA] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[BŁĄD] BRAK AUTO: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[BŁĄD] PUSTY AUTO: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] ZWERYFIKOWANO AUTO: %s (%s bajtów)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[WERYFIKACJA] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[BŁĄD] BRAK EXTRA: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[BŁĄD] PUSTY EXTRA: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] ZWERYFIKOWANO EXTRA: %s (%s bajtów)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[WYNIK] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[WYNIK] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[WYNIK] Błędy AUTO: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[WYNIK] Błędy EXTRA: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[WYNIK] Błędy weryfikacji: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[BŁĄD] Nie znaleziono plików AUTO!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[BŁĄD] NIEKOMPLETNA INSTALACJA AUTO"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[BŁĄD] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[CZYSZCZENIE] Usunięto stary znacznik"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[OSTRZEŻENIE] Nie udało się usunąć znacznika: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[BŁĄD] NIEKOMPLETNA INSTALACJA EXTRA"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[BŁĄD] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[BŁĄD] WERYFIKACJA KOŃCOWA NIE POWIODŁA SIĘ"
+
+msgid "[ERROR] %s"
+msgstr "[BŁĄD] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[ZNACZNIK] Zapisywanie znacznika instalacji..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Zapisano znacznik: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[BŁĄD] Błąd znacznika: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[CZYSZCZENIE] Sprawdzanie pliku ZIP pod kątem usunięcia..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] Usunięto plik ZIP: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[INFO] Plik ZIP już nie istnieje"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[OSTRZEŻENIE] Nie udało się usunąć pliku ZIP: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[SUKCES] POMYŚLNIE ZAINSTALOWANO AUTOMATYCZNE TŁA"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[SUKCES] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[SUKCES] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[SUKCES] ZAKOŃCZONO INSTALACJĘ"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[BŁĄD KRYTYCZNY] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[CZYSZCZENIE] Usunięto plik ZIP po błędzie"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[CZYSZCZENIE] Usunięto znacznik po błędzie"
+
+msgid "Location 1 - Weather description"
+msgstr "Lokalizacja 1 - Opis pogody"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Lokalizacja 1 - Temperatura odczuwalna"
+
+msgid "Location 1 - Wind"
+msgstr "Lokalizacja 1 - Wiatr"
+
+msgid "Location 1 - Rain"
+msgstr "Lokalizacja 1 - Deszcz"
+
+msgid "Location 1 - Sun :"
+msgstr "Lokalizacja 1 - Słońce :"
+
+msgid "Location 1 - Moon :"
+msgstr "Lokalizacja 1 - Księżyc :"
+
+msgid "Location 2 - Weather description"
+msgstr "Lokalizacja 2 - Opis pogody"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Lokalizacja 2 - Temperatura odczuwalna"
+
+msgid "Location 2 - Wind"
+msgstr "Lokalizacja 2 - Wiatr"
+
+msgid "Location 2 - Rain"
+msgstr "Lokalizacja 2 - Deszcz"
+
+msgid "Location 2 - Sun :"
+msgstr "Lokalizacja 2 - Słońce :"
+
+msgid "Location 2 - Moon :"
+msgstr "Lokalizacja 2 - Księżyc :"
+
+msgid "Updated: "
+msgstr "Zaktualizowano: "
+
+msgid "Updated: --:--"
+msgstr "Zaktualizowano: --:--"

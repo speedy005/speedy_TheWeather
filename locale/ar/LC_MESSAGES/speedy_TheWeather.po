@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Arabic\n"
+"Language-Team: \n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,25 +18,25 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "الإثنين"
+msgstr "ن"
 
 msgid "Tu"
-msgstr "الثلاثاء"
+msgstr "ث"
 
 msgid "We"
-msgstr "الأربعاء"
+msgstr "ر"
 
 msgid "Th"
-msgstr "الخميس"
+msgstr "خ"
 
 msgid "Fr"
-msgstr "الجمعة"
+msgstr "ج"
 
 msgid "Sa"
-msgstr "السبت"
+msgstr "س"
 
 msgid "Su"
-msgstr "الأحد"
+msgstr "ح"
 
 msgid "Monday"
 msgstr "الإثنين"
@@ -64,16 +63,16 @@ msgid "Belgium"
 msgstr "بلجيكا"
 
 msgid "Changeable and chance of mist"
-msgstr "متقلب مع احتمال الضباب"
+msgstr "متغير مع احتمالية ضباب"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "نصيحة!\nاضغط على الزر الأصفر المخفي في القائمة الرئيسية لفتح رادار المطر.\n\nاضغط على الزر الأخضر المخفي في القائمة الرئيسية لتغيير الفاصل الزمني للساعات.\n\nاضغط على الزر الأزرق المخفي في القائمة الرئيسية لمقارنة مدينتين.\n\nاضغط على OK هنا لتشغيل أو إيقاف عرض درجة الحرارة: %s"
+msgstr "تلميح!\nاضغط على الزر الأصفر المخفي في القائمة الرئيسية لفتح رادار الأمطار.\n\nاضغط على الزر الأخضر المخفي في القائمة الرئيسية لتغيير الفاصل الزمني بالساعات.\n\nاضغط على الزر الأزرق المخفي في القائمة الرئيسية للمقارنة بين مدينتين.\n\nاضغط على OK هنا لتبديل عرض طبقة درجات الحرارة: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "غائم جزئياً مع تساقط ثلوج خفيف"
+msgstr "غائم متغیر مع تساقط ثلوج خفيفة"
 
 msgid "Clear and chance of mist"
-msgstr "صحو مع احتمال الضباب"
+msgstr "صاحٍ مع احتمالية ضباب"
 
 msgid "Clear night"
 msgstr "ليلة صافية"
@@ -85,10 +84,10 @@ msgid "Cloudy"
 msgstr "غائم"
 
 msgid "Cloudy and chance of showers"
-msgstr "غائم مع احتمال زخات مطر"
+msgstr "غائم مع احتمالية زخات مطر"
 
 msgid "Download error: Check spelling."
-msgstr "خطأ في التنزيل: تحقق من الكتابة."
+msgstr "خطأ في التنزيل: تحقق من الإملاء."
 
 msgid "Drizzle"
 msgstr "رذاذ"
@@ -106,34 +105,34 @@ msgid "Favorite Locations"
 msgstr "المواقع المفضلة"
 
 msgid "Feels Like: "
-msgstr "درجة الحرارة المحسوسة: "
+msgstr "الملمس كـ: "
 
 msgid "Feels like: "
-msgstr "درجة الحرارة المحسوسة: "
+msgstr "الملمس كـ: "
 
 msgid "Hail radar"
-msgstr "رادار البَرَد"
+msgstr "رادار البرد"
 
 msgid "Heavy clouds"
-msgstr "غيوم كثيفة"
+msgstr "سحب كثيفة"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "غيوم كثيفة مع زخات مطر غزيرة"
+msgstr "سحب كثيفة، زخات مطر قوية"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "غيوم كثيفة مع زخات رعدية"
+msgstr "سحب كثيفة، زخات رعدية"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "غيوم كثيفة وتساقط ثلوج غزير"
+msgstr "سحب كثيفة وتساقط ثلوج كثيف"
 
 msgid "Heavy clouds light snowfall"
-msgstr "غيوم كثيفة مع تساقط ثلوج خفيف"
+msgstr "سحب كثيفة مع ثلوج خفيفة"
 
 msgid "Heavy clouds showers possible"
-msgstr "غيوم كثيفة مع احتمال زخات مطر"
+msgstr "سحب كثيفة مع احتمالية هطول زخات"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "غيوم كثيفة مع أمطار شتوية"
+msgstr "سحب كثيفة وأمطار شتوية"
 
 msgid "Help"
 msgstr "مساعدة"
@@ -142,16 +141,16 @@ msgid "Km/h"
 msgstr "كم/س"
 
 msgid "Light cloudy"
-msgstr "غائم قليلاً"
+msgstr "قليل السحب"
 
 msgid "Local Weather"
 msgstr "الطقس المحلي"
 
 msgid "Location +"
-msgstr "الموقع +"
+msgstr "موقع +"
 
 msgid "Location -"
-msgstr "الموقع -"
+msgstr "موقع -"
 
 msgid "Location:"
 msgstr "الموقع:"
@@ -160,7 +159,7 @@ msgid "Mist radar"
 msgstr "رادار الضباب"
 
 msgid "Mostly clear"
-msgstr "صحو غالباً"
+msgstr "صافٍ غالباً"
 
 msgid "Mostly sunny"
 msgstr "مشمس غالباً"
@@ -193,7 +192,7 @@ msgid "Satellite"
 msgstr "القمر الصناعي"
 
 msgid "Showers and chance of thunder"
-msgstr "زخات مطر مع احتمال حدوث رعد"
+msgstr "زخات مطر مع احتمالية حدوث رعد"
 
 msgid "Snow radar"
 msgstr "رادار الثلوج"
@@ -205,16 +204,16 @@ msgid "Sunny / Clear"
 msgstr "مشمس / صافٍ"
 
 msgid "Sunny and chance of mist"
-msgstr "مشمس مع احتمال الضباب"
+msgstr "مشمس مع احتمالية ضباب"
 
 msgid "Sunny and chance of showers"
-msgstr "مشمس مع احتمال زخات مطر"
+msgstr "مشمس مع احتمالية زخات مطر"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "مشمس مع احتمال زخات رعدية"
+msgstr "مشمس مع احتمالية زخات رعدية"
 
 msgid "Sunny few clouds"
-msgstr "مشمس مع بعض الغيوم"
+msgstr "مشمس مع سحب قليلة"
 
 msgid "Sunpower-UV"
 msgstr "مؤشر الأشعة فوق البنفسجية"
@@ -247,7 +246,7 @@ msgid "Background"
 msgstr "الخلفية"
 
 msgid "Background reset to standard."
-msgstr "تمت إعادة الخلفية إلى الإعداد الافتراضي."
+msgstr "تمت إعادة تعيين الخلفية إلى الافتراضي."
 
 msgid "Choose 2nd location"
 msgstr "اختر الموقع الثاني"
@@ -274,31 +273,31 @@ msgid "Download error: No response try again"
 msgstr "خطأ في التنزيل: لا توجد استجابة، حاول مرة أخرى"
 
 msgid "Error fetching data."
-msgstr "خطأ في جلب البيانات."
+msgstr "خطأ أثناء جلب البيانات."
 
 msgid "Error loading"
-msgstr "خطأ أثناء التحميل"
+msgstr "خطأ في التحميل"
 
 msgid "Extra Icons "
 msgstr "أيقونات إضافية "
 
 msgid "Extreme cold!"
-msgstr "برد شديد!"
+msgstr "برد شديد للغاية!"
 
 msgid "Extreme heat!"
-msgstr "حرارة شديدة!"
+msgstr "حرارة شديدة للغاية!"
 
 msgid "h"
 msgstr "س"
 
 msgid "Heavy rain!"
-msgstr "أمطار غزيرة!"
+msgstr "أطار غزيرة!"
 
 msgid "Heavy storm!"
 msgstr "عاصفة شديدة!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "تم تغيير حزمة الأيقونات.\nسيتم إعادة تشغيل الإضافة..."
+msgstr "تم تغيير حزمة الأيقونات.\nسيتم إعادة تشغيل المكون الإضافي..."
 
 msgid "Loading background image, please wait..."
 msgstr "جاري تحميل صورة الخلفية، يرجى الانتظار..."
@@ -319,7 +318,7 @@ msgid "No info"
 msgstr "لا توجد معلومات"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "لم يتم العثور على مدن محفوظة.\nأضف المدن أولاً من خلال شاشة المواقع."
+msgstr "لم يتم العثور على مدن محفوظة.\nأضف المدن أولاً عبر شاشة الموقع."
 
 msgid "Not found"
 msgstr "غير موجود"
@@ -331,13 +330,13 @@ msgid "Rain: "
 msgstr "المطر: "
 
 msgid "Select"
-msgstr "اختيار"
+msgstr "تحديد"
 
 msgid "Settings"
 msgstr "الإعدادات"
 
 msgid "Severe cold!"
-msgstr "برد قارس!"
+msgstr "برد قارص!"
 
 msgid "Standard"
 msgstr "قياسي"
@@ -361,7 +360,7 @@ msgid "Warm weather!"
 msgstr "طقس دافئ!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "عذراً!\nاتصال الإنترنت بطيء أو غير متوفر.\nيرجى المحاولة مرة أخرى"
+msgstr "عذراً!\nاتصال الإنترنت بطيء أو غير متوفر\nيرجى المحاولة مرة أخرى"
 
 msgid "Wind: "
 msgstr "الرياح: "
@@ -382,7 +381,7 @@ msgid "Save"
 msgstr "حفظ"
 
 msgid "Show 2 locations"
-msgstr "عرض موقعين للطقس"
+msgstr "عرض موقعين"
 
 msgid "Radar default zoom:"
 msgstr "التكبير الافتراضي للرادار:"
@@ -400,90 +399,90 @@ msgid "Map zoom: %s"
 msgstr "تكبير الخريطة: %s"
 
 msgid "Select city and:"
-msgstr "اختر المدينة ثم:"
+msgstr "اختر المدينة و:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- اضغط OK لمعلومات الطقس"
+msgstr "- اضغط على OK لمعلومات الطقس"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- اضغط Menu لرادار المطر"
+msgstr "- اضغط على القائمة لرادار الأمطار"
 
 msgid "Appearance"
 msgstr "المظهر"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
+msgid "City / Location"
 msgstr "المدينة / الموقع"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "درجة الحرارة الحالية"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "وصف الطقس"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "درجة الحرارة المحسوسة"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "اتجاه الرياح"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "يوم الأسبوع"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "درجة الحرارة العظمى"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "درجة الحرارة الصغرى"
 
-msgid "Tages-Wettertext"
-msgstr "وصف الطقس اليومي"
+msgid "Daily weather text"
+msgstr "نص الطقس اليومي"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "شروق الشمس / غروب الشمس"
+msgid "Sunrise / Sunset"
+msgstr "الشروق / الغروب"
 
-msgid "Stunde / Uhrzeit"
+msgid "Hour / Time"
 msgstr "الساعة / الوقت"
 
-msgid "Stundentemperatur"
-msgstr "درجة الحرارة لكل ساعة"
+msgid "Hourly temperature"
+msgstr "درجة الحرارة بالساعة"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "المطر"
 
-msgid "Sonnenwahrscheinlichkeit"
-msgstr "احتمال سطوع الشمس"
+msgid "Sunshine probability"
+msgstr "احتمالية سطوع الشمس"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "الرطوبة"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "سرعة الرياح"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "الساعة"
 
-msgid "Datum"
+msgid "Date"
 msgstr "التاريخ"
 
-msgid "Wetterwarnung"
-msgstr "تحذير الطقس"
+msgid "Weather warning"
+msgstr "تحذير جوي"
 
 msgid "Default colors"
 msgstr "الألوان الافتراضية"
 
 msgid "Save & exit"
-msgstr "حفظ وخروج"
+msgstr "حفظ الخروج"
 
 # ============================================================
 # Update
 # ============================================================
 
 msgid "TheWeather update"
-msgstr "تحديث TheWeather"
+msgstr "تحديث الطقس"
 
 msgid "Search for update"
 msgstr "البحث عن تحديث"
@@ -493,7 +492,7 @@ msgid ""
 "\n"
 "Version: %s"
 msgstr ""
-"الإضافة محدثة بالفعل.\n"
+"المكون الإضافي مُحدث بالفعل.\n"
 "\n"
 "الإصدار: %s"
 
@@ -558,13 +557,13 @@ msgid "Hours"
 msgstr "الساعات"
 
 msgid "Radar"
-msgstr "رادار المطر"
+msgstr "رادار"
 
 msgid "Locations"
 msgstr "المواقع"
 
 msgid "RainViewer"
-msgstr "رادار المطر"
+msgstr "عارض الأمطار"
 
 msgid "speedy_TheWeather Settings"
 msgstr "إعدادات speedy_TheWeather"
@@ -591,13 +590,13 @@ msgid "The weather backgrounds could not be downloaded."
 msgstr "تعذر تنزيل خلفيات الطقس."
 
 msgid "You are already using the latest version (%s)."
-msgstr "أنت تستخدم بالفعل أحدث إصدار (%s)."
+msgstr "أنت تستخدم أحدث إصدار بالفعل (%s)."
 
 msgid "Sunrise"
-msgstr "شروق الشمس"
+msgstr "الشروق"
 
 msgid "Sunset"
-msgstr "غروب الشمس"
+msgstr "الغروب"
 
 msgid "Moonrise"
 msgstr "شروق القمر"
@@ -618,5 +617,424 @@ msgid "Could not save the selected location."
 msgstr "تعذر حفظ الموقع المحدد."
 
 msgid "Choose a match:"
-msgstr "اختر نتيجة:"
-```
+msgstr "اختر مطابقة:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - خلفيات تلقائية"
+
+msgid "Download is preparing..."
+msgstr "جاري إعداد التنزيل..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "جاري تثبيت الخلفيات التلقائية..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[الشاشة] تثبيت الخلفيات التلقائية"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[الشاشة] الدقة: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[الشاشة] بدأ التثبيت..."
+
+msgid "Error starting the download"
+msgstr "خطأ في بدء التنزيل"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[خطأ] تعذر بدء تشغيل العامل: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[خطأ] استثناء العامل: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[تم] تم تثبيت الخلفيات التلقائية بنجاح"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[نجاح] اكتمل التثبيت بنجاح."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[نجاح] تم معالجة جميع صور AUTO و EXTRA."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[الشاشة] اضغط على OK أو EXIT للإغلاق."
+
+msgid "[ERROR] Installation failed"
+msgstr "[خطأ] فشل التثبيت"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[خطأ] اكتمل التثبيت مع وجود أخطاء."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[خطأ] انظر السجل أعلاه للتفاصيل."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "بدء تثبيت الخلفيات التلقائية"
+
+msgid "Log file: %s"
+msgstr "ملف السجل: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[معلومات] الخلفيات التلقائية معطلة"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "فحص الخلفيات التلقائية"
+
+msgid "[STEP] Checking background directories"
+msgstr "[خطوة] جاري فحص مجلدات الخلفيات"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[إنشاء] المجلد الرئيسي للخلفيات: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[تم] المجلد الرئيسي للخلفيات موجود: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[إنشاء] مجلد التلقائي: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[تم] مجلد التلقائي موجود: %s"
+
+msgid "Background root: %s"
+msgstr "المجلد الرئيسي للخلفيات: %s"
+
+msgid "Auto directory: %s"
+msgstr "مجلد التلقائي: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[معلومات] علامة التثبيت موجودة: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[معلومات] لم يتم العثور على علامة تثبيت"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[خطوة] جاري التحقق من ملف ZIP القديم: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[حذف] سيتم حذف ملف ZIP القديم"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[تم] تم حذف ملف ZIP القديم"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[معلومات] لم يتم العثور على ملف ZIP قديم"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[تحذير] تعذر حذف ملف ZIP القديم: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[تنزيل] بدأ التنزيل"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[تنزيل] الرابط: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[تنزيل] الوجهة: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[خطأ] لم يتم العثور على أداة wget!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[تنزيل] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[تنزيل] جاري تشغيل wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[تنزيل] رمز عودة wget: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[خطأ] فشل التنزيل"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[تنظيف] تم حذف ملف ZIP غير الصالح"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[تم] نجح التنزيل"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[خطوة] جاري التحقق من ملف ZIP الذي تم تنزيله"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[خطأ] لم يتم إنشاء ملف ZIP!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] الحجم: %s بايت"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[خطأ] ملف ZIP فارغ!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[تم] ملف ZIP موجود"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] جاري التحقق من تنسيق ملف ZIP..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[خطأ] ملف ZIP غير صالح!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[تم] ملف ZIP صالح"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] جاري فتح ملف ZIP..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] الملفات داخل ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[تخطي] ملف AUTO ليس بصيغة JPG: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[تخطي] ملف EXTRA ليس بصيغة JPG: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[تم العثور على] ملفات AUTO بصيغة JPG في ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[تم العثور على] ملفات EXTRA بصيغة JPG في ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[خطأ] لم يتم العثور على ملفات AUTO بصيغة JPG في ملف ZIP!"
+
+msgid "No AUTO files found"
+msgstr "لم يتم العثور على ملفات AUTO"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[تحذير] لم يتم العثور على ملفات EXTRA بصيغة JPG في ملف ZIP!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[تثبيت] بدء تثبيت AUTO"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[تثبيت] ملفات AUTO: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[تثبيت] مصدر AUTO: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[تثبيت] وجهة AUTO: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[تثبيت] قراءة AUTO: %s بايت"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[خطأ] ملف AUTO فارغ: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[خطأ] ملف AUTO المؤقت فارغ: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[تثبيت] استبدال ملف AUTO القديم: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[خطأ] وجهة AUTO غير موجودة: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[خطأ] وجهة AUTO فارغة: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[تم] تم تثبيت AUTO: %s (%s بايت)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[خطأ] خطأ AUTO رقم %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[تثبيت] انتهى AUTO: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[تثبيت] بدء تثبيت EXTRA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[تثبيت] ملفات EXTRA: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[تثبيت] مصدر EXTRA: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[تثبيت] وجهة EXTRA: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[تثبيت] قراءة EXTRA: %s بايت"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[خطأ] ملف EXTRA فارغ: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[خطأ] ملف EXTRA المؤقت فارغ: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[تثبيت] استبدال ملف EXTRA القديم: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[خطأ] وجهة EXTRA غير موجودة: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[خطأ] وجهة EXTRA فارغة: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[تم] تم تثبيت EXTRA: %s (%s بايت)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[خطأ] خطأ EXTRA رقم %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[تثبيت] انتهى EXTRA: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] تم إغلاق ملف ZIP"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[تحقق] التحقق النهائي"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[تحقق] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[فشل] AUTO مفقود: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[فشل] AUTO فارغ: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[تم] تم التحقق من AUTO: %s (%s بايت)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[تحقق] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[فشل] EXTRA مفقود: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[فشل] EXTRA فارغ: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[تم] تم التحقق من EXTRA: %s (%s بايت)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[النتيجة] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[النتيجة] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[النتيجة] أخطاء AUTO: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[النتيجة] أخطاء EXTRA: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[النتيجة] أخطاء التحقق: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[خطأ] لم يتم العثور على ملفات AUTO!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[خطأ] تثبيت AUTO غير مكتمل"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[خطأ] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[تنظيف] تمت إزالة العلامة القديمة"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[تحذير] تعذر إزالة العلامة: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[خطأ] تثبيت EXTRA غير مكتمل"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[خطأ] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[خطأ] فشل التحقق النهائي"
+
+msgid "[ERROR] %s"
+msgstr "[خطأ] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[علامة] جاري كتابة علامة التثبيت..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[تم] تمت كتابة العلامة: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[خطأ] خطأ في العلامة: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[تنظيف] جاري التحقق من ملف ZIP للحذف..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[تم] تم حذف ملف ZIP: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[معلومات] ملف ZIP غير موجود بالفعل"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[تحذير] تعذر حذف ملف ZIP: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[نجاح] تم تثبيت الخلفيات التلقائية بنجاح"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[نجاح] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[نجاح] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[نجاح] اكتمل التثبيت"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[خطأ فادح] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[تنظيف] تم حذف ملف ZIP بعد حدوث خطأ"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[تنظيف] تمت إزالة العلامة بعد حدوث خطأ"
+
+msgid "Location 1 - Weather description"
+msgstr "الموقع 1 - وصف الطقس"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "الموقع 1 - درجة الحرارة المحسوسة"
+
+msgid "Location 1 - Wind"
+msgstr "الموقع 1 - الرياح"
+
+msgid "Location 1 - Rain"
+msgstr "الموقع 1 - المطر"
+
+msgid "Location 1 - Sun :"
+msgstr "الموقع 1 - الشمس :"
+
+msgid "Location 1 - Moon :"
+msgstr "الموقع 1 - القمر :"
+
+msgid "Location 2 - Weather description"
+msgstr "الموقع 2 - وصف الطقس"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "الموقع 2 - درجة الحرارة المحسوسة"
+
+msgid "Location 2 - Wind"
+msgstr "الموقع 2 - الرياح"
+
+msgid "Location 2 - Rain"
+msgstr "الموقع 2 - المطر"
+
+msgid "Location 2 - Sun :"
+msgstr "الموقع 2 - الشمس :"
+
+msgid "Location 2 - Moon :"
+msgstr "الموقع 2 - القمر :"
+
+msgid "Updated: "
+msgstr "تم التحديث: "
+
+msgid "Updated: --:--"
+msgstr "تم التحديث: --:--"

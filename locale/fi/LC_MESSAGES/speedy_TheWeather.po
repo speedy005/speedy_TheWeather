@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Finnish\n"
+"Language-Team: \n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -64,16 +63,16 @@ msgid "Belgium"
 msgstr "Belgia"
 
 msgid "Changeable and chance of mist"
-msgstr "Vaihtelevaa, sumun mahdollisuus"
+msgstr "Vaihtelevaa ja sumun mahdollisuus"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Vinkki!\nAvaa sadetutka painamalla päävalikon piilotettua KELTAISTA painiketta.\n\nMuuta tuntiväliä painamalla päävalikon piilotettua VIHREÄÄ painiketta.\n\nVertaa kahta kaupunkia painamalla päävalikon piilotettua SINISTÄ painiketta.\n\nVaihda lämpötilanäyttöä painamalla OK: %s"
+msgstr "Vinkki!\nPaina päävalikon piilotettua keltaista painiketta avataksesi sadetutkan.\n\nPaina päävalikon piilotettua vihreätä painiketta muuttaaksesi tuntiväliä.\n\nPaina päävalikon piilotettua sinistä painiketta vertaillaksesi kahta kaupunkia.\n\nPaina tässä OK vaihtaaksesi lämpötilapeitettä: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Vaihtelevaa pilvisyyttä, heikkoa lumisadetta"
+msgstr "Vaihtelevasti pilvistä, kevyttä lumisadetta"
 
 msgid "Clear and chance of mist"
-msgstr "Selkeää, sumun mahdollisuus"
+msgstr "Selkeää ja sumun mahdollisuus"
 
 msgid "Clear night"
 msgstr "Selkeä yö"
@@ -85,13 +84,13 @@ msgid "Cloudy"
 msgstr "Pilvistä"
 
 msgid "Cloudy and chance of showers"
-msgstr "Pilvistä, sadekuurojen mahdollisuus"
+msgstr "Pilvistä ja sadekuurojen mahdollisuus"
 
 msgid "Download error: Check spelling."
 msgstr "Latausvirhe: Tarkista kirjoitusasu."
 
 msgid "Drizzle"
-msgstr "Tihkusade"
+msgstr "Tihkusadetta"
 
 msgid "E"
 msgstr "I"
@@ -118,34 +117,34 @@ msgid "Heavy clouds"
 msgstr "Runsaasti pilviä"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Runsaasti pilviä, voimakkaita sadekuuroja"
+msgstr "Runsaasti pilviä, voimakkaita kuuroja"
 
 msgid "Heavy clouds  thundershowers"
 msgstr "Runsaasti pilviä, ukkoskuuroja"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Runsaasti pilviä ja voimakasta lumisadetta"
+msgstr "Runsaasti pilviä ja runsasta lumisadetta"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Runsaasti pilviä, heikkoa lumisadetta"
+msgstr "Runsaasti pilviä, kevyttä lumisadetta"
 
 msgid "Heavy clouds showers possible"
-msgstr "Runsaasti pilviä, sadekuuroja mahdollisesti"
+msgstr "Runsaasti pilviä, kuuroja mahdollisia"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Runsaasti pilviä, talvisia sateita"
+msgstr "Runsaasti pilviä, talvista vesisadetta"
 
 msgid "Help"
 msgstr "Ohje"
 
 msgid "Km/h"
-msgstr "Km/h"
+msgstr "km/h"
 
 msgid "Light cloudy"
-msgstr "Puolipilvistä"
+msgstr "Kevyesti pilvistä"
 
 msgid "Local Weather"
-msgstr "Paikallinen sää"
+msgstr "Paikallissää"
 
 msgid "Location +"
 msgstr "Sijainti +"
@@ -160,19 +159,19 @@ msgid "Mist radar"
 msgstr "Sumututka"
 
 msgid "Mostly clear"
-msgstr "Enimmäkseen selkeää"
+msgstr "Pääosin selkeää"
 
 msgid "Mostly sunny"
-msgstr "Enimmäkseen aurinkoista"
+msgstr "Pääosin aurinkoista"
 
 msgid "N"
 msgstr "P"
 
 msgid "NE"
-msgstr "KO"
+msgstr "IP"
 
 msgid "NW"
-msgstr "LO"
+msgstr "PL"
 
 msgid "Rainfall radar"
 msgstr "Sadetutka"
@@ -184,16 +183,16 @@ msgid "S"
 msgstr "E"
 
 msgid "SE"
-msgstr "KA"
+msgstr "IE"
 
 msgid "SW"
-msgstr "LÄ"
+msgstr "EL"
 
 msgid "Satellite"
 msgstr "Satelliitti"
 
 msgid "Showers and chance of thunder"
-msgstr "Sadekuuroja, ukkosen mahdollisuus"
+msgstr "Kuuroja ja ukkosen mahdollisuus"
 
 msgid "Snow radar"
 msgstr "Lumitutka"
@@ -205,13 +204,13 @@ msgid "Sunny / Clear"
 msgstr "Aurinkoista / Selkeää"
 
 msgid "Sunny and chance of mist"
-msgstr "Aurinkoista, sumun mahdollisuus"
+msgstr "Aurinkoista ja sumun mahdollisuus"
 
 msgid "Sunny and chance of showers"
-msgstr "Aurinkoista, sadekuurojen mahdollisuus"
+msgstr "Aurinkoista ja sadekuurojen mahdollisuus"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Aurinkoista, ukkoskuurojen mahdollisuus"
+msgstr "Aurinkoista ja ukkoskuurojen mahdollisuus"
 
 msgid "Sunny few clouds"
 msgstr "Aurinkoista, vähän pilviä"
@@ -226,7 +225,7 @@ msgid "The Netherlands"
 msgstr "Alankomaat"
 
 msgid "TheWeather"
-msgstr "Sää"
+msgstr "TheWeather"
 
 msgid "Thunder radar"
 msgstr "Ukkostutka"
@@ -247,7 +246,7 @@ msgid "Background"
 msgstr "Tausta"
 
 msgid "Background reset to standard."
-msgstr "Tausta palautettu oletusasetukseen."
+msgstr "Tausta palautettu oletukseksi."
 
 msgid "Choose 2nd location"
 msgstr "Valitse 2. sijainti"
@@ -259,46 +258,46 @@ msgid "Choose background:"
 msgstr "Valitse tausta:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Kaupunkia ei löytynyt. Paina KELTAISTA muuttaaksesi."
+msgstr "Kaupunkia ei löytynyt. Paina KELTAISTA vaihtaaksesi."
 
 msgid "Compare Two Locations"
-msgstr "Vertaa kahta sijaintia"
+msgstr "Vertaile kahta sijaintia"
 
 msgid "Compare Locations"
-msgstr "Vertaa sijainteja"
+msgstr "Vertaile sijainteja"
 
 msgid "Data error"
-msgstr "Tietovirhe"
+msgstr "Datavirhe"
 
 msgid "Download error: No response try again"
 msgstr "Latausvirhe: Ei vastausta, yritä uudelleen"
 
 msgid "Error fetching data."
-msgstr "Virhe tietojen haussa."
+msgstr "Virhe haettaessa tietoja."
 
 msgid "Error loading"
-msgstr "Latausvirhe"
+msgstr "Virhe ladattaessa"
 
 msgid "Extra Icons "
 msgstr "Lisäkuvakkeet "
 
 msgid "Extreme cold!"
-msgstr "Äärimmäinen kylmyys!"
+msgstr "Äärimmäinen pakkanen!"
 
 msgid "Extreme heat!"
-msgstr "Äärimmäinen kuumuus!"
+msgstr "Äärimmäinen helle!"
 
 msgid "h"
-msgstr "h"
+msgstr "t"
 
 msgid "Heavy rain!"
-msgstr "Voimakas sade!"
+msgstr "Rankkasadetta!"
 
 msgid "Heavy storm!"
-msgstr "Voimakas myrsky!"
+msgstr "Ankara myrsky!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Kuvakepaketti vaihdettu.\nLisäosa käynnistetään uudelleen..."
+msgstr "Kuvakepaketti vaihdettu.\nLiitännäinen käynnistyy uudelleen..."
 
 msgid "Loading background image, please wait..."
 msgstr "Ladataan taustakuvaa, odota..."
@@ -325,7 +324,7 @@ msgid "Not found"
 msgstr "Ei löytynyt"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Valitse 2. sijainti painamalla KELTAISTA."
+msgstr "Paina KELTAISTA valitaksesi 2. sijainnin."
 
 msgid "Rain: "
 msgstr "Sade: "
@@ -340,28 +339,28 @@ msgid "Severe cold!"
 msgstr "Kova pakkanen!"
 
 msgid "Standard"
-msgstr "Vakio"
+msgstr "Oletus"
 
 msgid "Standard (iconpack)"
-msgstr "Vakio (kuvakepaketti)"
+msgstr "Oletus (kuvakepaketti)"
 
 msgid "Standard Icons"
 msgstr "Vakiokuvakkeet"
 
 msgid "Strong wind!"
-msgstr "Voimakas tuuli!"
+msgstr "Kova tuuli!"
 
 msgid "Sun: "
 msgstr "Aurinko: "
 
 msgid "Very heavy rain!"
-msgstr "Erittäin voimakas sade!"
+msgstr "Erittäin voimakasta sadetta!"
 
 msgid "Warm weather!"
 msgstr "Lämmin sää!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Hups!\nHidas tai puuttuva Internet-yhteys.\nYritä uudelleen"
+msgstr "Hups!\nHidas tai puuttuva internetyhteys\nYritä uudelleen"
 
 msgid "Wind: "
 msgstr "Tuuli: "
@@ -382,13 +381,13 @@ msgid "Save"
 msgstr "Tallenna"
 
 msgid "Show 2 locations"
-msgstr "Näytä 2 sääsijaintia"
+msgstr "Näytä 2 sijaintia"
 
 msgid "Radar default zoom:"
-msgstr "Tutkan oletuszoom:"
+msgstr "Tutkan oletustarkennus:"
 
 msgid "Date format:"
-msgstr "Päivämäärän muoto:"
+msgstr "Päivämäärämuoto:"
 
 msgid "Loading radar..."
 msgstr "Ladataan tutkaa..."
@@ -397,7 +396,7 @@ msgid "Please wait..."
 msgstr "Odota..."
 
 msgid "Map zoom: %s"
-msgstr "Kartan zoomaus: %s"
+msgstr "Kartan zoom: %s"
 
 msgid "Select city and:"
 msgstr "Valitse kaupunki ja:"
@@ -406,70 +405,70 @@ msgid "- Press Ok for Weather info"
 msgstr "- Paina OK nähdäksesi säätiedot"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Paina Menu avataksesi sadetutkan"
+msgstr "- Paina Valikko nähdäksesi sadetutkan"
 
 msgid "Appearance"
 msgstr "Ulkoasu"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
+msgid "City / Location"
 msgstr "Kaupunki / Sijainti"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Nykyinen lämpötila"
 
-msgid "Wetterbeschreibung"
-msgstr "Sään kuvaus"
+msgid "Weather description"
+msgstr "Sääkuvaus"
 
-msgid "Gefühlte Temperatur"
-msgstr "Tuntuu kuin"
+msgid "Feels like temperature"
+msgstr "Tuntuu kuin -lämpötila"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Tuulen suunta"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "Viikonpäivä"
 
-msgid "Höchsttemperatur"
-msgstr "Ylin lämpötila"
+msgid "Maximum temperature"
+msgstr "Korkein lämpötila"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Alin lämpötila"
 
-msgid "Tages-Wettertext"
-msgstr "Päivän sääkuvaus"
+msgid "Daily weather text"
+msgstr "Päivittäinen sääteksti"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Auringonnousu / auringonlasku"
+msgid "Sunrise / Sunset"
+msgstr "Auringonnousu / Auringonlasku"
 
-msgid "Stunde / Uhrzeit"
-msgstr "Tunti / kellonaika"
+msgid "Hour / Time"
+msgstr "Tunti / Aika"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Tuntikohtainen lämpötila"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Sade"
 
-msgid "Sonnenwahrscheinlichkeit"
+msgid "Sunshine probability"
 msgstr "Auringonpaisteen todennäköisyys"
 
-msgid "Luftfeuchtigkeit"
-msgstr "Ilmankosteus"
+msgid "Humidity"
+msgstr "Kosteus"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Tuulen nopeus"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Kello"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Päivämäärä"
 
-msgid "Wetterwarnung"
+msgid "Weather warning"
 msgstr "Säävaroitus"
 
 msgid "Default colors"
@@ -493,7 +492,7 @@ msgid ""
 "\n"
 "Version: %s"
 msgstr ""
-"Lisäosa on jo ajan tasalla.\n"
+"Liitännäinen on jo ajan tasalla.\n"
 "\n"
 "Versio: %s"
 
@@ -510,10 +509,10 @@ msgid "Update information is incomplete."
 msgstr "Päivitystiedot ovat puutteelliset."
 
 msgid "No changes available."
-msgstr "Muutoksia ei ole saatavilla."
+msgstr "Ei muutoksia saatavilla."
 
 msgid "A new version of speedy_TheWeather is available."
-msgstr "Uusi speedy_TheWeather-versio on saatavilla."
+msgstr "Uusi versio ohjelmasta speedy_TheWeather on saatavilla."
 
 msgid "Installed version: %s"
 msgstr "Asennettu versio: %s"
@@ -540,7 +539,7 @@ msgid ""
 msgstr ""
 "Päivitystä ei voitu asentaa.\n"
 "\n"
-"Tarkista Internet-yhteys ja yritä uudelleen."
+"Tarkista internetyhteys ja yritä uudelleen."
 
 msgid "Updating..."
 msgstr "Päivitetään..."
@@ -550,12 +549,12 @@ msgid ""
 "\n"
 "Would you like to restart the Enigma2 GUI now?"
 msgstr ""
-"Päivitys asennettiin onnistuneesti.\n"
+"Päivitys on asennettu onnistuneesti.\n"
 "\n"
 "Haluatko käynnistää Enigma2-käyttöliittymän uudelleen nyt?"
 
 msgid "Hours"
-msgstr "Tunnit"
+msgstr "Tuntia"
 
 msgid "Radar"
 msgstr "Sadetutka"
@@ -564,31 +563,31 @@ msgid "Locations"
 msgstr "Sijainnit"
 
 msgid "RainViewer"
-msgstr "Sadetutka"
+msgstr "RainViewer"
 
 msgid "speedy_TheWeather Settings"
 msgstr "speedy_TheWeather-asetukset"
 
 msgid "Infoscreen"
-msgstr "Tietonäyttö"
+msgstr "Tietoruutu"
 
 msgid "Auto weather backgrounds:"
-msgstr "Automaattiset säätaustat:"
+msgstr "Automaattiset säätustat:"
 
 msgid "Holiday backgrounds:"
-msgstr "Juhlapyhien taustat:"
+msgstr "Lomataustat:"
 
 msgid "Download weather backgrounds"
-msgstr "Lataa säätaustat"
+msgstr "Lataa säätustat"
 
 msgid "Do you want to download the weather backgrounds now?"
-msgstr "Haluatko ladata säätaustat nyt?"
+msgstr "Haluatko ladata säätustat nyt?"
 
 msgid "The weather backgrounds were downloaded successfully."
-msgstr "Säätaustat ladattiin onnistuneesti."
+msgstr "Säätustat ladattiin onnistuneesti."
 
 msgid "The weather backgrounds could not be downloaded."
-msgstr "Säätaustojen lataaminen epäonnistui."
+msgstr "Säätustojen lataaminen epäonnistui."
 
 msgid "You are already using the latest version (%s)."
 msgstr "Käytät jo uusinta versiota (%s)."
@@ -600,10 +599,10 @@ msgid "Sunset"
 msgstr "Auringonlasku"
 
 msgid "Moonrise"
-msgstr "Kuun nousu"
+msgstr "Kuunnousu"
 
 msgid "Moonset"
-msgstr "Kuun lasku"
+msgstr "Kuunlasku"
 
 msgid "Moon :"
 msgstr "Kuu :"
@@ -612,11 +611,430 @@ msgid "Sun :"
 msgstr "Aurinko :"
 
 msgid "No matching cities found."
-msgstr "Sopivia kaupunkeja ei löytynyt."
+msgstr "Vastaavia kaupunkeja ei löytynyt."
 
 msgid "Could not save the selected location."
-msgstr "Valittua sijaintia ei voitu tallentaa."
+msgstr "Valitun sijainnin tallentaminen epäonnistui."
 
 msgid "Choose a match:"
-msgstr "Valitse sopiva kaupunki:"
-```
+msgstr "Valitse vaihtoehto:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Automaattiset taustat"
+
+msgid "Download is preparing..."
+msgstr "Latausta valmistellaan..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Asennetaan automaattisia taustoja..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[NÄYTTÖ] Automaattinen taustojen asennus"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[NÄYTTÖ] Resoluutio: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[NÄYTTÖ] Asennus alkaa..."
+
+msgid "Error starting the download"
+msgstr "Virhe latauksen käynnistämisessä"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[VIRHE] Taustaprosessia ei voitu käynnistää: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[VIRHE] Taustaprosessin poikkeus: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Automaattiset taustat asennettu onnistuneesti"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[ONNISTUI] Asennus valmistui onnistuneesti."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[ONNISTUI] Kaikki AUTO- ja EXTRA-kuvat käsiteltiin."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[NÄYTTÖ] Paina OK tai POISTU sulkeaksesi."
+
+msgid "[ERROR] Installation failed"
+msgstr "[VIRHE] Asennus epäonnistui"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[VIRHE] Asennus valmistui virheiden kera."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[VIRHE] Katso lisätiedot yllä olevasta lokista."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "AUTOMAATTISTEN TAUSTOJEN ASENNUS ALKAA"
+
+msgid "Log file: %s"
+msgstr "Lokitiedosto: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[TIETO] Automaattiset taustat on poistettu käytöstä"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "AUTOMAATTISTEN TAUSTOJEN TARKISTUS"
+
+msgid "[STEP] Checking background directories"
+msgstr "[VAIHE] Tarkistetaan taustahakemistoja"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[LUODAAN] Taustojen juurihakemisto: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Taustojen juurihakemisto on olemassa: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[LUODAAN] Auto-hakemisto: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Auto-hakemisto on olemassa: %s"
+
+msgid "Background root: %s"
+msgstr "Taustojen juurihakemisto: %s"
+
+msgid "Auto directory: %s"
+msgstr "Auto-hakemisto: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[TIETO] Asennusmerkki on olemassa: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[TIETO] Asennusmerkkiä ei löytynyt"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[VAIHE] Tarkistetaan vanhaa ZIP-tiedostoa: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[POISTETAAN] Vanha ZIP poistetaan"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Vanha ZIP poistettu"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[TIETO] Vanhaa ZIP-tiedostoa ei löytynyt"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[VAROITUS] Vanhaa ZIP-tiedostoa ei voitu poistaa: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[LATAUS] LATAUS ALKAA"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[LATAUS] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[LATAUS] Kohde: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[VIRHE] wget-komentoa ei löytynyt!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[LATAUS] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[LATAUS] Suoritetaan wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[LATAUS] wget paluukoodi: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[VIRHE] LATAUS EPÄONNISTUI"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[SIIVOUS] Virheellinen ZIP poistettu"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] LATAUS ONNISTUI"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[VAIHE] Tarkistetaan ladattua ZIP-tiedostoa"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[VIRHE] ZIP-tiedostoa ei luotu!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Koko: %s tavua"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[VIRHE] ZIP on tyhjä!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] ZIP-tiedosto on olemassa"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] Tarkistetaan ZIP-muotoa..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[VIRHE] Virheellinen ZIP-tiedosto!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] ZIP on kelvollinen"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] Avataan ZIP-tiedostoa..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Tiedostoja ZIPissä: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[OHITETAKAAN] AUTO ei ole JPG-tiedosto: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[OHITETAKAAN] EXTRA ei ole JPG-tiedosto: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[LÖYTYI] AUTO JPG-tiedostoja ZIPissä: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[LÖYTYI] EXTRA JPG-tiedostoja ZIPissä: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[VIRHE] AUTO JPG-tiedostoja ei löytynyt ZIPistä!"
+
+msgid "No AUTO files found"
+msgstr "AUTO-tiedostoja ei löytynyt"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[VAROITUS] EXTRA JPG-tiedostoja ei löytynyt ZIPistä!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[ASENNUS] AUTO-ASENNUS ALKAA"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[ASENNUS] AUTO-tiedostot: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[ASENNUS] AUTO-lähde: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[ASENNUS] AUTO-kohde: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[ASENNUS] AUTO luettu: %s tavua"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[VIRHE] AUTO-tiedosto on tyhjä: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[VIRHE] AUTO-väliaikaistiedosto on tyhjä: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[ASENNUS] Korvataan vanha AUTO-tiedosto: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[VIRHE] AUTO-kohdetta ei ole olemassa: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[VIRHE] AUTO-kohde on tyhjä: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] AUTO ASENNETTU: %s (%s tavua)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[VIRHE] AUTO virhe %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[ASENNUS] AUTO VALMIS: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[ASENNUS] EXTRA-ASENNUS ALKAA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[ASENNUS] EXTRA-tiedostot: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[ASENNUS] EXTRA-lähde: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[ASENNUS] EXTRA-kohde: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[ASENNUS] EXTRA luettu: %s tavua"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[VIRHE] EXTRA-tiedosto on tyhjä: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[VIRHE] EXTRA-väliaikaistiedosto on tyhjä: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[ASENNUS] Korvataan vanha EXTRA-tiedosto: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[VIRHE] EXTRA-kohdetta ei ole olemassa: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[VIRHE] EXTRA-kohde on tyhjä: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] EXTRA ASENNETTU: %s (%s tavua)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[VIRHE] EXTRA virhe %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[ASENNUS] EXTRA VALMIS: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP suljettu"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[TARKISTUS] LOPULLINEN TARKISTUS"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[TARKISTUS] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[EPÄONNISTUI] AUTO PUUTTUU: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[EPÄONNISTUI] AUTO TYHJÄ: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] AUTO TARKISTETTU: %s (%s tavua)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[TARKISTUS] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[EPÄONNISTUI] EXTRA PUUTTUU: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[EPÄONNISTUI] EXTRA TYHJÄ: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] EXTRA TARKISTETTU: %s (%s tavua)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[TULOS] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[TULOS] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[TULOS] AUTO-virheet: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[TULOS] EXTRA-virheet: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[TULOS] Tarkistusvirheet: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[VIRHE] AUTO-tiedostoja ei löytynyt!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[VIRHE] AUTO-ASENNUS KESKEN"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[VIRHE] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[SIIVOUS] Vanha merkki poistettu"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[VAROITUS] Merkin poistaminen epäonnistui: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[VIRHE] EXTRA-ASENNUS KESKEN"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[VIRHE] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[VIRHE] LOPULLINEN TARKISTUS EPÄONNISTUI"
+
+msgid "[ERROR] %s"
+msgstr "[VIRHE] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[MERKKI] Kirjoitetaan asennusmerkkiä..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Merkki kirjoitettu: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[VIRHE] Merkki-virhe: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[SIIVOUS] Tarkistetaan ZIP-tiedostoa poistettavaksi..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] ZIP poistettu: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[TIETO] ZIP ei ole enää olemassa"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[VAROITUS] ZIP-tiedoston poistaminen epäonnistui: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[ONNISTUI] AUTO-TAUSTAT ASENNETTU ONNISTUNEESTI"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[ONNISTUI] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[ONNISTUI] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[ONNISTUI] ASENNUS VALMIS"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[VAKAVA VIRHE] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[SIIVOUS] ZIP poistettu virheen jälkeen"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[SIIVOUS] Merkki poistettu virheen jälkeen"
+
+msgid "Location 1 - Weather description"
+msgstr "Sijainti 1 - Sääkuvaus"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Sijainti 1 - Tuntuu kuin -lämpötila"
+
+msgid "Location 1 - Wind"
+msgstr "Sijainti 1 - Tuuli"
+
+msgid "Location 1 - Rain"
+msgstr "Sade"
+
+msgid "Location 1 - Sun :"
+msgstr "Sijainti 1 - Aurinko :"
+
+msgid "Location 1 - Moon :"
+msgstr "Sijainti 1 - Kuu :"
+
+msgid "Location 2 - Weather description"
+msgstr "Sijainti 2 - Sääkuvaus"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Sijainti 2 - Tuntuu kuin -lämpötila"
+
+msgid "Location 2 - Wind"
+msgstr "Sijainti 2 - Tuuli"
+
+msgid "Location 2 - Rain"
+msgstr "Sade"
+
+msgid "Location 2 - Sun :"
+msgstr "Sijainti 2 - Aurinko :"
+
+msgid "Location 2 - Moon :"
+msgstr "Sijainti 2 - Kuu :"
+
+msgid "Updated: "
+msgstr "Päivitetty: "
+
+msgid "Updated: --:--"
+msgstr "Päivitetty: --:--"

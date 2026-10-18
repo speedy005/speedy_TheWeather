@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Hungarian\n"
-"Language: hu\n"
+"Language-Team: \n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,10 +18,10 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "H"
+msgstr "Hé"
 
 msgid "Tu"
-msgstr "K"
+msgstr "Ke"
 
 msgid "We"
 msgstr "Sze"
@@ -31,13 +30,13 @@ msgid "Th"
 msgstr "Cs"
 
 msgid "Fr"
-msgstr "P"
+msgstr "Pé"
 
 msgid "Sa"
 msgstr "Szo"
 
 msgid "Su"
-msgstr "V"
+msgstr "Va"
 
 msgid "Monday"
 msgstr "Hétfő"
@@ -64,19 +63,19 @@ msgid "Belgium"
 msgstr "Belgium"
 
 msgid "Changeable and chance of mist"
-msgstr "Változékony, köd kialakulhat"
+msgstr "Változékony, pára lehetősége"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Tipp!\nA főmenüben nyomja meg a rejtett SÁRGA gombot az esőradar megnyitásához.\n\nA főmenüben nyomja meg a rejtett ZÖLD gombot az óraintervallum módosításához.\n\nA főmenüben nyomja meg a rejtett KÉK gombot két város összehasonlításához.\n\nNyomja meg itt az OK gombot a hőmérséklet-kijelzés be- vagy kikapcsolásához: %s"
+msgstr "Tipp!\nNyomja meg a rejtett Sárga gombot a főmenüben az Esőradar megnyitásához.\n\nNyomja meg a rejtett Zöld gombot a főmenüben az óra-intervallum módosításához.\n\nNyomja meg a rejtett Kék gombot a főmenüben két város összehasonlításához.\n\nNyomja meg az OK-t a hőmérséklet-réteg be-/kikapcsolásához: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Változékony, felhős, gyenge havazás"
+msgstr "Változóan felhős, gyenge havazás"
 
 msgid "Clear and chance of mist"
-msgstr "Derült, köd kialakulhat"
+msgstr "Tiszta, pára lehetősége"
 
 msgid "Clear night"
-msgstr "Derült éjszaka"
+msgstr "Tiszta éjszaka"
 
 msgid "Clouds radar"
 msgstr "Felhőradar"
@@ -85,10 +84,10 @@ msgid "Cloudy"
 msgstr "Felhős"
 
 msgid "Cloudy and chance of showers"
-msgstr "Felhős, záporok kialakulhatnak"
+msgstr "Felhős, záporok esélye"
 
 msgid "Download error: Check spelling."
-msgstr "Letöltési hiba: ellenőrizze a helyesírást."
+msgstr "Letöltési hiba: Ellenőrizze a helyesírást."
 
 msgid "Drizzle"
 msgstr "Szitálás"
@@ -118,13 +117,13 @@ msgid "Heavy clouds"
 msgstr "Erősen felhős"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Erősen felhős, heves záporok"
+msgstr "Erősen felhős, erős záporok"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Erősen felhős, zivataros záporok"
+msgstr "Erősen felhős, zivatarok"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Erősen felhős, intenzív havazás"
+msgstr "Erősen felhős és erős havazás"
 
 msgid "Heavy clouds light snowfall"
 msgstr "Erősen felhős, gyenge havazás"
@@ -133,16 +132,16 @@ msgid "Heavy clouds showers possible"
 msgstr "Erősen felhős, záporok lehetségesek"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Erősen felhős, téli csapadék"
+msgstr "Erősen felhős, téli eső"
 
 msgid "Help"
 msgstr "Súgó"
 
 msgid "Km/h"
-msgstr "km/h"
+msgstr "Km/h"
 
 msgid "Light cloudy"
-msgstr "Gyengén felhős"
+msgstr "Enyhén felhős"
 
 msgid "Local Weather"
 msgstr "Helyi időjárás"
@@ -154,16 +153,16 @@ msgid "Location -"
 msgstr "Hely -"
 
 msgid "Location:"
-msgstr "Hely:"
+msgstr "Helyszín:"
 
 msgid "Mist radar"
-msgstr "Ködradar"
+msgstr "Páradar"
 
 msgid "Mostly clear"
-msgstr "Többnyire derült"
+msgstr "Nagyrészt tiszta"
 
 msgid "Mostly sunny"
-msgstr "Többnyire napos"
+msgstr "Nagyrészt napos"
 
 msgid "N"
 msgstr "É"
@@ -178,7 +177,7 @@ msgid "Rainfall radar"
 msgstr "Csapadékradar"
 
 msgid "WeatherInfo"
-msgstr "Időjárási információk"
+msgstr "IdőjárásInfó"
 
 msgid "S"
 msgstr "D"
@@ -193,28 +192,28 @@ msgid "Satellite"
 msgstr "Műhold"
 
 msgid "Showers and chance of thunder"
-msgstr "Záporok, zivatar kialakulhat"
+msgstr "Záporok, zivatar esélye"
 
 msgid "Snow radar"
 msgstr "Hóradar"
 
 msgid "Sun radar"
-msgstr "Napsugárzás-radar"
+msgstr "Napsütésradar"
 
 msgid "Sunny / Clear"
-msgstr "Napos / Derült"
+msgstr "Napos / Tiszta"
 
 msgid "Sunny and chance of mist"
-msgstr "Napos, köd kialakulhat"
+msgstr "Napos, pára lehetősége"
 
 msgid "Sunny and chance of showers"
-msgstr "Napos, záporok kialakulhatnak"
+msgstr "Napos, záporok esélye"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Napos, zivataros záporok kialakulhatnak"
+msgstr "Napos, zivatarok esélye"
 
 msgid "Sunny few clouds"
-msgstr "Napos, kevés felhővel"
+msgstr "Napos, kevés felhő"
 
 msgid "Sunpower-UV"
 msgstr "UV-index"
@@ -226,10 +225,10 @@ msgid "The Netherlands"
 msgstr "Hollandia"
 
 msgid "TheWeather"
-msgstr "Időjárás"
+msgstr "AzIdőjárás"
 
 msgid "Thunder radar"
-msgstr "Zivatar-radar"
+msgstr "Zivatarradar"
 
 msgid "W"
 msgstr "Ny"
@@ -247,31 +246,31 @@ msgid "Background"
 msgstr "Háttér"
 
 msgid "Background reset to standard."
-msgstr "A háttér visszaállítva az alapértelmezettre."
+msgstr "Háttér visszaállítva az alapértelmezettre."
 
 msgid "Choose 2nd location"
-msgstr "2. hely kiválasztása"
+msgstr "2. helyszín kiválasztása"
 
 msgid "Choose 2nd location:"
-msgstr "2. hely kiválasztása:"
+msgstr "2. helyszín kiválasztása:"
 
 msgid "Choose background:"
 msgstr "Háttér kiválasztása:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "A város nem található. A módosításhoz nyomja meg a SÁRGA gombot."
+msgstr "A város nem található. Nyomja meg a SÁRGA gombot a módosításhoz."
 
 msgid "Compare Two Locations"
-msgstr "Két hely összehasonlítása"
+msgstr "Két helyszín összehasonlítása"
 
 msgid "Compare Locations"
-msgstr "Helyek összehasonlítása"
+msgstr "Helyszínek összehasonlítása"
 
 msgid "Data error"
 msgstr "Adathiba"
 
 msgid "Download error: No response try again"
-msgstr "Letöltési hiba: nincs válasz, próbálja újra"
+msgstr "Letöltési hiba: Nincs válasz, próbálja újra"
 
 msgid "Error fetching data."
 msgstr "Hiba az adatok lekérésekor."
@@ -283,22 +282,22 @@ msgid "Extra Icons "
 msgstr "Extra ikonok "
 
 msgid "Extreme cold!"
-msgstr "Extrém hideg!"
+msgstr "Rendkívüli hideg!"
 
 msgid "Extreme heat!"
-msgstr "Extrém meleg!"
+msgstr "Rendkívüli hőség!"
 
 msgid "h"
 msgstr "ó"
 
 msgid "Heavy rain!"
-msgstr "Heves eső!"
+msgstr "Felhőszakadás!"
 
 msgid "Heavy storm!"
-msgstr "Heves vihar!"
+msgstr "Erős vihar!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Az ikoncsomag megváltozott.\nA bővítmény újraindul..."
+msgstr "Az ikonkészlet megváltozott.\nA bővítmény újraindul..."
 
 msgid "Loading background image, please wait..."
 msgstr "Háttérkép betöltése, kérjük várjon..."
@@ -313,19 +312,19 @@ msgid "Loading..."
 msgstr "Betöltés..."
 
 msgid "No 2nd location"
-msgstr "Nincs 2. hely"
+msgstr "Nincs 2. helyszín"
 
 msgid "No info"
-msgstr "Nincs információ"
+msgstr "Nincs infó"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Nem találhatók mentett városok.\nElőször adjon hozzá városokat a helyválasztó képernyőn."
+msgstr "Nem találhatók mentett városok.\nElőbb adjon hozzá városokat a helyszín képernyőn."
 
 msgid "Not found"
 msgstr "Nem található"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Nyomja meg a SÁRGA gombot a 2. hely kiválasztásához."
+msgstr "Nyomja meg a SÁRGA gombot egy 2. helyszín kiválasztásához."
 
 msgid "Rain: "
 msgstr "Eső: "
@@ -337,7 +336,7 @@ msgid "Settings"
 msgstr "Beállítások"
 
 msgid "Severe cold!"
-msgstr "Erős hideg!"
+msgstr "Szigorú hideg!"
 
 msgid "Standard"
 msgstr "Alapértelmezett"
@@ -355,13 +354,13 @@ msgid "Sun: "
 msgstr "Nap: "
 
 msgid "Very heavy rain!"
-msgstr "Nagyon heves eső!"
+msgstr "Különösen erős eső!"
 
 msgid "Warm weather!"
-msgstr "Meleg idő!"
+msgstr "Meleg időjárás!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Hoppá!\nLassú vagy nincs internetkapcsolat.\nKérjük, próbálja újra"
+msgstr "Hoppá!\nLassú vagy nincs internetkapcsolat\nKérjük, próbálja újra"
 
 msgid "Wind: "
 msgstr "Szél: "
@@ -382,7 +381,7 @@ msgid "Save"
 msgstr "Mentés"
 
 msgid "Show 2 locations"
-msgstr "2 hely megjelenítése"
+msgstr "2 helyszín megjelenítése"
 
 msgid "Radar default zoom:"
 msgstr "Radar alapértelmezett nagyítása:"
@@ -400,77 +399,77 @@ msgid "Map zoom: %s"
 msgstr "Térkép nagyítása: %s"
 
 msgid "Select city and:"
-msgstr "Város kiválasztása és:"
+msgstr "Válasszon várost és:"
 
 msgid "- Press Ok for Weather info"
-msgstr "- Nyomja meg az OK gombot az időjárási információkhoz"
+msgstr "- Nyomja meg az OK-t az időjárási infóért"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Nyomja meg a Menü gombot az esőradarhoz"
+msgstr "- Nyomja meg a Menü gombot az esőradarért"
 
 msgid "Appearance"
 msgstr "Megjelenés"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
-msgstr "Város / Hely"
+msgid "City / Location"
+msgstr "Város / Helyszín"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Aktuális hőmérséklet"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "Időjárás leírása"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "Hőérzet"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Szélirány"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "A hét napja"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "Legmagasabb hőmérséklet"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Legalacsonyabb hőmérséklet"
 
-msgid "Tages-Wettertext"
-msgstr "Napi időjárás-leírás"
+msgid "Daily weather text"
+msgstr "Napi időjárási szöveg"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Napkelte / Napnyugta"
+msgid "Sunrise / Sunset"
+msgstr "Napkelte / Naplemente"
 
-msgid "Stunde / Uhrzeit"
+msgid "Hour / Time"
 msgstr "Óra / Idő"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Óránkénti hőmérséklet"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Eső"
 
-msgid "Sonnenwahrscheinlichkeit"
+msgid "Sunshine probability"
 msgstr "Napsütés valószínűsége"
 
-msgid "Luftfeuchtigkeit"
-msgstr "Páratartalom"
+msgid "Humidity"
+msgstr "Pratartalom"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Szélsebesség"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Óra"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Dátum"
 
-msgid "Wetterwarnung"
-msgstr "Időjárási riasztás"
+msgid "Weather warning"
+msgstr "Időjárási figyelmeztetés"
 
 msgid "Default colors"
 msgstr "Alapértelmezett színek"
@@ -498,7 +497,7 @@ msgstr ""
 "Verzió: %s"
 
 msgid "Update check failed."
-msgstr "A frissítés ellenőrzése sikertelen."
+msgstr "A frissítésellenőrzés sikertelen."
 
 msgid "Changes:"
 msgstr "Változások:"
@@ -507,13 +506,13 @@ msgid "Installer version: %s"
 msgstr "Telepítő verziója: %s"
 
 msgid "Update information is incomplete."
-msgstr "A frissítési információk hiányosak."
+msgstr "A frissítési információ hiányos."
 
 msgid "No changes available."
 msgstr "Nincsenek elérhető változások."
 
 msgid "A new version of speedy_TheWeather is available."
-msgstr "A speedy_TheWeather új verziója elérhető."
+msgstr "A speedy_TheWeather új verziója érhető el."
 
 msgid "Installed version: %s"
 msgstr "Telepített verzió: %s"
@@ -522,14 +521,14 @@ msgid "New version: %s"
 msgstr "Új verzió: %s"
 
 msgid "Do you want to install the update?"
-msgstr "Telepíteni szeretné a frissítést?"
+msgstr "Szeretné telepíteni a frissítést?"
 
 msgid ""
 "The update is being installed.\n"
 "\n"
 "Please wait."
 msgstr ""
-"A frissítés telepítése folyamatban van.\n"
+"A frissítés telepítése folyamatban.\n"
 "\n"
 "Kérjük, várjon."
 
@@ -540,7 +539,7 @@ msgid ""
 msgstr ""
 "A frissítést nem sikerült telepíteni.\n"
 "\n"
-"Ellenőrizze az internetkapcsolatot, majd próbálja újra."
+"Kérjük, ellenőrizze az internetkapcsolatot, és próbálja újra."
 
 msgid "Updating..."
 msgstr "Frissítés..."
@@ -558,37 +557,37 @@ msgid "Hours"
 msgstr "Órák"
 
 msgid "Radar"
-msgstr "Radar"
+msgstr "Esőradar"
 
 msgid "Locations"
-msgstr "Helyek"
+msgstr "Helyszínek"
 
 msgid "RainViewer"
 msgstr "RainViewer"
 
 msgid "speedy_TheWeather Settings"
-msgstr "speedy_TheWeather beállításai"
+msgstr "speedy_TheWeather Beállítások"
 
 msgid "Infoscreen"
 msgstr "Információs képernyő"
 
 msgid "Auto weather backgrounds:"
-msgstr "Automatikus időjárási hátterek:"
+msgstr "Automatikus időjárási háttérképek:"
 
 msgid "Holiday backgrounds:"
-msgstr "Ünnepi hátterek:"
+msgstr "Ünnepi háttérképek:"
 
 msgid "Download weather backgrounds"
-msgstr "Időjárási hátterek letöltése"
+msgstr "Időjárási háttérképek letöltése"
 
 msgid "Do you want to download the weather backgrounds now?"
-msgstr "Szeretné most letölteni az időjárási háttereket?"
+msgstr "Szeretné letölteni az időjárási háttérképeket most?"
 
 msgid "The weather backgrounds were downloaded successfully."
-msgstr "Az időjárási hátterek sikeresen letöltve."
+msgstr "Az időjárási háttérképek sikeresen letöltve."
 
 msgid "The weather backgrounds could not be downloaded."
-msgstr "Az időjárási háttereket nem sikerült letölteni."
+msgstr "Az időjárási háttérképeket nem sikerült letölteni."
 
 msgid "You are already using the latest version (%s)."
 msgstr "Már a legújabb verziót használja (%s)."
@@ -597,7 +596,7 @@ msgid "Sunrise"
 msgstr "Napkelte"
 
 msgid "Sunset"
-msgstr "Napnyugta"
+msgstr "Naplemente"
 
 msgid "Moonrise"
 msgstr "Holdkelte"
@@ -612,11 +611,430 @@ msgid "Sun :"
 msgstr "Nap :"
 
 msgid "No matching cities found."
-msgstr "Nem találhatók megfelelő városok."
+msgstr "Nem találhatók egyező városok."
 
 msgid "Could not save the selected location."
-msgstr "A kiválasztott helyet nem sikerült menteni."
+msgstr "A kiválasztott helyszínt nem sikerült menteni."
 
 msgid "Choose a match:"
-msgstr "Válasszon a találatok közül:"
-```
+msgstr "Válasszon egy találatot:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Automatikus háttérképek"
+
+msgid "Download is preparing..."
+msgstr "Letöltés előkészítése..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Automatikus háttérképek telepítése..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[KÉPERNYŐ] Automatikus háttérkép telepítése"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[KÉPERNYŐ] Felbontás: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[KÉPERNYŐ] A telepítés elindul..."
+
+msgid "Error starting the download"
+msgstr "Hiba a letöltés indításakor"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[HIBA] A munkaszálat nem sikerült elindítani: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[HIBA] Munkaszál kivétel: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Az automatikus háttérképek sikeresen telepítve"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[SIKER] A telepítés sikeresen befejeződött."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[SIKER] Minden AUTO és EXTRA kép feldolgozva."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[KÉPERNYŐ] Nyomja meg az OK-t vagy a KILÉPÉS-t a bezáráshoz."
+
+msgid "[ERROR] Installation failed"
+msgstr "[HIBA] A telepítés sikertelen"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[HIBA] A telepítés hibákkal fejeződött be."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[HIBA] Részletekért lásd a fenti naplót."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "AUTO HÁTTÉRKÉP TELEPÍTÉS INDÍTÁSA"
+
+msgid "Log file: %s"
+msgstr "Naplófájl: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[INFÓ] Az automatikus háttérképek le vannak tiltva"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "AUTO HÁTTÉRKÉP ELLENŐRZÉS"
+
+msgid "[STEP] Checking background directories"
+msgstr "[LÉPÉS] Háttérkönyvtárak ellenőrzése"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[LÉTREHOZÁS] Háttér gyökérkönyvtár: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] A háttér gyökérkönyvtár létezik: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[LÉTREHOZÁS] Auto könyvtár: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Az Auto könyvtár létezik: %s"
+
+msgid "Background root: %s"
+msgstr "Háttér gyökérkönyvtár: %s"
+
+msgid "Auto directory: %s"
+msgstr "Auto könyvtár: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[INFÓ] A telepítési jelölő létezik: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[INFÓ] Nem található telepítési jelölő"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[LÉPÉS] Régi ZIP ellenőrzése: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[TÖRLÉS] A régi ZIP törlésre kerül"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Régi ZIP törölve"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[INFÓ] Nem található régi ZIP"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[FIGYELMEZTETÉS] A régi ZIP-et nem sikerült törölni: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[LETÖLTÉS] LETÖLTÉS INDÍTÁSA"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[LETÖLTÉS] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[LETÖLTÉS] Cél: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[HIBA] A wget nem található!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[LETÖLTÉS] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[LETÖLTÉS] wget futtatása..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[LETÖLTÉS] wget visszatérési kód: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[HIBA] A LETÖLTÉS SIKERTELEN"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[TAKARÍTÁS] Érvénytelen ZIP törölve"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] A LETÖLTÉS SIKERES"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[LÉPÉS] Letöltött ZIP ellenőrzése"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[HIBA] A ZIP nem lett létrehozva!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Méret: %s bájt"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[HIBA] A ZIP üres!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] A ZIP-fájl létezik"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] ZIP formátum ellenőrzése..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[HIBA] Érvénytelen ZIP-fájl!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] A ZIP érvényes"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] ZIP megnyitása..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Fájlok a ZIP-ben: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[KIHAGYÁS] Az AUTO nem JPG fájl: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[KIHAGYÁS] Az EXTRA nem JPG fájl: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[TALÁLAT] AUTO JPG fájlok a ZIP-ben: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[TALÁLAT] EXTRA JPG fájlok a ZIP-ben: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[HIBA] Nem találhatók AUTO JPG fájlok a ZIP-ben!"
+
+msgid "No AUTO files found"
+msgstr "Nem találhatók AUTO fájlok"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[FIGYELMEZTETÉS] Nem találhatók EXTRA JPG fájlok a ZIP-ben!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[TELEPÍTÉS] AUTO TELEPÍTÉS INDÍTÁSA"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[TELEPÍTÉS] AUTO fájlok: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[TELEPÍTÉS] AUTO forrás: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[TELEPÍTÉS] AUTO cél: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[TELEPÍTÉS] AUTO beolvasva: %s bájt"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[HIBA] Az AUTO fájl üres: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[HIBA] Az AUTO ideiglenes fájl üres: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[TELEPÍTÉS] Régi AUTO fájl cseréje: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[HIBA] Az AUTO célfájl nem létezik: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[HIBA] Az AUTO célfájl üres: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] AUTO TELEPÍTVE: %s (%s bájt)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[HIBA] AUTO hiba %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[TELEPÍTÉS] AUTO Befejezve: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[TELEPÍTÉS] EXTRA TELEPÍTÉS INDÍTÁSA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[TELEPÍTÉS] EXTRA fájlok: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[TELEPÍTÉS] EXTRA forrás: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[TELEPÍTÉS] EXTRA cél: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[TELEPÍTÉS] EXTRA beolvasva: %s bájt"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[HIBA] Az EXTRA fájl üres: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[HIBA] Az EXTRA ideiglenes fájl üres: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[TELEPÍTÉS] Régi EXTRA fájl cseréje: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[HIBA] Az EXTRA célfájl nem létezik: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[HIBA] Az EXTRA célfájl üres: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] EXTRA TELEPÍTVE: %s (%s bájt)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[HIBA] EXTRA hiba %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[TELEPÍTÉS] EXTRA Befejezve: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP lezárva"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[ELLENŐRZÉS] VÉGLEGES ELLENŐRZÉS"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[ELLENŐRZÉS] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[SIKERTELEN] AUTO HIÁNYZIK: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[SIKERTELEN] AUTO ÜRES: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] AUTO ELLENŐRIZVE: %s (%s bájt)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[ELLENŐRZÉS] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[SIKERTELEN] EXTRA HIÁNYZIK: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[SIKERTELEN] EXTRA ÜRES: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] EXTRA ELLENŐRIZVE: %s (%s bájt)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[EREDMÉNY] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[EREDMÉNY] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[EREDMÉNY] AUTO hibák: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[EREDMÉNY] EXTRA hibák: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[EREDMÉNY] Ellenőrzési hibák: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[HIBA] Nem találhatók AUTO fájlok!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[HIBA] AZ AUTO TELEPÍTÉS HIÁNYOS"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[HIBA] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[TAKARÍTÁS] Régi jelölő eltávolítva"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[FIGYELMEZTETÉS] A jelölőt nem sikerült eltávolítani: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[HIBA] AZ EXTRA TELEPÍTÉS HIÁNYOS"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[HIBA] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[HIBA] A VÉGLEGES ELLENŐRZÉS SIKERTELEN"
+
+msgid "[ERROR] %s"
+msgstr "[HIBA] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[JELÖLŐ] Telepítési jelölő írása..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Jelölő beírva: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[HIBA] Jelölő hiba: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[TAKARÍTÁS] ZIP ellenőrzése törléshez..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] ZIP törölve: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[INFÓ] A ZIP már nincs jelen"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[FIGYELMEZTETÉS] A ZIP-et nem sikerült törölni: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[SIKER] AZ AUTO HÁTTÉRKÉPEK SIKERESEN TELEPÍTVE"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[SIKER] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[SIKER] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[SIKER] A TELEPÍTÉS BEFEJEZŐDÖTT"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[VÉGZETES HIBA] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[TAKARÍTÁS] ZIP törölve hiba után"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[TAKARÍTÁS] Jelölő eltávolítva hiba után"
+
+msgid "Location 1 - Weather description"
+msgstr "1. helyszín - Időjárás leírása"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "1. helyszín - Hőérzet"
+
+msgid "Location 1 - Wind"
+msgstr "1. helyszín - Szél"
+
+msgid "Location 1 - Rain"
+msgstr "1. helyszín - Eső"
+
+msgid "Location 1 - Sun :"
+msgstr "1. helyszín - Nap :"
+
+msgid "Location 1 - Moon :"
+msgstr "1. helyszín - Hold :"
+
+msgid "Location 2 - Weather description"
+msgstr "2. helyszín - Időjárás leírása"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "2. helyszín - Hőérzet"
+
+msgid "Location 2 - Wind"
+msgstr "2. helyszín - Szél"
+
+msgid "Location 2 - Rain"
+msgstr "2. helyszín - Eső"
+
+msgid "Location 2 - Sun :"
+msgstr "2. helyszín - Nap :"
+
+msgid "Location 2 - Moon :"
+msgstr "2. helyszín - Hold :"
+
+msgid "Updated: "
+msgstr "Frissítve: "
+
+msgid "Updated: --:--"
+msgstr "Frissítve: --:--"

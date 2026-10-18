@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Czech\n"
+"Language-Team: \n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -64,28 +63,28 @@ msgid "Belgium"
 msgstr "Belgie"
 
 msgid "Changeable and chance of mist"
-msgstr "Proměnlivé počasí, možnost mlhy"
+msgstr "Proměnlivo, možnost oparu"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Tip!\nStisknutím skrytého žlutého tlačítka v hlavním menu otevřete radar srážek.\n\nStisknutím skrytého zeleného tlačítka v hlavním menu změníte hodinový interval.\n\nStisknutím skrytého modrého tlačítka v hlavním menu porovnáte dvě města.\n\nStisknutím OK zde zapnete nebo vypnete zobrazení teploty: %s"
+msgstr "Tip!\nStisknutím skrytého žlutého tlačítka v hlavní nabídce otevřete dešťový radar.\n\nStisknutím skrytého zeleného tlačítka v hlavní nabídce změnit hodinový interval.\n\nStisknutím skrytého modrého tlačítka v hlavní nabídce porovnáte dvě města.\n\nStisknutím OK zde přepnete zobrazení teploty: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Proměnlivě oblačno, slabé sněžení"
+msgstr "Proměnlivo oblačno, slabé sněžení"
 
 msgid "Clear and chance of mist"
-msgstr "Jasno, možnost mlhy"
+msgstr "Jasno, možnost oparu"
 
 msgid "Clear night"
 msgstr "Jasná noc"
 
 msgid "Clouds radar"
-msgstr "Radar oblačnosti"
+msgstr "Oblačný radar"
 
 msgid "Cloudy"
-msgstr "Zataženo"
+msgstr "Oblačno"
 
 msgid "Cloudy and chance of showers"
-msgstr "Zataženo, možnost přeháněk"
+msgstr "Oblačno, možnost přeháněk"
 
 msgid "Download error: Check spelling."
 msgstr "Chyba stahování: Zkontrolujte pravopis."
@@ -112,28 +111,28 @@ msgid "Feels like: "
 msgstr "Pocitová teplota: "
 
 msgid "Hail radar"
-msgstr "Radar krup"
+msgstr "Krupobitý radar"
 
 msgid "Heavy clouds"
-msgstr "Silná oblačnost"
+msgstr "Těžká oblačnost"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Silná oblačnost, vydatné přeháňky"
+msgstr "Oblačno až zataženo, vydatné přeháňky"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Silná oblačnost, bouřkové přeháňky"
+msgstr "Oblačno až zataženo, bouřkové přeháňky"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Silná oblačnost a vydatné sněžení"
+msgstr "Zataženo a husté sněžení"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Silná oblačnost, slabé sněžení"
+msgstr "Zataženo, slabé sněžení"
 
 msgid "Heavy clouds showers possible"
-msgstr "Silná oblačnost, možnost přeháněk"
+msgstr "Zataženo, možné přeháňky"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Silná oblačnost, zimní srážky"
+msgstr "Zataženo, zimní déšť se sněhem"
 
 msgid "Help"
 msgstr "Nápověda"
@@ -142,10 +141,10 @@ msgid "Km/h"
 msgstr "Km/h"
 
 msgid "Light cloudy"
-msgstr "Slabě oblačno"
+msgstr "Skoro jasno"
 
 msgid "Local Weather"
-msgstr "Místní počasí"
+msgstr "Počasí v místě"
 
 msgid "Location +"
 msgstr "Místo +"
@@ -157,13 +156,13 @@ msgid "Location:"
 msgstr "Místo:"
 
 msgid "Mist radar"
-msgstr "Radar mlhy"
+msgstr "Mlhový radar"
 
 msgid "Mostly clear"
-msgstr "Většinou jasno"
+msgstr "Převážně jasno"
 
 msgid "Mostly sunny"
-msgstr "Většinou slunečno"
+msgstr "Převážně slunečno"
 
 msgid "N"
 msgstr "S"
@@ -175,10 +174,10 @@ msgid "NW"
 msgstr "SZ"
 
 msgid "Rainfall radar"
-msgstr "Radar srážek"
+msgstr "Srážkový radar"
 
 msgid "WeatherInfo"
-msgstr "Informace o počasí"
+msgstr "Info o počasí"
 
 msgid "S"
 msgstr "J"
@@ -196,16 +195,16 @@ msgid "Showers and chance of thunder"
 msgstr "Přeháňky, možnost bouřek"
 
 msgid "Snow radar"
-msgstr "Radar sněžení"
+msgstr "Sněhový radar"
 
 msgid "Sun radar"
-msgstr "Radar slunce"
+msgstr "Sluneční radar"
 
 msgid "Sunny / Clear"
 msgstr "Slunečno / Jasno"
 
 msgid "Sunny and chance of mist"
-msgstr "Slunečno, možnost mlhy"
+msgstr "Slunečno, možnost oparu"
 
 msgid "Sunny and chance of showers"
 msgstr "Slunečno, možnost přeháněk"
@@ -229,7 +228,7 @@ msgid "TheWeather"
 msgstr "Počasí"
 
 msgid "Thunder radar"
-msgstr "Radar bouřek"
+msgstr "Bouřkový radar"
 
 msgid "W"
 msgstr "Z"
@@ -247,19 +246,19 @@ msgid "Background"
 msgstr "Pozadí"
 
 msgid "Background reset to standard."
-msgstr "Pozadí bylo obnoveno na výchozí."
+msgstr "Pozadí obnoveno na výchozí."
 
 msgid "Choose 2nd location"
-msgstr "Vyberte 2. místo"
+msgstr "Vybrat 2. místo"
 
 msgid "Choose 2nd location:"
-msgstr "Vyberte 2. místo:"
+msgstr "Vybrat 2. místo:"
 
 msgid "Choose background:"
-msgstr "Vyberte pozadí:"
+msgstr "Vybrat pozadí:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Město nebylo nalezeno. Stiskněte ŽLUTÉ tlačítko pro změnu."
+msgstr "Město nenalezeno. Stisknutím ŽLUTÉho tlačítka změňte."
 
 msgid "Compare Two Locations"
 msgstr "Porovnat dvě místa"
@@ -280,7 +279,7 @@ msgid "Error loading"
 msgstr "Chyba při načítání"
 
 msgid "Extra Icons "
-msgstr "Extra ikony "
+msgstr "Další ikony "
 
 msgid "Extreme cold!"
 msgstr "Extrémní chlad!"
@@ -289,25 +288,25 @@ msgid "Extreme heat!"
 msgstr "Extrémní horko!"
 
 msgid "h"
-msgstr "h"
+msgstr "hod."
 
 msgid "Heavy rain!"
-msgstr "Silný déšť!"
+msgstr "Hustý déšť!"
 
 msgid "Heavy storm!"
 msgstr "Silná bouře!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Balíček ikon byl změněn.\nPlugin bude restartován..."
+msgstr "Sada ikon byla změněna.\nDoplněk se restartuje..."
 
 msgid "Loading background image, please wait..."
 msgstr "Načítání obrázku pozadí, čekejte prosím..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Načítání standardních ikon, čekejte prosím..."
+msgstr "Načítání výchozích ikon, čekejte prosím..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Načítání extra ikon, čekejte prosím..."
+msgstr "Načítání dalších ikon, čekejte prosím..."
 
 msgid "Loading..."
 msgstr "Načítání..."
@@ -319,16 +318,16 @@ msgid "No info"
 msgstr "Žádné informace"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Nebyly nalezeny žádné uložené města.\nNejprve přidejte města prostřednictvím obrazovky míst."
+msgstr "Nenalezena žádná uložená města.\nNejprve přidejte města přes obrazovku umístění."
 
 msgid "Not found"
 msgstr "Nenalezeno"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Stisknutím ŽLUTÉHO tlačítka vyberete 2. místo."
+msgstr "Stisknutím ŽLUTÉHO vyberte 2. místo."
 
 msgid "Rain: "
-msgstr "Déšť: "
+msgstr "Srážky: "
 
 msgid "Select"
 msgstr "Vybrat"
@@ -340,13 +339,13 @@ msgid "Severe cold!"
 msgstr "Silný mráz!"
 
 msgid "Standard"
-msgstr "Standardní"
+msgstr "Výchozí"
 
 msgid "Standard (iconpack)"
-msgstr "Standardní (balíček ikon)"
+msgstr "Výchozí (sada ikon)"
 
 msgid "Standard Icons"
-msgstr "Standardní ikony"
+msgstr "Výchozí ikony"
 
 msgid "Strong wind!"
 msgstr "Silný vítr!"
@@ -355,13 +354,13 @@ msgid "Sun: "
 msgstr "Slunce: "
 
 msgid "Very heavy rain!"
-msgstr "Velmi silný déšť!"
+msgstr "Velmi vydatný déšť!"
 
 msgid "Warm weather!"
 msgstr "Teplé počasí!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Jejda!\nPomalé nebo žádné připojení k internetu.\nZkuste to prosím znovu"
+msgstr "Hups!\nPomalé nebo žádné připojení k internetu\nZkuste to prosím znovu"
 
 msgid "Wind: "
 msgstr "Vítr: "
@@ -382,7 +381,7 @@ msgid "Save"
 msgstr "Uložit"
 
 msgid "Show 2 locations"
-msgstr "Zobrazit 2 místa s počasím"
+msgstr "Zobrazit 2 místa"
 
 msgid "Radar default zoom:"
 msgstr "Výchozí přiblížení radaru:"
@@ -406,70 +405,70 @@ msgid "- Press Ok for Weather info"
 msgstr "- Stiskněte OK pro informace o počasí"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Stiskněte Menu pro radar srážek"
+msgstr "- Stiskněte Menu pro dešťový radar"
 
 msgid "Appearance"
 msgstr "Vzhled"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
+msgid "City / Location"
 msgstr "Město / Místo"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Aktuální teplota"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "Popis počasí"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "Pocitová teplota"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Směr větru"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "Den v týdnu"
 
-msgid "Höchsttemperatur"
-msgstr "Nejvyšší teplota"
+msgid "Maximum temperature"
+msgstr "Maximální teplota"
 
-msgid "Tiefsttemperatur"
-msgstr "Nejnižší teplota"
+msgid "Minimum temperature"
+msgstr "Minimální teplota"
 
-msgid "Tages-Wettertext"
-msgstr "Denní popis počasí"
+msgid "Daily weather text"
+msgstr "Denní text o počasí"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Východ slunce / západ slunce"
+msgid "Sunrise / Sunset"
+msgstr "Východ / západ slunce"
 
-msgid "Stunde / Uhrzeit"
-msgstr "Hodina / čas"
+msgid "Hour / Time"
+msgstr "Hodina / Čas"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Hodinová teplota"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Déšť"
 
-msgid "Sonnenwahrscheinlichkeit"
-msgstr "Pravděpodobnost slunečního svitu"
+msgid "Sunshine probability"
+msgstr "Pravděpodobnost svitu slunce"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "Vlhkost vzduchu"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Rychlost větru"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Hodiny"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Datum"
 
-msgid "Wetterwarnung"
+msgid "Weather warning"
 msgstr "Výstraha před počasím"
 
 msgid "Default colors"
@@ -493,12 +492,12 @@ msgid ""
 "\n"
 "Version: %s"
 msgstr ""
-"Plugin je již aktuální.\n"
+"Doplněk je již aktuální.\n"
 "\n"
 "Verze: %s"
 
 msgid "Update check failed."
-msgstr "Kontrola aktualizace selhala."
+msgstr "Kontrola aktualizací selhala."
 
 msgid "Changes:"
 msgstr "Změny:"
@@ -507,10 +506,10 @@ msgid "Installer version: %s"
 msgstr "Verze instalátoru: %s"
 
 msgid "Update information is incomplete."
-msgstr "Informace o aktualizaci nejsou úplné."
+msgstr "Informace o aktualizaci jsou neúplné."
 
 msgid "No changes available."
-msgstr "Nejsou k dispozici žádné změny."
+msgstr "Nejsou dostupné žádné změny."
 
 msgid "A new version of speedy_TheWeather is available."
 msgstr "Je k dispozici nová verze speedy_TheWeather."
@@ -543,7 +542,7 @@ msgstr ""
 "Zkontrolujte připojení k internetu a zkuste to znovu."
 
 msgid "Updating..."
-msgstr "Probíhá aktualizace..."
+msgstr "Aktualizace..."
 
 msgid ""
 "The update has been installed successfully.\n"
@@ -552,19 +551,19 @@ msgid ""
 msgstr ""
 "Aktualizace byla úspěšně nainstalována.\n"
 "\n"
-"Chcete nyní restartovat GUI Enigma2?"
+"Chcete nyní restartovat rozhraní Enigma2?"
 
 msgid "Hours"
 msgstr "Hodiny"
 
 msgid "Radar"
-msgstr "Radar srážek"
+msgstr "Radar"
 
 msgid "Locations"
 msgstr "Místa"
 
 msgid "RainViewer"
-msgstr "Radar srážek"
+msgstr "RainViewer"
 
 msgid "speedy_TheWeather Settings"
 msgstr "Nastavení speedy_TheWeather"
@@ -573,10 +572,10 @@ msgid "Infoscreen"
 msgstr "Informační obrazovka"
 
 msgid "Auto weather backgrounds:"
-msgstr "Automatická pozadí podle počasí:"
+msgstr "Automatická pozadí počasí:"
 
 msgid "Holiday backgrounds:"
-msgstr "Sváteční pozadí:"
+msgstr "Prázdninová pozadí:"
 
 msgid "Download weather backgrounds"
 msgstr "Stáhnout pozadí počasí"
@@ -612,11 +611,430 @@ msgid "Sun :"
 msgstr "Slunce :"
 
 msgid "No matching cities found."
-msgstr "Nebyly nalezeny žádné odpovídající města."
+msgstr "Nenalezena žádná odpovídající města."
 
 msgid "Could not save the selected location."
 msgstr "Vybrané místo se nepodařilo uložit."
 
 msgid "Choose a match:"
-msgstr "Vyberte odpovídající město:"
-```
+msgstr "Vyberte shodu:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Automatická pozadí"
+
+msgid "Download is preparing..."
+msgstr "Příprava stahování..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Instalace automatických pozadí..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[OBRAZOVKA] Instalace automatického pozadí"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[OBRAZOVKA] Rozlišení: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[OBRAZOVKA] Instalace začíná..."
+
+msgid "Error starting the download"
+msgstr "Chyba při spouštění stahování"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[CHYBA] Pracovní proces nelze spustit: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[CHYBA] Výjimka pracovního procesu: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Automatická pozadí úspěšně nainstalována"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[ÚSPĚCH] Instalace byla úspěšně dokončena."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[ÚSPĚCH] Všechny obrázky AUTO a EXTRA byly zpracovány."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[OBRAZOVKA] Zavřete stisknutím OK nebo EXIT."
+
+msgid "[ERROR] Installation failed"
+msgstr "[CHYBA] Instalace selhala"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[CHYBA] Instalace byla dokončena s chybami."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[CHYBA] Podrobnosti viz protokol výše."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "START INSTALACE AUTOMATICKÉHO POZADÍ"
+
+msgid "Log file: %s"
+msgstr "Protokol: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[INFO] Automatická pozadí jsou vypnuta"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "KONTROLA AUTOMATICKÉHO POZADÍ"
+
+msgid "[STEP] Checking background directories"
+msgstr "[KROK] Kontrola adresářů pozadí"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[VYTVOŘIT] Kořen pozadí: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Kořen pozadí existuje: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[VYTVOŘIT] Automatický adresář: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Automatický adresář existuje: %s"
+
+msgid "Background root: %s"
+msgstr "Kořen pozadí: %s"
+
+msgid "Auto directory: %s"
+msgstr "Automatický adresář: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[INFO] Instalační značka existuje: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[INFO] Nebyla nalezena žádná instalační značka"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[KROK] Kontrola starého souboru ZIP: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[ODSTRANIT] Starý ZIP bude smazán"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Starý ZIP byl smazán"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[INFO] Žádný starý ZIP nebyl nalezen"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[VAROVÁNÍ] Starý ZIP se nepodařilo smazat: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[STAHOVÁNÍ] ZAČÁTEK STAHOVÁNÍ"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[STAHOVÁNÍ] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[STAHOVÁNÍ] Cíl: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[CHYBA] Program wget nebyl nalezen!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[STAHOVÁNÍ] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[STAHOVÁNÍ] Spouští se wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[STAHOVÁNÍ] Návratový kód wget: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[CHYBA] STAHOVÁNÍ SELHALO"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[VYČISTĚNÍ] Neplatný ZIP byl smazán"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] STAHOVÁNÍ ÚSPĚŠNÉ"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[KROK] Kontrola staženého souboru ZIP"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[CHYBA] ZIP nebyl vytvořen!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Velikost: %s bytů"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[CHYBA] ZIP je prázdný!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] Soubor ZIP existuje"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] Kontroluje se formát ZIP..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[CHYBA] Neplatný soubor ZIP!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] ZIP je platný"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] Otevírá se ZIP..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Souborů v ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[PŘESKOČENO] AUTO není soubor JPG: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[PŘESKOČENO] EXTRA není soubor JPG: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[NALEZENO] Soubory AUTO JPG v ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[NALEZENO] Soubory EXTRA JPG v ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[CHYBA] V ZIP nebyly nalezeny žádné soubory AUTO JPG!"
+
+msgid "No AUTO files found"
+msgstr "Nebyly nalezeny žádné soubory AUTO"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[VAROVÁNÍ] V ZIP nebyly nalezeny žádné soubory EXTRA JPG!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[INSTALACE] ZAČÁTEK INSTALACE AUTO"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[INSTALACE] Soubory AUTO: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[INSTALACE] Zdroj AUTO: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[INSTALACE] Cíl AUTO: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[INSTALACE] Přečteno AUTO: %s bytů"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[CHYBA] Soubor AUTO je prázdný: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[CHYBA] Dočasný soubor AUTO je prázdný: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[INSTALACE] Nahrazování starého souboru AUTO: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[CHYBA] Cíl AUTO neexistuje: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[CHYBA] Cíl AUTO je prázdný: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] AUTO NAINSTALOVÁNO: %s (%s bytů)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[CHYBA] Chyba AUTO %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[INSTALACE] AUTO DOKONČENO: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[INSTALACE] ZAČÁTEK INSTALACE EXTRA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[INSTALACE] Soubory EXTRA: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[INSTALACE] Zdroj EXTRA: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[INSTALACE] Cíl EXTRA: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[INSTALACE] Přečteno EXTRA: %s bytů"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[CHYBA] Soubor EXTRA je prázdný: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[CHYBA] Dočasný soubor EXTRA je prázdný: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[INSTALACE] Nahrazování starého souboru EXTRA: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[CHYBA] Cíl EXTRA neexistuje: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[CHYBA] Cíl EXTRA je prázdný: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] EXTRA NAINSTALOVÁNO: %s (%s bytů)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[CHYBA] Chyba EXTRA %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[INSTALACE] EXTRA DOKONČENO: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP uzavřen"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[OVĚŘENÍ] ZÁVĚREČNÉ OVĚŘENÍ"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[OVĚŘENÍ] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[SELHÁNÍ] AUTO CHYBÍ: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[SELHÁNÍ] AUTO JE PRÁZDNÉ: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] AUTO OVĚŘENO: %s (%s bytů)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[OVĚŘENÍ] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[SELHÁNÍ] EXTRA CHYBÍ: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[SELHÁNÍ] EXTRA JE PRÁZDNÉ: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] EXTRA OVĚŘENO: %s (%s bytů)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[VÝSLEDEK] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[VÝSLEDEK] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[VÝSLEDEK] Chyby AUTO: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[VÝSLEDEK] Chyby EXTRA: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[VÝSLEDEK] Chyby ověření: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[CHYBA] Nebyly nalezeny žádné soubory AUTO!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[CHYBA] INSTALACE AUTO JE NEÚPLNÁ"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[CHYBA] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[VYČISTĚNÍ] Stará značka odstraněna"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[VAROVÁNÍ] Značku se nepodařilo odstranit: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[CHYBA] INSTALACE EXTRA JE NEÚPLNÁ"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[CHYBA] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[CHYBA] ZÁVĚREČNÉ OVĚŘENÍ SELHALO"
+
+msgid "[ERROR] %s"
+msgstr "[CHYBA] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[ZNAČKA] Zapisuje se instalační značka..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Značka zapsána: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[CHYBA] Chyba značky: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[VYČISTĚNÍ] Kontrola ZIPu pro smazání..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] ZIP smazán: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[INFO] ZIP již není přítomen"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[VAROVÁNÍ] ZIP se nepodařilo smazat: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[ÚSPĚCH] AUTOMATICKÁ POZADÍ ÚSPĚŠNĚ NAINSTALOVÁNA"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[ÚSPĚCH] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[ÚSPĚCH] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[ÚSPĚCH] INSTALACE DOKONČENA"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[FATÁLNÍ CHYBA] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[VYČISTĚNÍ] ZIP smazán po chybě"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[VYČISTĚNÍ] Značka odstraněna po chybě"
+
+msgid "Location 1 - Weather description"
+msgstr "Místo 1 - Popis počasí"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Místo 1 - Pocitová teplota"
+
+msgid "Location 1 - Wind"
+msgstr "Místo 1 - Vítr"
+
+msgid "Location 1 - Rain"
+msgstr "Místo 1 - Srážky"
+
+msgid "Location 1 - Sun :"
+msgstr "Místo 1 - Slunce :"
+
+msgid "Location 1 - Moon :"
+msgstr "Místo 1 - Měsíc :"
+
+msgid "Location 2 - Weather description"
+msgstr "Místo 2 - Popis počasí"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Místo 2 - Pocitová teplota"
+
+msgid "Location 2 - Wind"
+msgstr "Místo 2 - Vítr"
+
+msgid "Location 2 - Rain"
+msgstr "Místo 2 - Srážky"
+
+msgid "Location 2 - Sun :"
+msgstr "Místo 2 - Slunce :"
+
+msgid "Location 2 - Moon :"
+msgstr "Místo 2 - Měsíc :"
+
+msgid "Updated: "
+msgstr "Aktualizováno: "
+
+msgid "Updated: --:--"
+msgstr "Aktualizováno: --:--"

@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,8 +5,8 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Ukrainian\n"
-"Language: uk\n"
+"Language-Team: \n"
+"Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -52,7 +51,7 @@ msgid "Thursday"
 msgstr "Четвер"
 
 msgid "Friday"
-msgstr "П’ятниця"
+msgstr "П'ятниця"
 
 msgid "Saturday"
 msgstr "Субота"
@@ -64,13 +63,13 @@ msgid "Belgium"
 msgstr "Бельгія"
 
 msgid "Changeable and chance of mist"
-msgstr "Мінлива погода, можливий туман"
+msgstr "Змінна хмарність, можливий туман"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Порада!\nНатисніть приховану ЖОВТУ кнопку в головному меню, щоб відкрити радар дощу.\n\nНатисніть приховану ЗЕЛЕНУ кнопку в головному меню, щоб змінити погодинний інтервал.\n\nНатисніть приховану СИНЮ кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть OK, щоб увімкнути або вимкнути відображення температури: %s"
+msgstr "Порада!\nНатисніть приховану жовту кнопку в головному меню, щоб відкрити радар опадів.\n\nНатисніть приховану зелену кнопку в головному меню, щоб змінити часовий інтервал.\n\nНатисніть приховану блакитну кнопку в головному меню, щоб порівняти два міста.\n\nНатисніть OK тут, щоб увімкнути/вимкнути накладання температури: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Мінлива хмарність, слабкий сніг"
+msgstr "Мінлива хмарність, легкий снігопад"
 
 msgid "Clear and chance of mist"
 msgstr "Ясно, можливий туман"
@@ -88,13 +87,13 @@ msgid "Cloudy and chance of showers"
 msgstr "Хмарно, можливі зливи"
 
 msgid "Download error: Check spelling."
-msgstr "Помилка завантаження: перевірте написання."
+msgstr "Помилка завантаження: перевірте правопис."
 
 msgid "Drizzle"
-msgstr "Мряка"
+msgstr "Мжичка"
 
 msgid "E"
-msgstr "Сх"
+msgstr "С"
 
 msgid "Europe"
 msgstr "Європа"
@@ -103,7 +102,7 @@ msgid "Exit"
 msgstr "Вихід"
 
 msgid "Favorite Locations"
-msgstr "Улюблені місця"
+msgstr "Вибрані місця"
 
 msgid "Feels Like: "
 msgstr "Відчувається як: "
@@ -115,25 +114,25 @@ msgid "Hail radar"
 msgstr "Радар граду"
 
 msgid "Heavy clouds"
-msgstr "Сильна хмарність"
+msgstr "Значна хмарність"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Сильна хмарність, сильні зливи"
+msgstr "Значна хмарність, сильні зливи"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Сильна хмарність, грозові зливи"
+msgstr "Значна хмарність, грозові дощі"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Сильна хмарність і сильний снігопад"
+msgstr "Значна хмарність та сильний снігопад"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Сильна хмарність, слабкий сніг"
+msgstr "Значна хмарність, легкий снігопад"
 
 msgid "Heavy clouds showers possible"
-msgstr "Сильна хмарність, можливі опади"
+msgstr "Значна хмарність, можливі зливи"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Сильна хмарність, зимові опади"
+msgstr "Значна хмарність, зимовий дощ зі снігом"
 
 msgid "Help"
 msgstr "Допомога"
@@ -142,10 +141,10 @@ msgid "Km/h"
 msgstr "км/год"
 
 msgid "Light cloudy"
-msgstr "Невелика хмарність"
+msgstr "Малохмарно"
 
 msgid "Local Weather"
-msgstr "Місцева погода"
+msgstr "Погода на місці"
 
 msgid "Location +"
 msgstr "Місце +"
@@ -169,25 +168,25 @@ msgid "N"
 msgstr "Пн"
 
 msgid "NE"
-msgstr "ПнСх"
+msgstr "ПнС"
 
 msgid "NW"
-msgstr "ПнЗх"
+msgstr "ПнЗ"
 
 msgid "Rainfall radar"
 msgstr "Радар опадів"
 
 msgid "WeatherInfo"
-msgstr "Інформація про погоду"
+msgstr "ІнфоПроПогоду"
 
 msgid "S"
 msgstr "Пд"
 
 msgid "SE"
-msgstr "ПдСх"
+msgstr "ПдС"
 
 msgid "SW"
-msgstr "ПдЗх"
+msgstr "ПдЗ"
 
 msgid "Satellite"
 msgstr "Супутник"
@@ -199,7 +198,7 @@ msgid "Snow radar"
 msgstr "Радар снігу"
 
 msgid "Sun radar"
-msgstr "Радар сонця"
+msgstr "Сонячний радар"
 
 msgid "Sunny / Clear"
 msgstr "Сонячно / Ясно"
@@ -211,10 +210,10 @@ msgid "Sunny and chance of showers"
 msgstr "Сонячно, можливі зливи"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Сонячно, можливі грозові зливи"
+msgstr "Сонячно, можливі грозові дощі"
 
 msgid "Sunny few clouds"
-msgstr "Сонячно, невелика хмарність"
+msgstr "Сонячно, малохмарно"
 
 msgid "Sunpower-UV"
 msgstr "УФ-індекс"
@@ -232,10 +231,10 @@ msgid "Thunder radar"
 msgstr "Радар гроз"
 
 msgid "W"
-msgstr "Зх"
+msgstr "З"
 
 msgid "Weather forecast-nl"
-msgstr "Прогноз погоди-NL"
+msgstr "Прогноз погоди - Нідерланди"
 
 msgid "Wind direction: "
 msgstr "Напрямок вітру: "
@@ -250,28 +249,28 @@ msgid "Background reset to standard."
 msgstr "Фон скинуто до стандартного."
 
 msgid "Choose 2nd location"
-msgstr "Виберіть друге місце"
+msgstr "Вибрати 2-ге місто"
 
 msgid "Choose 2nd location:"
-msgstr "Виберіть друге місце:"
+msgstr "Вибрати 2-ге місто:"
 
 msgid "Choose background:"
-msgstr "Виберіть фон:"
+msgstr "Вибрати фон:"
 
 msgid "City not found. Press YELLOW to change."
-msgstr "Місто не знайдено. Натисніть ЖОВТУ кнопку, щоб змінити."
+msgstr "Місто не знайдено. Натисніть ЖОВТУ кнопку для зміни."
 
 msgid "Compare Two Locations"
-msgstr "Порівняти два місця"
+msgstr "Порівняти два міста"
 
 msgid "Compare Locations"
-msgstr "Порівняння місць"
+msgstr "Порівняти місця"
 
 msgid "Data error"
 msgstr "Помилка даних"
 
 msgid "Download error: No response try again"
-msgstr "Помилка завантаження: немає відповіді, спробуйте ще раз"
+msgstr "Помилка завантаження: немає відповіді, спробуйте знову"
 
 msgid "Error fetching data."
 msgstr "Помилка отримання даних."
@@ -280,7 +279,7 @@ msgid "Error loading"
 msgstr "Помилка завантаження"
 
 msgid "Extra Icons "
-msgstr "Додаткові значки "
+msgstr "Додаткові іконки "
 
 msgid "Extreme cold!"
 msgstr "Екстремальний холод!"
@@ -289,43 +288,43 @@ msgid "Extreme heat!"
 msgstr "Екстремальна спека!"
 
 msgid "h"
-msgstr "год"
+msgstr "год."
 
 msgid "Heavy rain!"
 msgstr "Сильний дощ!"
 
 msgid "Heavy storm!"
-msgstr "Сильна буря!"
+msgstr "Сильний шторм!"
 
 msgid "Icon pack changed.\nThe plugin will restart..."
-msgstr "Пакет значків змінено.\nПлагін буде перезапущено..."
+msgstr "Пакет іконок змінено.\nПлагін перезапуститься..."
 
 msgid "Loading background image, please wait..."
 msgstr "Завантаження фонового зображення, зачекайте..."
 
 msgid "Loading standard icons, please wait..."
-msgstr "Завантаження стандартних значків, зачекайте..."
+msgstr "Завантаження стандартних іконок, зачекайте..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Завантаження додаткових значків, зачекайте..."
+msgstr "Завантаження додаткових іконок, зачекайте..."
 
 msgid "Loading..."
 msgstr "Завантаження..."
 
 msgid "No 2nd location"
-msgstr "Друге місце не вибрано"
+msgstr "Немає 2-го міста"
 
 msgid "No info"
 msgstr "Немає інформації"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Збережених міст не знайдено.\nСпочатку додайте міста на екрані вибору місця."
+msgstr "Збережених міст не знайдено.\nСпершу додайте міста через екран вибору місць."
 
 msgid "Not found"
 msgstr "Не знайдено"
 
 msgid "Press YELLOW to choose a 2nd location."
-msgstr "Натисніть ЖОВТУ кнопку, щоб вибрати друге місце."
+msgstr "Натисніть ЖОВТУ кнопку, щоб вибрати 2-ге місто."
 
 msgid "Rain: "
 msgstr "Дощ: "
@@ -340,13 +339,13 @@ msgid "Severe cold!"
 msgstr "Сильний мороз!"
 
 msgid "Standard"
-msgstr "Стандарт"
+msgstr "Стандартний"
 
 msgid "Standard (iconpack)"
-msgstr "Стандарт (пакет значків)"
+msgstr "Стандартний (пакет іконок)"
 
 msgid "Standard Icons"
-msgstr "Стандартні значки"
+msgstr "Стандартні іконки"
 
 msgid "Strong wind!"
 msgstr "Сильний вітер!"
@@ -361,13 +360,13 @@ msgid "Warm weather!"
 msgstr "Тепла погода!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ой!\nПовільне або відсутнє підключення до Інтернету.\nСпробуйте ще раз"
+msgstr "Ой!\nПовільне або відсутнє підключення до інтернету\nБудь ласка, спробуйте знову"
 
 msgid "Wind: "
 msgstr "Вітер: "
 
 msgid "ON"
-msgstr "УВІМ."
+msgstr "УВІМК."
 
 msgid "OFF"
 msgstr "ВИМК."
@@ -382,10 +381,10 @@ msgid "Save"
 msgstr "Зберегти"
 
 msgid "Show 2 locations"
-msgstr "Показувати 2 місця"
+msgstr "Показати 2 місця"
 
 msgid "Radar default zoom:"
-msgstr "Масштаб радара за замовчуванням:"
+msgstr "Стандартний масштаб радара:"
 
 msgid "Date format:"
 msgstr "Формат дати:"
@@ -394,7 +393,7 @@ msgid "Loading radar..."
 msgstr "Завантаження радара..."
 
 msgid "Please wait..."
-msgstr "Зачекайте..."
+msgstr "Зачекайте будь ласка..."
 
 msgid "Map zoom: %s"
 msgstr "Масштаб карти: %s"
@@ -406,74 +405,74 @@ msgid "- Press Ok for Weather info"
 msgstr "- Натисніть OK для інформації про погоду"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Натисніть Menu, щоб відкрити радар дощу"
+msgstr "- Натисніть Menu для радара опадів"
 
 msgid "Appearance"
-msgstr "Вигляд"
+msgstr "Зовнішній вигляд"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
+msgid "City / Location"
 msgstr "Місто / Місце"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Поточна температура"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "Опис погоди"
 
-msgid "Gefühlte Temperatur"
+msgid "Feels like temperature"
 msgstr "Відчутна температура"
 
-msgid "Windrichtung"
+msgid "Wind direction"
 msgstr "Напрямок вітру"
 
-msgid "Wochentag"
+msgid "Day of the week"
 msgstr "День тижня"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "Максимальна температура"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Мінімальна температура"
 
-msgid "Tages-Wettertext"
-msgstr "Денний опис погоди"
+msgid "Daily weather text"
+msgstr "Щоденний опис погоди"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
-msgstr "Схід / захід сонця"
+msgid "Sunrise / Sunset"
+msgstr "Схід / Захід сонця"
 
-msgid "Stunde / Uhrzeit"
+msgid "Hour / Time"
 msgstr "Година / Час"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Погодинна температура"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Дощ"
 
-msgid "Sonnenwahrscheinlichkeit"
-msgstr "Ймовірність сонця"
+msgid "Sunshine probability"
+msgstr "Ймовірність сонячного сяйва"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "Вологість"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Швидкість вітру"
 
-msgid "Uhr"
+msgid "Clock"
 msgstr "Годинник"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Дата"
 
-msgid "Wetterwarnung"
+msgid "Weather warning"
 msgstr "Попередження про погоду"
 
 msgid "Default colors"
-msgstr "Кольори за замовчуванням"
+msgstr "Стандартні кольори"
 
 msgid "Save & exit"
 msgstr "Зберегти та вийти"
@@ -486,19 +485,19 @@ msgid "TheWeather update"
 msgstr "Оновлення TheWeather"
 
 msgid "Search for update"
-msgstr "Перевірити оновлення"
+msgstr "Шукати оновлення"
 
 msgid ""
 "The plugin is already up to date.\n"
 "\n"
 "Version: %s"
 msgstr ""
-"Плагін уже оновлено до останньої версії.\n"
+"Плагін вже оновлено до останньої версії.\n"
 "\n"
 "Версія: %s"
 
 msgid "Update check failed."
-msgstr "Не вдалося перевірити оновлення."
+msgstr "Не вдалося перевірити наявність оновлень."
 
 msgid "Changes:"
 msgstr "Зміни:"
@@ -522,16 +521,16 @@ msgid "New version: %s"
 msgstr "Нова версія: %s"
 
 msgid "Do you want to install the update?"
-msgstr "Встановити оновлення?"
+msgstr "Бажаєте встановити оновлення?"
 
 msgid ""
 "The update is being installed.\n"
 "\n"
 "Please wait."
 msgstr ""
-"Оновлення встановлюється.\n"
+"Встановлюється оновлення.\n"
 "\n"
-"Зачекайте."
+"Будь ласка, зачекайте."
 
 msgid ""
 "The update could not be installed.\n"
@@ -540,7 +539,7 @@ msgid ""
 msgstr ""
 "Не вдалося встановити оновлення.\n"
 "\n"
-"Перевірте підключення до Інтернету та спробуйте ще раз."
+"Перевірте підключення до інтернету та спробуйте знову."
 
 msgid "Updating..."
 msgstr "Оновлення..."
@@ -552,7 +551,7 @@ msgid ""
 msgstr ""
 "Оновлення успішно встановлено.\n"
 "\n"
-"Перезапустити графічний інтерфейс Enigma2 зараз?"
+"Бажаєте перезапустити графічний інтерфейс Enigma2 зараз?"
 
 msgid "Hours"
 msgstr "Години"
@@ -570,25 +569,25 @@ msgid "speedy_TheWeather Settings"
 msgstr "Налаштування speedy_TheWeather"
 
 msgid "Infoscreen"
-msgstr "Інформаційний екран"
+msgstr "Інфоекран"
 
 msgid "Auto weather backgrounds:"
-msgstr "Автоматичні погодні фони:"
+msgstr "Автоматичні фони погоди:"
 
 msgid "Holiday backgrounds:"
 msgstr "Святкові фони:"
 
 msgid "Download weather backgrounds"
-msgstr "Завантажити погодні фони"
+msgstr "Завантажити фони погоди"
 
 msgid "Do you want to download the weather backgrounds now?"
-msgstr "Хочете завантажити погодні фони зараз?"
+msgstr "Бажаєте завантажити фони погоди зараз?"
 
 msgid "The weather backgrounds were downloaded successfully."
-msgstr "Погодні фони успішно завантажено."
+msgstr "Фони погоди успішно завантажено."
 
 msgid "The weather backgrounds could not be downloaded."
-msgstr "Не вдалося завантажити погодні фони."
+msgstr "Не вдалося завантажити фони погоди."
 
 msgid "You are already using the latest version (%s)."
 msgstr "Ви вже використовуєте останню версію (%s)."
@@ -615,8 +614,427 @@ msgid "No matching cities found."
 msgstr "Відповідних міст не знайдено."
 
 msgid "Could not save the selected location."
-msgstr "Не вдалося зберегти вибране місце."
+msgstr "Не вдалося зберегти вибране місто."
 
 msgid "Choose a match:"
-msgstr "Виберіть місто:"
-```
+msgstr "Виберіть збіг:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Автоматичні фони"
+
+msgid "Download is preparing..."
+msgstr "Підготовка до завантаження..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Встановлення автоматичних фонів..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[ЕКРАН] Встановлення автоматичного фону"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[ЕКРАН] Роздільна здатність: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[ЕКРАН] Початок встановлення..."
+
+msgid "Error starting the download"
+msgstr "Помилка запуску завантаження"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[ПОМИЛКА] Не вдалося запустити worker: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[ПОМИЛКА] Виняток у worker: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[ОК] Автоматичні фони успішно встановлено"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[УСПІХ] Встановлення успішно завершено."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[УСПІХ] Усі зображення AUTO та EXTRA оброблено."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[ЕКРАН] Натисніть OK або EXIT для закриття."
+
+msgid "[ERROR] Installation failed"
+msgstr "[ПОМИЛКА] Встановлення не вдалося"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[ПОМИЛКА] Встановлення завершено з помилками."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[ПОМИЛКА] Деталі дивіться у лозі вище."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "ПОЧАТОК ВСТАНОВЛЕННЯ АВТОМАТИЧНОГО ФОНУ"
+
+msgid "Log file: %s"
+msgstr "Файл логу: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[ІНФО] Автоматичні фони вимкнено"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "ПЕРЕВІРКА АВТОМАТИЧНОГО ФОНУ"
+
+msgid "[STEP] Checking background directories"
+msgstr "[КРОК] Перевірка каталогів фонів"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[СТВОРЕННЯ] Кореневий каталог фонів: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[ОК] Кореневий каталог фонів існує: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[СТВОРЕННЯ] Автоматичний каталог: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[ОК] Автоматичний каталог існує: %s"
+
+msgid "Background root: %s"
+msgstr "Кореневий каталог фонів: %s"
+
+msgid "Auto directory: %s"
+msgstr "Автоматичний каталог: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[ІНФО] Маркер встановлення існує: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[ІНФО] Маркер встановлення не знайдено"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[КРОК] Перевірка старого ZIP-файлу: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[ВИДАЛЕННЯ] Старий ZIP буде видалено"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[ОК] Старий ZIP видалено"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[ІНФО] Старий ZIP не знайдено"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[ПОПЕРЕДЖЕННЯ] Не вдалося видалити старий ZIP: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[ЗАВАНТАЖЕННЯ] ПОЧАТОК ЗАВАНТАЖЕННЯ"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[ЗАВАНТАЖЕННЯ] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[ЗАВАНТАЖЕННЯ] Ціль: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[ПОМИЛКА] wget не знайдено!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[ЗАВАНТАЖЕННЯ] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[ЗАВАНТАЖЕННЯ] Запуск wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[ЗАВАНТАЖЕННЯ] Код повернення wget: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[ПОМИЛКА] ЗАВАНТАЖЕННЯ НЕ ВДАЛОСЯ"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[ОЧИЩЕННЯ] Недійсний ZIP видалено"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[ОК] ЗАВАНТАЖЕННЯ УСПІШНЕ"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[КРОК] Перевірка завантаженого ZIP-файлу"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[ПОМИЛКА] ZIP-файл не створено!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Розмір: %s байтів"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[ПОМИЛКА] ZIP-файл порожній!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[ОК] ZIP-файл існує"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] Перевірка формату ZIP..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[ПОМИЛКА] Недійсний ZIP-файл!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[ОК] ZIP дійсний"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] Відкриття ZIP..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Файлів у ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[ПРОПУЩЕНО] AUTO не є файлом JPG: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[ПРОПУЩЕНО] EXTRA не є файлом JPG: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[ЗНАЙДЕНО] Файлів AUTO JPG у ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[ЗНАЙДЕНО] Файлів EXTRA JPG у ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[ПОМИЛКА] У ZIP не знайдено файлів AUTO JPG!"
+
+msgid "No AUTO files found"
+msgstr "Файлів AUTO не знайдено"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[ПОПЕРЕДЖЕННЯ] У ZIP не знайдено файлів EXTRA JPG!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[ВСТАНОВЛЕННЯ] ПОЧАТОК ВСТАНОВЛЕННЯ AUTO"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Файлів AUTO: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Джерело AUTO: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Ціль AUTO: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[ВСТАНОВЛЕННЯ] Прочитано AUTO: %s байтів"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[ПОМИЛКА] Файл AUTO порожній: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[ПОМИЛКА] Тимчасовий файл AUTO порожній: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Заміна старого файлу AUTO: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[ПОМИЛКА] Цільовий файл AUTO не існує: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[ПОМИЛКА] Цільовий файл AUTO порожній: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[ОК] AUTO ВСТАНОВЛЕНО: %s (%s байтів)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[ПОМИЛКА] Помилка AUTO %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[ВСТАНОВЛЕННЯ] AUTO ЗАВЕРШЕНО: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[ВСТАНОВЛЕННЯ] ПОЧАТОК ВСТАНОВЛЕННЯ EXTRA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Файлів EXTRA: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Джерело EXTRA: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Ціль EXTRA: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[ВСТАНОВЛЕННЯ] Прочитано EXTRA: %s байтів"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[ПОМИЛКА] Файл EXTRA порожній: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[ПОМИЛКА] Тимчасовий файл EXTRA порожній: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[ВСТАНОВЛЕННЯ] Заміна старого файлу EXTRA: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[ПОМИЛКА] Цільовий файл EXTRA не існує: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[ПОМИЛКА] Цільовий файл EXTRA порожній: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[ОК] EXTRA ВСТАНОВЛЕНО: %s (%s байтів)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[ПОМИЛКА] Помилка EXTRA %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[ВСТАНОВЛЕННЯ] EXTRA ЗАВЕРШЕНО: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] ZIP закрито"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[ПЕРЕВІРКА] КІНЦЕВА ПЕРЕВІРКА"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[ПЕРЕВІРКА] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[ПОМИЛКА] AUTO ВІДСУТНІЙ: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[ПОМИЛКА] AUTO ПОРОЖНІЙ: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[ОК] AUTO ПЕРЕВІРЕНО: %s (%s байтів)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[ПЕРЕВІРКА] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[ПОМИЛКА] EXTRA ВІДСУТНІЙ: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[ПОМИЛКА] EXTRA ПОРОЖНІЙ: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[ОК] EXTRA ПЕРЕВІРЕНО: %s (%s байтів)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[РЕЗУЛЬТАТ] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[РЕЗУЛЬТАТ] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[РЕЗУЛЬТАТ] Помилки AUTO: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[РЕЗУЛЬТАТ] Помилки EXTRA: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[РЕЗУЛЬТАТ] Помилки перевірки: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[ПОМИЛКА] Файлів AUTO не знайдено!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[ПОМИЛКА] ВСТАНОВЛЕННЯ AUTO НЕЗАВЕРШЕНЕ"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[ПОМИЛКА] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[ОЧИЩЕННЯ] Старий маркер видалено"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[ПОПЕРЕДЖЕННЯ] Не вдалося видалити маркер: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[ПОМИЛКА] ВСТАНОВЛЕННЯ EXTRA НЕЗАВЕРШЕНЕ"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[ПОМИЛКА] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[ПОМИЛКА] КІНЦЕВА ПЕРЕВІРКА НЕ ВДАЛАСЯ"
+
+msgid "[ERROR] %s"
+msgstr "[ПОМИЛКА] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[МАРКЕР] Запис маркера встановлення..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[ОК] Маркер записано: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[ПОМИЛКА] Помилка маркера: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[ОЧИЩЕННЯ] Перевірка ZIP на видалення..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[ОК] ZIP видалено: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[ІНФО] ZIP вже відсутній"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[ПОПЕРЕДЖЕННЯ] Не вдалося видалити ZIP: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[УСПІХ] АВТОМАТИЧНІ ФОНИ УСПІШНО ВСТАНОВЛЕНО"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[УСПІХ] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[УСПІХ] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[УСПІХ] ВСТАНОВЛЕННЯ ЗАВЕРШЕНО"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[КРИТИЧНА ПОМИЛКА] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[ОЧИЩЕННЯ] ZIP видалено після помилки"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[ОЧИЩЕННЯ] Маркер видалено після помилки"
+
+msgid "Location 1 - Weather description"
+msgstr "Місце 1 - Опис погоди"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Місце 1 - Відчутна температура"
+
+msgid "Location 1 - Wind"
+msgstr "Місце 1 - Вітер"
+
+msgid "Location 1 - Rain"
+msgstr "Місце 1 - Дощ"
+
+msgid "Location 1 - Sun :"
+msgstr "Місце 1 - Сонце :"
+
+msgid "Location 1 - Moon :"
+msgstr "Місце 1 - Місяць :"
+
+msgid "Location 2 - Weather description"
+msgstr "Місце 2 - Опис погоди"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Місце 2 - Відчутна температура"
+
+msgid "Location 2 - Wind"
+msgstr "Місце 2 - Вітер"
+
+msgid "Location 2 - Rain"
+msgstr "Місце 2 - Дощ"
+
+msgid "Location 2 - Sun :"
+msgstr "Місце 2 - Сонце :"
+
+msgid "Location 2 - Moon :"
+msgstr "Місце 2 - Місяць :"
+
+msgid "Updated: "
+msgstr "Оновлено: "
+
+msgid "Updated: --:--"
+msgstr "Оновлено: --:--"

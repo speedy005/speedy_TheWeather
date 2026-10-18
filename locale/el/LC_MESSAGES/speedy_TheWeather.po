@@ -1,4 +1,3 @@
-```po
 msgid ""
 msgstr ""
 "Project-Id-Version: hetweer\n"
@@ -6,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-07 13:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Greek\n"
+"Language-Team: \n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;\n"
 "X-Poedit-Basepath: ../ me/..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,25 +18,25 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Mo"
-msgstr "Δε"
+msgstr "Δευ"
 
 msgid "Tu"
-msgstr "Τρ"
+msgstr "Τρι"
 
 msgid "We"
-msgstr "Τε"
+msgstr "Τετ"
 
 msgid "Th"
-msgstr "Πε"
+msgstr "Πεμ"
 
 msgid "Fr"
-msgstr "Πα"
+msgstr "Παρ"
 
 msgid "Sa"
-msgstr "Σα"
+msgstr "Σαβ"
 
 msgid "Su"
-msgstr "Κυ"
+msgstr "Κυρ"
 
 msgid "Monday"
 msgstr "Δευτέρα"
@@ -64,34 +63,34 @@ msgid "Belgium"
 msgstr "Βέλγιο"
 
 msgid "Changeable and chance of mist"
-msgstr "Μεταβλητός καιρός, πιθανότητα ομίχλης"
+msgstr "Μεταβλητός και πιθανότητα ομίχλης"
 
 msgid "Tip!\nPress the hidden Yellow button in the main menu to open the RainRadar.\n\nPress the hidden Green button in the main menu to change the hour interval.\n\nPress the hidden Blue button in the main menu to compare two cities.\n\nPress OK here to toggle the temperature overlay: %s"
-msgstr "Συμβουλή!\nΠατήστε το κρυφό ΚΙΤΡΙΝΟ πλήκτρο στο κύριο μενού για να ανοίξετε το ραντάρ βροχής.\n\nΠατήστε το κρυφό ΠΡΑΣΙΝΟ πλήκτρο στο κύριο μενού για να αλλάξετε το χρονικό διάστημα των ωρών.\n\nΠατήστε το κρυφό ΜΠΛΕ πλήκτρο στο κύριο μενού για να συγκρίνετε δύο πόλεις.\n\nΠατήστε OK εδώ για να ενεργοποιήσετε ή να απενεργοποιήσετε την ένδειξη θερμοκρασίας: %s"
+msgstr "Συμβουλή!\nΠατήστε το κρυφό Κίτρινο κουμπί στο κεντρικό μενού για να ανοίξετε το ραντάρ βροχής.\n\nΠατήστε το κρυφό Πράσινο κουμπί στο κεντρικό μενού για να αλλάξετε το χρονικό διάστημα.\n\nΠατήστε το κρυφό Μπλε κουμπί στο κεντρικό μενού για σύγκριση δύο πόλεων.\n\nΠατήστε OK εδώ για εναλλαγή της επικάλυψης θερμοκρασίας: %s"
 
 msgid "Changeable cloudy light snowfall"
-msgstr "Μεταβλητές νεφώσεις με ασθενή χιονόπτωση"
+msgstr "Μεταβλητός με συννεφιά και ελαφρή χιονόπτωση"
 
 msgid "Clear and chance of mist"
-msgstr "Αίθριος καιρός με πιθανότητα ομίχλης"
+msgstr "Αιτήριος και πιθανότητα ομίχλης"
 
 msgid "Clear night"
-msgstr "Αίθρια νύχτα"
+msgstr "Καθαρή νύχτα"
 
 msgid "Clouds radar"
-msgstr "Ραντάρ νεφώσεων"
+msgstr "Ραντάρ νεφών"
 
 msgid "Cloudy"
-msgstr "Συννεφιά"
+msgstr "Συννεφιασμένος"
 
 msgid "Cloudy and chance of showers"
-msgstr "Συννεφιά με πιθανότητα βροχοπτώσεων"
+msgstr "Συννεφιά και πιθανότητα βροχοπτώσεων"
 
 msgid "Download error: Check spelling."
 msgstr "Σφάλμα λήψης: Ελέγξτε την ορθογραφία."
 
 msgid "Drizzle"
-msgstr "Ψιχάλα"
+msgstr "Ψιλόβροχο"
 
 msgid "E"
 msgstr "Α"
@@ -115,34 +114,34 @@ msgid "Hail radar"
 msgstr "Ραντάρ χαλαζιού"
 
 msgid "Heavy clouds"
-msgstr "Πυκνή συννεφιά"
+msgstr "Πυκνές νεφώσεις"
 
 msgid "Heavy clouds  heavy showers"
-msgstr "Πυκνή συννεφιά, ισχυρές βροχοπτώσεις"
+msgstr "Πυκνές νεφώσεις, ισχυρές βροχοπτώσεις"
 
 msgid "Heavy clouds  thundershowers"
-msgstr "Πυκνή συννεφιά, καταιγίδες"
+msgstr "Πυκνές νεφώσεις, καταιγίδες"
 
 msgid "Heavy clouds and heavy snowfall"
-msgstr "Πυκνή συννεφιά και έντονη χιονόπτωση"
+msgstr "Πυκνές νεφώσεις και ισχυρή χιονόπτωση"
 
 msgid "Heavy clouds light snowfall"
-msgstr "Πυκνή συννεφιά, ασθενής χιονόπτωση"
+msgstr "Πυκνές νεφώσεις, ελαφρή χιονόπτωση"
 
 msgid "Heavy clouds showers possible"
-msgstr "Πυκνή συννεφιά, πιθανές βροχοπτώσεις"
+msgstr "Πυκνές νεφώσεις, πιθανότητα βροχών"
 
 msgid "Heavy clouds winter rainfall"
-msgstr "Πυκνή συννεφιά, χειμερινές βροχοπτώσεις"
+msgstr "Πυκνές νεφώσεις, χειμερινή βροχή"
 
 msgid "Help"
 msgstr "Βοήθεια"
 
 msgid "Km/h"
-msgstr "Km/h"
+msgstr "Χλμ/ω"
 
 msgid "Light cloudy"
-msgstr "Λίγες νεφώσεις"
+msgstr "Ελαφρά συννεφιά"
 
 msgid "Local Weather"
 msgstr "Τοπικός καιρός"
@@ -163,7 +162,7 @@ msgid "Mostly clear"
 msgstr "Κυρίως αίθριος"
 
 msgid "Mostly sunny"
-msgstr "Κυρίως ηλιόλουστος"
+msgstr "Κυρίως ηλιοφάνεια"
 
 msgid "N"
 msgstr "Β"
@@ -175,10 +174,10 @@ msgid "NW"
 msgstr "ΒΔ"
 
 msgid "Rainfall radar"
-msgstr "Ραντάρ βροχοπτώσεων"
+msgstr "Ραντάρ βροχόπτωσης"
 
 msgid "WeatherInfo"
-msgstr "Πληροφορίες καιρού"
+msgstr "Πληροφορίες Καιρού"
 
 msgid "S"
 msgstr "Ν"
@@ -193,28 +192,28 @@ msgid "Satellite"
 msgstr "Δορυφόρος"
 
 msgid "Showers and chance of thunder"
-msgstr "Βροχοπτώσεις με πιθανότητα καταιγίδας"
+msgstr "Βροχές και πιθανότητα καταιγίδας"
 
 msgid "Snow radar"
-msgstr "Ραντάρ χιονόπτωσης"
+msgstr "Ραντάρ χιονιού"
 
 msgid "Sun radar"
 msgstr "Ραντάρ ηλιοφάνειας"
 
 msgid "Sunny / Clear"
-msgstr "Ηλιόλουστα / Αίθριος"
+msgstr "Ηλιόλουστος / Αιτήριος"
 
 msgid "Sunny and chance of mist"
-msgstr "Ηλιόλουστος με πιθανότητα ομίχλης"
+msgstr "Ηλιοφάνεια και πιθανότητα ομίχλης"
 
 msgid "Sunny and chance of showers"
-msgstr "Ηλιόλουστος με πιθανότητα βροχοπτώσεων"
+msgstr "Ηλιοφάνεια και πιθανότητα βροχών"
 
 msgid "Sunny and chance of thundershowers"
-msgstr "Ηλιόλουστος με πιθανότητα καταιγίδων"
+msgstr "Ηλιοφάνεια και πιθανότητα καταιγίδων"
 
 msgid "Sunny few clouds"
-msgstr "Ηλιόλουστος με λίγες νεφώσεις"
+msgstr "Ηλιοφάνεια με λίγα σύννεφα"
 
 msgid "Sunpower-UV"
 msgstr "Δείκτης UV"
@@ -226,10 +225,10 @@ msgid "The Netherlands"
 msgstr "Ολλανδία"
 
 msgid "TheWeather"
-msgstr "Ο Καιρός"
+msgstr "ΟΚαιρός"
 
 msgid "Thunder radar"
-msgstr "Ραντάρ καταιγίδων"
+msgstr "Ραντάρ κεραυνών"
 
 msgid "W"
 msgstr "Δ"
@@ -238,7 +237,7 @@ msgid "Weather forecast-nl"
 msgstr "Πρόγνωση καιρού-NL"
 
 msgid "Wind direction: "
-msgstr "Κατεύθυνση ανέμου: "
+msgstr "Διεύθυνση ανέμου: "
 
 msgid "Back"
 msgstr "Πίσω"
@@ -247,16 +246,16 @@ msgid "Background"
 msgstr "Φόντο"
 
 msgid "Background reset to standard."
-msgstr "Το φόντο επαναφέρθηκε στην προεπιλογή."
+msgstr "Επαναφορά φόντου στο προεπιλεγμένο."
 
 msgid "Choose 2nd location"
-msgstr "Επιλέξτε 2η τοποθεσία"
+msgstr "Επιλογή 2ης τοποθεσίας"
 
 msgid "Choose 2nd location:"
-msgstr "Επιλέξτε 2η τοποθεσία:"
+msgstr "Επιλογή 2ης τοποθεσίας:"
 
 msgid "Choose background:"
-msgstr "Επιλέξτε φόντο:"
+msgstr "Επιλογή φόντου:"
 
 msgid "City not found. Press YELLOW to change."
 msgstr "Η πόλη δεν βρέθηκε. Πατήστε ΚΙΤΡΙΝΟ για αλλαγή."
@@ -271,19 +270,19 @@ msgid "Data error"
 msgstr "Σφάλμα δεδομένων"
 
 msgid "Download error: No response try again"
-msgstr "Σφάλμα λήψης: Δεν υπάρχει απάντηση, δοκιμάστε ξανά"
+msgstr "Σφάλμα λήψης: Καμία απόκριση, δοκιμάστε ξανά"
 
 msgid "Error fetching data."
-msgstr "Σφάλμα κατά τη λήψη δεδομένων."
+msgstr "Σφάλμα λήψης δεδομένων."
 
 msgid "Error loading"
 msgstr "Σφάλμα φόρτωσης"
 
 msgid "Extra Icons "
-msgstr "Πρόσθετα εικονίδια "
+msgstr "Επιπλέον εικονίδια "
 
 msgid "Extreme cold!"
-msgstr "Ακραίο κρύο!"
+msgstr "Ακραίο ψύχος!"
 
 msgid "Extreme heat!"
 msgstr "Ακραία ζέστη!"
@@ -292,7 +291,7 @@ msgid "h"
 msgstr "ώρ."
 
 msgid "Heavy rain!"
-msgstr "Ισχυρή βροχή!"
+msgstr "Ισχυρή βροχόπτωση!"
 
 msgid "Heavy storm!"
 msgstr "Ισχυρή καταιγίδα!"
@@ -307,19 +306,19 @@ msgid "Loading standard icons, please wait..."
 msgstr "Φόρτωση τυπικών εικονιδίων, παρακαλώ περιμένετε..."
 
 msgid "Loading extra icons, please wait..."
-msgstr "Φόρτωση πρόσθετων εικονιδίων, παρακαλώ περιμένετε..."
+msgstr "Φόρτωση επιπλέον εικονιδίων, παρακαλώ περιμένετε..."
 
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
 msgid "No 2nd location"
-msgstr "Δεν υπάρχει 2η τοποθεσία"
+msgstr "Χωρίς 2η τοποθεσία"
 
 msgid "No info"
-msgstr "Δεν υπάρχουν πληροφορίες"
+msgstr "Χωρίς πληροφορίες"
 
 msgid "No saved cities found.\nFirst add cities via the location screen."
-msgstr "Δεν βρέθηκαν αποθηκευμένες πόλεις.\nΠροσθέστε πρώτα πόλεις από την οθόνη τοποθεσιών."
+msgstr "Δεν βρέθηκαν αποθηκευμένες πόλεις.\nΠροσθέστε πρώτα πόλεις μέσω της οθόνης τοποθεσιών."
 
 msgid "Not found"
 msgstr "Δεν βρέθηκε"
@@ -340,28 +339,28 @@ msgid "Severe cold!"
 msgstr "Δριμύ ψύχος!"
 
 msgid "Standard"
-msgstr "Τυπικό"
+msgstr "Προεπιλογή"
 
 msgid "Standard (iconpack)"
-msgstr "Τυπικό (πακέτο εικονιδίων)"
+msgstr "Προεπιλεγμένο (πακέτο εικονιδίων)"
 
 msgid "Standard Icons"
-msgstr "Τυπικά εικονίδια"
+msgstr "Προεπιλεγμένα εικονίδια"
 
 msgid "Strong wind!"
-msgstr "Ισχυροί άνεμοι!"
+msgstr "Ισχυρός άνεμος!"
 
 msgid "Sun: "
 msgstr "Ήλιος: "
 
 msgid "Very heavy rain!"
-msgstr "Πολύ ισχυρή βροχή!"
+msgstr "Πολύ ισχυρή βροχόπτωση!"
 
 msgid "Warm weather!"
 msgstr "Ζεστός καιρός!"
 
 msgid "Whoops!\nSlow or no Internet connection\nPlease try again"
-msgstr "Ωχ!\nΑργή ή ανύπαρκτη σύνδεση στο Internet.\nΠαρακαλώ δοκιμάστε ξανά"
+msgstr "Ωχ!\nΑργή ή καθόλου σύνδεση στο Διαδίκτυο\nΠαρακαλώ προσπαθήστε ξανά"
 
 msgid "Wind: "
 msgstr "Άνεμος: "
@@ -382,10 +381,10 @@ msgid "Save"
 msgstr "Αποθήκευση"
 
 msgid "Show 2 locations"
-msgstr "Εμφάνιση 2 τοποθεσιών καιρού"
+msgstr "Εμφάνιση 2 τοποθεσιών"
 
 msgid "Radar default zoom:"
-msgstr "Προεπιλεγμένη μεγέθυνση ραντάρ:"
+msgstr "Προεπιλεγμένο ζουμ ραντάρ:"
 
 msgid "Date format:"
 msgstr "Μορφή ημερομηνίας:"
@@ -397,7 +396,7 @@ msgid "Please wait..."
 msgstr "Παρακαλώ περιμένετε..."
 
 msgid "Map zoom: %s"
-msgstr "Μεγέθυνση χάρτη: %s"
+msgstr "Ζουμ χάρτη: %s"
 
 msgid "Select city and:"
 msgstr "Επιλέξτε πόλη και:"
@@ -406,70 +405,70 @@ msgid "- Press Ok for Weather info"
 msgstr "- Πατήστε OK για πληροφορίες καιρού"
 
 msgid "- Press Menu for RainRadar"
-msgstr "- Πατήστε Menu για το ραντάρ βροχής"
+msgstr "- Πατήστε Menu για ραντάρ βροχής"
 
 msgid "Appearance"
 msgstr "Εμφάνιση"
 
 # ============================================================
-# SevenDay Farben
+# SevenDay Colors
 # ============================================================
 
-msgid "Stadt / Ort"
+msgid "City / Location"
 msgstr "Πόλη / Τοποθεσία"
 
-msgid "Aktuelle Temperatur"
+msgid "Current temperature"
 msgstr "Τρέχουσα θερμοκρασία"
 
-msgid "Wetterbeschreibung"
+msgid "Weather description"
 msgstr "Περιγραφή καιρού"
 
-msgid "Gefühlte Temperatur"
-msgstr "Αισθητή θερμοκρασία"
+msgid "Feels like temperature"
+msgstr "Αίσθηση θερμοκρασίας"
 
-msgid "Windrichtung"
-msgstr "Κατεύθυνση ανέμου"
+msgid "Wind direction"
+msgstr "Διεύθυνση ανέμου"
 
-msgid "Wochentag"
-msgstr "Ημέρα εβδομάδας"
+msgid "Day of the week"
+msgstr "Ημέρα της εβδομάδας"
 
-msgid "Höchsttemperatur"
+msgid "Maximum temperature"
 msgstr "Μέγιστη θερμοκρασία"
 
-msgid "Tiefsttemperatur"
+msgid "Minimum temperature"
 msgstr "Ελάχιστη θερμοκρασία"
 
-msgid "Tages-Wettertext"
-msgstr "Ημερήσια περιγραφή καιρού"
+msgid "Daily weather text"
+msgstr "Ημερήσιο κείμενο καιρού"
 
-msgid "Sonnenaufgang / Sonnenuntergang"
+msgid "Sunrise / Sunset"
 msgstr "Ανατολή / Δύση ηλίου"
 
-msgid "Stunde / Uhrzeit"
-msgstr "Ώρα / Χρόνος"
+msgid "Hour / Time"
+msgstr "Ώρα"
 
-msgid "Stundentemperatur"
+msgid "Hourly temperature"
 msgstr "Ωριαία θερμοκρασία"
 
-msgid "Regen"
+msgid "Rain"
 msgstr "Βροχή"
 
-msgid "Sonnenwahrscheinlichkeit"
+msgid "Sunshine probability"
 msgstr "Πιθανότητα ηλιοφάνειας"
 
-msgid "Luftfeuchtigkeit"
+msgid "Humidity"
 msgstr "Υγρασία"
 
-msgid "Windgeschwindigkeit"
+msgid "Wind speed"
 msgstr "Ταχύτητα ανέμου"
 
-msgid "Uhr"
-msgstr "Ρολόι"
+msgid "Clock"
+msgstr "Роλόι"
 
-msgid "Datum"
+msgid "Date"
 msgstr "Ημερομηνία"
 
-msgid "Wetterwarnung"
+msgid "Weather warning"
 msgstr "Προειδοποίηση καιρού"
 
 msgid "Default colors"
@@ -486,7 +485,7 @@ msgid "TheWeather update"
 msgstr "Ενημέρωση TheWeather"
 
 msgid "Search for update"
-msgstr "Έλεγχος για ενημέρωση"
+msgstr "Αναζήτηση ενημέρωσης"
 
 msgid ""
 "The plugin is already up to date.\n"
@@ -513,7 +512,7 @@ msgid "No changes available."
 msgstr "Δεν υπάρχουν διαθέσιμες αλλαγές."
 
 msgid "A new version of speedy_TheWeather is available."
-msgstr "Υπάρχει διαθέσιμη νέα έκδοση του speedy_TheWeather."
+msgstr "Μια νέα έκδοση του speedy_TheWeather είναι διαθέσιμη."
 
 msgid "Installed version: %s"
 msgstr "Εγκατεστημένη έκδοση: %s"
@@ -529,7 +528,7 @@ msgid ""
 "\n"
 "Please wait."
 msgstr ""
-"Η ενημέρωση εγκαθίσταται.\n"
+"Γίνεται εγκατάσταση της ενημέρωσης.\n"
 "\n"
 "Παρακαλώ περιμένετε."
 
@@ -538,9 +537,9 @@ msgid ""
 "\n"
 "Please check the Internet connection and try again."
 msgstr ""
-"Η ενημέρωση δεν ήταν δυνατό να εγκατασταθεί.\n"
+"Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης.\n"
 "\n"
-"Ελέγξτε τη σύνδεση στο Internet και δοκιμάστε ξανά."
+"Ελέγξτε τη σύνδεση στο Διαδίκτυο και προσπαθήστε ξανά."
 
 msgid "Updating..."
 msgstr "Ενημέρωση..."
@@ -550,21 +549,21 @@ msgid ""
 "\n"
 "Would you like to restart the Enigma2 GUI now?"
 msgstr ""
-"Η ενημέρωση εγκαταστάθηκε με επιτυχία.\n"
+"Η ενημέρωση εγκαταστάθηκε επιτυχώς.\n"
 "\n"
-"Θέλετε να επανεκκινήσετε τώρα το GUI του Enigma2;"
+"Θέλετε να επανεκκινήσετε το γραφικό περιβάλλον (GUI) του Enigma2 τώρα;"
 
 msgid "Hours"
 msgstr "Ώρες"
 
 msgid "Radar"
-msgstr "Ραντάρ βροχής"
+msgstr "Ραντάρ"
 
 msgid "Locations"
 msgstr "Τοποθεσίες"
 
 msgid "RainViewer"
-msgstr "Ραντάρ βροχής"
+msgstr "RainViewer"
 
 msgid "speedy_TheWeather Settings"
 msgstr "Ρυθμίσεις speedy_TheWeather"
@@ -576,16 +575,16 @@ msgid "Auto weather backgrounds:"
 msgstr "Αυτόματα φόντα καιρού:"
 
 msgid "Holiday backgrounds:"
-msgstr "Εορταστικά φόντα:"
+msgstr "Φόντα εορτών:"
 
 msgid "Download weather backgrounds"
 msgstr "Λήψη φόντων καιρού"
 
 msgid "Do you want to download the weather backgrounds now?"
-msgstr "Θέλετε να κατεβάσετε τώρα τα φόντα καιρού;"
+msgstr "Θέλετε να πραγματοποιήσετε λήψη των φόντων καιρού τώρα;"
 
 msgid "The weather backgrounds were downloaded successfully."
-msgstr "Τα φόντα καιρού κατέβηκαν με επιτυχία."
+msgstr "Η λήψη των φόντων καιρού ολοκληρώθηκε επιτυχώς."
 
 msgid "The weather backgrounds could not be downloaded."
 msgstr "Δεν ήταν δυνατή η λήψη των φόντων καιρού."
@@ -612,11 +611,430 @@ msgid "Sun :"
 msgstr "Ήλιος :"
 
 msgid "No matching cities found."
-msgstr "Δεν βρέθηκαν πόλεις που να ταιριάζουν."
+msgstr "Δεν βρέθηκαν αντίστοιχες πόλεις."
 
 msgid "Could not save the selected location."
 msgstr "Δεν ήταν δυνατή η αποθήκευση της επιλεγμένης τοποθεσίας."
 
 msgid "Choose a match:"
-msgstr "Επιλέξτε μια πόλη:"
-```
+msgstr "Επιλέξτε αντιστοιχία:"
+
+msgid "speedy_TheWeather - Auto Backgrounds"
+msgstr "speedy_TheWeather - Αυτόματα Φόντα"
+
+msgid "Download is preparing..."
+msgstr "Προετοιμασία λήψης..."
+
+msgid "Installing automatic backgrounds..."
+msgstr "Εγκατάσταση αυτόματων φόντων..."
+
+msgid "[SCREEN] Automatic background installation"
+msgstr "[ΟΘΟΝΗ] Εγκατάσταση αυτόματων φόντων"
+
+msgid "[SCREEN] Resolution: %sx%s"
+msgstr "[ΟΘΟΝΗ] Ανάλυση: %sx%s"
+
+msgid "[SCREEN] Installation is starting..."
+msgstr "[ΟΘΟΝΗ] Η εγκατάσταση ξεκινά..."
+
+msgid "Error starting the download"
+msgstr "Σφάλμα κατά την εκκίνηση της λήψης"
+
+msgid "[ERROR] Worker could not be started: %s"
+msgstr "[ΣΦΑΛΜΑ] Αποτυχία εκκίνησης εργασίας: %s"
+
+msgid "[ERROR] Worker exception: %s"
+msgstr "[ΣΦΑΛΜΑ] Εξαίρεση εργασίας: %s"
+
+msgid "[OK] Automatic backgrounds installed successfully"
+msgstr "[OK] Τα αυτόματα φόντα εγκαταστάθηκαν επιτυχώς"
+
+msgid "[SUCCESS] Installation completed successfully."
+msgstr "[ΕΠΙΤΥΧΙΑ] Η εγκατάσταση ολοκληρώθηκε επιτυχώς."
+
+msgid "[SUCCESS] All AUTO and EXTRA images were processed."
+msgstr "[ΕΠΙΤΥΧΙΑ] Όλες οι εικόνες AUTO και EXTRA επεξεργάστηκαν."
+
+msgid "[SCREEN] Press OK or EXIT to close."
+msgstr "[ΟΘΟΝΗ] Πατήστε OK ή EXIT για κλείσιμο."
+
+msgid "[ERROR] Installation failed"
+msgstr "[ΣΦΑΛΜΑ] Η εγκατάσταση απέτυχε"
+
+msgid "[ERROR] Installation was completed with errors."
+msgstr "[ΣΦΑΛΜΑ] Η εγκατάσταση ολοκληρώθηκε με σφάλματα."
+
+msgid "[ERROR] See the log above for details."
+msgstr "[ΣΦΑΛΜΑ] Δείτε το παραπάνω αρχείο καταγραφής για λεπτομέρειες."
+
+msgid "AUTO BACKGROUND INSTALLATION START"
+msgstr "ΕΝΑΡΞΗ ΕΓΚΑΤΑΣΤΑΣΗΣ ΑΥΤΟΜΑΤΩΝ ΦΟΝΤΩΝ"
+
+msgid "Log file: %s"
+msgstr "Αρχείο καταγραφής: %s"
+
+msgid "[INFO] Automatic backgrounds are disabled"
+msgstr "[ΠΛΗΡΟΦΟΡΙΑ] Τα αυτόματα φόντα είναι απενεργοποιημένα"
+
+msgid "AUTO BACKGROUND CHECK"
+msgstr "ΕΛΕΓΧΟΣ ΑΥΤΟΜΑΤΩΝ ΦΟΝΤΩΝ"
+
+msgid "[STEP] Checking background directories"
+msgstr "[ΒΗΜΑ] Έλεγχος καταλόγων φόντου"
+
+msgid "[CREATE] Background root: %s"
+msgstr "[ΔΗΜΙΟΥΡΓΙΑ] Ρίζα φόντου: %s"
+
+msgid "[OK] Background root exists: %s"
+msgstr "[OK] Η ρίζα φόντου υπάρχει: %s"
+
+msgid "[CREATE] Auto directory: %s"
+msgstr "[ΔΗΜΙΟΥΡΓΙΑ] Κατάλογος Auto: %s"
+
+msgid "[OK] Auto directory exists: %s"
+msgstr "[OK] Ο κατάλογος Auto υπάρχει: %s"
+
+msgid "Background root: %s"
+msgstr "Ρίζα φόντου: %s"
+
+msgid "Auto directory: %s"
+msgstr "Κατάλογος Auto: %s"
+
+msgid "[INFO] Installation marker exists: %s"
+msgstr "[ΠΛΗΡΟΦΟΡΙΑ] Ο δείκτης εγκατάστασης υπάρχει: %s"
+
+msgid "[INFO] No installation marker found"
+msgstr "[ΠΛΗΡΟΦΟΡΙΑ] Δεν βρέθηκε δείκτης εγκατάστασης"
+
+msgid "[STEP] Checking old ZIP: %s"
+msgstr "[ΒΗΜΑ] Έλεγχος παλιού ZIP: %s"
+
+msgid "[DELETE] Old ZIP will be deleted"
+msgstr "[ΔΙΑΓΡΑΦΗ] Το παλιό ZIP θα διαγραφεί"
+
+msgid "[OK] Old ZIP deleted"
+msgstr "[OK] Το παλιό ZIP διαγράφηκε"
+
+msgid "[INFO] No old ZIP found"
+msgstr "[ΠΛΗΡΟΦΟΡΙΑ] Δεν βρέθηκε παλιό ZIP"
+
+msgid "[WARNING] Old ZIP could not be deleted: %s"
+msgstr "[ΠΡΟΕΙΔΟΠΟΙΗΣΗ] Δεν ήταν δυνατή η διαγραφή του παλιού ZIP: %s"
+
+msgid "[DOWNLOAD] DOWNLOAD START"
+msgstr "[ΛΗΨΗ] ΕΝΑΡΞΗ ΛΗΨΗΣ"
+
+msgid "[DOWNLOAD] URL: %s"
+msgstr "[ΛΗΨΗ] URL: %s"
+
+msgid "[DOWNLOAD] Target: %s"
+msgstr "[ΛΗΨΗ] Προορισμός: %s"
+
+msgid "[ERROR] wget was not found!"
+msgstr "[ΣΦΑΛΜΑ] Το wget δεν βρέθηκε!"
+
+msgid "[DOWNLOAD] wget: %s"
+msgstr "[ΛΗΨΗ] wget: %s"
+
+msgid "[DOWNLOAD] Running wget..."
+msgstr "[ΛΗΨΗ] Εκτέλεση wget..."
+
+msgid "[DOWNLOAD] wget return code: %s"
+msgstr "[ΛΗΨΗ] Κωδικός επιστροφής wget: %s"
+
+msgid "[ERROR] DOWNLOAD FAILED"
+msgstr "[ΣΦΑΛΜΑ] Η ΛΗΨΗ ΑΠΕΤΥΧΕ"
+
+msgid "[CLEANUP] Invalid ZIP deleted"
+msgstr "[ΚΑΘΑΡΙΣΜΟΣ] Το μη έγκυρο ZIP διαγράφηκε"
+
+msgid "[OK] DOWNLOAD SUCCESSFUL"
+msgstr "[OK] ΕΠΙΤΥΧΗΣ ΛΗΨΗ"
+
+msgid "[STEP] Checking downloaded ZIP"
+msgstr "[ΒΗΜΑ] Έλεγχος ληφθέντος ZIP"
+
+msgid "[ERROR] ZIP was not created!"
+msgstr "[ΣΦΑΛΜΑ] Το ZIP δεν δημιουργήθηκε!"
+
+msgid "[ZIP] Size: %s bytes"
+msgstr "[ZIP] Μέγεθος: %s byte"
+
+msgid "[ERROR] ZIP is empty!"
+msgstr "[ΣΦΑΛΜΑ] Το ZIP είναι κενό!"
+
+msgid "[OK] ZIP file exists"
+msgstr "[OK] Το αρχείο ZIP υπάρχει"
+
+msgid "[ZIP] Checking ZIP format..."
+msgstr "[ZIP] Έλεγχος μορφής ZIP..."
+
+msgid "[ERROR] Invalid ZIP file!"
+msgstr "[ΣΦΑΛΜΑ] Μη έγκυρο αρχείο ZIP!"
+
+msgid "[OK] ZIP is valid"
+msgstr "[OK] Το ZIP είναι έγκυρο"
+
+msgid "[ZIP] Opening ZIP..."
+msgstr "[ZIP] Άνοιγμα ZIP..."
+
+msgid "[ZIP] Files in ZIP: %s"
+msgstr "[ZIP] Αρχεία στο ZIP: %s"
+
+msgid "[ZIP] %s"
+msgstr "[ZIP] %s"
+
+msgid "[SKIP] AUTO is not a JPG file: %s"
+msgstr "[ΠΑΡΑΛΕΙΨΗ] Το AUTO δεν είναι αρχείο JPG: %s"
+
+msgid "[SKIP] EXTRA is not a JPG file: %s"
+msgstr "[ΠΑΡΑΛΕΙΨΗ] Το EXTRA δεν είναι αρχείο JPG: %s"
+
+msgid "[FOUND] AUTO JPG files in ZIP: %s"
+msgstr "[ΒΡΕΘΗΚΑΝ] Αρχεία AUTO JPG στο ZIP: %s"
+
+msgid "[FOUND] EXTRA JPG files in ZIP: %s"
+msgstr "[ΒΡΕΘΗΚΑΝ] Αρχεία EXTRA JPG στο ZIP: %s"
+
+msgid "[ERROR] No AUTO JPG files found in ZIP!"
+msgstr "[ΣΦΑΛΜΑ] Δεν βρέθηκαν αρχεία AUTO JPG στο ZIP!"
+
+msgid "No AUTO files found"
+msgstr "Δεν βρέθηκαν αρχεία AUTO"
+
+msgid "[WARNING] No EXTRA JPG files found in ZIP!"
+msgstr "[ΠΡΟΕΙΔΟΠΟΙΗΣΗ] Δεν βρέθηκαν αρχεία EXTRA JPG στο ZIP!"
+
+msgid "[INSTALL] AUTO INSTALLATION START"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] ΕΝΑΡΞΗ ΕΓΚΑΤΑΣΤΑΣΗΣ AUTO"
+
+msgid "[INSTALL] AUTO files: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Αρχεία AUTO: %s"
+
+msgid "[INSTALL] AUTO source: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Πηγή AUTO: %s"
+
+msgid "[INSTALL] AUTO target: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Προορισμός AUTO: %s"
+
+msgid "[INSTALL] AUTO read: %s bytes"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Ανάγνωση AUTO: %s byte"
+
+msgid "[ERROR] AUTO file is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Το αρχείο AUTO είναι κενό: %s"
+
+msgid "[ERROR] AUTO temporary file is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Το προσωρινό αρχείο AUTO είναι κενό: %s"
+
+msgid "[INSTALL] Replacing old AUTO file: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Αντικατάσταση παλιού αρχείου AUTO: %s"
+
+msgid "[ERROR] AUTO target does not exist: %s"
+msgstr "[ΣΦΑΛΜΑ] Ο προορισμός AUTO δεν υπάρχει: %s"
+
+msgid "[ERROR] AUTO target is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Ο προορισμός AUTO είναι κενός: %s"
+
+msgid "[OK] AUTO INSTALLED: %s (%s bytes)"
+msgstr "[OK] ΤΟ AUTO ΕΓΚΑΤΑΣΤΑΘΗΚΕ: %s (%s byte)"
+
+msgid "[ERROR] AUTO error %s: %s"
+msgstr "[ΣΦΑΛΜΑ] Σφάλμα AUTO %s: %s"
+
+msgid "[INSTALL] AUTO FINISHED: %s/%s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] ΤΕΛΟΣ AUTO: %s/%s"
+
+msgid "[INSTALL] EXTRA INSTALLATION START"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] ΕΝΑΡΞΗ ΕΓΚΑΤΑΣΤΑΣΗΣ EXTRA"
+
+msgid "[INSTALL] EXTRA files: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Αρχεία EXTRA: %s"
+
+msgid "[INSTALL] EXTRA source: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Πηγή EXTRA: %s"
+
+msgid "[INSTALL] EXTRA target: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Προορισμός EXTRA: %s"
+
+msgid "[INSTALL] EXTRA read: %s bytes"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Ανάγνωση EXTRA: %s byte"
+
+msgid "[ERROR] EXTRA file is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Το αρχείο EXTRA είναι κενό: %s"
+
+msgid "[ERROR] EXTRA temporary file is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Το προσωρινό αρχείο EXTRA είναι κενό: %s"
+
+msgid "[INSTALL] Replacing old EXTRA file: %s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] Αντικατάσταση παλιού αρχείου EXTRA: %s"
+
+msgid "[ERROR] EXTRA target does not exist: %s"
+msgstr "[ΣΦΑΛΜΑ] Ο προορισμός EXTRA δεν υπάρχει: %s"
+
+msgid "[ERROR] EXTRA target is empty: %s"
+msgstr "[ΣΦΑΛΜΑ] Ο προορισμός EXTRA είναι κενός: %s"
+
+msgid "[OK] EXTRA INSTALLED: %s (%s bytes)"
+msgstr "[OK] ΤΟ EXTRA ΕΓΚΑΤΑΣΤΑΘΗΚΕ: %s (%s byte)"
+
+msgid "[ERROR] EXTRA error %s: %s"
+msgstr "[ΣΦΑΛΜΑ] Σφάλμα EXTRA %s: %s"
+
+msgid "[INSTALL] EXTRA FINISHED: %s/%s"
+msgstr "[ΕΓΚΑΤΑΣΤΑΣΗ] ΤΕΛΟΣ EXTRA: %s/%s"
+
+msgid "[ZIP] ZIP closed"
+msgstr "[ZIP] Το ZIP έκλεισε"
+
+msgid "[VERIFY] FINAL VERIFICATION"
+msgstr "[ΕΛΕΓΧΟΣ] ΤΕΛΙΚΟΣ ΕΛΕΓΧΟΣ"
+
+msgid "[VERIFY] AUTO: %s/%s"
+msgstr "[ΕΛΕΓΧΟΣ] AUTO: %s/%s"
+
+msgid "[FAIL] AUTO MISSING: %s"
+msgstr "[ΑΠΟΤΥΧΙΑ] ΤΟ AUTO ΛΕΙΠΕΙ: %s"
+
+msgid "[FAIL] AUTO EMPTY: %s"
+msgstr "[ΑΠΟΤΥΧΙΑ] ΤΟ AUTO ΕΙΝΑΙ ΚΕΝΟ: %s"
+
+msgid "[OK] AUTO VERIFIED: %s (%s bytes)"
+msgstr "[OK] ΤΟ AUTO ΕΠΙΒΕΒΑΙΩΘΗΚΕ: %s (%s byte)"
+
+msgid "[VERIFY] EXTRA: %s/%s"
+msgstr "[ΕΛΕΓΧΟΣ] EXTRA: %s/%s"
+
+msgid "[FAIL] EXTRA MISSING: %s"
+msgstr "[ΑΠΟΤΥΧΙΑ] ΤΟ EXTRA ΛΕΙΠΕΙ: %s"
+
+msgid "[FAIL] EXTRA EMPTY: %s"
+msgstr "[ΑΠΟΤΥΧΙΑ] ΤΟ EXTRA ΕΙΝΑΙ ΚΕΝΟ: %s"
+
+msgid "[OK] EXTRA VERIFIED: %s (%s bytes)"
+msgstr "[OK] ΤΟ EXTRA ΕΠΙΒΕΒΑΙΩΘΗΚΕ: %s (%s byte)"
+
+msgid "[RESULT] AUTO: %s/%s"
+msgstr "[ΑΠΟΤΕΛΕΣΜΑ] AUTO: %s/%s"
+
+msgid "[RESULT] EXTRA: %s/%s"
+msgstr "[ΑΠΟΤΕΛΕΣΜΑ] EXTRA: %s/%s"
+
+msgid "[RESULT] AUTO errors: %s"
+msgstr "[ΑΠΟΤΕΛΕΣΜΑ] Σφάλματα AUTO: %s"
+
+msgid "[RESULT] EXTRA errors: %s"
+msgstr "[ΑΠΟΤΕΛΕΣΜΑ] Σφάλματα EXTRA: %s"
+
+msgid "[RESULT] Verification errors: %s"
+msgstr "[ΑΠΟΤΕΛΕΣΜΑ] Σφάλματα επαλήθευσης: %s"
+
+msgid "[ERROR] No AUTO files found!"
+msgstr "[ΣΦΑΛΜΑ] Δεν βρέθηκαν αρχεία AUTO!"
+
+msgid "[ERROR] AUTO INSTALLATION INCOMPLETE"
+msgstr "[ΣΦΑΛΜΑ] Η ΕΓΚΑΤΑΣΤΑΣΗ AUTO ΕΙΝΑΙ ΕΛΛΙΠΗΣ"
+
+msgid "[ERROR] AUTO: %s/%s"
+msgstr "[ΣΦΑΛΜΑ] AUTO: %s/%s"
+
+msgid "[CLEANUP] Old marker removed"
+msgstr "[ΚΑΘΑΡΙΣΜΟΣ] Ο παλιός δείκτης αφαιρέθηκε"
+
+msgid "[WARNING] Marker could not be removed: %s"
+msgstr "[ΠΡΟΕΙΔΟΠΟΙΗΣΗ] Δεν ήταν δυνατή η αφαίρεση του δείκτη: %s"
+
+msgid "[ERROR] EXTRA INSTALLATION INCOMPLETE"
+msgstr "[ΣΦΑΛΜΑ] Η ΕΓΚΑΤΑΣΤΑΣΗ EXTRA ΕΙΝΑΙ ΕΛΛΙΠΗΣ"
+
+msgid "[ERROR] EXTRA: %s/%s"
+msgstr "[ΣΦΑΛΜΑ] EXTRA: %s/%s"
+
+msgid "[ERROR] FINAL VERIFICATION FAILED"
+msgstr "[ΣΦΑΛΜΑ] Ο ΤΕΛΙΚΟΣ ΕΛΕΓΧΟΣ ΑΠΕΤΥΧΕ"
+
+msgid "[ERROR] %s"
+msgstr "[ΣΦΑΛΜΑ] %s"
+
+msgid "[MARKER] Writing installation marker..."
+msgstr "[ΔΕΙΚΤΗΣ] Εγγραφή δείκτη εγκατάστασης..."
+
+msgid "[OK] Marker written: %s"
+msgstr "[OK] Ο δείκτης γράφτηκε: %s"
+
+msgid "[ERROR] Marker error: %s"
+msgstr "[ΣΦΑΛΜΑ] Σφάλμα δείκτη: %s"
+
+msgid "[CLEANUP] Checking ZIP for deletion..."
+msgstr "[ΚΑΘΑΡΙΣΜΟΣ] Έλεγχος ZIP για διαγραφή..."
+
+msgid "[OK] ZIP deleted: %s"
+msgstr "[OK] Το ZIP διαγράφηκε: %s"
+
+msgid "[INFO] ZIP is already absent"
+msgstr "[ΠΛΗΡΟΦΟΡΙΑ] Το ZIP δεν υπάρχει ήδη"
+
+msgid "[WARNING] ZIP could not be deleted: %s"
+msgstr "[ΠΡΟΕΙΔΟΠΟΙΗΣΗ] Δεν ήταν δυνατή η διαγραφή του ZIP: %s"
+
+msgid "[SUCCESS] AUTO BACKGROUNDS INSTALLED SUCCESSFULLY"
+msgstr "[ΕΠΙΤΥΧΙΑ] ΤΑ ΑΥΤΟΜΑΤΑ ΦΟΝΤΑ ΕΓΚΑΤΑΣΤΑΘΗΚΑΝ ΕΠΙΤΥΧΩΣ"
+
+msgid "[SUCCESS] AUTO: %s/%s"
+msgstr "[ΕΠΙΤΥΧΙΑ] AUTO: %s/%s"
+
+msgid "[SUCCESS] EXTRA: %s/%s"
+msgstr "[ΕΠΙΤΥΧΙΑ] EXTRA: %s/%s"
+
+msgid "[SUCCESS] INSTALLATION COMPLETED"
+msgstr "[ΕΠΙΤΥΧΙΑ] Η ΕΓΚΑΤΑΣΤΑΣΗ ΟΛΟΚΛΗΡΩΘΗΚΕ"
+
+msgid "[FATAL ERROR] ensureAutoBackgrounds: %s"
+msgstr "[ΜΟΙΡΑΙΟ ΣΦΑΛΜΑ] ensureAutoBackgrounds: %s"
+
+msgid "[CLEANUP] ZIP deleted after error"
+msgstr "[ΚΑΘΑΡΙΣΜΟΣ] Το ZIP διαγράφηκε μετά από σφάλμα"
+
+msgid "[CLEANUP] Marker removed after error"
+msgstr "[ΚΑΘΑΡΙΣΜΟΣ] Ο δείκτης αφαιρέθηκε μετά από σφάλμα"
+
+msgid "Location 1 - Weather description"
+msgstr "Τοποθεσία 1 - Περιγραφή καιρού"
+
+msgid "Location 1 - Feels like temperature"
+msgstr "Τοποθεσία 1 - Αίσθηση θερμοκρασίας"
+
+msgid "Location 1 - Wind"
+msgstr "Τοποθεσία 1 - Άνεμος"
+
+msgid "Location 1 - Rain"
+msgstr "Τοποθεσία 1 - Βροχή"
+
+msgid "Location 1 - Sun :"
+msgstr "Τοποθεσία 1 - Ήλιος :"
+
+msgid "Location 1 - Moon :"
+msgstr "Τοποθεσία 1 - Σελήνη :"
+
+msgid "Location 2 - Weather description"
+msgstr "Τοποθεσία 2 - Περιγραφή καιρού"
+
+msgid "Location 2 - Feels like temperature"
+msgstr "Τοποθεσία 2 - Αίσθηση θερμοκρασίας"
+
+msgid "Location 2 - Wind"
+msgstr "Τοποθεσία 2 - Άνεμος"
+
+msgid "Location 2 - Rain"
+msgstr "Τοποθεσία 2 - Βροχή"
+
+msgid "Location 2 - Sun :"
+msgstr "Τοποθεσία 2 - Ήλιος :"
+
+msgid "Location 2 - Moon :"
+msgstr "Τοποθεσία 2 - Σελήνη :"
+
+msgid "Updated: "
+msgstr "Ενημερώθηκε: "
+
+msgid "Updated: --:--"
+msgstr "Ενημερώθηκε: --:--"
