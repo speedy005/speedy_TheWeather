@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.6
+# v.2.0.7
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -126,6 +126,32 @@ config.plugins.speedy_TheWeather.autoBackgrounds = ConfigYesNo(
 
 config.plugins.speedy_TheWeather.holidayBackgrounds = ConfigYesNo(
     default=True
+)
+
+# Bundesland für gesetzliche Feiertage in den Feiertagshintergründen.
+# "none" deaktiviert ausschließlich gesetzliche Feiertage; saisonale
+# Hintergründe (z. B. Halloween und Weihnachten) bleiben aktiv.
+config.plugins.speedy_TheWeather.holidayState = ConfigSelection(
+    default="nw",
+    choices=[
+        ("none", _("Kein Bundesland")),
+        ("bw", _("Baden-Württemberg")),
+        ("by", _("Bayern")),
+        ("be", _("Berlin")),
+        ("bb", _("Brandenburg")),
+        ("hb", _("Bremen")),
+        ("hh", _("Hamburg")),
+        ("he", _("Hessen")),
+        ("mv", _("Mecklenburg-Vorpommern")),
+        ("ni", _("Niedersachsen")),
+        ("nw", _("Nordrhein-Westfalen")),
+        ("rp", _("Rheinland-Pfalz")),
+        ("sl", _("Saarland")),
+        ("sn", _("Sachsen")),
+        ("st", _("Sachsen-Anhalt")),
+        ("sh", _("Schleswig-Holstein")),
+        ("th", _("Thüringen")),
+    ]
 )
 # ---------------------------------------------------------------------------
 # SevenDay Farbpalette
@@ -1306,7 +1332,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.6"
+__version__ = "2.0.7"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1378,7 +1404,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.0.6'
+version = '2.0.7'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -2181,23 +2207,72 @@ def getEasterSunday(year):
 
 
 def getNRWHolidays(year):
-    """Gesetzliche Feiertage in NRW: Datum -> Hintergrundkategorie."""
-    easter = getEasterSunday(year)
+    """Kompatible NRW-Feiertagsliste: Datum -> Hintergrundkategorie."""
+    return getGermanHolidays(year, "nw")
 
-    return {
+
+def getGermanHolidays(year, state):
+    """Gesetzliche Feiertage des gewählten Bundeslands abbilden."""
+    if not state or state == "none":
+        return {}
+
+    easter = getEasterSunday(year)
+    holidays = {
         date(year, 1, 1): "newyear",
         easter - timedelta(days=2): "goodfriday",
         easter + timedelta(days=1): "easter",
         date(year, 5, 1): "labourday",
         easter + timedelta(days=39): "ascension",
         easter + timedelta(days=50): "whitmonday",
-        easter + timedelta(days=60): "corpuschristi",
         date(year, 10, 3): "germany",
-        date(year, 11, 1): "allsaints",
         date(year, 12, 25): "christmas",
         date(year, 12, 26): "christmas",
     }
 
+    # Heilige Drei Könige
+    if state in ("bw", "by", "st"):
+        holidays[date(year, 1, 6)] = "germany"
+
+    # Fronleichnam
+    if state in ("bw", "by", "he", "nw", "rp", "sl"):
+        holidays[easter + timedelta(days=60)] = "easter"
+
+    # Mariä Himmelfahrt (landesweit im Saarland; in Bayern nur teilweise).
+    if state == "sl":
+        holidays[date(year, 8, 15)] = "germany"
+    elif state == "by":
+        # Der Feiertag gilt in Bayern nur in Gemeinden mit überwiegend
+        # katholischer Bevölkerung; die Gemeinde ist hier nicht bekannt.
+        holidays[date(year, 8, 15)] = "germany"
+
+    # Weltkindertag in Thüringen
+    if state == "th":
+        holidays[date(year, 9, 20)] = "germany"
+
+    # Reformationstag
+    if state in ("bb", "mv", "sn", "st", "th", "hb", "hh", "ni", "sh"):
+        holidays[date(year, 10, 31)] = "germany"
+
+    # Allerheiligen
+    if state in ("bw", "by", "nw", "rp", "sl"):
+        holidays[date(year, 11, 1)] = "allsaints"
+
+    # Buß- und Bettag (Sachsen; Feiertagskategorie mit vorhandenem Motiv).
+    if state == "sn":
+        # Mittwoch vor dem 23. November
+        nov23 = date(year, 11, 23)
+        days_since_wednesday = (nov23.weekday() - 2) % 7
+        holidays[nov23 - timedelta(days=days_since_wednesday)] = "germany"
+
+    # Internationaler Frauentag
+    if state in ("be", "mv"):
+        holidays[date(year, 3, 8)] = "germany"
+
+    # Ostersonntag ist zusätzlich gesetzlicher Feiertag in Brandenburg.
+    if state == "bb":
+        holidays[easter] = "easter"
+
+    return holidays
 
 
 def getHolidayBgCategory():
@@ -2215,10 +2290,18 @@ def getHolidayBgCategory():
     today = date(now.tm_year, now.tm_mon, now.tm_mday)
 
     # -----------------------------------------------
-    # Gesetzliche Feiertage in NRW
+    # Gesetzliche Feiertage des ausgewählten Bundeslands.
+    # Bei "Kein Bundesland" werden nur gesetzliche Feiertage
+    # übersprungen; die saisonalen Hintergründe werden unten geprüft.
     # -----------------------------------------------
 
-    holidays = getNRWHolidays(now.tm_year)
+    selected_state = getattr(
+        config.plugins.speedy_TheWeather,
+        "holidayState",
+        None
+    )
+    state_value = selected_state.value if selected_state is not None else "nw"
+    holidays = getGermanHolidays(now.tm_year, state_value)
 
     if today in holidays:
         return holidays[today]
@@ -12579,6 +12662,13 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             getConfigListEntry(
                 _("Holiday backgrounds:"),
                 config.plugins.speedy_TheWeather.holidayBackgrounds
+            )
+        )
+
+        self.list.append(
+            getConfigListEntry(
+                _("Federal state for holiday backgrounds:"),
+                config.plugins.speedy_TheWeather.holidayState
             )
         )
 
