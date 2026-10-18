@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.0.4
+# Version: 2.0.5
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.0.4"
+VERSION="2.0.5"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -71,6 +71,7 @@ EXTRACT_DIR="${TMP_DIR}/extract"
 ###############################################################################
 
 changelog_EN='
+• Fixed automatic weather background selection so it better matches the current weather description, including changeable conditions with possible fog.
 • Fixed language files and PO/MO file names.
 • Added update function.
 • Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart.
@@ -91,6 +92,7 @@ changelog_EN='
 '
 
 changelog_DE='
+• Automatische Wetterhintergrund-Auswahl korrigiert, damit sie besser zur aktuellen Wetterbeschreibung passt, insbesondere bei wechselhaftem Wetter mit möglichem Nebel.
 • Sprachdateien sowie PO-/MO-Dateinamen korrigiert.
 • Update-Funktion hinzugefügt.
 • Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert.
@@ -111,6 +113,7 @@ changelog_DE='
 '
 
 changelog_AR='
+• تم إصلاح اختيار خلفية الطقس التلقائية لتتوافق بشكل أفضل مع وصف الطقس الحالي، بما في ذلك الطقس المتقلب مع احتمال وجود ضباب.
 • تم إصلاح ملفات اللغات وأسماء ملفات PO/MO.
 • تمت إضافة وظيفة التحديث.
 • تم إصلاح رادار المطر والطقس لمدة سبعة أيام وأيقونات الطقس وإعادة تشغيل الواجهة الرسومية المنفصلة.
@@ -131,6 +134,7 @@ changelog_AR='
 '
 
 changelog_CS='
+• Opravena volba automatického pozadí počasí, aby lépe odpovídalo aktuálnímu popisu počasí, zejména při proměnlivém počasí s možnou mlhou.
 • Opraveny jazykové soubory a názvy souborů PO/MO.
 • Přidána funkce aktualizace.
 • Opraven radar deště, předpověď na sedm dní, ikony počasí a restart odděleného GUI.
@@ -151,6 +155,7 @@ changelog_CS='
 '
 
 changelog_EL='
+• Διορθώθηκε η αυτόματη επιλογή φόντου καιρού ώστε να ταιριάζει καλύτερα με την τρέχουσα περιγραφή του καιρού, ειδικά σε άστατο καιρό με πιθανή ομίχλη.
 • Διορθώθηκαν τα αρχεία γλώσσας και τα ονόματα των αρχείων PO/MO.
 • Προστέθηκε λειτουργία ενημέρωσης.
 • Διορθώθηκαν το Rain Radar, η πρόγνωση επτά ημερών, τα εικονίδια καιρού και η επανεκκίνηση του αποσυνδεδεμένου GUI.
@@ -171,6 +176,7 @@ changelog_EL='
 '
 
 changelog_FI='
+• Korjattu automaattisen säätaustan valintaa, jotta se vastaa paremmin nykyistä sääkuvausta, erityisesti vaihtelevassa säässä, jossa voi esiintyä sumua.
 • Kielitiedostot sekä PO/MO-tiedostojen nimet korjattu.
 • Päivitystoiminto lisätty.
 • Rain Radar, seitsemän päivän sääennuste, sääkuvakkeet ja erillisen käyttöliittymän uudelleenkäynnistys korjattu.
@@ -191,6 +197,7 @@ changelog_FI='
 '
 
 changelog_FR='
+• Correction de la sélection automatique de l’arrière-plan météo afin qu’elle corresponde mieux à la description météo actuelle, notamment par temps variable avec un risque de brouillard.
 • Correction des fichiers de langue et des noms de fichiers PO/MO.
 • Ajout de la fonction de mise à jour.
 • Correction du Rain Radar, de la météo sur sept jours, des icônes météo et du redémarrage du GUI séparé.
@@ -211,6 +218,7 @@ changelog_FR='
 '
 
 changelog_HU='
+• Javítva az automatikus időjárási háttér kiválasztása, hogy jobban megfeleljen az aktuális időjárás-leírásnak, különösen változékony, esetleg ködös idő esetén.
 • Javítva a nyelvi fájlok és a PO/MO fájlnevek kezelése.
 • Hozzáadva a frissítési funkció.
 • Javítva az esőradar, a hétnapos időjárás, az időjárásikonok és a leválasztott GUI újraindítása.
@@ -231,6 +239,7 @@ changelog_HU='
 '
 
 changelog_IT='
+• Corretta la selezione automatica dello sfondo meteo affinché corrisponda meglio alla descrizione meteo attuale, soprattutto in condizioni variabili con possibile nebbia.
 • Corretti i file delle lingue e i nomi dei file PO/MO.
 • Aggiunta la funzione di aggiornamento.
 • Corretti Rain Radar, previsioni a sette giorni, icone meteo e riavvio della GUI separata.
@@ -251,6 +260,7 @@ changelog_IT='
 '
 
 changelog_NL='
+• De automatische weerachtergrondselectie is gecorrigeerd zodat deze beter aansluit bij de actuele weersbeschrijving, vooral bij wisselvallig weer met mogelijke mist.
 • Taalbestanden en PO/MO-bestandsnamen gecorrigeerd.
 • Updatefunctie toegevoegd.
 • Rain Radar, zevendaags weer, weericonen en herstart van de losgekoppelde GUI gecorrigeerd.
@@ -271,6 +281,7 @@ changelog_NL='
 '
 
 changelog_PL='
+• Poprawiono automatyczny wybór tła pogodowego, aby lepiej odpowiadał aktualnemu opisowi pogody, szczególnie przy zmiennej pogodzie z możliwością wystąpienia mgły.
 • Naprawiono pliki językowe oraz nazwy plików PO/MO.
 • Dodano funkcję aktualizacji.
 • Naprawiono Rain Radar, pogodę na siedem dni, ikony pogody oraz restart odłączonego GUI.
@@ -291,6 +302,7 @@ changelog_PL='
 '
 
 changelog_RU='
+• Исправлен автоматический выбор погодного фона, чтобы он лучше соответствовал текущему описанию погоды, особенно при переменчивой погоде с возможным туманом.
 • Исправлены языковые файлы и имена файлов PO/MO.
 • Добавлена функция обновления.
 • Исправлены Rain Radar, прогноз на семь дней, погодные иконки и перезапуск отдельного GUI.
@@ -311,6 +323,7 @@ changelog_RU='
 '
 
 changelog_SK='
+• Opravený automatický výber pozadia počasia, aby lepšie zodpovedal aktuálnemu opisu počasia, najmä pri premenlivom počasí s možnou hmlou.
 • Opravené jazykové súbory a názvy súborov PO/MO.
 • Pridaná funkcia aktualizácie.
 • Opravený Rain Radar, sedemdňová predpoveď počasia, ikony počasia a reštart oddeleného GUI.
@@ -331,6 +344,7 @@ changelog_SK='
 '
 
 changelog_UA='
+• Виправлено автоматичний вибір погодного фону, щоб він краще відповідав поточному опису погоди, особливо за мінливої погоди з можливою імлою.
 • Виправлено мовні файли та назви файлів PO/MO.
 • Додано функцію оновлення.
 • Виправлено Rain Radar, прогноз погоди на сім днів, іконки погоди та перезапуск окремого GUI.
@@ -351,6 +365,7 @@ changelog_UA='
 '
 
 changelog_ZH='
+• 修复自动天气背景选择，使其更符合当前天气描述，尤其是天气多变且可能有雾的情况。
 • 修复语言文件以及 PO/MO 文件名。
 • 添加更新功能。
 • 修复 Rain Radar、七天天气、天气图标以及独立 GUI 重启。
