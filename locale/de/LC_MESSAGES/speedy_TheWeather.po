@@ -1038,3 +1038,6 @@ msgstr "Aktualisiert: "
 
 msgid "Updated: --:--"
 msgstr "Aktualisiert: --:--"
+
+msgid "Install update"
+msgstr "Update installieren"
