@@ -5039,7 +5039,7 @@ class UpdateAvailableScreen(Screen):
                 position="60,45"
                 size="%d,55"
                 font="Regular;34"
-                foregroundColor="#00ffffff"
+                foregroundColor="#00ff0000"
                 backgroundColor="#00182030"
                 transparent="0"
                 halign="left"
@@ -5060,7 +5060,7 @@ class UpdateAvailableScreen(Screen):
                 position="60,%d"
                 size="350,45"
                 font="Regular;26"
-                foregroundColor="#00ffffff"
+                foregroundColor="#00ff0000"
                 transparent="1" />
 
             <widget name="key_green"
