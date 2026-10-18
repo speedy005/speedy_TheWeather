@@ -1041,3 +1041,57 @@ msgstr "Aktualisiert: --:--"
 
 msgid "Install update"
 msgstr "Update installieren"
+
+msgid "Federal state for holiday backgrounds:"
+msgstr "Bundesland für Feiertagshintergründe:"
+
+msgid "No federal state"
+msgstr "Kein Bundesland"
+
+msgid "Baden-Württemberg"
+msgstr "Baden-Württemberg"
+
+msgid "Bavaria"
+msgstr "Bayern"
+
+msgid "Berlin"
+msgstr "Berlin"
+
+msgid "Brandenburg"
+msgstr "Brandenburg"
+
+msgid "Bremen"
+msgstr "Bremen"
+
+msgid "Hamburg"
+msgstr "Hamburg"
+
+msgid "Hesse"
+msgstr "Hessen"
+
+msgid "Mecklenburg-Western Pomerania"
+msgstr "Mecklenburg-Vorpommern"
+
+msgid "Lower Saxony"
+msgstr "Niedersachsen"
+
+msgid "North Rhine-Westphalia"
+msgstr "Nordrhein-Westfalen"
+
+msgid "Rhineland-Palatinate"
+msgstr "Rheinland-Pfalz"
+
+msgid "Saarland"
+msgstr "Saarland"
+
+msgid "Saxony"
+msgstr "Sachsen"
+
+msgid "Saxony-Anhalt"
+msgstr "Sachsen-Anhalt"
+
+msgid "Schleswig-Holstein"
+msgstr "Schleswig-Holstein"
+
+msgid "Thuringia"
+msgstr "Thüringen"
