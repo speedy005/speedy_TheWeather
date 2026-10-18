@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.0.6
+# Version: 2.0.7
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.0.6"
+VERSION="2.0.7"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -77,6 +77,7 @@ changelog_EN='
 • Fixed Rain Radar, Seven Day Weather, weather icons and detached GUI restart.
 • Added customizable colors.
 • Added automatic weather images based on the time of day and seasonal backgrounds with automatic download and installation.
+• Added selection of the German federal state for statutory holiday backgrounds. Selecting "No federal state" disables statutory holiday images while seasonal backgrounds remain enabled.
 • Added sunrise and sunset display as well as moonrise and moonset display.
 • Added comparison of weather data for two locations including sunrise, sunset, moonrise and moonset times.
 • Added themed colors for weather description, feels like temperature, wind, rain, sun and moon information.
@@ -98,6 +99,7 @@ changelog_DE='
 • Rain Radar, Sieben-Tage-Wetter, Wetter-Icons und Neustart der getrennten GUI korrigiert.
 • Anpassbare Farben hinzugefügt.
 • Automatische Wetterbilder passend zur Tageszeit sowie saisonale Hintergründe mit automatischem Download und Installation hinzugefügt.
+• Bundeslandauswahl für gesetzliche Feiertagshintergründe hinzugefügt. Bei „Kein Bundesland“ werden gesetzliche Feiertagsbilder deaktiviert, während saisonale Hintergründe weiterhin angezeigt werden.
 • Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt.
 • Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt.
 • Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt.
@@ -119,6 +121,7 @@ changelog_AR='
 • تم إصلاح رادار المطر والطقس لمدة سبعة أيام وأيقونات الطقس وإعادة تشغيل الواجهة الرسومية المنفصلة.
 • تمت إضافة ألوان قابلة للتخصيص.
 • تمت إضافة صور طقس تلقائية حسب وقت اليوم وخلفيات موسمية مع التنزيل والتثبيت التلقائي.
+• تمت إضافة اختيار الولاية الألمانية لخلفيات العطلات الرسمية. يؤدي اختيار "بدون ولاية" إلى تعطيل صور العطلات الرسمية مع استمرار عرض الخلفيات الموسمية.
 • تمت إضافة عرض شروق وغروب الشمس وكذلك شروق وغروب القمر.
 • تمت إضافة مقارنة بيانات الطقس لموقعين بما في ذلك أوقات شروق وغروب الشمس والقمر.
 • تمت إضافة ألوان مخصصة لوصف الطقس ودرجة الحرارة المحسوسة والرياح والأمطار ومعلومات الشمس والقمر.
@@ -140,6 +143,7 @@ changelog_CS='
 • Opraven radar deště, předpověď na sedm dní, ikony počasí a restart odděleného GUI.
 • Přidány přizpůsobitelné barvy.
 • Přidány automatické obrázky počasí podle denní doby a sezónní pozadí s automatickým stažením a instalací.
+• Přidána volba německé spolkové země pro pozadí zákonných svátků. Volba „Žádná spolková země“ vypne obrázky zákonných svátků, zatímco sezónní pozadí zůstanou aktivní.
 • Přidáno zobrazení východu a západu slunce a také východu a západu Měsíce.
 • Přidáno porovnání údajů o počasí pro dvě lokality včetně časů východu a západu Slunce a Měsíce.
 • Přidány tematické barvy pro popis počasí, pocitovou teplotu, vítr, déšť a informace o Slunci a Měsíci.
@@ -161,6 +165,7 @@ changelog_EL='
 • Διορθώθηκαν το Rain Radar, η πρόγνωση επτά ημερών, τα εικονίδια καιρού και η επανεκκίνηση του αποσυνδεδεμένου GUI.
 • Προστέθηκαν προσαρμόσιμα χρώματα.
 • Προστέθηκαν αυτόματες εικόνες καιρού ανάλογα με την ώρα της ημέρας και εποχιακά φόντα με αυτόματη λήψη και εγκατάσταση.
+• Προστέθηκε επιλογή γερμανικού ομόσπονδου κρατιδίου για τα φόντα επίσημων αργιών. Η επιλογή «Χωρίς κρατίδιο» απενεργοποιεί τις εικόνες επίσημων αργιών, ενώ τα εποχιακά φόντα παραμένουν ενεργά.
 • Προστέθηκε εμφάνιση ανατολής και δύσης του ήλιου καθώς και ανατολής και δύσης της σελήνης.
 • Προστέθηκε σύγκριση δεδομένων καιρού για δύο τοποθεσίες, συμπεριλαμβανομένων των ωρών ανατολής και δύσης ήλιου και σελήνης.
 • Προστέθηκαν θεματικά χρώματα για την περιγραφή καιρού, την αισθητή θερμοκρασία, τον άνεμο, τη βροχή και τις πληροφορίες ήλιου και σελήνης.
@@ -182,6 +187,7 @@ changelog_FI='
 • Rain Radar, seitsemän päivän sääennuste, sääkuvakkeet ja erillisen käyttöliittymän uudelleenkäynnistys korjattu.
 • Mukautettavat värit lisätty.
 • Automaattiset sääkuvat vuorokaudenajan mukaan sekä vuodenaikojen taustakuvat automaattisella latauksella ja asennuksella lisätty.
+• Lisätty Saksan osavaltion valinta virallisten pyhäpäivien taustakuville. Valinta ”Ei osavaltiota” poistaa virallisten pyhäpäivien kuvat käytöstä, mutta kausitaustat pysyvät käytössä.
 • Auringonnousun ja -laskun sekä kuun nousun ja laskun näyttäminen lisätty.
 • Kahden sijainnin säätietojen vertailu, mukaan lukien auringon ja kuun nousu- ja laskuajat, lisätty.
 • Teemavärit sääkuvaukselle, tuntulämpötilalle, tuulelle, sateelle sekä aurinko- ja kuutiedoille lisätty.
@@ -203,6 +209,7 @@ changelog_FR='
 • Correction du Rain Radar, de la météo sur sept jours, des icônes météo et du redémarrage du GUI séparé.
 • Ajout de couleurs personnalisables.
 • Ajout d’images météo automatiques selon l’heure de la journée et de fonds saisonniers avec téléchargement et installation automatiques.
+• Ajout du choix du Land allemand pour les arrière-plans des jours fériés légaux. Le choix « Aucun Land » désactive les images des jours fériés légaux, tandis que les arrière-plans saisonniers restent actifs.
 • Ajout de l’affichage du lever et du coucher du soleil ainsi que du lever et du coucher de la lune.
 • Ajout de la comparaison des données météo pour deux emplacements, y compris les heures de lever et de coucher du soleil et de la lune.
 • Ajout de couleurs thématiques pour la description météo, la température ressentie, le vent, la pluie et les informations sur le soleil et la lune.
@@ -222,8 +229,9 @@ changelog_HU='
 • Javítva a nyelvi fájlok és a PO/MO fájlnevek kezelése.
 • Hozzáadva a frissítési funkció.
 • Javítva az esőradar, a hétnapos időjárás, az időjárásikonok és a leválasztott GUI újraindítása.
-• Hozzáadható színek kerültek bevezetésre.
+• Testre szabható színek hozzáadva.
 • Automatikus időjárási képek kerültek hozzáadásra a napszak alapján, valamint szezonális hátterek automatikus letöltéssel és telepítéssel.
+• Hozzáadva a német szövetségi tartomány kiválasztása a hivatalos ünnepnapok háttereihez. A „Nincs tartomány” választása kikapcsolja a hivatalos ünnepnapok képeit, miközben a szezonális hátterek továbbra is aktívak maradnak.
 • Hozzáadva a napkelte és napnyugta, valamint a holdkelte és holdnyugta megjelenítése.
 • Két hely időjárási adatainak összehasonlítása került hozzáadásra, beleértve a nap- és holdkelte, illetve nyugta időpontjait.
 • Témázott színek kerültek hozzáadásra az időjárás leírásához, a hőérzethez, a szélhez, az esőhöz, valamint a nap- és holdinformációkhoz.
@@ -245,6 +253,7 @@ changelog_IT='
 • Corretti Rain Radar, previsioni a sette giorni, icone meteo e riavvio della GUI separata.
 • Aggiunti colori personalizzabili.
 • Aggiunte immagini meteo automatiche in base all’ora del giorno e sfondi stagionali con download e installazione automatici.
+• Aggiunta la selezione del Land tedesco per gli sfondi delle festività ufficiali. Selezionando «Nessun Land» vengono disattivate le immagini delle festività ufficiali, mentre gli sfondi stagionali restano attivi.
 • Aggiunta la visualizzazione di alba e tramonto del sole e di alba e tramonto della luna.
 • Aggiunto il confronto dei dati meteo per due località, inclusi gli orari di alba e tramonto del sole e della luna.
 • Aggiunti colori tematici per descrizione meteo, temperatura percepita, vento, pioggia e informazioni su sole e luna.
@@ -266,6 +275,7 @@ changelog_NL='
 • Rain Radar, zevendaags weer, weericonen en herstart van de losgekoppelde GUI gecorrigeerd.
 • Aanpasbare kleuren toegevoegd.
 • Automatische weerafbeeldingen op basis van het tijdstip en seizoensachtergronden met automatische download en installatie toegevoegd.
+• Keuze van de Duitse deelstaat toegevoegd voor achtergronden van officiële feestdagen. Met „Geen deelstaat” worden afbeeldingen voor officiële feestdagen uitgeschakeld, terwijl seizoensachtergronden actief blijven.
 • Weergave van zonsopkomst en zonsondergang en maansopkomst en maanondergang toegevoegd.
 • Vergelijking van weergegevens voor twee locaties toegevoegd, inclusief tijden van zonsopkomst, zonsondergang, maansopkomst en maanondergang.
 • Thematische kleuren toegevoegd voor weersbeschrijving, gevoelstemperatuur, wind, regen en zon- en maaninformatie.
@@ -287,6 +297,7 @@ changelog_PL='
 • Naprawiono Rain Radar, pogodę na siedem dni, ikony pogody oraz restart odłączonego GUI.
 • Dodano konfigurowalne kolory.
 • Dodano automatyczne obrazy pogodowe zależne od pory dnia oraz sezonowe tła z automatycznym pobieraniem i instalacją.
+• Dodano wybór niemieckiego kraju związkowego dla teł świąt ustawowych. Wybór „Brak kraju związkowego” wyłącza obrazy świąt ustawowych, a tła sezonowe pozostają aktywne.
 • Dodano wyświetlanie wschodu i zachodu słońca oraz wschodu i zachodu księżyca.
 • Dodano porównanie danych pogodowych dla dwóch lokalizacji, w tym czasów wschodu i zachodu słońca oraz księżyca.
 • Dodano kolorystykę tematyczną dla opisu pogody, temperatury odczuwalnej, wiatru, deszczu oraz informacji o słońcu i księżycu.
@@ -298,7 +309,7 @@ changelog_PL='
 • Poprawiono wydajność na słabszych odbiornikach Enigma2 poprzez optymalizację ładowania radaru, dekodowania, pamięci podręcznej i animacji.
 • Dodano tryby wydajności Ultra Low-End, Low-End, Auto i Normal.
 • Istniejące funkcje pozostają dostępne.
-• Jeśli podoba Ci się ten plugin, możesz postawić mi kawę.
+• Jeśli podoba Ci się plugin, możesz postawić mi kawę.
 '
 
 changelog_RU='
@@ -308,6 +319,7 @@ changelog_RU='
 • Исправлены Rain Radar, прогноз на семь дней, погодные иконки и перезапуск отдельного GUI.
 • Добавлены настраиваемые цвета.
 • Добавлены автоматические изображения погоды в зависимости от времени суток и сезонные фоны с автоматической загрузкой и установкой.
+• Добавлен выбор федеральной земли Германии для фонов государственных праздников. При выборе «Без федеральной земли» изображения государственных праздников отключаются, а сезонные фоны остаются активными.
 • Добавлено отображение восхода и заката солнца, а также восхода и захода луны.
 • Добавлено сравнение погодных данных для двух мест, включая время восхода и заката солнца и луны.
 • Добавлены тематические цвета для описания погоды, ощущаемой температуры, ветра, дождя и информации о солнце и луне.
@@ -329,6 +341,7 @@ changelog_SK='
 • Opravený Rain Radar, sedemdňová predpoveď počasia, ikony počasia a reštart oddeleného GUI.
 • Pridané nastaviteľné farby.
 • Pridané automatické obrázky počasia podľa dennej doby a sezónne pozadia s automatickým stiahnutím a inštaláciou.
+• Pridaná voľba nemeckej spolkovej krajiny pre pozadia zákonných sviatkov. Výber „Žiadna spolková krajina“ vypne obrázky zákonných sviatkov, pričom sezónne pozadia zostanú aktívne.
 • Pridané zobrazenie východu a západu slnka a tiež východu a západu mesiaca.
 • Pridané porovnanie údajov o počasí pre dve lokality vrátane časov východu a západu slnka a mesiaca.
 • Pridané tematické farby pre popis počasia, pocitovú teplotu, vietor, dážď a informácie o slnku a mesiaci.
@@ -350,6 +363,7 @@ changelog_UA='
 • Виправлено Rain Radar, прогноз погоди на сім днів, іконки погоди та перезапуск окремого GUI.
 • Додано налаштовувані кольори.
 • Додано автоматичні зображення погоди відповідно до часу доби та сезонні фони з автоматичним завантаженням і встановленням.
+• Додано вибір федеральної землі Німеччини для фонів державних свят. Вибір «Без федеральної землі» вимикає зображення державних свят, тоді як сезонні фони залишаються активними.
 • Додано відображення сходу та заходу сонця, а також сходу та заходу місяця.
 • Додано порівняння погодних даних для двох місць, включно з часом сходу та заходу сонця і місяця.
 • Додано тематичні кольори для опису погоди, відчутної температури, вітру, дощу та інформації про сонце і місяць.
@@ -371,6 +385,7 @@ changelog_ZH='
 • 修复 Rain Radar、七天天气、天气图标以及独立 GUI 重启。
 • 添加可自定义颜色。
 • 添加根据一天时间自动显示天气图片，以及自动下载和安装季节性背景。
+• 添加德国联邦州选择，用于设置法定节假日背景。选择“无联邦州”后将禁用法定节假日图片，但季节性背景仍会继续显示。
 • 添加日出、日落以及月出、月落显示。
 • 添加两个地点之间的天气数据比较，包括日出、日落、月出和月落时间。
 • 为天气描述、体感温度、风、雨、太阳和月亮信息添加主题颜色。
