@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.5
+# v.2.0.6
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -29,12 +29,13 @@ try:
     import Queue as queue
 except ImportError:
     import queue
-from enigma import gRGB
+from enigma import gRGB, getDesktop
 from Screens.Console import Console
 from enigma import eTimer
 from enigma import ePoint
 from Screens.Screen import Screen
 from Components.Label import Label
+from Components.ScrollLabel import ScrollLabel
 from time import strftime, localtime
 from Components.config import (
     config,
@@ -1305,7 +1306,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.5"
+__version__ = "2.0.6"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1377,7 +1378,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.0.5'
+version = '2.0.6'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -4931,6 +4932,99 @@ def _update_start_check():
 # ============================================================================
 # UPDATE AVAILABLE MESSAGE
 # ============================================================================
+# ============================================================================
+# FULLSCREEN UPDATE INFO
+# ============================================================================
+
+class UpdateAvailableScreen(Screen):
+
+    def __init__(self, session, title, message):
+        Screen.__init__(self, session)
+
+        desktop = getDesktop(0).size()
+        width = desktop.width()
+        height = desktop.height()
+
+        self.skin = """
+        <screen name="UpdateAvailableScreen"
+            position="0,0"
+            size="%d,%d"
+            flags="wfNoBorder"
+            title="Update">
+
+            <widget name="updateTitle"
+                position="60,45"
+                size="%d,55"
+                font="Regular;34"
+                foregroundColor="#00ffffff"
+                backgroundColor="#00182030"
+                transparent="0"
+                halign="left"
+                valign="center" />
+
+            <widget name="updateInfo"
+                position="60,115"
+                size="%d,%d"
+                font="Regular;26"
+                foregroundColor="#00ffffff"
+                backgroundColor="#00182030"
+                transparent="0"
+                valign="top"
+                halign="left"
+                scrollbarMode="showOnDemand" />
+
+            <widget name="key_red"
+                position="60,%d"
+                size="350,45"
+                font="Regular;26"
+                foregroundColor="#00ffffff"
+                transparent="1" />
+
+            <widget name="key_green"
+                position="%d,%d"
+                size="500,45"
+                font="Regular;26"
+                foregroundColor="#0000ff00"
+                transparent="1" />
+
+        </screen>
+        """ % (
+            width,
+            height,
+            width - 120,
+            width - 120,
+            height - 190,
+            height - 65,
+            width - 560,
+            height - 65
+        )
+
+        self["updateTitle"] = Label(title)
+        self["updateInfo"] = ScrollLabel(message)
+        self["key_red"] = Label(_("Cancel"))
+        self["key_green"] = Label(_("Install update"))
+
+        self["actions"] = ActionMap(
+            ["ColorActions", "OkCancelActions"],
+            {
+                "red": self.cancelUpdate,
+                "cancel": self.cancelUpdate,
+                "green": self.installUpdate,
+                "ok": self.installUpdate,
+            },
+            -1
+        )
+
+    def cancelUpdate(self):
+        self.close(False)
+
+    def installUpdate(self):
+        self.close(True)
+    def pageUp(self):
+        self["updateInfo"].pageUp()
+
+    def pageDown(self):
+        self["updateInfo"].pageDown()
 
 def _update_show_message(info):
 
@@ -4956,57 +5050,37 @@ def _update_show_message(info):
     ).strip()
 
     if not changes:
-
-        changes = _(
-            "No changes available."
-        )
+        changes = _("No changes available.")
 
     installer_note = ""
 
     if installer_version:
-
         installer_note = (
             "\n"
-            + _(
-                "Installer version: %s"
-            )
+            + _("Installer version: %s")
             % installer_version
         )
 
     try:
-
         installed_version = VERSION
-
     except Exception:
-
         installed_version = __version__
 
     message = (
-        _(
-            "A new version of speedy_TheWeather "
-            "is available."
-        )
+        _("A new version of speedy_TheWeather is available.")
         + "\n\n"
-        + _(
-            "Installed version: %s"
-        )
+        + _("Installed version: %s")
         % installed_version
         + "\n"
-        + _(
-            "New version: %s"
-        )
+        + _("New version: %s")
         % remote_version
         + installer_note
         + "\n\n"
-        + _(
-            "Changes:"
-        )
+        + _("Changes:")
         + "\n"
         + changes
         + "\n\n"
-        + _(
-            "Do you want to install the update?"
-        )
+        + _("Do you want to install the update?")
     )
 
     print(
@@ -5033,10 +5107,9 @@ def _update_show_message(info):
 
             _overlaySession.openWithCallback(
                 _update_install_callback,
-                MessageBox,
-                message,
-                MessageBox.TYPE_YESNO,
-                default=True
+                UpdateAvailableScreen,
+                _("speedy_TheWeather - Update verfügbar"),
+                message
             )
 
         else:
@@ -5053,6 +5126,7 @@ def _update_show_message(info):
             "Could not show update dialog: %s"
             % e
         )
+
 
 # ============================================================================
 # UPDATE INSTALL CONFIRMATION
@@ -12273,7 +12347,7 @@ class localcityscreen(Screen):
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
 
-from Components.Label import Label
+
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
@@ -16453,11 +16527,18 @@ def _poll_startup_weather():
 
 
 def main(session, **kwargs):
+    global icoonpath, backgroundpath, _restartInProgress
+    global SavedLokaleWeer, _startupWeatherTimer, _startupWeatherRunning
+    global _overlaySession
+
+    # Die Session muss vor dem Start der automatischen Update-Prüfung
+    # gesetzt sein, damit ein gefundenes Update einen Dialog öffnen kann.
+    if session is not None:
+        _overlaySession = session
+
     # Updateprüfung bleibt im Hintergrund.
     _update_start_check()
 
-    global icoonpath, backgroundpath, _restartInProgress
-    global SavedLokaleWeer, _startupWeatherTimer, _startupWeatherRunning
     _restartInProgress = False
 
     try:
