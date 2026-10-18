@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.7
+# v.2.0.8
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -1332,7 +1332,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.7"
+__version__ = "2.0.8"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1404,7 +1404,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.0.7'
+version = '2.0.8'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -5088,12 +5088,23 @@ class UpdateAvailableScreen(Screen):
         self["key_green"] = Label(_("Install update"))
 
         self["actions"] = ActionMap(
-            ["ColorActions", "OkCancelActions"],
+            [
+                "ColorActions",
+                "OkCancelActions",
+                "DirectionActions",
+                "WizardActions",
+            ],
             {
                 "red": self.cancelUpdate,
                 "cancel": self.cancelUpdate,
+
                 "green": self.installUpdate,
                 "ok": self.installUpdate,
+
+                "up": self.pageUp,
+                "down": self.pageDown,
+                "pageUp": self.pageUp,
+                "pageDown": self.pageDown,
             },
             -1
         )
@@ -5103,6 +5114,7 @@ class UpdateAvailableScreen(Screen):
 
     def installUpdate(self):
         self.close(True)
+    
     def pageUp(self):
         self["updateInfo"].pageUp()
 
