@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.0.8
+# v.2.0.9
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -1332,7 +1332,7 @@ def getMoonTimesForLocation(date_value, location_entry):
 
 
 
-__version__ = "2.0.8"
+__version__ = "2.0.9"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1404,7 +1404,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.0.8'
+version = '2.0.9'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -1439,8 +1439,9 @@ UPDATE_DOWNLOAD_TIMEOUT = 30
 # ============================================================
 
 AUTO_BG_ZIP_URL = (
-    UPDATE_RAW_BASE +
-    "/backgrounds_auto.zip"
+    "https://raw.githubusercontent.com/"
+    "speedy005/speedy_TheWeather/"
+    "master/backgrounds_auto.zip"
 )
 
 AUTO_BG_ZIP_FILE = (
@@ -1708,32 +1709,71 @@ def ensureAutoBackgrounds():
             "[speedy_TheWeather] Download startet..."
         )
 
-        wget_path = "/usr/bin/wget" if os.path.exists("/usr/bin/wget") else "/bin/wget"
-        if not os.path.exists(wget_path):
-            print("[speedy_TheWeather] wget not found")
-            return False
+        # Erst wget verwenden. Manche Enigma2-Images haben wget aber an
+        # einem anderen Ort oder eine abgespeckte wget-Version. In diesem
+        # Fall auf urllib zurückfallen (Python 2 und Python 3 kompatibel).
+        wget_path = None
+        for candidate in ("/usr/bin/wget", "/bin/wget", "/usr/sbin/wget"):
+            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                wget_path = candidate
+                break
 
-        command = [
-            wget_path,
-            "-O", zipFile,
-            "--timeout=15",
-            "--tries=2",
-            AUTO_BG_ZIP_URL,
-        ]
-        print("[speedy_TheWeather] Download via wget")
+        download_ok = False
+        if wget_path:
+            command = [
+                wget_path,
+                "--timeout=30",
+                "--tries=2",
+                "-O", zipFile,
+                AUTO_BG_ZIP_URL,
+            ]
+            print("[speedy_TheWeather] Download via %s" % wget_path)
+            try:
+                result = subprocess.call(command)
+                print("[speedy_TheWeather] wget return: %s" % result)
+                download_ok = (result == 0 and os.path.isfile(zipFile)
+                               and os.path.getsize(zipFile) > 0)
+            except Exception as e:
+                print("[speedy_TheWeather] wget Ausnahme: %s" % e)
+        else:
+            print("[speedy_TheWeather] wget nicht gefunden; verwende urllib")
 
-        result = subprocess.call(command)
+        # Fallback: wichtig für Images mit fehlendem/inkompatiblem wget.
+        if not download_ok:
+            try:
+                try:
+                    from urllib2 import urlopen
+                except ImportError:
+                    from urllib.request import urlopen
 
-        print(
-            "[speedy_TheWeather] wget return: %s"
-            % result
-        )
+                try:
+                    if os.path.exists(zipFile):
+                        os.remove(zipFile)
+                except Exception:
+                    pass
 
-        if result != 0:
-            print(
-                "[speedy_TheWeather] "
-                "DOWNLOAD FEHLGESCHLAGEN"
-            )
+                print("[speedy_TheWeather] Download-Fallback via urllib")
+                response = urlopen(AUTO_BG_ZIP_URL, timeout=30)
+                try:
+                    with open(zipFile, "wb") as output:
+                        while True:
+                            chunk = response.read(256 * 1024)
+                            if not chunk:
+                                break
+                            output.write(chunk)
+                finally:
+                    response.close()
+
+                download_ok = (os.path.isfile(zipFile)
+                               and os.path.getsize(zipFile) > 0)
+                print("[speedy_TheWeather] urllib Download: %s" %
+                      ("OK" if download_ok else "Datei leer"))
+            except Exception as e:
+                print("[speedy_TheWeather] urllib Downloadfehler: %s" % e)
+                download_ok = False
+
+        if not download_ok:
+            print("[speedy_TheWeather] DOWNLOAD FEHLGESCHLAGEN")
             return False
 
         # ====================================================
@@ -1810,22 +1850,30 @@ def ensureAutoBackgrounds():
 
             for filename in requiredAutoBackgrounds:
 
-                sourceName = (
-                    "auto/" +
-                    filename
+                # ZIP-Dateien liegen je nach Paket entweder unter
+                # "auto/" oder unter "backgrounds/auto/".
+                # Beide Layouts unterstützen.
+                sourceCandidates = (
+                    "auto/" + filename,
+                    "backgrounds/auto/" + filename,
                 )
+                sourceName = None
+                for candidate in sourceCandidates:
+                    if candidate in members:
+                        sourceName = candidate
+                        break
 
                 targetPath = os.path.join(
                     AUTO_BG_DIR,
                     filename
                 )
 
-                if sourceName not in members:
+                if sourceName is None:
 
                     print(
                         "[speedy_TheWeather] "
                         "AUTO fehlt in ZIP: %s"
-                        % sourceName
+                        % " oder ".join(sourceCandidates)
                     )
 
                     continue
