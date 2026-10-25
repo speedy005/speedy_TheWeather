@@ -307,8 +307,6 @@ SEVENDAY_COLOR_CHOICES = [
 	("##0040ffff", _("Arctic Blue")),
 ]
 
-
-
 _SEVENDAY_COLOR_DEFAULTS = {
     "city": "#0000ff00",
     "bigtemp": "#000000ff",
@@ -470,7 +468,6 @@ def getCoordsFromEntry(value):
     except Exception as e:
         print("[Moon] getCoordsFromEntry Fehler: %s" % str(e))
         return None, None
-
 
 # =============================================================================
 # MONDAUF- / MONDUNTERGANG
@@ -670,7 +667,6 @@ def _moon_position(jd):
 
     return lon, lat, r
 
-
 def _moon_altitude(dt_utc, lat_deg, lon_deg):
     """
     Mondhoehe ueber dem Horizont in Grad.
@@ -775,7 +771,6 @@ def _moon_altitude(dt_utc, lat_deg, lon_deg):
         )
 
         return -90.0
-
 
 def _moon_rise_set_for_date(
         date_value,
@@ -1283,7 +1278,6 @@ def getMoonRiseSet(date_value, lat_deg, lon_deg):
         lon_deg
     )
 
-
 # =============================================================================
 # BEISPIEL FUER DIE VERWENDUNG
 # =============================================================================
@@ -1329,8 +1323,6 @@ def getMoonTimesForLocation(date_value, location_entry):
         lat,
         lon
     )
-
-
 
 __version__ = "2.0.9"
 VERSION = __version__
@@ -2258,7 +2250,6 @@ def getNRWHolidays(year):
     """Kompatible NRW-Feiertagsliste: Datum -> Hintergrundkategorie."""
     return getGermanHolidays(year, "nw")
 
-
 def getGermanHolidays(year, state):
     """Gesetzliche Feiertage des gewählten Bundeslands abbilden."""
     if not state or state == "none":
@@ -2322,7 +2313,6 @@ def getGermanHolidays(year, state):
 
     return holidays
 
-
 def getHolidayBgCategory():
     """
     Feiertagshintergrund nur am tatsächlichen Feiertag.
@@ -2384,7 +2374,6 @@ def getHolidayBgCategory():
                 return cat
 
     return None
-
 
 def getAutoWeatherBackground():
     global weatherData
@@ -2743,8 +2732,6 @@ def getAutoWeatherBackground():
     )
 
     return defaultBg
-
-
 
 # ============================================================================
 # VERSION COMPARISON
@@ -3180,7 +3167,7 @@ def _update_extract_installer_info(source, language=None):
 
     Unterstützte Formate:
 
-        VERSION="1.9.8"
+        VERSION="2.0.9"
 
         changelog_EN='
         • Change one.
@@ -3194,7 +3181,7 @@ def _update_extract_installer_info(source, language=None):
 
     Zusätzlich weiterhin altes Format:
 
-        changelog='v1.9.8 EN: ... | DE: ...'
+        changelog='v2.0.9 EN: ... | DE: ...'
 
     Parameter:
         language:
@@ -3446,7 +3433,6 @@ def _update_extract_installer_info(source, language=None):
 
     return result
 
-
 def _update_changes_text(changes):
     """
     Formatiert Changelog-Daten für die Anzeige.
@@ -3570,8 +3556,6 @@ def _update_changes_text(changes):
     # NORMALER EINZEILIGER TEXT
     # ---------------------------------------------------------
     return _(text)
-
-
 
 # ============================================================================
 # UPDATE CHECK WORKER
@@ -5270,7 +5254,6 @@ def _update_show_message(info):
             % e
         )
 
-
 # ============================================================================
 # UPDATE INSTALL CONFIRMATION
 # ============================================================================
@@ -6739,8 +6722,6 @@ def _search_city(query):
 
         return None, None
 
-
-
 def getLocWeer(iscity=None, update_overlay=True):
     global weatherData, lockaaleStad, citynamedisplay, _weatherFetchTime
 
@@ -6780,7 +6761,6 @@ def getLocWeer(iscity=None, update_overlay=True):
 
     return True
 
-
 def getLocWeerFor(inputCity):
     """Return actual weather data and display name for a saved city."""
     inputCity = stripCoords(inputCity)
@@ -6807,7 +6787,6 @@ def getLocWeerFor(inputCity):
         print("[speedy_TheWeather] getLocWeerFor fallback error: %s" % e)
 
     return None
-
 
 def icontotext(icon):
     text = ""
@@ -12490,7 +12469,6 @@ class localcityscreen(Screen):
 
 # 2. Der Setup-Bildschirm (macht die Optionen im Menü sichtbar)
 
-
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
@@ -13313,9 +13291,6 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
             pass
 
-
-
-
 class sevendayColorSetup(ConfigListScreen, Screen):
     """
     Separates Farbmenü für den SevenDay-Screen.
@@ -13558,7 +13533,6 @@ class sevendayColorSetup(ConfigListScreen, Screen):
 
         self.close()
 
-
 class twolocationsColorSetup(ConfigListScreen, Screen):
     """
     Getrenntes Farbmenü für den Two-Locations-Screen.
@@ -13703,8 +13677,6 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
             except Exception:
                 pass
         self.close()
-
-
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
@@ -19334,7 +19306,6 @@ class RadarScreen(Screen):
                 )
             except Exception:
                 pass
-
 
 # ====================================================================
 # AUTOSTART
