@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.1.1
+# v.2.1.4
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -407,6 +407,74 @@ for _tl_color_name, _tl_color_default in _TWOLocations_LEGACY_COLOR_DEFAULTS.ite
 
 del _tl_location, _tl_color_name, _tl_color_default
 del _sd_color_name, _sd_color_default
+
+# Eigene Farben für die Screens Sonnenzeit und Mondzeit
+# Enigma2: 00 = sichtbar, FF = transparent.
+_SOLAR_LUNAR_COLOR_DEFAULTS = {
+    "solar_panel_color":   "#00071321",
+    "solar_heading_color": "#00F4D58A",
+    "solar_text_color":    "#00FF3030",
+    "solar_hint_color":    "#00FF3030",
+    "lunar_panel_color":   "#00071321",
+    "lunar_heading_color": "#00D6C8F5",
+    "lunar_text_color":    "#004DA6FF",
+    "lunar_hint_color":    "#004DA6FF",
+}
+
+for _sl_name, _sl_default in _SOLAR_LUNAR_COLOR_DEFAULTS.items():
+    _sl_prefix = (
+        "solartimes" if _sl_name.startswith("solar_")
+        else "lunartimes"
+    )
+    _sl_config_name = _sl_prefix + "_" + _sl_name.split("_", 1)[1]
+
+    _sl_alpha = "00"
+
+    _sl_choices = [
+        (
+            "#" + _sl_alpha + str(_choice[0]).lstrip("#")[-6:],
+            _choice[1]
+        )
+        for _choice in SEVENDAY_COLOR_CHOICES
+    ]
+
+    if _sl_default not in [choice[0] for choice in _sl_choices]:
+        _sl_choices.append((_sl_default, _("Standard")))
+
+    if hasattr(config.plugins.speedy_TheWeather, _sl_config_name):
+        _sl_element = getattr(
+            config.plugins.speedy_TheWeather,
+            _sl_config_name
+        )
+        _sl_old_value = str(_sl_element.value)
+        _sl_rgb = _sl_old_value.lstrip("#")[-6:]
+
+        try:
+            _sl_element.setChoices(_sl_choices, default=_sl_default)
+        except TypeError:
+            _sl_element.setChoices(_sl_choices, _sl_default)
+
+        _sl_element.value = next(
+            (
+                choice[0] for choice in _sl_choices
+                if choice[0][-6:].lower() == _sl_rgb.lower()
+            ),
+            _sl_default
+        )
+    else:
+        setattr(
+            config.plugins.speedy_TheWeather,
+            _sl_config_name,
+            ConfigSelection(
+                default=_sl_default,
+                choices=_sl_choices
+            )
+        )
+
+del _sl_name, _sl_default, _sl_prefix, _sl_config_name
+del _sl_alpha, _sl_choices
+
+
 
 config.plugins.speedy_TheWeather.defaultzoom = ConfigSelection(
     default="7",
@@ -1352,7 +1420,7 @@ def getMoonTimesForLocation(date_value, location_entry):
         lon
     )
 
-__version__ = "2.1.1"
+__version__ = "2.1.4"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1424,7 +1492,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.1.1'
+version = '2.1.0'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -1662,52 +1730,9 @@ def ensureAutoBackgrounds():
         )
 
         # ====================================================
-        # Prüfen ob AUTO bereits installiert
+        # DOWNLOAD IMMER AUSFÜHREN
+        # Vorhandene AUTO- und EXTRA-Bilder aktualisieren.
         # ====================================================
-
-        allInstalled = True
-
-        for filename in requiredAutoBackgrounds:
-
-            target = os.path.join(
-                AUTO_BG_DIR,
-                filename
-            )
-
-            if not os.path.isfile(target):
-                allInstalled = False
-                break
-
-            try:
-                if os.path.getsize(target) <= 0:
-                    allInstalled = False
-                    break
-            except Exception:
-                allInstalled = False
-                break
-
-        if allInstalled:
-
-            print(
-                "[speedy_TheWeather] "
-                "Alle Auto-BGs bereits vorhanden."
-            )
-
-            try:
-                with open(AUTO_BG_MARKER, "w") as f:
-                    f.write("installed\n")
-                    f.write(
-                        "timestamp=%s\n"
-                        % int(time.time())
-                    )
-            except Exception as e:
-                print(
-                    "[speedy_TheWeather] "
-                    "Marker Fehler: %s"
-                    % e
-                )
-
-            return True
 
         # ====================================================
         # Alte ZIP löschen
@@ -1925,13 +1950,8 @@ def ensureAutoBackgrounds():
                     ) as f:
                         f.write(data)
 
-                    if os.path.exists(
-                        targetPath
-                    ):
-                        os.remove(
-                            targetPath
-                        )
-
+                    # Unter Linux ersetzt os.rename() eine
+                    # vorhandene Datei atomar.
                     os.rename(
                         tempPath,
                         targetPath
@@ -2021,13 +2041,8 @@ def ensureAutoBackgrounds():
                     ) as f:
                         f.write(data)
 
-                    if os.path.exists(
-                        targetPath
-                    ):
-                        os.remove(
-                            targetPath
-                        )
-
+                    # Unter Linux ersetzt os.rename() eine
+                    # vorhandene Datei atomar.
                     os.rename(
                         tempPath,
                         targetPath
@@ -3330,7 +3345,7 @@ def _update_extract_installer_info(source, language=None):
 
     Unterstützte Formate:
 
-        VERSION="2.1.1"
+        VERSION="2.1.0"
 
         changelog_EN='
         • Change one.
@@ -3344,7 +3359,7 @@ def _update_extract_installer_info(source, language=None):
 
     Zusätzlich weiterhin altes Format:
 
-        changelog='v2.1.1 EN: ... | DE: ...'
+        changelog='v2.1.0 EN: ... | DE: ...'
 
     Parameter:
         language:
@@ -6431,6 +6446,7 @@ def _update_install_error():
 icoonpath = "Images"
 SHARED_PACK = "Images"
 backgroundpath = ""
+currentWeatherBackground = ""
 CFG_DIR = "/etc/enigma2/speedy_TheWeather"
 
 def _detectCanvasWidth():
@@ -11412,6 +11428,7 @@ class sevendays(Screen):
 
         global backgroundpath
         global backgroundAutoWeather
+        global currentWeatherBackground
 
         if (
             not hasattr(
@@ -11536,6 +11553,8 @@ class sevendays(Screen):
             )
 
             return
+
+        currentWeatherBackground = bgfile
 
         print(
             "[speedy_TheWeather] "
@@ -12663,6 +12682,886 @@ class localcityscreen(Screen):
 from Components.config import ConfigNothing
 from Screens.MessageBox import MessageBox
 
+
+
+# =====================================================
+# SOLAR / LUNAR DESIGN SETTINGS
+# =====================================================
+
+SOLAR_SKIN = {
+    "panel_color": "#CC071321",
+    "heading_color": "#F4D58A",
+    "text_color": "#FFFF3030",
+    "hint_color": "#FFFF3030",
+    "title_font": 42,
+    "text_font": 30,
+    "hint_font": 30,
+}
+
+LUNAR_SKIN = {
+    "panel_color": "#CC071321",
+    "heading_color": "#D6C8F5",
+    "text_color": "#FF4DA6FF",
+    "hint_color": "#FF4DA6FF",
+    "title_font": 42,
+    "text_font": 30,
+    "hint_font": 30,
+}
+
+
+class _SolarLunarInfoScreen(Screen):
+    """Premium FHD/HD solar and lunar information screen for OpenATV."""
+
+    def __init__(self, session, title, lines, image_path=None,
+                 phase_image_path=None, extra_images=None,
+                 skin_type="solar"):
+
+        # -------------------------------------------------
+        # DISPLAY RESOLUTION
+        # -------------------------------------------------
+        try:
+            desktop = getDesktop(0).size()
+            width = int(desktop.width())
+            height = int(desktop.height())
+        except Exception:
+            width = _detectCanvasWidth()
+            height = 1080 if width >= 1800 else 720
+
+        width = max(640, width)
+        height = max(480, height)
+
+        scale = min(width / 1920.0, height / 1080.0)
+
+        margin_x = int(36 * scale)
+        margin_y = int(28 * scale)
+
+        sw = min(width - margin_x * 2, int(1500 * scale))
+        sh = min(height - margin_y * 2, int(850 * scale))
+
+        x = max(0, (width - sw) // 2)
+        y = max(0, (height - sh) // 2)
+
+        pad = max(14, int(42 * scale))
+        inner_width = max(1, sw - 2 * pad)
+
+        title_h = max(44, int(82 * scale))
+        hint_h = max(28, int(48 * scale))
+
+        font_title = max(22, int(42 * scale))
+        font_text = max(17, int(31 * scale))
+        font_hint = max(14, int(20 * scale))
+
+        # -------------------------------------------------
+        # XML TEXT HELPER
+        # -------------------------------------------------
+        def xml_escape(value):
+            value = str(value)
+            value = value.replace("&", "&amp;")
+            value = value.replace("<", "&lt;")
+            value = value.replace(">", "&gt;")
+            value = value.replace('"', "&quot;")
+            value = value.replace("'", "&apos;")
+            return value
+
+        safe_title = xml_escape(title)
+
+        # -------------------------------------------------
+        # NORMALIZE IMAGE LIST
+        # -------------------------------------------------
+        extra_images = extra_images or []
+
+        valid_images = []
+
+        for item in extra_images:
+            try:
+                if item and item[0]:
+                    valid_images.append(item)
+            except Exception:
+                pass
+
+        extra_images = valid_images
+
+        # -------------------------------------------------
+        # PHASE IMAGE
+        # -------------------------------------------------
+        phase_size = 0
+        phase_markup = ""
+
+        if phase_image_path:
+
+            phase_size = min(
+                int(230 * scale),
+                max(100, int(sh * 0.27)),
+                inner_width
+            )
+
+            phase_x = x + (sw - phase_size) // 2
+            phase_y = y + pad + title_h + max(6, int(12 * scale))
+
+            phase_markup = (
+                '<widget name="phasepic" '
+                'position="%d,%d" size="%d,%d" '
+                'zPosition="3" alphatest="on" />'
+            ) % (
+                phase_x,
+                phase_y,
+                phase_size,
+                phase_size
+            )
+
+        # -------------------------------------------------
+        # EXTRA IMAGE TILES
+        # -------------------------------------------------
+        tile_markup = ""
+
+        tile_gap = max(8, int(28 * scale))
+        tile_h = 0
+        tiles_y = 0
+        tile_w = 0
+
+        if extra_images:
+
+            count = len(extra_images)
+
+            desired_tile_w = int(300 * scale)
+            tile_h = max(65, int(150 * scale))
+
+            available_gap = tile_gap * (count - 1)
+
+            tile_w = min(
+                desired_tile_w,
+                max(80, (inner_width - available_gap) // count)
+            )
+
+            tile_h = min(tile_h, int(sh * 0.20))
+
+            total_w = (
+                tile_w * count +
+                tile_gap * (count - 1)
+            )
+
+            tile_x = x + (sw - total_w) // 2
+
+            tiles_y = y + sh - hint_h - pad - tile_h
+
+            tile_parts = []
+
+            for index, item in enumerate(extra_images):
+
+                pos_x = tile_x + index * (tile_w + tile_gap)
+
+                tile_parts.append(
+                    '<widget name="extraPic%d" '
+                    'position="%d,%d" size="%d,%d" '
+                    'zPosition="3" alphatest="on" />'
+                    % (
+                        index,
+                        pos_x,
+                        tiles_y,
+                        tile_w,
+                        tile_h
+                    )
+                )
+
+            tile_markup = "".join(tile_parts)
+
+        # -------------------------------------------------
+        # CONTENT POSITIONING
+        # -------------------------------------------------
+        content_y = (
+            y + pad + title_h + max(6, int(12 * scale))
+        )
+
+        if phase_image_path:
+            content_y += (
+                phase_size + max(12, int(22 * scale))
+            )
+
+        footer_y = y + sh - hint_h - pad
+
+        if extra_images:
+            content_bottom = tiles_y - tile_gap
+        else:
+            content_bottom = footer_y
+
+        content_h = max(
+            max(70, int(100 * scale)),
+            content_bottom - content_y
+        )
+
+        content_h = min(
+            content_h,
+            max(1, footer_y - content_y)
+        )
+
+        # -------------------------------------------------
+        # INDEPENDENT SOLAR / LUNAR COLORS
+        # -------------------------------------------------
+        design = dict(
+            LUNAR_SKIN if skin_type == "lunar" else SOLAR_SKIN
+        )
+
+        color_prefix = (
+            "lunartimes" if skin_type == "lunar"
+            else "solartimes"
+        )
+
+        for color_key in (
+            "panel_color",
+            "heading_color",
+            "text_color",
+            "hint_color",
+        ):
+            try:
+                color_config = getattr(
+                    config.plugins.speedy_TheWeather,
+                    color_prefix + "_" + color_key
+                )
+                design[color_key] = (
+                    color_config.value or design[color_key]
+                )
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not load %s %s: %s"
+                    % (color_prefix, color_key, e)
+                )
+
+        panel_color = design["panel_color"]
+        heading_color = design["heading_color"]
+        text_color = design["text_color"]
+        hint_color = design["hint_color"]
+
+        font_title = max(22, int(design["title_font"] * scale))
+        font_text = max(17, int(design["text_font"] * scale))
+        font_hint = max(14, int(design["hint_font"] * scale))
+
+        # -------------------------------------------------
+        # SKIN
+        # -------------------------------------------------
+        screen_name = (
+            "MoonTimes" if skin_type == "lunar"
+            else "SolarTimes"
+        )
+
+        skin = (
+            '<screen name="%s" '
+            'position="0,0" size="%d,%d" '
+            'title="%s" flags="wfNoBorder">'
+
+            '<widget name="bgpic" '
+            'position="0,0" size="%d,%d" '
+            'zPosition="-10" alphatest="on" />'
+
+            '<eLabel '
+            'position="%d,%d" size="%d,%d" '
+            'zPosition="1" '
+            'backgroundColor="%s" />'
+
+            '<widget name="heading" '
+            'position="%d,%d" size="%d,%d" '
+            'font="Regular;%d" '
+            'foregroundColor="%s" '
+            'halign="center" valign="center" '
+            'zPosition="2" transparent="1" />'
+
+            '<widget name="content" '
+            'position="%d,%d" size="%d,%d" '
+            'font="Regular;%d" '
+            'foregroundColor="%s" '
+            'halign="center" valign="center" '
+            'zPosition="2" transparent="1" />'
+
+            '%s'
+            '%s'
+
+            '<widget name="hint" '
+            'position="%d,%d" size="%d,%d" '
+            'font="Regular;%d" '
+            'foregroundColor="%s" '
+            'halign="center" valign="center" '
+            'zPosition="2" transparent="1" />'
+
+            '</screen>'
+        ) % (
+            screen_name, width, height, safe_title,
+
+            width, height,
+
+            x, y, sw, sh,
+            panel_color,
+
+            x + pad, y + pad,
+            inner_width, title_h,
+            font_title, heading_color,
+
+            x + pad, content_y,
+            inner_width, content_h,
+            font_text, text_color,
+
+            phase_markup,
+            tile_markup,
+
+            x + pad, footer_y,
+            inner_width, hint_h,
+            font_hint, hint_color
+        )
+
+        
+        # INITIALIZE SCREEN
+        # EXTERNAL SKIN WITH INTERNAL FALLBACK
+        # -------------------------------------------------
+        Screen.__init__(self, session)
+
+        self.skinName = [
+            screen_name,
+            self.__class__.__name__
+        ]
+
+        try:
+            import skin as enigma_skin
+
+            external_skin_available = (
+                screen_name in getattr(enigma_skin, "domScreens", {})
+            )
+
+        except Exception:
+            external_skin_available = False
+
+        if not external_skin_available:
+            self.skin = skin
+
+            print(
+                "[speedy_TheWeather] Using internal skin: %s"
+                % screen_name
+            )
+        else:
+            print(
+                "[speedy_TheWeather] Using external skin: %s"
+                % screen_name
+            )
+
+        self.setTitle(title)
+
+        self["bgpic"] = Pixmap()
+
+        self["heading"] = Label(title)
+        self["content"] = Label("\n".join(
+            [str(line) for line in lines]
+        ))
+        self["hint"] = Label(_("EXIT: Close"))
+
+        if phase_image_path:
+            self["phasepic"] = Pixmap()
+
+        for index, item in enumerate(extra_images):
+            self["extraPic%d" % index] = Pixmap()
+
+        # -------------------------------------------------
+        # IMAGE PATHS / LOADERS
+        # -------------------------------------------------
+        self._backgroundPath = image_path
+        self._phaseImagePath = phase_image_path
+
+        self.picload = None
+        self.phasePicload = None
+
+        self._extraPicloads = []
+
+        self._picload_conn = None
+        self._phase_picload_conn = None
+
+        # -------------------------------------------------
+        # BACKGROUND LOADER
+        # OpenATV: onLayoutFinish entries are strings
+        # -------------------------------------------------
+        try:
+
+            if image_path:
+                self.picload = ePicLoad()
+
+                self._picload_conn = safeSignalConnect(
+                    self.picload.PictureData,
+                    self._backgroundLoaded
+                )
+
+                self.onLayoutFinish.append(
+                    "self._loadBackground()"
+                )
+
+            # -------------------------------------------------
+            # PHASE IMAGE LOADER
+            # -------------------------------------------------
+            if phase_image_path:
+                self.phasePicload = ePicLoad()
+
+                self._phase_picload_conn = safeSignalConnect(
+                    self.phasePicload.PictureData,
+                    self._phaseImageLoaded
+                )
+
+                self.onLayoutFinish.append(
+                    "self._loadPhaseImage()"
+                )
+
+            # -------------------------------------------------
+            # EXTRA IMAGE LOADERS
+            # -------------------------------------------------
+            for index, item in enumerate(extra_images):
+
+                path = item[0]
+
+                loader = ePicLoad()
+
+                conn = safeSignalConnect(
+                    loader.PictureData,
+                    self._extraImageCallback(index)
+                )
+
+                self._extraPicloads.append(
+                    (loader, conn, path)
+                )
+
+                self.onLayoutFinish.append(
+                    "self._loadExtraImage(%d)" % index
+                )
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "solar/lunar image initialization failed: %s"
+                % repr(e)
+            )
+
+        # -------------------------------------------------
+        # ACTIONS
+        # -------------------------------------------------
+        self["actions"] = ActionMap(
+            ["OkCancelActions", "ColorActions"],
+            {
+                "ok": self.close,
+                "cancel": self.close,
+                "red": self.close,
+                "back": self.close
+            },
+            -2
+        )
+
+        self.onClose.append(self._cleanupBackground)
+
+    # =====================================================
+    # EXTRA IMAGE CALLBACK FACTORY
+    # =====================================================
+    def _extraImageCallback(self, index):
+
+        def callback(picInfo=None):
+            try:
+                if index < len(self._extraPicloads):
+                    loader = self._extraPicloads[index][0]
+                    self._extraImageLoaded(index, loader)
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "extra image callback failed: %s" % repr(e)
+                )
+
+        return callback
+
+    # =====================================================
+    # BACKGROUND IMAGE
+    # =====================================================
+    def _loadBackground(self):
+
+        try:
+            if not self._backgroundPath:
+                return
+
+            if not os.path.isfile(self._backgroundPath):
+                return
+
+            if not self.picload or not self["bgpic"].instance:
+                return
+
+            size = self["bgpic"].instance.size()
+
+            self.picload.setPara([
+                int(size.width()),
+                int(size.height()),
+                1, 1, False, 1,
+                "#ff000000"
+            ])
+
+            self.picload.startDecode(self._backgroundPath)
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "background load failed: %s" % repr(e)
+            )
+
+    def _backgroundLoaded(self, picInfo=None):
+
+        try:
+            ptr = self.picload.getData() if self.picload else None
+
+            if ptr is not None and self["bgpic"].instance:
+                self["bgpic"].instance.setPixmap(ptr)
+                self["bgpic"].show()
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "background render failed: %s" % repr(e)
+            )
+
+    # =====================================================
+    # MOON PHASE IMAGE
+    # =====================================================
+    def _loadPhaseImage(self):
+
+        try:
+            if not self._phaseImagePath:
+                return
+
+            if not os.path.isfile(self._phaseImagePath):
+                return
+
+            if not self.phasePicload:
+                return
+
+            if not self["phasepic"].instance:
+                return
+
+            size = self["phasepic"].instance.size()
+
+            self.phasePicload.setPara([
+                int(size.width()),
+                int(size.height()),
+                1, 1, True, 1,
+                "#00000000"
+            ])
+
+            self.phasePicload.startDecode(
+                self._phaseImagePath
+            )
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "moon phase load failed: %s" % repr(e)
+            )
+
+    def _phaseImageLoaded(self, picInfo=None):
+
+        try:
+            ptr = (
+                self.phasePicload.getData()
+                if self.phasePicload else None
+            )
+
+            if ptr is not None and self["phasepic"].instance:
+                self["phasepic"].instance.setPixmap(ptr)
+                self["phasepic"].show()
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "moon phase render failed: %s" % repr(e)
+            )
+
+    # =====================================================
+    # EXTRA IMAGE LOADER
+    # =====================================================
+    def _loadExtraImage(self, index):
+
+        try:
+            if index < 0 or index >= len(self._extraPicloads):
+                return
+
+            loader, conn, path = self._extraPicloads[index]
+
+            widget = self["extraPic%d" % index]
+
+            if not path or not os.path.isfile(path):
+                return
+
+            if not widget.instance:
+                return
+
+            size = widget.instance.size()
+
+            loader.setPara([
+                int(size.width()),
+                int(size.height()),
+                1, 1, False, 1,
+                "#ff000000"
+            ])
+
+            loader.startDecode(path)
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "extra image load failed: %s" % repr(e)
+            )
+
+    def _extraImageLoaded(self, index, loader):
+
+        try:
+            widget = self["extraPic%d" % index]
+
+            ptr = loader.getData()
+
+            if ptr is not None and widget.instance:
+                widget.instance.setPixmap(ptr)
+                widget.show()
+
+        except Exception as e:
+            print(
+                "[speedy_TheWeather] "
+                "extra image render failed: %s" % repr(e)
+            )
+
+    # =====================================================
+    # CLEANUP
+    # =====================================================
+    def _cleanupBackground(self):
+        try:
+            if self.picload:
+                self.picload.PictureData.disconnect(self._picload_conn)
+        except Exception:
+            pass
+        self.picload = None
+        try:
+            if self.phasePicload:
+                self.phasePicload.PictureData.disconnect(self._phase_picload_conn)
+        except Exception:
+            pass
+        self.phasePicload = None
+        for loader, conn, path in self._extraPicloads:
+            try:
+                loader.PictureData.disconnect(conn)
+            except Exception:
+                pass
+        self._extraPicloads = []
+
+
+
+
+def _find_auto_jpg_background(categories=()):
+    """Prefer JPG photos from backgrounds/auto for the Sun and Moon screens."""
+    try:
+        if not os.path.isdir(AUTO_BG_DIR):
+            return None
+        for category in categories:
+            names = _AUTO_BG_ALIASES.get(category, (category,))
+            for name in names:
+                for ext in (".jpg", ".jpeg"):
+                    path = os.path.join(AUTO_BG_DIR, name + ext)
+                    if os.path.isfile(path) and os.path.getsize(path) > 0:
+                        return path
+        # If no named variant exists, use a JPG from the same AUTO folder.
+        files = sorted(
+            name for name in os.listdir(AUTO_BG_DIR)
+            if os.path.splitext(name)[1].lower() in (".jpg", ".jpeg")
+            and os.path.isfile(os.path.join(AUTO_BG_DIR, name))
+            and os.path.getsize(os.path.join(AUTO_BG_DIR, name)) > 0
+        )
+        return os.path.join(AUTO_BG_DIR, files[0]) if files else None
+    except Exception as e:
+        print("[speedy_TheWeather] AUTO JPG background lookup failed: %s" % repr(e))
+        return None
+
+
+def _get_today_sun_times():
+    """Read today's sunrise/sunset from the currently selected weather place."""
+    try:
+        days = weatherData.get("days", []) if isinstance(weatherData, dict) else []
+        if not days:
+            return None, None
+        day = days[0]
+        rise = _autoWeatherLocalTime(day.get("sunrise", ""))
+        setting = _autoWeatherLocalTime(day.get("sunset", ""))
+        def fmt(parsed):
+            if not parsed:
+                return None
+            return "%02d:%02d" % (parsed[1], parsed[2])
+        return fmt(rise), fmt(setting)
+    except Exception as e:
+        print("[speedy_TheWeather] sun times screen: %s" % repr(e))
+        return None, None
+
+
+def _moon_phase_details(day=None):
+    """Approximate phase and illuminated fraction using the synodic cycle."""
+    if day is None:
+        day = datetime.datetime.now().date()
+    known_new_moon = datetime.datetime(2000, 1, 6, 18, 14)
+    now = datetime.datetime.combine(day, datetime.time(12, 0))
+    synodic = 29.530588853
+    age = ((now - known_new_moon).total_seconds() / 86400.0) % synodic
+    fraction = age / synodic
+    illumination = (1.0 - math.cos(2.0 * math.pi * fraction)) * 50.0
+    if fraction < 0.03 or fraction >= 0.97:
+        phase = _("New moon")
+    elif fraction < 0.22:
+        phase = _("Waxing crescent")
+    elif fraction < 0.28:
+        phase = _("First quarter")
+    elif fraction < 0.47:
+        phase = _("Waxing gibbous")
+    elif fraction < 0.53:
+        phase = _("Full moon")
+    elif fraction < 0.72:
+        phase = _("Waning gibbous")
+    elif fraction < 0.78:
+        phase = _("Last quarter")
+    else:
+        phase = _("Waning crescent")
+    return phase, int(round(illumination)), fraction
+
+
+
+class speedy_SunTimesScreen(_SolarLunarInfoScreen):
+    def __init__(self, session):
+        sunrise, sunset = _get_today_sun_times()
+
+        sunrise = sunrise or "--"
+        sunset = sunset or "--"
+
+        # Use the exact background currently displayed by the main screen.
+        sun_asset = None
+        try:
+            active_bg = currentWeatherBackground
+            if active_bg and os.path.isfile(active_bg):
+                sun_asset = active_bg
+        except Exception as e:
+            print("[speedy_TheWeather] active sun background error: %s" % e)
+
+        if not sun_asset:
+            sun_asset = _find_auto_jpg_background(("sunny", "cloudy", "mist"))
+
+        # Sunrise and sunset tiles from backgrounds/auto.
+        sun_tiles = []
+        auto_bg_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "backgrounds", "auto"
+        )
+
+        for filename in ("sunrise.jpg", "sunset.jpg"):
+            path = os.path.join(auto_bg_dir, filename)
+            try:
+                if os.path.isfile(path) and os.path.getsize(path) > 0:
+                    sun_tiles.append((path,))
+            except OSError:
+                pass
+
+        lines = [
+            _("Selected location: %s") %
+            (citynamedisplay or lockaaleStad or "--"),
+            "",
+            _("Sunrise: %s") % sunrise,
+            _("Sunset: %s") % sunset
+        ]
+
+        _SolarLunarInfoScreen.__init__(
+            self, session, _("Sun times"), lines, sun_asset,
+            extra_images=sun_tiles,
+            skin_type="solar"
+        )
+
+def _find_moon_phase_image(fraction):
+    """Return the matching moon phase image from backgrounds/auto."""
+    auto_bg_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "backgrounds", "auto"
+    )
+
+    try:
+        fraction = float(fraction) % 1.0
+    except (TypeError, ValueError):
+        return None
+
+    if fraction < 0.03 or fraction >= 0.97:
+        filename = "new_moon.jpg"
+    elif fraction < 0.22:
+        filename = "waxing_crescent.jpg"
+    elif fraction < 0.28:
+        filename = "first_quarter.jpg"
+    elif fraction < 0.47:
+        filename = "waxing_gibbous.jpg"
+    elif fraction < 0.53:
+        filename = "full_moon.jpg"
+    elif fraction < 0.72:
+        filename = "waning_gibbous.jpg"
+    elif fraction < 0.78:
+        filename = "last_quarter.jpg"
+    else:
+        filename = "waning_crescent.jpg"
+
+    path = os.path.join(auto_bg_dir, filename)
+
+    try:
+        if os.path.isfile(path) and os.path.getsize(path) > 0:
+            return path
+    except OSError:
+        pass
+
+    print("[speedy_TheWeather] Moon phase image missing: %s" % path)
+    return None
+
+
+class speedy_MoonTimesScreen(_SolarLunarInfoScreen):
+    def __init__(self, session):
+        today = datetime.datetime.now().date()
+        moonrise, moonset = "--", "--"
+        try:
+            lat, lon = getCoordsFromEntry(lockaaleStad)
+            if lat is not None and lon is not None:
+                moonrise, moonset = _moon_rise_set_for_date(today, float(lat), float(lon))
+                if not moonrise or moonrise == "na":
+                    moonrise = "--"
+                if not moonset or moonset == "na":
+                    moonset = "--"
+        except Exception as e:
+            print("[speedy_TheWeather] moon times screen: %s" % repr(e))
+        phase, illumination, fraction = _moon_phase_details(today)
+        # Use the exact background currently displayed by the main screen.
+        moon_asset = None
+        try:
+            active_bg = currentWeatherBackground
+            if active_bg and os.path.isfile(active_bg):
+                moon_asset = active_bg
+        except Exception as e:
+            print("[speedy_TheWeather] active moon background error: %s" % e)
+
+        if not moon_asset:
+            moon_asset = _find_auto_jpg_background(
+                ("clear_night", "cloudy_night", "mist_night")
+            )
+
+        # Select the matching moon phase image.
+        phase_icon = ""
+        phase_image = _find_moon_phase_image(fraction)
+
+        lines = [
+            _("Selected location: %s") %
+            (citynamedisplay or lockaaleStad or "--"),
+            "",
+            _("Moonrise: %s") % str(moonrise),
+            _("Moonset: %s") % str(moonset),
+            "",
+            "%s  %s" % (phase_icon, phase),
+            _("Illumination: %d%%") % illumination
+        ]
+
+        _SolarLunarInfoScreen.__init__(
+            self, session, _("Moon times"), lines,
+            moon_asset, phase_image,
+            skin_type="lunar"
+        )
+
+
 class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
     skin = """
@@ -12673,12 +13572,23 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         <widget name="config"
             position="4,4"
-            size="1070,550"
+            size="1070,450"
             scrollbarMode="showOnDemand"
             itemHeight="45"
             itemTextSelectedColor="#ffffff"
             itemTextUnselectedColor="#ffffff"
             font="Regular; 25" />
+    <widget name="setupInfo"
+        position="10,465"
+        size="1060,80"
+        font="Regular;21"
+        foregroundColor="#FF4DA6FF"
+        backgroundColor="#202020"
+        transparent="0"
+        halign="left"
+        valign="center"
+        zPosition="2" />
+
 
         <!-- Roter Button -->
         <ePixmap
@@ -12818,13 +13728,22 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         self.updateEntry = ConfigNothing()
 
+        self.sunTimesEntry = ConfigNothing()
+        self.moonTimesEntry = ConfigNothing()
+
         self.autoBackgroundDownloadEntry = ConfigNothing()
 
         self.sevenDayColorEntry = ConfigNothing()
         self.twolocationsColorEntry = ConfigNothing()
+        self.sunMoonColorsEntry = ConfigNothing()
         # ====================================================
         # CONFIG-LISTE
         # ====================================================
+
+        # SPEEDY_SETUP_INFO_PATCH
+        self["setupInfo"] = Label(
+            _("Wähle eine Einstellung aus, um Informationen zu erhalten.")
+        )
 
         self.list = []
 
@@ -12847,6 +13766,23 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             getConfigListEntry(
                 _("Date format:"),
                 config.plugins.speedy_TheWeather.dateformat
+            )
+        )
+
+        # ----------------------------------------------------
+        # SONNEN- UND MONDZEITEN
+        # ----------------------------------------------------
+
+        self.list.append(
+            getConfigListEntry(
+                _("Sun times (sunrise / sunset)"),
+                self.sunTimesEntry
+            )
+        )
+        self.list.append(
+            getConfigListEntry(
+                _("Moon times (moonrise / moonset)"),
+                self.moonTimesEntry
             )
         )
 
@@ -12960,6 +13896,17 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         )
 
         # ====================================================
+        # GEMEINSAME SONNE / MOND FARBEN
+        # ====================================================
+
+        self.list.append(
+            getConfigListEntry(
+                _("Sonne / Mond Farben einstellen:"),
+                self.sunMoonColorsEntry
+            )
+        )
+
+        # ====================================================
         # UPDATE
         # ====================================================
 
@@ -12979,6 +13926,30 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             self.list,
             session=session
         )
+
+        # SPEEDY_SETUP_INFO_PATCH
+        self.setupInfoTexts = [
+            (("wind",), _("Legt die Einheit der Windgeschwindigkeit fest.")),
+            (("date",), _("Bestimmt das Format der Datumsanzeige.")),
+            (("sun times", "sonnen"), _("Informationen zu Sonnenaufgang und Sonnenuntergang.")),
+            (("moon times", "mond"), _("Informationen zu Mondaufgang, Monduntergang und Mondphase.")),
+            (("radar", "zoom"), _("Legt die Standard-Vergrößerung des Regenradars fest.")),
+            (("performance", "leistung"), _("Bestimmt die Leistungseinstellungen des Plugins.")),
+            (("refresh", "aktualisierung"), _("Legt fest, wie oft die Wetterdaten aktualisiert werden.")),
+            (("weather warnings", "wetterwarn"), _("Aktiviert oder deaktiviert Wetterwarnungen.")),
+            (("rain warning", "regen"), _("Legt die Regenwahrscheinlichkeit für eine Warnung fest.")),
+            (("auto weather backgrounds", "automatische wetter"), _("Aktiviert automatisch passende Wetterhintergründe.")),
+            (("sunrise", "sunset", "sonnenaufgang"), _("Steuert die Hintergründe für Sonnenaufgang und Sonnenuntergang.")),
+            (("holiday", "feiertag"), _("Einstellungen für Feiertags-Hintergründe und das Bundesland.")),
+            (("federal state", "bundesland"), _("Wählt das Bundesland für regionale Feiertage.")),
+            (("download weather backgrounds", "hintergründe herunterladen"), _("Lädt zusätzliche Wetterhintergründe herunter.")),
+            (("sevenday", "seven day"), _("Öffnet die Farbeinstellungen der Sieben-Tage-Vorschau.")),
+            (("two locations", "zwei standorte"), _("Öffnet die Farbeinstellungen für zwei Standorte.")),
+            (("update", "aktualisierung suchen"), _("Sucht nach einer neuen Version von Speedy TheWeather.")),
+        ]
+
+        self["config"].onSelectionChanged.append(self.updateSetupInfo)
+        self.updateSetupInfo()
 
         # ====================================================
         # ACTION MAP
@@ -13009,6 +13980,42 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
     # OK-TASTE
     # ========================================================
 
+    # SPEEDY_SETUP_INFO_PATCH
+    def updateSetupInfo(self):
+
+        current = self["config"].getCurrent()
+
+        if not current:
+            return
+
+        # Spezielle Einträge über ihre Config-Objekte erkennen
+        entry = current[1] if len(current) > 1 else None
+
+        if entry is self.sunTimesEntry:
+            info = _("Öffnet die Einstellungen für Sonnenzeiten.")
+        elif entry is self.moonTimesEntry:
+            info = _("Öffnet die Einstellungen für Mondzeiten.")
+        elif entry is self.autoBackgroundDownloadEntry:
+            info = _("Lädt die Wetterhintergründe herunter.")
+        elif entry is self.sevenDayColorEntry:
+            info = _("Öffnet die Farbeinstellungen der Sieben-Tage-Vorschau.")
+        elif entry is self.twolocationsColorEntry:
+            info = _("Öffnet die Farbeinstellungen für zwei Standorte.")
+        elif entry is self.sunMoonColorsEntry:
+            info = _("Öffnet die gemeinsamen Farbeinstellungen für Sonnen- und Mondzeiten.")
+        elif entry is self.updateEntry:
+            info = _("Sucht nach einer neuen Plugin-Version.")
+        else:
+            name = str(current[0]).lower()
+            info = _("Für diese Einstellung sind keine weiteren Informationen vorhanden.")
+
+            for keywords, description in self.setupInfoTexts:
+                if any(word in name for word in keywords):
+                    info = description
+                    break
+
+        self["setupInfo"].setText(info)
+
     def handleOk(self):
 
         current = self["config"].getCurrent()
@@ -13028,6 +14035,18 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                 % e
             )
 
+            return
+
+        # ====================================================
+        # SONNEN- UND MONDZEITEN
+        # ====================================================
+
+        if entry is self.sunTimesEntry:
+            self.session.open(speedy_SunTimesScreen)
+            return
+
+        if entry is self.moonTimesEntry:
+            self.session.open(speedy_MoonTimesScreen)
             return
 
         # ====================================================
@@ -13112,6 +14131,39 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
                         "Could not open the Two Locations "
                         "color settings."
                     ),
+                    MessageBox.TYPE_ERROR
+                )
+
+            return
+
+        # ====================================================
+        # GEMEINSAME SONNE / MOND FARBEN
+        # ====================================================
+
+        if entry is self.sunMoonColorsEntry:
+
+            print(
+                "[speedy_TheWeather] "
+                "Sun and moon color settings selected."
+            )
+
+            try:
+
+                self.session.open(
+                    sunMoonTimesColorSetup
+                )
+
+            except Exception as e:
+
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not open sun/moon colors: %s"
+                    % e
+                )
+
+                self.session.open(
+                    MessageBox,
+                    _("Could not open the sun/moon color settings."),
                     MessageBox.TYPE_ERROR
                 )
 
@@ -13894,6 +14946,158 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
             except Exception:
                 pass
         self.close()
+
+
+class sunMoonTimesColorSetup(ConfigListScreen, Screen):
+    """
+    Gemeinsame Farbeinstellungen für Sonnen- und Mondzeiten.
+    Eigene Farbeinstellungen für Sonnenzeit und Mondzeit.
+    """
+
+    skin = """
+    <screen name="sunMoonTimesColorSetup"
+        position="center,center"
+        size="1100,700"
+        title="Sonne / Mond Farben">
+
+        <widget name="config"
+            position="4,4"
+            size="1070,600"
+            scrollbarMode="showOnDemand"
+            itemHeight="45"
+            itemTextSelectedColor="#ffffff"
+            itemTextUnselectedColor="#ffffff"
+            font="Regular;30" />
+
+        <ePixmap pixmap="skin_default/buttons/red.png"
+            position="11,650" size="20,40" alphatest="on" />
+        <widget name="key_red"
+            position="36,650" size="240,40"
+            transparent="1" font="Regular;25"
+            halign="center" valign="center" />
+
+        <ePixmap pixmap="skin_default/buttons/green.png"
+            position="282,650" size="20,40" alphatest="on" />
+        <widget name="key_green"
+            position="308,650" size="240,40"
+            transparent="1" font="Regular;25"
+            halign="center" valign="center"
+            foregroundColor="green" />
+
+        <ePixmap pixmap="skin_default/buttons/yellow.png"
+            position="554,650" size="20,40" alphatest="on" />
+        <widget name="key_yellow"
+            position="579,650" size="240,40"
+            transparent="1" font="Regular;25"
+            halign="center" valign="center"
+            foregroundColor="yellow" />
+
+        <ePixmap pixmap="skin_default/buttons/blue.png"
+            position="825,650" size="20,40" alphatest="on" />
+        <widget name="key_blue"
+            position="851,650" size="240,40"
+            transparent="1" font="Regular;25"
+            halign="center" valign="center"
+            foregroundColor="blue" />
+
+    </screen>
+    """
+
+    _ENTRIES = (
+        ("Solar time - Panel background", "solartimes_panel_color",
+         "solar_panel_color"),
+        ("Solar time - Heading", "solartimes_heading_color",
+         "solar_heading_color"),
+        ("Solar time - Text", "solartimes_text_color",
+         "solar_text_color"),
+        ("Solar time - Hint", "solartimes_hint_color",
+         "solar_hint_color"),
+
+        ("Lunar time - Panel background", "lunartimes_panel_color",
+         "lunar_panel_color"),
+        ("Lunar time - Heading", "lunartimes_heading_color",
+         "lunar_heading_color"),
+        ("Lunar time - Text", "lunartimes_text_color",
+         "lunar_text_color"),
+        ("Lunar time - Hint", "lunartimes_hint_color",
+         "lunar_hint_color"),
+    )
+
+    def __init__(self, session):
+        Screen.__init__(self, session)
+        self.session = session
+
+        self["key_red"] = Label(_("Cancel"))
+        self["key_green"] = Label(_("Save"))
+        self["key_yellow"] = Label(_("Default colors"))
+        self["key_blue"] = Label(_("Save & exit"))
+
+        self.list = []
+
+        for label, config_name, default_key in self._ENTRIES:
+            element = getattr(
+                config.plugins.speedy_TheWeather,
+                config_name
+            )
+            self.list.append(
+                getConfigListEntry(_(label) + ":", element)
+            )
+
+        ConfigListScreen.__init__(
+            self,
+            self.list,
+            session=session
+        )
+
+        self["actions"] = ActionMap(
+            ["SetupActions", "ColorActions"],
+            {
+                "green": self.save,
+                "blue": self.save,
+                "red": self.keyCancel,
+                "cancel": self.keyCancel,
+                "save": self.save,
+                "yellow": self.resetDefaults,
+            },
+            -2
+        )
+
+    def resetDefaults(self):
+        for label, config_name, default_key in self._ENTRIES:
+            try:
+                getattr(
+                    config.plugins.speedy_TheWeather,
+                    config_name
+                ).setValue(_SOLAR_LUNAR_COLOR_DEFAULTS[default_key])
+            except Exception as e:
+                print(
+                    "[speedy_TheWeather] "
+                    "Could not reset %s: %s"
+                    % (config_name, e)
+                )
+
+        self["config"].setList(self.list)
+
+    def save(self):
+        for item in self["config"].list:
+            try:
+                item[1].save()
+            except Exception:
+                pass
+
+        configfile.save()
+        self.close(True)
+
+    def keyCancel(self):
+        for item in self["config"].list:
+            try:
+                item[1].cancel()
+            except Exception:
+                pass
+
+        self.close()
+
+
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
