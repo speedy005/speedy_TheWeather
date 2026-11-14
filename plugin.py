@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.1.0
+# v.2.1.1
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -10,6 +10,7 @@
 
 import os
 import time
+import calendar
 import json
 import math
 import shutil
@@ -121,6 +122,33 @@ config.plugins.speedy_TheWeather.performance = ConfigSelection(
 )
 
 config.plugins.speedy_TheWeather.autoBackgrounds = ConfigYesNo(
+    default=True
+)
+
+# Automatisches Aktualisierungsintervall (Minuten).
+config.plugins.speedy_TheWeather.refreshInterval = ConfigSelection(
+    default="30",
+    choices=[
+        ("15", _("15 minutes")),
+        ("30", _("30 minutes")),
+        ("60", _("60 minutes")),
+        ("120", _("120 minutes"))
+    ]
+)
+
+# Lokale Regen- und Unwetterhinweise.
+config.plugins.speedy_TheWeather.weatherAlerts = ConfigYesNo(default=True)
+config.plugins.speedy_TheWeather.rainAlertThreshold = ConfigSelection(
+    default="60",
+    choices=[
+        ("40", "40%"), ("50", "50%"), ("60", "60%"),
+        ("70", "70%"), ("80", "80%")
+    ]
+)
+
+# Dämmerungsbilder rund um Sonnenaufgang und Sonnenuntergang verwenden.
+# Fehlen passende Bilder im Auto-Ordner, greift automatisch der Wetterhintergrund.
+config.plugins.speedy_TheWeather.twilightBackgrounds = ConfigYesNo(
     default=True
 )
 
@@ -1324,7 +1352,7 @@ def getMoonTimesForLocation(date_value, location_entry):
         lon
     )
 
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -1396,7 +1424,7 @@ def iconToBgCategory(icon):
         return "sunny"
     return ""
 
-version = '2.1.0'
+version = '2.1.1'
 
 # ============================================================
 # AUTO WEATHER BACKGROUNDS
@@ -1476,6 +1504,8 @@ _AUTO_BG_ALIASES = {
     "cloudy": ("cloudy",),
     "cloudy_night": ("cloudy_night", "cloudy"),
     "clear_night": ("clear_night", "sunny"),
+    "sunrise": ("sunrise", "dawn", "morning"),
+    "sunset": ("sunset", "dusk", "evening"),
     "mist": ("mist",),
     "mist_night": ("mist_night", "mist"),
     "rain": ("rain",),
@@ -2203,21 +2233,101 @@ def findAutoBgFile(category):
                 continue
     return None
 
+def _autoWeatherLocalTime(value, reference_date=None):
+    """Parse Buienradar time values and return local (date, hour, minute).
+
+    ISO timestamps with an explicit UTC offset are converted to receiver-local
+    time. Values without an offset are treated as local wall-clock times, as
+    returned by older forecast payloads.
+    """
+    try:
+        if value is None:
+            return None
+        raw = str(value).strip()
+        if not raw:
+            return None
+
+        date_part = None
+        time_part = raw
+        if "T" in raw:
+            date_part, time_part = raw.split("T", 1)
+        elif " " in raw:
+            date_part, time_part = raw.split(None, 1)
+
+        time_part = time_part.strip()
+        offset_seconds = 0
+        has_offset = False
+        if time_part.endswith("Z") or time_part.endswith("z"):
+            time_part = time_part[:-1]
+            has_offset = True
+        else:
+            # Offset is only searched for after the time separator so that
+            # hyphens in an ISO date are not mistaken for timezone offsets.
+            pos = max(time_part.rfind("+"), time_part.rfind("-"))
+            if pos > 0:
+                offset = time_part[pos:]
+                time_part = time_part[:pos]
+                sign = 1 if offset[0] == "+" else -1
+                digits = offset[1:].replace(":", "")
+                if len(digits) >= 2:
+                    oh = int(digits[:2])
+                    om = int(digits[2:4] or "0") if len(digits) >= 4 else 0
+                    offset_seconds = sign * (oh * 3600 + om * 60)
+                    has_offset = True
+
+        bits = time_part.split(":")
+        hour = int(bits[0])
+        minute = int(bits[1]) if len(bits) > 1 else 0
+        second = int(bits[2][:2]) if len(bits) > 2 else 0
+        if hour == 24:
+            hour = 0
+            if date_part:
+                base = time.strptime(date_part, "%Y-%m-%d")
+                stamp = calendar.timegm(base) + 86400
+                local = time.localtime(stamp)
+                return ((local.tm_year, local.tm_mon, local.tm_mday), local.tm_hour, local.tm_min)
+        if hour < 0 or hour > 23 or minute < 0 or minute > 59:
+            return None
+
+        if date_part:
+            parsed = time.strptime(date_part[:10], "%Y-%m-%d")
+            stamp = calendar.timegm((parsed.tm_year, parsed.tm_mon, parsed.tm_mday,
+                                     hour, minute, second, 0, 0, 0))
+            if has_offset:
+                stamp -= offset_seconds
+                local = time.localtime(stamp)
+                return ((local.tm_year, local.tm_mon, local.tm_mday), local.tm_hour, local.tm_min)
+            return ((parsed.tm_year, parsed.tm_mon, parsed.tm_mday), hour, minute)
+
+        if has_offset:
+            now = time.localtime()
+            stamp = calendar.timegm((now.tm_year, now.tm_mon, now.tm_mday,
+                                     hour, minute, second, 0, 0, 0)) - offset_seconds
+            local = time.localtime(stamp)
+            return ((local.tm_year, local.tm_mon, local.tm_mday), local.tm_hour, local.tm_min)
+        return (None, hour, minute)
+    except Exception:
+        return None
+
+
 def isNightTime():
+    """Return whether receiver-local time is outside today's daylight period."""
     global weatherData
     try:
-        dag = weatherData["days"][0]
-        sunrise = dag.get("sunrise", "")
-        sunset = dag.get("sunset", "")
+        day = weatherData["days"][0]
+        sunrise = _autoWeatherLocalTime(day.get("sunrise", ""))
+        sunset = _autoWeatherLocalTime(day.get("sunset", ""))
         if not sunrise or not sunset:
             return False
         now = time.localtime()
-        nowMin = now.tm_hour * 60 + now.tm_min
-        sr = sunrise.split("T")[1]
-        ss = sunset.split("T")[1]
-        srMin = int(sr[:2]) * 60 + int(sr[3:5])
-        ssMin = int(ss[:2]) * 60 + int(ss[3:5])
-        return not (srMin <= nowMin < ssMin)
+        today = (now.tm_year, now.tm_mon, now.tm_mday)
+        # Sunrise/sunset must refer to the receiver's current local date.
+        if sunrise[0] not in (None, today) or sunset[0] not in (None, today):
+            return False
+        now_min = now.tm_hour * 60 + now.tm_min
+        sunrise_min = sunrise[1] * 60 + sunrise[2]
+        sunset_min = sunset[1] * 60 + sunset[2]
+        return not (sunrise_min <= now_min < sunset_min)
     except Exception:
         return False
 
@@ -2375,6 +2485,41 @@ def getHolidayBgCategory():
 
     return None
 
+def getTimeOfDayBackgroundCategory(day):
+    """Return sunrise/sunset during a 45-minute twilight window, else None.
+
+    Times are normalized with the same receiver-local parser used by the
+    hourly forecast. The special background is optional and falls back to
+    the normal weather category when no matching image is installed.
+    """
+    try:
+        if not config.plugins.speedy_TheWeather.twilightBackgrounds.value:
+            return None
+        if not isinstance(day, dict):
+            return None
+
+        now = time.localtime()
+        today = (now.tm_year, now.tm_mon, now.tm_mday)
+        now_minutes = now.tm_hour * 60 + now.tm_min
+
+        sunrise = _autoWeatherLocalTime(day.get("sunrise", ""))
+        sunset = _autoWeatherLocalTime(day.get("sunset", ""))
+        window = 45
+
+        if sunrise and sunrise[0] in (None, today):
+            sunrise_minutes = sunrise[1] * 60 + sunrise[2]
+            if abs(now_minutes - sunrise_minutes) <= window:
+                return "sunrise"
+
+        if sunset and sunset[0] in (None, today):
+            sunset_minutes = sunset[1] * 60 + sunset[2]
+            if abs(now_minutes - sunset_minutes) <= window:
+                return "sunset"
+    except Exception as e:
+        print("[speedy_TheWeather] twilight background check error: %s" % e)
+    return None
+
+
 def getAutoWeatherBackground():
     global weatherData
 
@@ -2435,6 +2580,22 @@ def getAutoWeatherBackground():
         )
 
     # -------------------------------------------------
+    # TAGESZEIT: SONNENAUFGANG / SONNENUNTERGANG
+    # -------------------------------------------------
+    try:
+        twilight_category = None
+        days_for_twilight = weatherData.get("days", []) if isinstance(weatherData, dict) else []
+        if days_for_twilight and isinstance(days_for_twilight[0], dict):
+            twilight_category = getTimeOfDayBackgroundCategory(days_for_twilight[0])
+        if twilight_category:
+            twilight_bg = findAutoBgFile(twilight_category)
+            if twilight_bg and os.path.isfile(twilight_bg):
+                print("[speedy_TheWeather] AUTO twilight: %s -> %s" % (twilight_category, twilight_bg))
+                return twilight_bg
+    except Exception as e:
+        print("[speedy_TheWeather] AUTO twilight background error: %s" % e)
+
+    # -------------------------------------------------
     # WETTERDATEN
     # -------------------------------------------------
 
@@ -2486,44 +2647,46 @@ def getAutoWeatherBackground():
             hours = []
 
         # -------------------------------------------------
-        # ZUERST DAS ICON DER AKTUELLEN STUNDE VERWENDEN
+        # STUNDEN-ICON NACH AKTUELLER EMPFAENGER-LOKALZEIT
         # -------------------------------------------------
-        # Der Hintergrund soll zur aktuell angezeigten Wetterbeschreibung passen.
-        # Das Tages-Icon kann z.B. Regen ankündigen, obwohl die aktuelle Stunde
-        # "Wechselhaft und Nebel möglich" meldet.
+        # Die API kann einfache Stundenwerte oder ISO-Zeitstempel mit
+        # Zeitzonenoffset liefern. Beides wird zuerst normalisiert.
         icon = None
-        now_hour = time.localtime().tm_hour
-        for hour in hours:
-            if not isinstance(hour, dict):
+        now = time.localtime()
+        now_date = (now.tm_year, now.tm_mon, now.tm_mday)
+        now_minutes = now.tm_hour * 60 + now.tm_min
+        best_delta = None
+        best_icon = None
+
+        for hour_data in hours:
+            if not isinstance(hour_data, dict):
                 continue
-            try:
-                h = hour.get("hour")
-                if h is None:
-                    h = hour.get("time")
-                if isinstance(h, str):
-                    h = h.strip()
-                    if "T" in h:
-                        h = h.split("T", 1)[1]
-                    if "+" in h:
-                        h = h.split("+", 1)[0]
-                    if "Z" in h:
-                        h = h.split("Z", 1)[0]
-                    if ":" in h:
-                        h = h.split(":", 1)[0]
-                    if not h.isdigit():
-                        continue
-                if h is not None and int(h) == now_hour:
-                    icon = hour.get("iconcode")
-                    if icon is None:
-                        icon = hour.get("icon")
-                    print(
-                        "[speedy_TheWeather] AUTO: aktuelles Stunden-Icon=%r" % icon
-                    )
-                    if icon:
-                        break
-                    icon = None
-            except Exception:
+            raw_time = hour_data.get("hour")
+            if raw_time is None:
+                raw_time = hour_data.get("time")
+            parsed_time = _autoWeatherLocalTime(raw_time)
+            if not parsed_time:
                 continue
+            hour_date, hour_value, minute_value = parsed_time
+            if hour_date not in (None, now_date):
+                continue
+            delta = abs((hour_value * 60 + minute_value) - now_minutes)
+            # Forecast hours are hourly. A 90-minute window tolerates small
+            # provider rounding differences but avoids selecting a distant slot.
+            if delta <= 90 and (best_delta is None or delta < best_delta):
+                candidate = hour_data.get("iconcode")
+                if candidate is None:
+                    candidate = hour_data.get("icon")
+                if candidate:
+                    best_delta = delta
+                    best_icon = candidate
+
+        if best_icon:
+            icon = best_icon
+            print(
+                "[speedy_TheWeather] AUTO: lokales Stunden-Icon=%r (Abstand %s min)"
+                % (icon, best_delta)
+            )
 
         # -------------------------------------------------
         # TAGES-ICON ALS FALLBACK
@@ -3167,7 +3330,7 @@ def _update_extract_installer_info(source, language=None):
 
     Unterstützte Formate:
 
-        VERSION="2.1.0"
+        VERSION="2.1.1"
 
         changelog_EN='
         • Change one.
@@ -3181,7 +3344,7 @@ def _update_extract_installer_info(source, language=None):
 
     Zusätzlich weiterhin altes Format:
 
-        changelog='v2.1.0 EN: ... | DE: ...'
+        changelog='v2.1.1 EN: ... | DE: ...'
 
     Parameter:
         language:
@@ -6923,6 +7086,12 @@ def localWeatherAlert(dayData):
         return "", ""
 
     try:
+        if not config.plugins.speedy_TheWeather.weatherAlerts.value:
+            return "", ""
+    except Exception:
+        pass
+
+    try:
         windkmh = float(dayData.get("windspeed", 0) or 0)
     except (TypeError, ValueError):
         windkmh = 0
@@ -6937,6 +7106,28 @@ def localWeatherAlert(dayData):
 
     bft = kmh_to_beaufort(windkmh)
     kandidaten = []
+
+    # Regenwahrscheinlichkeit der aktuellen bzw. nächsten Vorhersagestunde.
+    try:
+        threshold = float(config.plugins.speedy_TheWeather.rainAlertThreshold.value)
+    except Exception:
+        threshold = 60.0
+    try:
+        now_hour = time.localtime().tm_hour
+        hours = dayData.get("hours", []) or []
+        for hour_data in hours:
+            try:
+                hour_value = int(str(hour_data.get("hour", "")).split(":", 1)[0]) % 24
+                delta = (hour_value - now_hour) % 24
+                probability = hour_data.get("precipitation", hour_data.get("precipation", 0))
+                probability = float(probability or 0)
+                if delta in (0, 1) and probability >= threshold:
+                    kandidaten.append((1, "blue", _("Rain expected soon!")))
+                    break
+            except (TypeError, ValueError):
+                continue
+    except Exception:
+        pass
 
     # Wind: from Bft 7 (near gale)
     if bft is not None and bft >= 9:
@@ -7194,7 +7385,7 @@ class sevendays(Screen):
                 self.backgroundRefreshTimer,
                 self.refreshWeatherBackground
             )
-            self.backgroundRefreshTimer.start(15 * 60 * 1000, True)
+            self.backgroundRefreshTimer.start(int(config.plugins.speedy_TheWeather.refreshInterval.value) * 60 * 1000, True)
             self.onClose.append(self._stopBackgroundRefreshTimer)
 
         except Exception as e:
@@ -7521,7 +7712,7 @@ class sevendays(Screen):
         # Timer ist als wiederkehrender Timer gestartet; erneuter Start als Fallback.
         try:
             if hasattr(self, "backgroundRefreshTimer"):
-                self.backgroundRefreshTimer.start(15 * 60 * 1000, True)
+                self.backgroundRefreshTimer.start(int(config.plugins.speedy_TheWeather.refreshInterval.value) * 60 * 1000, True)
         except Exception:
             pass
     
@@ -12681,6 +12872,25 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             )
         )
 
+        self.list.append(
+            getConfigListEntry(
+                _("Weather refresh interval:"),
+                config.plugins.speedy_TheWeather.refreshInterval
+            )
+        )
+        self.list.append(
+            getConfigListEntry(
+                _("Weather warnings:"),
+                config.plugins.speedy_TheWeather.weatherAlerts
+            )
+        )
+        self.list.append(
+            getConfigListEntry(
+                _("Rain warning from probability:"),
+                config.plugins.speedy_TheWeather.rainAlertThreshold
+            )
+        )
+
         # ====================================================
         # AUTO WEATHER BACKGROUNDS
         # ====================================================
@@ -12689,6 +12899,13 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             getConfigListEntry(
                 _("Auto weather backgrounds:"),
                 config.plugins.speedy_TheWeather.autoBackgrounds
+            )
+        )
+
+        self.list.append(
+            getConfigListEntry(
+                _("Sunrise / sunset backgrounds:"),
+                config.plugins.speedy_TheWeather.twilightBackgrounds
             )
         )
 
@@ -16777,7 +16994,7 @@ class TempOverlay(Screen):
         except Exception as e:
             print("[speedy_TheWeather] TempOverlay.refresh: fout:", e)
         try:
-            self.refreshTimer.start(15 * 60 * 1000, True)
+            self.refreshTimer.start(int(config.plugins.speedy_TheWeather.refreshInterval.value) * 60 * 1000, True)
         except Exception:
             pass
 
