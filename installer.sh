@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.1.0
+# Version: 2.1.1
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.1.0"
+VERSION="2.1.1"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -70,7 +70,8 @@ EXTRACT_DIR="${TMP_DIR}/extract"
 # They are read by the Python updater.
 ###############################################################################
 
-changelog_EN='
+
+changelog='
 • Fixed automatic weather background selection so it better matches the current weather description, including changeable conditions with possible fog.
 • Fixed language files and PO/MO file names.
 • Added update function.
@@ -88,6 +89,9 @@ changelog_EN='
 • Added display of the time of the last successful weather update.
 • Improved performance on low-end Enigma2 receivers with optimized radar loading, decoding, caching and animation handling.
 • Added Ultra Low-End, Low-End, Auto and Normal performance modes.
+• Added automatic sunrise and sunset backgrounds with optional activation in the settings.
+• Added an adjustable weather refresh interval: 15, 30, 60 or 120 minutes.
+• Added configurable rain probability alerts and optional severe weather warnings.
 • Existing features remain available.
 • Buy me a coffee if you like this plugin.
 '
@@ -103,13 +107,16 @@ changelog_DE='
 • Anzeige von Sonnenaufgang und Sonnenuntergang sowie Mondaufgang und Monduntergang hinzugefügt.
 • Vergleich der Wetterdaten für zwei Orte mit Anzeige von Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang hinzugefügt.
 • Thematische Farben für Wetterbeschreibung, gefühlte Temperatur, Wind, Regen sowie Sonnen- und Mondinformationen hinzugefügt.
-• Verbesserte Stadt-Suche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt.
+• Verbesserte Stadtsuche und Stadtauswahl mit einem eigenen Auswahlfenster für passende Orte hinzugefügt.
 • Mondaufgangs- und Monduntergangsberechnung mit verbesserter Behandlung von Ortszeit und UTC-Zeitverschiebung verbessert.
 • Datums- und Zeitverarbeitung im gesamten Plugin verbessert.
 • Verarbeitung und Anzeige der Wetterdaten zuverlässiger gemacht.
 • Anzeige der Uhrzeit der letzten erfolgreichen Wetteraktualisierung hinzugefügt.
 • Performance auf schwachen Enigma2-Receivern durch optimiertes Radar-Laden, Decoding, Caching und Animationen verbessert.
 • Ultra Low-End-, Low-End-, Auto- und Normal-Performance-Modi hinzugefügt.
+• Automatische Hintergründe für Sonnenaufgang und Sonnenuntergang mit optionaler Aktivierung in den Einstellungen hinzugefügt.
+• Einstellbares Wetter-Aktualisierungsintervall hinzugefügt: 15, 30, 60 oder 120 Minuten.
+• Einstellbare Regenwahrscheinlichkeitswarnungen und optionale Unwetterwarnungen hinzugefügt.
 • Bestehende Funktionen bleiben erhalten.
 • Wenn dir dieses Plugin gefällt, kannst du mich gerne auf einen Kaffee einladen.
 '
@@ -132,6 +139,9 @@ changelog_AR='
 • تمت إضافة عرض وقت آخر تحديث ناجح للطقس.
 • تم تحسين الأداء على أجهزة Enigma2 الضعيفة من خلال تحسين تحميل الرادار وفك الترميز والتخزين المؤقت ومعالجة الرسوم المتحركة.
 • تمت إضافة أوضاع أداء Ultra Low-End وLow-End وAuto وNormal.
+• تمت إضافة خلفيات تلقائية لشروق الشمس وغروبها مع إمكانية تفعيلها من الإعدادات.
+• تمت إضافة إمكانية ضبط فترة تحديث الطقس: 15 أو 30 أو 60 أو 120 دقيقة.
+• تمت إضافة تنبيهات قابلة للتخصيص لاحتمالية هطول الأمطار وتحذيرات اختيارية من الطقس القاسي.
 • تبقى الميزات الحالية متاحة.
 • إذا أعجبك هذا البرنامج، يمكنك دعمي بفنجان قهوة.
 '
@@ -154,6 +164,9 @@ changelog_CS='
 • Přidáno zobrazení času poslední úspěšné aktualizace počasí.
 • Vylepšen výkon na slabších přijímačích Enigma2 optimalizací načítání radaru, dekódování, cache a animací.
 • Přidány výkonnostní režimy Ultra Low-End, Low-End, Auto a Normal.
+• Přidána automatická pozadí pro východ a západ slunce s možností aktivace v nastavení.
+• Přidán nastavitelný interval aktualizace počasí: 15, 30, 60 nebo 120 minut.
+• Přidána upozornění na pravděpodobnost deště s nastavitelnou hranicí a volitelná varování před nepříznivým počasím.
 • Stávající funkce zůstávají zachovány.
 • Pokud se vám plugin líbí, můžete mě pozvat na kávu.
 '
@@ -176,6 +189,9 @@ changelog_EL='
 • Προστέθηκε εμφάνιση της ώρας της τελευταίας επιτυχούς ενημέρωσης καιρού.
 • Βελτιώθηκε η απόδοση σε αδύναμους δέκτες Enigma2 με βελτιστοποιημένη φόρτωση, αποκωδικοποίηση, cache και animation του radar.
 • Προστέθηκαν λειτουργίες απόδοσης Ultra Low-End, Low-End, Auto και Normal.
+• Προστέθηκαν αυτόματα φόντα για την ανατολή και τη δύση του ήλιου με δυνατότητα ενεργοποίησης από τις ρυθμίσεις.
+• Προστέθηκε ρυθμιζόμενο διάστημα ανανέωσης καιρού: 15, 30, 60 ή 120 λεπτά.
+• Προστέθηκαν προσαρμόσιμες ειδοποιήσεις πιθανότητας βροχής και προαιρετικές προειδοποιήσεις για έντονα καιρικά φαινόμενα.
 • Οι υπάρχουσες λειτουργίες παραμένουν διαθέσιμες.
 • Αν σας αρέσει αυτό το plugin, μπορείτε να με κεράσετε έναν καφέ.
 '
@@ -198,6 +214,9 @@ changelog_FI='
 • Viimeisimmän onnistuneen sääpäivityksen kellonajan näyttö lisätty.
 • Suorituskykyä heikoilla Enigma2-vastaanottimilla parannettu optimoimalla tutkan latausta, dekoodausta, välimuistia ja animaatioiden käsittelyä.
 • Ultra Low-End-, Low-End-, Auto- ja Normal-suorituskykytilat lisätty.
+• Lisätty automaattiset auringonnousun ja -laskun taustakuvat, jotka voidaan ottaa käyttöön asetuksista.
+• Lisätty sääpäivityksen säädettävä aikaväli: 15, 30, 60 tai 120 minuuttia.
+• Lisätty mukautettavat sateen todennäköisyyshälytykset ja valinnaiset vakavan sään varoitukset.
 • Nykyiset ominaisuudet säilyvät.
 • Jos pidät tästä pluginista, voit tarjota minulle kahvin.
 '
@@ -220,6 +239,9 @@ changelog_FR='
 • Ajout de l’affichage de l’heure de la dernière mise à jour météo réussie.
 • Amélioration des performances sur les récepteurs Enigma2 peu puissants grâce à l’optimisation du chargement, du décodage, du cache et des animations du radar.
 • Ajout des modes de performance Ultra Low-End, Low-End, Auto et Normal.
+• Ajout d’arrière-plans automatiques pour le lever et le coucher du soleil, avec activation facultative dans les paramètres.
+• Ajout d’un intervalle de mise à jour météo réglable : 15, 30, 60 ou 120 minutes.
+• Ajout d’alertes personnalisables en fonction de la probabilité de pluie et d’avertissements facultatifs en cas de conditions météorologiques extrêmes.
 • Les fonctions existantes restent disponibles.
 • Si vous aimez ce plugin, vous pouvez m’offrir un café.
 '
@@ -242,6 +264,9 @@ changelog_HU='
 • Hozzáadva az utolsó sikeres időjárás-frissítés időpontjának megjelenítése.
 • Javult a teljesítmény gyengébb Enigma2 vevőkészülékeken a radar betöltésének, dekódolásának, gyorsítótárazásának és animációinak optimalizálásával.
 • Hozzáadva az Ultra Low-End, Low-End, Auto és Normal teljesítménymód.
+• Automatikus napfelkelte- és napnyugta-hátterek hozzáadva, amelyek a beállításokban opcionálisan engedélyezhetők.
+• Állítható időjárás-frissítési időköz hozzáadva: 15, 30, 60 vagy 120 perc.
+• Testre szabható esővalószínűségi riasztások és opcionális szélsőséges időjárási figyelmeztetések hozzáadva.
 • A meglévő funkciók továbbra is elérhetők.
 • Ha tetszik a plugin, meghívhatsz egy kávéra.
 '
@@ -264,6 +289,9 @@ changelog_IT='
 • Aggiunta la visualizzazione dell’ora dell’ultimo aggiornamento meteo riuscito.
 • Migliorate le prestazioni sui ricevitori Enigma2 meno potenti ottimizzando caricamento, decodifica, cache e animazioni del radar.
 • Aggiunte le modalità di prestazioni Ultra Low-End, Low-End, Auto e Normal.
+• Aggiunti sfondi automatici per alba e tramonto, attivabili facoltativamente dalle impostazioni.
+• Aggiunto un intervallo regolabile per l’aggiornamento del meteo: 15, 30, 60 o 120 minuti.
+• Aggiunti avvisi personalizzabili sulla probabilità di pioggia e avvisi opzionali per condizioni meteorologiche avverse.
 • Le funzioni esistenti rimangono disponibili.
 • Se ti piace questo plugin, puoi offrirmi un caffè.
 '
@@ -286,6 +314,9 @@ changelog_NL='
 • Weergave van het tijdstip van de laatste geslaagde weerupdate toegevoegd.
 • Prestaties op zwakke Enigma2-ontvangers verbeterd door geoptimaliseerd laden, decoderen, cachen en animeren van radar.
 • Ultra Low-End-, Low-End-, Auto- en Normal-prestatiemodi toegevoegd.
+• Automatische achtergronden voor zonsopkomst en zonsondergang toegevoegd, optioneel in te schakelen via de instellingen.
+• Instelbaar interval voor weersupdates toegevoegd: 15, 30, 60 of 120 minuten.
+• Aanpasbare waarschuwingen voor regenkans en optionele waarschuwingen voor extreem weer toegevoegd.
 • Bestaande functies blijven beschikbaar.
 • Als je deze plugin leuk vindt, kun je me op een koffie trakteren.
 '
@@ -308,6 +339,9 @@ changelog_PL='
 • Dodano wyświetlanie godziny ostatniej udanej aktualizacji pogody.
 • Poprawiono wydajność na słabszych odbiornikach Enigma2 poprzez optymalizację ładowania radaru, dekodowania, pamięci podręcznej i animacji.
 • Dodano tryby wydajności Ultra Low-End, Low-End, Auto i Normal.
+• Dodano automatyczne tła wschodu i zachodu słońca z możliwością włączenia tej funkcji w ustawieniach.
+• Dodano regulowany interwał aktualizacji pogody: 15, 30, 60 lub 120 minut.
+• Dodano konfigurowalne alerty dotyczące prawdopodobieństwa deszczu oraz opcjonalne ostrzeżenia przed groźnymi zjawiskami pogodowymi.
 • Istniejące funkcje pozostają dostępne.
 • Jeśli podoba Ci się plugin, możesz postawić mi kawę.
 '
@@ -330,6 +364,9 @@ changelog_RU='
 • Добавлено отображение времени последнего успешного обновления погоды.
 • Улучшена производительность на слабых ресиверах Enigma2 благодаря оптимизации загрузки радара, декодирования, кэширования и обработки анимаций.
 • Добавлены режимы производительности Ultra Low-End, Low-End, Auto и Normal.
+• Добавлены автоматические фоны для восхода и заката солнца с возможностью включения в настройках.
+• Добавлен настраиваемый интервал обновления погоды: 15, 30, 60 или 120 минут.
+• Добавлены настраиваемые предупреждения о вероятности дождя и дополнительные предупреждения об опасных погодных явлениях.
 • Существующие функции остаются доступными.
 • Если вам нравится этот плагин, можете угостить меня чашкой кофе.
 '
@@ -352,6 +389,9 @@ changelog_SK='
 • Pridané zobrazenie času poslednej úspešnej aktualizácie počasia.
 • Vylepšený výkon na slabších prijímačoch Enigma2 optimalizáciou načítania radaru, dekódovania, cache a animácií.
 • Pridané režimy výkonu Ultra Low-End, Low-End, Auto a Normal.
+• Pridané automatické pozadia pre východ a západ slnka s možnosťou aktivácie v nastaveniach.
+• Pridaný nastaviteľný interval aktualizácie počasia: 15, 30, 60 alebo 120 minút.
+• Pridané nastaviteľné upozornenia na pravdepodobnosť dažďa a voliteľné varovania pred nebezpečným počasím.
 • Existujúce funkcie zostávajú dostupné.
 • Ak sa vám plugin páči, môžete ma pozvať na kávu.
 '
@@ -374,6 +414,9 @@ changelog_UA='
 • Додано відображення часу останнього успішного оновлення погоди.
 • Покращено продуктивність на слабких приймачах Enigma2 завдяки оптимізації завантаження радара, декодування, кешування та анімації.
 • Додано режими продуктивності Ultra Low-End, Low-End, Auto та Normal.
+• Додано автоматичні фони для сходу та заходу сонця з можливістю активації в налаштуваннях.
+• Додано налаштовуваний інтервал оновлення погоди: 15, 30, 60 або 120 хвилин.
+• Додано налаштовувані сповіщення про ймовірність дощу та додаткові попередження про небезпечні погодні явища.
 • Існуючі функції залишаються доступними.
 • Якщо вам подобається цей плагін, можете пригостити мене кавою.
 '
@@ -396,9 +439,13 @@ changelog_ZH='
 • 添加最后一次成功天气更新的时间显示。
 • 通过优化雷达加载、解码、缓存和动画处理，提高低端 Enigma2 接收机上的性能。
 • 添加 Ultra Low-End、Low-End、Auto 和 Normal 性能模式。
+• 添加日出和日落自动背景，可在设置中选择启用或关闭。
+• 添加可调节的天气更新间隔：15、30、60 或 120 分钟。
+• 添加可自定义的降雨概率提醒以及可选的恶劣天气警报。
 • 现有功能继续保留。
 • 如果你喜欢这个插件，可以请我喝杯咖啡。
 '
+
 
 ###############################################################################
 # Generic helpers
