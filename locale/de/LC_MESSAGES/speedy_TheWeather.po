@@ -1095,3 +1095,156 @@ msgstr "Schleswig-Holstein"
 
 msgid "Thuringia"
 msgstr "Thüringen"
+
+# ============================================================
+# Sun and Moon times screens
+# ============================================================
+
+msgid "EXIT: Close"
+msgstr "EXIT: Schließen"
+
+msgid "Sun times"
+msgstr "Sonnenzeiten"
+
+msgid "SUN PATH"
+msgstr "SONNENVERLAUF"
+
+msgid "Selected location: %s"
+msgstr "Ausgewählter Ort: %s"
+
+msgid "Sunrise: %s"
+msgstr "Sonnenaufgang: %s"
+
+msgid "Sunset: %s"
+msgstr "Sonnenuntergang: %s"
+
+msgid "Sunset has passed"
+msgstr "Sonnenuntergang ist bereits vorbei"
+
+msgid "Day length: %s"
+msgstr "Tageslänge: %s"
+
+msgid "Time until sunset: %s"
+msgstr "Zeit bis zum Sonnenuntergang: %s"
+
+msgid "%d h %02d min"
+msgstr "%d Std. %02d Min."
+
+msgid "No solar data available for the selected location."
+msgstr "Keine Sonnendaten für den ausgewählten Ort verfügbar."
+
+msgid "Moon times"
+msgstr "Mondzeiten"
+
+msgid "Moonrise: %s"
+msgstr "Mondaufgang: %s"
+
+msgid "Moonset: %s"
+msgstr "Monduntergang: %s"
+
+msgid "Illumination: %d%%"
+msgstr "Beleuchtung: %d%%"
+
+msgid "New moon"
+msgstr "Neumond"
+
+msgid "Waxing crescent"
+msgstr "Zunehmende Sichel"
+
+msgid "First quarter"
+msgstr "Erstes Viertel"
+
+msgid "Waxing gibbous"
+msgstr "Zunehmender Dreiviertelmond"
+
+msgid "Full moon"
+msgstr "Vollmond"
+
+msgid "Waning gibbous"
+msgstr "Abnehmender Dreiviertelmond"
+
+msgid "Last quarter"
+msgstr "Letztes Viertel"
+
+msgid "Waning crescent"
+msgstr "Abnehmende Sichel"
+
+# ============================================================
+# Settings: Sun/Moon, performance and weather alerts
+# ============================================================
+
+msgid "Auto"
+msgstr "Automatisch"
+
+msgid "Ultra Low-End"
+msgstr "Sehr leistungsschwache Geräte"
+
+msgid "Low-End"
+msgstr "Leistungsschwache Geräte"
+
+msgid "15 minutes"
+msgstr "15 Minuten"
+
+msgid "30 minutes"
+msgstr "30 Minuten"
+
+msgid "60 minutes"
+msgstr "60 Minuten"
+
+msgid "120 minutes"
+msgstr "120 Minuten"
+
+msgid "Sun times (sunrise / sunset)"
+msgstr "Sonnenzeiten (Sonnenaufgang / Sonnenuntergang)"
+
+msgid "Moon times (moonrise / moonset)"
+msgstr "Mondzeiten (Mondaufgang / Monduntergang)"
+
+msgid "Performance:"
+msgstr "Leistung:"
+
+msgid "Weather refresh interval:"
+msgstr "Wetter-Aktualisierungsintervall:"
+
+msgid "Weather warnings:"
+msgstr "Wetterwarnungen:"
+
+msgid "Rain warning from probability:"
+msgstr "Regenwarnung ab Niederschlagswahrscheinlichkeit:"
+
+msgid "Sunrise / sunset backgrounds:"
+msgstr "Hintergründe für Sonnenaufgang / Sonnenuntergang:"
+
+msgid "Could not open the sun/moon color settings."
+msgstr "Die Sonne-/Mond-Farbeinstellungen konnten nicht geöffnet werden."
+
+msgid "Sonne / Mond Farben einstellen:"
+msgstr "Sonnenzeit / Mondzeit Farben einstellen:"
+
+msgid "Öffnet die gemeinsamen Farbeinstellungen für Sonnen- und Mondzeiten."
+msgstr "Öffnet die gemeinsamen Farbeinstellungen für Sonnen- und Mondzeiten."
+
+msgid "Solar time - Panel background"
+msgstr "Sonnenzeit - Hintergrundfläche"
+
+msgid "Solar time - Heading"
+msgstr "Sonnenzeit - Überschrift"
+
+msgid "Solar time - Text"
+msgstr "Sonnenzeit - Text"
+
+msgid "Solar time - Hint"
+msgstr "Sonnenzeit - Hinweistext"
+
+msgid "Lunar time - Panel background"
+msgstr "Mondzeit - Hintergrundfläche"
+
+msgid "Lunar time - Heading"
+msgstr "Mondzeit - Überschrift"
+
+msgid "Lunar time - Text"
+msgstr "Mondzeit - Text"
+
+msgid "Lunar time - Hint"
+msgstr "Mondzeit - Hinweistext"
+
