@@ -24,7 +24,7 @@ import os
 # VERSION / AUTHOR
 # ============================================================================
 
-__version__ = "2.1.1"
+__version__ = "2.1.4"
 VERSION = __version__
 
 _AUTHOR_ = "by speedy005 - 2026"
