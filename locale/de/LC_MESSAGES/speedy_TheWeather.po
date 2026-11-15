@@ -1248,3 +1248,12 @@ msgstr "Mondzeit - Text"
 msgid "Lunar time - Hint"
 msgstr "Mondzeit - Hinweistext"
 
+msgid "Automatic (receiver resolution)"
+msgstr "Automatisch (Receiver-Auflösung)"
+
+msgid "Plugin layout resolution:"
+msgstr "Plugin-Auflösung:"
+
+msgid "Rain expected soon!"
+msgstr "Regen wird in Kürze erwartet!"
+
