@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.1.5
+# v.2.1.6
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -1432,7 +1432,7 @@ def getMoonTimesForLocation(date_value, location_entry):
         lon
     )
 
-__version__ = "2.1.5"
+__version__ = "2.1.6"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -13572,6 +13572,7 @@ class speedy_SunTimesScreen(_SolarLunarInfoScreen):
             skin_type="solar"
         )
 
+
 def _find_moon_phase_image(fraction):
     """Return the matching moon phase image from backgrounds/auto."""
     auto_bg_dir = os.path.join(
@@ -13585,32 +13586,39 @@ def _find_moon_phase_image(fraction):
         return None
 
     if fraction < 0.03 or fraction >= 0.97:
-        filename = "new_moon.jpg"
+        basename = "new_moon"
     elif fraction < 0.22:
-        filename = "waxing_crescent.jpg"
+        basename = "waxing_crescent"
     elif fraction < 0.28:
-        filename = "first_quarter.jpg"
+        basename = "first_quarter"
     elif fraction < 0.47:
-        filename = "waxing_gibbous.jpg"
+        basename = "waxing_gibbous"
     elif fraction < 0.53:
-        filename = "full_moon.jpg"
+        basename = "full_moon"
     elif fraction < 0.72:
-        filename = "waning_gibbous.jpg"
+        basename = "waning_gibbous"
     elif fraction < 0.78:
-        filename = "last_quarter.jpg"
+        basename = "last_quarter"
     else:
-        filename = "waning_crescent.jpg"
+        basename = "waning_crescent"
 
-    path = os.path.join(auto_bg_dir, filename)
+    # JPG, JPEG und PNG unterstützen
+    for extension in (".jpg", ".jpeg", ".png"):
+        path = os.path.join(auto_bg_dir, basename + extension)
 
-    try:
-        if os.path.isfile(path) and os.path.getsize(path) > 0:
-            return path
-    except OSError:
-        pass
+        try:
+            if os.path.isfile(path) and os.path.getsize(path) > 0:
+                print("[speedy_TheWeather] Moon phase image found: %s" % path)
+                return path
+        except OSError:
+            pass
 
-    print("[speedy_TheWeather] Moon phase image missing: %s" % path)
+    print(
+        "[speedy_TheWeather] Moon phase image missing: %s"
+        % basename
+    )
     return None
+
 
 
 class speedy_MoonTimesScreen(_SolarLunarInfoScreen):
