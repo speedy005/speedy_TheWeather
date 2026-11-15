@@ -72,7 +72,7 @@ EXTRACT_DIR="${TMP_DIR}/extract"
 
 
 changelog_EN='
-• Added configurable plugin layout resolution: Auto, HD, FHD and WQHD, with automatic scaling to the receiver's display resolution.
+• Added configurable plugin layout resolution: Auto, HD, FHD and WQHD, with automatic scaling to the receiver display resolution.
 • Fixed automatic weather background selection so it better matches the current weather description, including changeable conditions with possible fog.
 • Fixed language files and PO/MO file names.
 • Added update function.
