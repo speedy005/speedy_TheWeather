@@ -50,7 +50,7 @@ Die Farben für **Sonnenaufgang, Sonnenuntergang, Mondaufgang und Monduntergang*
 Die Installation bzw. Aktualisierung kann direkt per **SSH / Telnet** auf dem Enigma2-Receiver erfolgen.
 
 ```bash
-wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh
+wget -O installer.sh "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh" && chmod +x installer.sh && sh installer.sh
 ```
 
 > **Hinweis:** Der Installer übernimmt die Installation bzw. Aktualisierung des Plugins.
@@ -691,7 +691,7 @@ The colors for **sunrise, sunset, moonrise and moonset** can be individually con
 Run the following commands via SSH/Telnet:
 
 ```bash
-wget -O /tmp/installer.sh 'https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh' && chmod +x /tmp/installer.sh && /tmp/installer.sh 
+wget -O installer.sh "https://raw.githubusercontent.com/speedy005/speedy_TheWeather/master/installer.sh" && chmod +x installer.sh && sh installer.sh
 ```
 
 > The installer handles both installation and updates of the plugin.
