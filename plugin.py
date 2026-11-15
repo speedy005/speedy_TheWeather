@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# v.2.1.4
+# v.2.1.5
 # Original work by Caught
 # https://www.linuxsat-support.com/thread/163507-theweather-mod-by-speedy005-py-2-3/
 # Copyright © Caught. All rights reserved.
@@ -118,6 +118,18 @@ config.plugins.speedy_TheWeather.performance = ConfigSelection(
         ("ultra", _("Ultra Low-End")),
         ("low", _("Low-End")),
         ("normal", _("Normal"))
+    ]
+)
+
+# Bevorzugte logische Layout-Aufloesung des Plugins.
+# Die HDMI-Ausgabe des Receivers wird dadurch nicht veraendert.
+config.plugins.speedy_TheWeather.layoutResolution = ConfigSelection(
+    default="auto",
+    choices=[
+        ("auto", _("Automatic (receiver resolution)")),
+        ("hd", "HD (1280 x 720)"),
+        ("fhd", "FHD (1920 x 1080)"),
+        ("wqhd", "WQHD (2560 x 1440)")
     ]
 )
 
@@ -1420,7 +1432,7 @@ def getMoonTimesForLocation(date_value, location_entry):
         lon
     )
 
-__version__ = "2.1.4"
+__version__ = "2.1.5"
 VERSION = __version__
 
 def iconToBgCategory(icon):
@@ -5232,6 +5244,7 @@ def _update_start_check():
 class UpdateAvailableScreen(Screen):
 
     def __init__(self, session, title, message):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
 
         desktop = getDesktop(0).size()
@@ -6449,11 +6462,95 @@ backgroundpath = ""
 currentWeatherBackground = ""
 CFG_DIR = "/etc/enigma2/speedy_TheWeather"
 
+def _getConfiguredCanvasSize():
+    """Return the requested canvas, limited to the active Enigma2 desktop."""
+    try:
+        mode = config.plugins.speedy_TheWeather.layoutResolution.value
+    except Exception:
+        mode = "auto"
+
+    sizes = {
+        "hd": (1280, 720),
+        "fhd": (1920, 1080),
+        "wqhd": (2560, 1440)
+    }
+    try:
+        desktop = getDesktop(0).size()
+        actual_w = max(1, int(desktop.width()))
+        actual_h = max(1, int(desktop.height()))
+    except Exception:
+        actual_w, actual_h = 1920, 1080
+
+    requested_w, requested_h = sizes.get(mode, (actual_w, actual_h))
+    # A plugin canvas cannot exceed the real desktop; keep the aspect ratio.
+    fit = min(1.0, float(actual_w) / requested_w, float(actual_h) / requested_h)
+    return (max(1, int(round(requested_w * fit))),
+            max(1, int(round(requested_h * fit))))
+
 def _detectCanvasWidth():
     try:
-        return getDesktop(0).size().width()
+        return _getConfiguredCanvasSize()[0]
     except Exception:
         return 1920
+
+
+def _pluginSkinScale():
+    """Scale the plugin's legacy 1280/1920 skins to the selected canvas."""
+    try:
+        canvas_w = int(_getConfiguredCanvasSize()[0])
+    except Exception:
+        canvas_w = 1920
+    # Legacy layouts are authored in HD or FHD coordinates.
+    base_w = 1920 if canvas_w > 1800 else 1280
+    return float(canvas_w) / float(base_w)
+
+
+def _scalePluginSkin(skin, factor):
+    """Scale positions, sizes and font sizes in this plugin's skin XML only."""
+    if not isinstance(skin, str) or not skin or abs(factor - 1.0) < 0.0001:
+        return skin
+
+    def scale_block(match):
+        block = match.group(0)
+        # Geometry is expressed as comma-separated integer pairs.
+        for attr in ("position", "size"):
+            pattern = r'(' + attr + r'\s*=\s*["\'])(-?\d+)\s*,\s*(-?\d+)(["\'])'
+            def pair_repl(m):
+                x = int(round(int(m.group(2)) * factor))
+                y = int(round(int(m.group(3)) * factor))
+                return m.group(1) + str(x) + "," + str(y) + m.group(4)
+            block = re.sub(pattern, pair_repl, block)
+
+        # Enigma2 font syntax: font="Regular;24".
+        def font_repl(m):
+            return m.group(1) + str(max(1, int(round(int(m.group(2)) * factor)))) + m.group(3)
+        block = re.sub(r'(font\s*=\s*["\'][^;"\']+;)(\d+)(["\'])', font_repl, block)
+
+        for attr in ("itemHeight", "scrollbarWidth", "borderWidth", "cornerRadius"):
+            pattern = r'(' + attr + r'\s*=\s*["\'])(\d+)(["\'])'
+            def scalar_repl(m):
+                return m.group(1) + str(max(1, int(round(int(m.group(2)) * factor)))) + m.group(3)
+            block = re.sub(pattern, scalar_repl, block)
+        return block
+
+    return re.sub(r'<screen\b.*?</screen>', scale_block, skin, flags=re.S)
+
+
+def _preparePluginSkin(screen):
+    """Prepare only speedy_TheWeather screens; leave other plugins untouched."""
+    try:
+        factor = _pluginSkinScale()
+        if abs(factor - 1.0) < 0.0001:
+            return
+        skin = getattr(screen, "skin", None)
+        if isinstance(skin, str):
+            screen.skin = _scalePluginSkin(skin, factor)
+        elif isinstance(skin, (list, tuple)):
+            items = [(_scalePluginSkin(item, factor) if isinstance(item, str) else item)
+                     for item in skin]
+            screen.skin = type(skin)(items)
+    except Exception as e:
+        print("[speedy_TheWeather] layout scaling error: %s" % e)
 
 weatherData = []
 screens = []
@@ -6572,8 +6669,8 @@ SavedLokaleWeer = []
 lockaaleStad = ""
 citynamedisplay = ""
 
-sz_w = getDesktop(0).size().width()
-sz_h = getDesktop(0).size().height()
+# Gemeinsame logische Arbeitsflaeche fuer die Layout-Auswahl.
+sz_w, sz_h = _getConfiguredCanvasSize()
 
 HTTP_TIMEOUT = 15
 HTTP_USER_AGENT = 'speedy_TheWeather-Enigma2Plugin/4.0'
@@ -7242,6 +7339,7 @@ class sevendays(Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(
             self,
             session
@@ -9930,6 +10028,7 @@ class sevendays(Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(
             self,
             session
@@ -11780,6 +11879,7 @@ class sevendays(Screen):
 
 class fourteen(Screen):
     def __init__(self, session):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         screen_title = _("7-Tage-Wetter")
         AddNewScreen(self)
@@ -12300,6 +12400,7 @@ class localcityscreen(Screen):
                     </screen>"""
 
         self.session = session
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         AddNewScreen(self)
@@ -13011,6 +13112,7 @@ class _SolarLunarInfoScreen(Screen):
         # INITIALIZE SCREEN
         # EXTERNAL SKIN WITH INTERNAL FALLBACK
         # -------------------------------------------------
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
 
         self.skinName = [
@@ -13681,6 +13783,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(
             self,
             session
@@ -13810,6 +13913,13 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
 
         self.list.append(
             getConfigListEntry(
+                _("Plugin layout resolution:"),
+                config.plugins.speedy_TheWeather.layoutResolution
+            )
+        )
+
+        self.list.append(
+            getConfigListEntry(
                 _("Weather refresh interval:"),
                 config.plugins.speedy_TheWeather.refreshInterval
             )
@@ -13921,6 +14031,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
         # CONFIG LIST SCREEN
         # ====================================================
 
+        _preparePluginSkin(self)
         ConfigListScreen.__init__(
             self,
             self.list,
@@ -13935,6 +14046,7 @@ class speedy_TheWeatherSetup(ConfigListScreen, Screen):
             (("moon times", "mond"), _("Informationen zu Mondaufgang, Monduntergang und Mondphase.")),
             (("radar", "zoom"), _("Legt die Standard-Vergrößerung des Regenradars fest.")),
             (("performance", "leistung"), _("Bestimmt die Leistungseinstellungen des Plugins.")),
+            (("layout resolution", "layout-aufloesung", "layout-auflösung"), _("Waehlt die logische Layout-Aufloesung. Auto verwendet die Receiver-Aufloesung; die HDMI-Ausgabe wird nicht geaendert.")),
             (("refresh", "aktualisierung"), _("Legt fest, wie oft die Wetterdaten aktualisiert werden.")),
             (("weather warnings", "wetterwarn"), _("Aktiviert oder deaktiviert Wetterwarnungen.")),
             (("rain warning", "regen"), _("Legt die Regenwahrscheinlichkeit für eine Warnung fest.")),
@@ -14680,6 +14792,7 @@ class sevendayColorSetup(ConfigListScreen, Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(
             self,
             session
@@ -14717,6 +14830,7 @@ class sevendayColorSetup(ConfigListScreen, Screen):
                 )
             )
 
+        _preparePluginSkin(self)
         ConfigListScreen.__init__(
             self,
             self.list,
@@ -14847,6 +14961,7 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.session = session
 
@@ -14872,6 +14987,7 @@ class twolocationsColorSetup(ConfigListScreen, Screen):
         for label, name in self._ENTRIES:
             self.list.append(getConfigListEntry(_(label) + ":", getattr(config.plugins.speedy_TheWeather, "twoloc_loc2_color_" + name)))
 
+        _preparePluginSkin(self)
         ConfigListScreen.__init__(self, self.list, session=session)
 
         self["actions"] = ActionMap(
@@ -15024,6 +15140,7 @@ class sunMoonTimesColorSetup(ConfigListScreen, Screen):
     )
 
     def __init__(self, session):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.session = session
 
@@ -15043,6 +15160,7 @@ class sunMoonTimesColorSetup(ConfigListScreen, Screen):
                 getConfigListEntry(_(label) + ":", element)
             )
 
+        _preparePluginSkin(self)
         ConfigListScreen.__init__(
             self,
             self.list,
@@ -15101,6 +15219,7 @@ class sunMoonTimesColorSetup(ConfigListScreen, Screen):
 
 class CitySuggestListScreen(Screen):
     def __init__(self, session, results):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
@@ -15245,6 +15364,7 @@ class infoscreen(Screen):
                     </screen>"""
 
         self.session = session
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.setTitle(_("Infoscreen"))
         self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
@@ -15357,6 +15477,7 @@ class CityPickerScreen(Screen):
     """2e location"""
 
     def __init__(self, session, steden):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
@@ -15436,6 +15557,7 @@ class twolocations(Screen):
 
     def __init__(self, session):
 
+        _preparePluginSkin(self)
         Screen.__init__(
             self,
             session
@@ -17770,6 +17892,7 @@ class BackgroundPickerScreen(Screen):
     EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp")
 
     def __init__(self, session):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         AddNewScreen(self)
         self.onClose.append(lambda: RemoveScreen(self))
@@ -18174,6 +18297,7 @@ class TempOverlay(Screen):
                 <screen name="TempOverlay" position=\"""" + str(cur_w - ov_w - 15) + """,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" flags="wfNoBorder" backgroundColor="transparent">
                 <widget name="overlay_temp" position="0,0" size=\"""" + str(ov_w) + "," + str(ov_h) + """" valign="center" halign="center" zPosition="1" font="Regular;34" foregroundColor="#00ffff00" backgroundColor="#00202020" transparent="1" shadowColor="black" shadowOffset="-2,-2"/>
                 </screen>"""
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.skin = skin.replace("Format:%a %d/%m/%y", getDateFormat())
         self["overlay_temp"] = Label("")
@@ -18292,6 +18416,7 @@ class RadarScreen(Screen):
         zoom=7,
         location_name=""
     ):
+        _preparePluginSkin(self)
         Screen.__init__(self, session)
         self.skinName = ["RadarScreen"]
 
