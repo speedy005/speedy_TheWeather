@@ -2,7 +2,7 @@
 
 ###############################################################################
 # speedy_TheWeather installer
-# Version: 2.1.4
+# Version: 2.1.5
 #
 # GitHub:
 #   https://github.com/speedy005/speedy_TheWeather
@@ -14,7 +14,7 @@
 # - The installer does NOT automatically restart Enigma2.
 ###############################################################################
 
-VERSION="2.1.4"
+VERSION="2.1.5"
 BRANCH="master"
 
 REPO_OWNER="speedy005"
@@ -72,6 +72,7 @@ EXTRACT_DIR="${TMP_DIR}/extract"
 
 
 changelog='
+• Added configurable plugin layout resolution: Auto, HD, FHD and WQHD, with automatic scaling to the receiver's display resolution.
 • Fixed automatic weather background selection so it better matches the current weather description, including changeable conditions with possible fog.
 • Fixed language files and PO/MO file names.
 • Added update function.
@@ -97,6 +98,7 @@ changelog='
 '
 
 changelog_DE='
+• Einstellbare Plugin-Auflösung hinzugefügt: Auto, HD, FHD und WQHD mit automatischer Skalierung auf die Bildschirmauflösung des Receivers.
 • Automatische Wetterhintergrund-Auswahl korrigiert, damit sie besser zur aktuellen Wetterbeschreibung passt, insbesondere bei wechselhaftem Wetter mit möglichem Nebel.
 • Sprachdateien sowie PO-/MO-Dateinamen korrigiert.
 • Update-Funktion hinzugefügt.
@@ -122,6 +124,7 @@ changelog_DE='
 '
 
 changelog_AR='
+• تمت إضافة إمكانية ضبط دقة عرض الإضافة: Auto وHD وFHD وWQHD، مع تحجيم تلقائي ليتناسب مع دقة شاشة جهاز الاستقبال.
 • تم إصلاح اختيار خلفية الطقس التلقائية لتتوافق بشكل أفضل مع وصف الطقس الحالي، بما في ذلك الطقس المتقلب مع احتمال وجود ضباب.
 • تم إصلاح ملفات اللغات وأسماء ملفات PO/MO.
 • تمت إضافة وظيفة التحديث.
@@ -147,6 +150,7 @@ changelog_AR='
 '
 
 changelog_CS='
+• Přidána možnost nastavení rozlišení zobrazení pluginu: Auto, HD, FHD a WQHD s automatickým přizpůsobením rozlišení obrazovky přijímače.
 • Opravena volba automatického pozadí počasí, aby lépe odpovídalo aktuálnímu popisu počasí, zejména při proměnlivém počasí s možnou mlhou.
 • Opraveny jazykové soubory a názvy souborů PO/MO.
 • Přidána funkce aktualizace.
@@ -172,6 +176,7 @@ changelog_CS='
 '
 
 changelog_EL='
+• Προστέθηκε δυνατότητα ρύθμισης της ανάλυσης εμφάνισης του plugin: Auto, HD, FHD και WQHD, με αυτόματη προσαρμογή στην ανάλυση της οθόνης του δέκτη.
 • Διορθώθηκε η αυτόματη επιλογή φόντου καιρού ώστε να ταιριάζει καλύτερα με την τρέχουσα περιγραφή του καιρού, ειδικά σε άστατο καιρό με πιθανή ομίχλη.
 • Διορθώθηκαν τα αρχεία γλώσσας και τα ονόματα των αρχείων PO/MO.
 • Προστέθηκε λειτουργία ενημέρωσης.
@@ -197,6 +202,7 @@ changelog_EL='
 '
 
 changelog_FI='
+• Lisätty laajennuksen näytön tarkkuuden asetus: Auto, HD, FHD ja WQHD sekä automaattinen skaalaus vastaanottimen näytön tarkkuuteen.
 • Korjattu automaattisen säätaustan valintaa, jotta se vastaa paremmin nykyistä sääkuvausta, erityisesti vaihtelevassa säässä, jossa voi esiintyä sumua.
 • Kielitiedostot sekä PO/MO-tiedostojen nimet korjattu.
 • Päivitystoiminto lisätty.
@@ -222,6 +228,7 @@ changelog_FI='
 '
 
 changelog_FR='
+• Ajout du réglage de la résolution d’affichage du plugin : Auto, HD, FHD et WQHD, avec mise à l’échelle automatique selon la résolution de l’écran du récepteur.
 • Correction de la sélection automatique de l’arrière-plan météo afin qu’elle corresponde mieux à la description météo actuelle, notamment par temps variable avec un risque de brouillard.
 • Correction des fichiers de langue et des noms de fichiers PO/MO.
 • Ajout de la fonction de mise à jour.
@@ -247,6 +254,7 @@ changelog_FR='
 '
 
 changelog_HU='
+• Hozzáadva a plugin megjelenítési felbontásának beállítása: Auto, HD, FHD és WQHD, automatikus méretezéssel a vevő képernyőfelbontásához.
 • Javítva az automatikus időjárási háttér kiválasztása, hogy jobban megfeleljen az aktuális időjárás-leírásnak, különösen változékony, esetleg ködös idő esetén.
 • Javítva a nyelvi fájlok és a PO/MO fájlnevek kezelése.
 • Hozzáadva a frissítési funkció.
@@ -272,6 +280,7 @@ changelog_HU='
 '
 
 changelog_IT='
+• Aggiunta la possibilità di configurare la risoluzione di visualizzazione del plugin: Auto, HD, FHD e WQHD, con ridimensionamento automatico in base alla risoluzione dello schermo del ricevitore.
 • Corretta la selezione automatica dello sfondo meteo affinché corrisponda meglio alla descrizione meteo attuale, soprattutto in condizioni variabili con possibile nebbia.
 • Corretti i file delle lingue e i nomi dei file PO/MO.
 • Aggiunta la funzione di aggiornamento.
@@ -297,6 +306,7 @@ changelog_IT='
 '
 
 changelog_NL='
+• Instelbare weergaveresolutie voor de plugin toegevoegd: Auto, HD, FHD en WQHD, met automatische schaling naar de schermresolutie van de ontvanger.
 • De automatische weerachtergrondselectie is gecorrigeerd zodat deze beter aansluit bij de actuele weersbeschrijving, vooral bij wisselvallig weer met mogelijke mist.
 • Taalbestanden en PO/MO-bestandsnamen gecorrigeerd.
 • Updatefunctie toegevoegd.
@@ -322,6 +332,7 @@ changelog_NL='
 '
 
 changelog_PL='
+• Dodano możliwość ustawienia rozdzielczości wyświetlania wtyczki: Auto, HD, FHD i WQHD, z automatycznym skalowaniem do rozdzielczości ekranu odbiornika.
 • Poprawiono automatyczny wybór tła pogodowego, aby lepiej odpowiadał aktualnemu opisowi pogody, szczególnie przy zmiennej pogodzie z możliwością wystąpienia mgły.
 • Naprawiono pliki językowe oraz nazwy plików PO/MO.
 • Dodano funkcję aktualizacji.
@@ -347,6 +358,7 @@ changelog_PL='
 '
 
 changelog_RU='
+• Добавлена настройка разрешения отображения плагина: Auto, HD, FHD и WQHD с автоматическим масштабированием под разрешение экрана ресивера.
 • Исправлен автоматический выбор погодного фона, чтобы он лучше соответствовал текущему описанию погоды, особенно при переменчивой погоде с возможным туманом.
 • Исправлены языковые файлы и имена файлов PO/MO.
 • Добавлена функция обновления.
@@ -372,6 +384,7 @@ changelog_RU='
 '
 
 changelog_SK='
+• Pridaná možnosť nastavenia rozlíšenia zobrazenia pluginu: Auto, HD, FHD a WQHD s automatickým prispôsobením rozlíšeniu obrazovky prijímača.
 • Opravený automatický výber pozadia počasia, aby lepšie zodpovedal aktuálnemu opisu počasia, najmä pri premenlivom počasí s možnou hmlou.
 • Opravené jazykové súbory a názvy súborov PO/MO.
 • Pridaná funkcia aktualizácie.
@@ -397,6 +410,7 @@ changelog_SK='
 '
 
 changelog_UA='
+• Додано налаштування роздільної здатності відображення плагіна: Auto, HD, FHD та WQHD з автоматичним масштабуванням відповідно до роздільної здатності екрана приймача.
 • Виправлено автоматичний вибір погодного фону, щоб він краще відповідав поточному опису погоди, особливо за мінливої погоди з можливою імлою.
 • Виправлено мовні файли та назви файлів PO/MO.
 • Додано функцію оновлення.
@@ -422,6 +436,7 @@ changelog_UA='
 '
 
 changelog_ZH='
+• 添加插件显示分辨率设置：Auto、HD、FHD 和 WQHD，并根据接收机屏幕分辨率自动缩放。
 • 修复自动天气背景选择，使其更符合当前天气描述，尤其是天气多变且可能有雾的情况。
 • 修复语言文件以及 PO/MO 文件名。
 • 添加更新功能。
